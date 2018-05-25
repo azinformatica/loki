@@ -1,0 +1,38 @@
+{
+    "name": "hal-wids",
+    "version": "0.0.1",
+    "description": "Biblioteca de componentes visuais compartilhados construidos usando vuejs.",
+    "main": "src/index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "http://git.azi.com.br/hal/hal-wids.git"
+    },
+    "author": "Charles Viegas",
+    "license": "ISC",
+    "publishConfig": {
+        "registry": "http://nexus.azi.com.br/repository/azi-npm/"
+    },
+    "distributionManagement": {
+        "releaseRegistry": "http://nexus.azi.com.br/repository/azi-npm/",
+        "snapshotRegistry": "http://nexus.azi.com.br/repository/azi-npm-snapshot/"
+    },
+    "repository": {
+        "type": "git",
+        "url": "http://git.azi.com.br/hal/hal-wids.git"
+    },
+    "dependencies": {
+        "vuetify": "^1.0.17"
+    },
+    "babel": {
+        "presets": [
+            "env"
+        ],
+        "plugins": [
+            "transform-async-to-generator",
+            "transform-object-rest-spread"
+        ]
+    }
+}

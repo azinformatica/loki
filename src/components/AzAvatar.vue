@@ -1,0 +1,105 @@
+<template>
+    <v-toolbar-items class="az-avatar">
+        <v-badge right overlap color="orange">
+            <span slot="badge">6</span>
+            <v-icon medium>notifications</v-icon>
+        </v-badge>
+
+        <v-menu class="hidden-xs-only" bottom="bottom" left="left" offset-y="offset-y" attach="attach">
+            <v-btn class="az-avatar__username" slot="activator" flat="flat">
+                <span>{{ userName }}</span>
+                <v-icon right="right">keyboard_arrow_down</v-icon>
+            </v-btn>
+            <v-list>
+                <v-list-tile v-for="item in avatarActions" :key="item.title" @click="redirectTo(item.path)">
+                    <v-list-tile-action>
+                        <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
+                    </v-list-tile-action>
+                    <v-list-tile-content>
+                        <v-list-tile-title v-text="item.title"></v-list-tile-title>
+                    </v-list-tile-content>
+                </v-list-tile>
+
+                <v-list-tile @click="logout()" class="az-avatar__logout">
+                    <v-list-tile-action>
+                        <v-icon>exit_to_app</v-icon>
+                    </v-list-tile-action>
+                    <v-list-tile-content>
+                        <v-list-tile-title>Sair</v-list-tile-title>
+                    </v-list-tile-content>
+                </v-list-tile>
+            </v-list>
+        </v-menu>
+        <v-avatar class="az-avatar__picture" size="32px">
+            <img :src="userPhoto" alt="Foto do usuário"/>
+        </v-avatar>
+    </v-toolbar-items>
+</template>
+<script>
+    export default {
+        methods: {
+            redirectTo(item) {
+                console.log(item)
+            },
+            logout() {
+
+            }
+        },
+        computed: {
+            userPhoto() {
+                return this.$store.state.wids.userPhoto
+            },
+            userName() {
+                return this.$store.state.wids.userName
+            },
+            avatarActions() {
+                return this.$store.state.wids.avatarActions
+            }
+        }
+    };
+</script>
+<style lang="less">
+    .az-avatar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        display: block;
+        font-size: 14px;
+        &__logout {
+            border-top: 1px solid #ccc;
+        }
+        &__username {
+            margin-right: 10px;
+        }
+        &__picture {
+            margin-right: 0;
+        }
+        .btn {
+            text-transform: none;
+            .icon--right {
+                margin-left: 0;
+            }
+            &__content {
+                color: #7f7f7f;
+                font-weight: normal;
+            }
+        }
+        .list {
+            padding: 0;
+            &__tile {
+                color: #7f7f7f;
+                height: 38px;
+                &__title {
+                    font-size: 14px;
+                }
+                &__action {
+                    min-width: unset;
+                    padding-right: 10px;
+                    .material-icons {
+                        font-size: 13px;
+                    }
+                }
+            }
+        }
+    }
+</style>
