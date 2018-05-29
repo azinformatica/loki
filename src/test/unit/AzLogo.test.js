@@ -28,33 +28,18 @@ describe('AzLogo.test.js', () => {
     })
 
     it('Computed properties are rendered properly', () => {
-        const renderedHtml= expect(wrapper.html());
-
-        renderedHtml.toContain('src="picture.jpg"')
-        renderedHtml.toContain('Andrew Stuart Tanenbaum')
-        Object.keys(wrapper.vm.avatarActions).map(
-            (key, index) => {
-                renderedHtml.toContain(wrapper.vm.avatarActions[key].title)
-                renderedHtml.toContain(wrapper.vm.avatarActions[key].icon)
-            }
-        );
-
-
+        expect(wrapper.html()).not.toContain('mainLogoPicture.jpg')
+        expect(wrapper.html()).toContain('symbolLogoPicture.jpg')
     })
 
     it('Methods are defined', () => {
-        expect(typeof wrapper.vm.redirectTo).toBe('function')
-        expect(typeof wrapper.vm.logout).toBe('function')
+        expect(typeof wrapper.vm.redirectToHome).toBe('function')
     })
 
-    it('Click on Buttons', () => {
-        spyOn(wrapper.vm, 'redirectTo')
-        spyOn(wrapper.vm, 'logout')
-        wrapper.find('.az-avatar__logout').trigger('click')
-        wrapper.find('.list__tile--link').trigger('click')
-
-        expect(wrapper.vm.logout).toBeCalled()
-        expect(wrapper.vm.redirectTo).toBeCalled()
+    it('Click events', () => {
+        spyOn(wrapper.vm, 'redirectToHome')
+        wrapper.find('a').trigger('click')
+        expect(wrapper.vm.redirectToHome).toBeCalled()
     })
 
 
