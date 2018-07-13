@@ -9,6 +9,8 @@ import AzAdvancedSearch from './components/AzAdvancedSearch'
 import AzToolbar from './components/AzToolbar'
 import AzAside from './components/AzAside'
 import AzTemplate from './components/AzTemplate'
+import AzForm from './components/AzForm'
+import AzInternalBar from './components/AzInternalBar'
 import AzContainer from './components/AzContainer'
 import {state, mutations, actions} from './store'
 
@@ -31,6 +33,8 @@ const widsPlugin = {
         Vue.component('az-search',AzSearch)
         Vue.component('az-toolbar',AzToolbar)
         Vue.component('az-container',AzContainer)
+        Vue.component('az-internal-bar',AzInternalBar)
+        Vue.component('az-form',AzForm)
     }
 }
 

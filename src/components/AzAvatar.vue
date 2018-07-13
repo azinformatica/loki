@@ -1,10 +1,5 @@
 <template>
     <v-toolbar-items class="az-avatar">
-        <v-badge right overlap color="orange">
-            <span slot="badge">6</span>
-            <v-icon medium>notifications</v-icon>
-        </v-badge>
-
         <v-menu class="hidden-xs-only" bottom="bottom" left="left" offset-y="offset-y" attach="attach">
             <v-btn class="az-avatar__username" slot="activator" flat="flat">
                 <span>{{ userName }}</span>
@@ -62,7 +57,7 @@
     .az-avatar {
         position: fixed;
         top: 0;
-        right: 0;
+        right: 20px;
         display: block;
         font-size: 14px;
         &__logout {
@@ -74,17 +69,21 @@
         &__picture {
             margin-right: 0;
         }
-        .btn {
+        .v-btn {
             text-transform: none;
-            .icon--right {
+            .v-icon--right {
                 margin-left: 0;
             }
             &__content {
-                color: #7f7f7f;
+                color: #777777;
                 font-weight: normal;
+                font-size: 14px;
+                i{
+                    color: #777777;
+                }
             }
         }
-        .list {
+        .v-list {
             padding: 0;
             &__tile {
                 color: #7f7f7f;
