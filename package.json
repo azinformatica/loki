@@ -8,17 +8,10 @@
     },
     "repository": {
         "type": "git",
-        "url": "http://git.azi.com.br/hal/hal-wids.git"
+        "url": "https://github.com/azinformatica/loki.git"
     },
     "author": "Charles Viegas",
     "license": "ISC",
-    "publishConfig": {
-        "registry": "http://nexus.azi.com.br/repository/azi-npm/"
-    },
-    "distributionManagement": {
-        "releaseRegistry": "http://nexus.azi.com.br/repository/azi-npm/",
-        "snapshotRegistry": "http://nexus.azi.com.br/repository/azi-npm-snapshot/"
-    },
     "dependencies": {
         "vue": "^2.5.16",
         "vuetify": "^1.1.3",
