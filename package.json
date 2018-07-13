@@ -1,5 +1,5 @@
 {
-    "name": "hal-wids",
+    "name": "loki",
     "version": "0.0.1",
     "description": "Biblioteca de componentes visuais compartilhados construidos usando vuejs.",
     "main": "src/index.js",
