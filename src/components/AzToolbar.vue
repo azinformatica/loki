@@ -9,7 +9,6 @@
             <a class="clear" v-if="false">Limpar</a>
             <slot name="advanceSearch"></slot>
         </div>
-
     </div>
 </template>
 
@@ -38,20 +37,23 @@
 </script>
 
 <style lang="less">
+    .v-toolbar__content{
+        padding: 0 20px;
+    }
     .az-toolbar {
         width: 100%;
         height: 60px;
         background-color: #f6f9f9;
         border-bottom: 1px solid #ddd;
+        align-items: center;
         display: flex;
         justify-content: space-between;
 
         .search {
             position: absolute;
             right: 0;
-            top: 75px;
+            top: 15px;
             display: flex;
-
 
             .clear {
                 margin-right: 10px;
@@ -65,28 +67,28 @@
         }
 
         .actions {
-            height: 60px;
-            padding: 6px 5px;
-            .btn {
-                text-transform: none;
-
-                border-radius: 5px;
-                min-width: unset;
-                .icon {
+            padding: 0 20px;
+            a{
+                font-size: 16px;
+                margin-right: 10px;
+                i{
                     margin-right: 5px;
-                }
-                .btn__content {
-                    width: 100%;
-                    padding: 0 5px;
+                    font-size: 20px;
                 }
             }
         }
         .btn-primary {
-            color: #3a6861;
+            color: #d28a2C;
+            i{
+                color: #d28a2C;
+            }
         }
 
         .btn-alternative {
             color: #777777;
+            i{
+                color: #777777;
+            }
         }
     }
 

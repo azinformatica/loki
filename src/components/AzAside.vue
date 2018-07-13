@@ -41,6 +41,7 @@
 <style scoped lang="less">
 .az-aside {
     background-color: #3a6861;
+    padding: 0;
 
     &__menu{
         height: 100%;

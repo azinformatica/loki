@@ -24,6 +24,12 @@ export default {
             selected: false,
         },
         {
+            name: 'Formulario',
+            icon: 'home',
+            path: '/formulario',
+            selected: false,
+        },
+        {
             name: 'Cadastro básico',
             icon: 'settings',
             path: '/cadastro',

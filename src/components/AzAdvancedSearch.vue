@@ -58,12 +58,12 @@
     .adSearch{
         height: 100%;
     }
-    .list {
+    .v-list {
         &__tile {
             height: 30px;
             font-size: 14px;
         }
-        .input-group{
+        .v-input-group{
             .primary--text {
                 color: black !important;
             }
@@ -73,7 +73,7 @@
     .az-advanced-search {
         display: flex;
 
-        .navigation-drawer {
+        .v-navigation-drawer {
             height: 100%;
             margin-top: 60px !important;
             max-height: calc(~"100% -" 60px);
@@ -91,7 +91,7 @@
                 padding: 5px;
                 border-radius: 20px 0 0 20px;
                 color: rgba(255, 255, 255, 0.8);
-                .icon {
+                i {
                     color: rgba(255, 255, 255, 0.8);
                     font-size: 18px;
                     font-weight: bold;
@@ -113,7 +113,7 @@
                 padding: 5px;
                 border-radius: 20px 0 0 20px;
                 color: rgba(255, 255, 255, 0.8);
-                .icon {
+                i {
                     color: rgba(255, 255, 255, 0.8);
                     font-size: 18px;
                     font-weight: bold;
@@ -156,8 +156,8 @@
                     padding: 10px;
                     margin: 10px 0;
                     width: 10%;
-                    .icon{
-                        font-size: 13px;
+                    i{
+                        font-size: 18px;
                         color: rgba(255, 255, 255, 0.8);
                         font-weight: bold;
                     }

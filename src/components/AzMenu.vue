@@ -59,10 +59,9 @@
         height: 100%;
         overflow-y: auto;
         overflow-x: hidden;
-
     }
 
-    .list__group__items--no-action .list__tile {
+    .v-list__group__items--no-action .v-list__tile {
         padding-left: 0;
     }
 
@@ -104,12 +103,13 @@
 
         .material-icons {
             font-size: 20px;
+            color: rgba(255, 255, 255, 0.8);
         }
-        .list {
+        .v-list {
             padding: 0;
             &__group {
                 border-bottom: 1px solid rgba(255, 255, 255, 0.10);
-                .list {
+                .v-list {
                     &__tile {
                         border-top: none;
                         border-bottom: none;
@@ -135,6 +135,7 @@
             }
             &__tile {
                 height: 44px;
+                padding: 0 12px;
                 color: rgba(255, 255, 255, 0.8);
                 :hover {
                     color: rgba(255, 255, 255, 0.8) !important;
@@ -146,6 +147,9 @@
                     min-width: unset;
                     padding-right: 10px;
                     padding-left: 5px;
+                    i{
+                        font-size: 20px;
+                    }
                 }
             }
         }

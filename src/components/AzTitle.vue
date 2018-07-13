@@ -28,7 +28,7 @@
 </script>
 <style lang="less">
     .az-title {
-        margin-left: 20px !important;
+        margin-left: 0px !important;
         &__title {
             font-size: 18px;
             font-weight: bold;
