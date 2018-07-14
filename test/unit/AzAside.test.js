@@ -16,7 +16,7 @@ describe('AzAside.test.js', () => {
 
         store = new Vuex.Store({
             state: {
-                wids: {
+                loki: {
                     asideClosed: true
                 }
             }
@@ -31,7 +31,7 @@ describe('AzAside.test.js', () => {
         expect(wrapper.find('.arrow-closed').exists()).toBe(true)
 
         expect(wrapper.vm.asideClosed).toBe(true)
-        wrapper.vm.$store.state.wids.asideClosed = false
+        wrapper.vm.$store.state.loki.asideClosed = false
         expect(wrapper.vm.asideClosed).toBe(false)
 
         //expect(wrapper.find('.arrow-opened').exists()).toBe(true)

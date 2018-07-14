@@ -16,7 +16,7 @@ describe('AzAvatar.test.js', () => {
 
         store = new Vuex.Store({
             state: {
-                wids: {
+                loki: {
                     userPhoto: 'picture.jpg',
                     userName: 'Andrew Stuart Tanenbaum',
                     avatarActions: {

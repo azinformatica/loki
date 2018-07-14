@@ -15,13 +15,13 @@
         },
         computed: {
             asideClosed() {
-                return this.$store.state.wids.asideClosed
+                return this.$store.state.loki.asideClosed
             },
             mainLogo() {
-                return this.$store.state.wids.mainLogo
+                return this.$store.state.loki.mainLogo
             },
             symbolLogo() {
-                return this.$store.state.wids.symbolLogo
+                return this.$store.state.loki.symbolLogo
             }
         }
     };

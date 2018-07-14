@@ -42,13 +42,13 @@
         },
         computed: {
             userPhoto() {
-                return this.$store.state.wids.userPhoto
+                return this.$store.state.loki.userPhoto
             },
             userName() {
-                return this.$store.state.wids.userName
+                return this.$store.state.loki.userName
             },
             avatarActions() {
-                return this.$store.state.wids.avatarActions
+                return this.$store.state.loki.avatarActions
             }
         }
     };

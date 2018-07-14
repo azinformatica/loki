@@ -18,10 +18,10 @@
         },
         computed: {
             title() {
-                return this.$store.state.wids.pageTitle
+                return this.$store.state.loki.pageTitle
             },
             subtitle() {
-                return this.$store.state.wids.pageSubtitle
+                return this.$store.state.loki.pageSubtitle
             }
         }
     }

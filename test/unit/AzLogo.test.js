@@ -16,7 +16,7 @@ describe('AzLogo.test.js', () => {
 
         store = new Vuex.Store({
             state: {
-                wids: {
+                loki: {
                     asideClosed: true,
                     mainLogo: 'mainLogoPicture.jpg',
                     symbolLogo: 'symbolLogoPicture.jpg'
