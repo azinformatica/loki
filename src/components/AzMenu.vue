@@ -45,10 +45,10 @@
         },
         computed: {
             menuActions() {
-                return this.$store.state.wids.menuActions
+                return this.$store.state.loki.menuActions
             },
             asideClosed() {
-                return this.$store.state.wids.asideClosed
+                return this.$store.state.loki.asideClosed
             }
         }
     }

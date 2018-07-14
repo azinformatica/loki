@@ -29,7 +29,7 @@
       computed: {
         asideClosed: {
             get() {
-                return this.$store.state.wids.asideClosed
+                return this.$store.state.loki.asideClosed
             },
             set(closed) {
                 this.change (closed)

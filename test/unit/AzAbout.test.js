@@ -16,7 +16,7 @@ describe('AzAbout.test.js', () => {
 
         store = new Vuex.Store({
             state: {
-                wids: {
+                loki: {
                     copywrite: '123456',
                     version: '1.2.3'
                 }

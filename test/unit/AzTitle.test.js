@@ -18,7 +18,7 @@ describe('AzTitle.test.js', () => {
 
         store = new Vuex.Store({
             state: {
-                wids: {
+                loki: {
                     pageTitle: '***Page Title***',
                     pageSubtitle: '***Page SubTitle***'
                 }

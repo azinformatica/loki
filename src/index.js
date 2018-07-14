@@ -14,14 +14,14 @@ import AzInternalBar from './components/AzInternalBar'
 import AzContainer from './components/AzContainer'
 import {state, mutations, actions} from './store'
 
-const widsPlugin = {
+const lokiPlugin = {
 
     install(vue, {store}) {
         if (!store) {
             throw new Error('Please provide vuex store.')
         }
 
-        store.registerModule('wids', {state, mutations, actions})
+        store.registerModule('loki', {state, mutations, actions})
         Vue.component('az-avatar', AzAvatar)
         Vue.component('az-aside', AzAside)
         Vue.component('az-logo', AzLogo)
@@ -38,4 +38,4 @@ const widsPlugin = {
     }
 }
 
-export default widsPlugin
+export default lokiPlugin

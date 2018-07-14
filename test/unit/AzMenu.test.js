@@ -23,7 +23,7 @@ describe('AzMenu.test.js', () => {
 
         store = new Vuex.Store({
             state: {
-                wids: {
+                loki: {
                     asideClosed: false,
                     menuActions: [
                         {

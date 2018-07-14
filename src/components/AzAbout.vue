@@ -13,13 +13,13 @@
     export default {
         computed: {
             versionNumber() {
-                return this.$store.state.wids.version;
+                return this.$store.state.loki.version;
             },
             yearCopywrite() {
                 return (new Date()).getFullYear()
             },
             companyCopywrite() {
-                return this.$store.state.wids.copywrite
+                return this.$store.state.loki.copywrite
             }
         }
     }
