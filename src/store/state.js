@@ -24,8 +24,8 @@ export default {
             selected: false,
         },
         {
-            name: 'Formulario',
-            icon: 'home',
+            name: 'Licitações',
+            icon: 'menu',
             path: '/formulario',
             selected: false,
         },
