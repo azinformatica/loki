@@ -69,25 +69,29 @@
         .actions {
             padding: 0 20px;
             a{
-                font-size: 16px;
+                padding: 7px 10px;
+                border-radius: 5px;
+                font-size: 14px;
                 margin-right: 10px;
                 i{
                     margin-right: 5px;
-                    font-size: 20px;
+                    font-size: 18px;
                 }
             }
         }
         .btn-primary {
-            color: #d28a2C;
+            color: white;
+            background-color: #d28a2C;
             i{
-                color: #d28a2C;
+                color: white;
             }
         }
 
         .btn-alternative {
-            color: #777777;
+            color: white;
+            background-color: #777777;
             i{
-                color: #777777;
+                color: white;
             }
         }
     }
