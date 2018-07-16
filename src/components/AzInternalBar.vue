@@ -17,7 +17,7 @@
             height: 60px;
             align-items: center;
             justify-content: space-between;
-            transition: 1s;
+            transition: 0.2s;
 
             .itens{
                 display: flex;
