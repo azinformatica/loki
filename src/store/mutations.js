@@ -16,5 +16,21 @@ export default {
 
     [actionTypes.TOOGLE_ASIDE](state) {
         state.asideClosed = !state.asideClosed
+    },
+
+    [actionTypes.SET_UPLOAD_FILE_PROGRESS](state, uploadProgress) {
+        Vue.set(state.uploadFileProgress, uploadProgress.filename, uploadProgress.progress)
+    },
+
+    [actionTypes.REMOVE_UPLOAD_FILE_PROGRESS](state, filename) {
+        Vue.delete(state.uploadFileProgress, filename)
+    },
+
+    [actionTypes.SET_UPLOADED_FILES](state, files) {
+        state.uploadedFiles = files
+    },
+
+    [actionTypes.ADD_UPLOADED_FILE](state, uploadedFile) {
+        Vue.set(state.uploadedFiles, uploadedFile.name, uploadedFile)
     }
 }
