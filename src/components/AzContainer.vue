@@ -139,7 +139,7 @@
                 tr th {
                     color: #3a6861 !important;
                     font-weight: bold;
-                    padding: 0 20px !important;
+                    padding: 0 10px !important;
                 }
             }
 
@@ -154,7 +154,7 @@
                     color: #777777;
                     font-size: 13px;
                     font-weight: normal;
-                    padding: 0 20px !important;
+                    padding: 5px 10px !important;
                 }
                 .table-actions{
                     text-align: end;
