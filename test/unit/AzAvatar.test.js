@@ -1,4 +1,4 @@
-import AzAvatar from '../../components/AzAvatar'
+import AzAvatar from '../../src/components/AzAvatar'
 import Vuex from 'vuex'
 import {shallow, createLocalVue} from 'vue-test-utils'
 import Vuetify from 'vuetify';

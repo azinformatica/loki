@@ -1,4 +1,4 @@
-import AzAdvancedSearch from '../../components/AzAdvancedSearch'
+import AzAdvancedSearch from '../../src/components/AzAdvancedSearch'
 import {shallow, createLocalVue} from 'vue-test-utils'
 import Vuetify from 'vuetify';
 

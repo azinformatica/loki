@@ -1,4 +1,4 @@
-import AzSearch from '../../components/AzSearch'
+import AzSearch from '../../src/components/AzSearch'
 import {shallow} from 'vue-test-utils'
 
 

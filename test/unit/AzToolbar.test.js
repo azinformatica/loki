@@ -1,4 +1,4 @@
-import AzToolbar from '../../components/AzToolbar'
+import AzToolbar from '../../src/components/AzToolbar'
 import {shallow, createLocalVue} from 'vue-test-utils'
 import Vuetify from 'vuetify';
 

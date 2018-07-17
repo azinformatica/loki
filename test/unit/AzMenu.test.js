@@ -1,4 +1,4 @@
-import AzMenu from '../../components/AzMenu'
+import AzMenu from '../../src/components/AzMenu'
 import Vuex from 'vuex'
 import {shallow, createLocalVue} from 'vue-test-utils'
 import Vuetify from 'vuetify';

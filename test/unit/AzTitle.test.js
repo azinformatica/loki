@@ -1,4 +1,4 @@
-import AzTitle from '../../components/AzTitle'
+import AzTitle from '../../src/components/AzTitle'
 import Vuex from 'vuex'
 import {shallow, createLocalVue} from 'vue-test-utils'
 import Vuetify from 'vuetify';
