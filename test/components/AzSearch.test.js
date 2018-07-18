@@ -11,13 +11,18 @@ describe('AzSearch.test.js', () => {
     })
 
     it('Component data is configured properly', () => {
-        expect(wrapper.vm.teste).toBeNull()
-        wrapper.setData({teste: 'teste'})
-        expect(wrapper.vm.teste).not.toBeNull()
+        expect(wrapper.vm.teste).toBeUndefined()
+        wrapper.setData({
+            fields: {
+                teste: 'teste'
+            }
+        })
+        console.log(wrapper.vm)
+        // expect(wrapper.vm.teste).not.toBeUndefined()
     })
 
     it('Component is rendered properly', () => {
-        expect(wrapper.html()).toContain('Buscar por Código')
+        expect(wrapper.html()).toContain('Informe o código')
     })
 
     it('Component style is used', () => {

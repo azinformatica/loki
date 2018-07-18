@@ -81,5 +81,5 @@ export default {
     ],
     filesApi: '/public/arquivos',
     uploadFileProgress: {},
-    uploadedFiles: {}
+    uploadedFiles: []
 }

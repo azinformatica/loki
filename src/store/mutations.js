@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import actionTypes from './actions-types'
 
 export default {
@@ -19,7 +20,12 @@ export default {
     },
 
     [actionTypes.SET_UPLOAD_FILE_PROGRESS](state, uploadProgress) {
-        Vue.set(state.uploadFileProgress, uploadProgress.filename, uploadProgress.progress)
+        Vue.set(state.uploadFileProgress, uploadProgress.filename, {progress: uploadProgress.progress})
+    },
+
+    [actionTypes.SET_UPLOAD_FILE_PROGRESS_ERROR](state, filename) {
+        const progress = state.uploadFileProgress[filename].progress
+        Vue.set(state.uploadFileProgress, filename, {progress, error: true})
     },
 
     [actionTypes.REMOVE_UPLOAD_FILE_PROGRESS](state, filename) {
@@ -31,6 +37,6 @@ export default {
     },
 
     [actionTypes.ADD_UPLOADED_FILE](state, uploadedFile) {
-        Vue.set(state.uploadedFiles, uploadedFile.name, uploadedFile)
+        state.uploadedFiles.push(uploadedFile)
     }
 }

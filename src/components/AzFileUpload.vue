@@ -1,14 +1,26 @@
 <template>
-    <form enctype="multipart/form-data" novalidate v-if="!isUploading">
-        <div class="az-drop-file">
-            <input type="file" multiple :name="uploadFieldName" class="input-file" :accept="accept"
-                   @change="filesChange($event.target.files)"/>
-            <slot></slot>
-        </div>
-    </form>
+    <div>
+        <form enctype="multipart/form-data" novalidate>
+            <div class="az-drop-file"
+                 :style="{'height': height}"
+                 @drop.prevent="onDropFiles($event.dataTransfer.items)"
+                 @dragover.prevent="">
+                <input id="azFileSelector" type="file" multiple class="input-file"
+                       :name="uploadFieldName"
+                       :accept="accept"
+                       @change="onSelectFiles($event.target.files)"/>
+                <div class="center">
+                    <slot></slot>
+                </div>
+            </div>
+        </form>
+        <az-file-progress></az-file-progress>
+    </div>
 </template>
 
 <script>
+
+    import AzFileProgress from './AzFileProgress'
 
     export default {
         props: {
@@ -23,6 +35,10 @@
             thumbnail: {
                 type: Boolean,
                 default: false
+            },
+            height: {
+                type: String,
+                default: '200px'
             }
         },
         data() {
@@ -30,17 +46,25 @@
                 uploadFieldName: 'file'
             }
         },
-        computed: {
-            isUploading() {
-                return Object.keys(this.$store.state.loki.uploadFileProgress).length > 0
-            }
-        },
         methods: {
-            filesChange(fileList) {
+            onSelectFiles(fileList) {
                 if (!fileList.length) {
                     return;
                 }
                 this.uploadFiles(fileList)
+            },
+            onDropFiles(eventItems) {
+                if (!eventItems.length) {
+                    return;
+                }
+                const files = []
+                Object.keys(eventItems).forEach((key) => {
+                    const item = eventItems[key]
+                    if (item.kind === 'file') {
+                        files.push(item.getAsFile())
+                    }
+                })
+                this.uploadFiles(files)
             },
             uploadFiles(fileList) {
                 Array
@@ -62,31 +86,47 @@
                 const formData = new FormData()
                 formData.append(this.uploadFieldName, file)
                 return formData
+            },
+            openFileSelector() {
+                document.getElementById('azFileSelector').click()
             }
+        },
+        components: {
+            AzFileProgress
         }
     }
+
 </script>
 
 <style scoped>
 
     .az-drop-file {
-        border: 2px dashed #ccc;
-        margin: 10px 0;
-        padding: 30px 0 20px;
-        display: block;
-        align-content: center;
+        background: #f0f0f0;
+        color: #7b7b7b;
+        display: flex;
         align-items: center;
+        border: 2px dashed #b5b5b5;
         text-align: center;
-        background-color: #eeeeee;
+        position: relative;
     }
 
-    .input-file {
-        opacity: 0; /* invisible but it's there! */
-        left: 0;
-        height: 200px;
-        width: 100%;
+    .az-drop-file:hover {
+        border-color: #939393;
+    }
+
+    .az-drop-file .center {
+        margin: 0 auto;
+        padding: 0;
+    }
+
+    .az-drop-file .input-file {
+        opacity: 0;
         position: absolute;
-        cursor: pointer;
+        left: 0;
+        top: 0;
+        width: 10px;
+        height: 10px;
+        z-index: 1;
     }
 
 </style>

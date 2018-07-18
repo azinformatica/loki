@@ -30,8 +30,7 @@ export default {
             commit(actionTypes.REMOVE_UPLOAD_FILE_PROGRESS, filename)
             commit(actionTypes.ADD_UPLOADED_FILE, Object.assign({}, data, {status: 'success'}))
         } catch (e) {
-            commit(actionTypes.REMOVE_UPLOAD_FILE_PROGRESS, filename)
-            commit(actionTypes.ADD_UPLOADED_FILE, {name: filename, status: 'fail'})
+            commit(actionTypes.SET_UPLOAD_FILE_PROGRESS_ERROR, filename)
         }
     }
 
