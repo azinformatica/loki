@@ -84,7 +84,7 @@ describe('AzMenu.test.js', () => {
 
     it('Click on Buttons', () => {
         spyOn(wrapper.vm, 'redirectTo')
-        wrapper.find('.list__tile--link').trigger('click')
+        wrapper.find('.v-list__tile--link').trigger('click')
         expect(wrapper.vm.redirectTo).toBeCalled()
     })
 

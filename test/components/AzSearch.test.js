@@ -12,13 +12,6 @@ describe('AzSearch.test.js', () => {
 
     it('Component data is configured properly', () => {
         expect(wrapper.vm.teste).toBeUndefined()
-        wrapper.setData({
-            fields: {
-                teste: 'teste'
-            }
-        })
-        console.log(wrapper.vm)
-        // expect(wrapper.vm.teste).not.toBeUndefined()
     })
 
     it('Component is rendered properly', () => {

@@ -54,7 +54,7 @@
                 this.uploadFiles(fileList)
             },
             onDropFiles(eventItems) {
-                if (!eventItems.length) {
+                if (!Object.keys(eventItems).length) {
                     return;
                 }
                 const files = []

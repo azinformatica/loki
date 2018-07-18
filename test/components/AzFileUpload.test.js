@@ -39,20 +39,15 @@ describe('AzFileUpload.test.js', () => {
         expect(wrapper.vm.accept).toEqual('*')
     })
 
-    it('Component is rendered according to reactivity of computed properties', () => {
-        const renderedHtml = expect(wrapper.html())
-        renderedHtml.toContain('az-drop-file')
-    })
-
-    it('Do nothing when the list of files to be uploaded is empty', () => {
+    it('Do nothing when the list of selected files to be uploaded is empty', () => {
         const filesToBeUploaded = []
-        wrapper.vm.filesChange(filesToBeUploaded)
+        wrapper.vm.onSelectFiles(filesToBeUploaded)
         expect(actions.uploadFile.mock.calls).toHaveLength(0)
     })
 
-    it('Calls the store to upload the files that were dragged into the component', () => {
+    it('Calls the store to upload the files that were selected through the component', () => {
         const filesToBeUploaded = [{name: 'file1'}, {name: 'file2'}]
-        wrapper.vm.filesChange(filesToBeUploaded)
+        wrapper.vm.onSelectFiles(filesToBeUploaded)
 
         expect(actions.uploadFile.mock.calls).toHaveLength(2)
         for (let i = 0; i < filesToBeUploaded.length; i++) {
@@ -60,11 +55,39 @@ describe('AzFileUpload.test.js', () => {
         }
     })
 
-    it('Methods are defined', () => {
-        expect(typeof wrapper.vm.filesChange).toBe('function')
-        expect(typeof wrapper.vm.uploadFiles).toBe('function')
-        expect(typeof wrapper.vm.createPayload).toBe('function')
-        expect(typeof wrapper.vm.createFormData).toBe('function')
+    it('Do nothing when the list of dropped files to be uploaded is empty', () => {
+        const eventItems = []
+        wrapper.vm.onSelectFiles(eventItems)
+        expect(actions.uploadFile.mock.calls).toHaveLength(0)
+    })
+
+    it('Calls the store to upload the files that were dropped into the component', () => {
+        const droppedItems = {
+            0: {
+                name: 'file1',
+                kind: 'file',
+                getAsFile() {
+                    return {name: 'file1'}
+                }
+            },
+            1: {
+                name: 'file2',
+                kind: 'notfile'
+            }
+        }
+        wrapper.vm.onDropFiles(droppedItems)
+
+        expect(actions.uploadFile.mock.calls).toHaveLength(1)
+        expect(actions.uploadFile.mock.calls[0][1].filename).toEqual(droppedItems['0'].name)
+    })
+
+    it('Opens the file selector', () => {
+        const mockedInput= {
+            click: jest.fn()
+        }
+        spyOn(document, 'getElementById').and.returnValue(mockedInput)
+        wrapper.vm.openFileSelector()
+        expect(mockedInput.click).toHaveBeenCalled()
     })
 
 })

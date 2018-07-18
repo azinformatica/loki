@@ -1,5 +1,4 @@
 <template>
-
     <div class="card" v-show="showDialog">
         <div class="card_title">
             {{finishedUploadsCount}} upload concluídos
@@ -19,7 +18,6 @@
             </li>
         </ul>
     </div>
-
 </template>
 
 <script>
@@ -29,16 +27,16 @@
     export default {
         computed: {
             showDialog() {
-                return Object.keys(this.$store.state.uploadFileProgress).length > 0
+                return Object.keys(this.$store.state.loki.uploadFileProgress).length > 0
             },
             isUploading() {
                 return this.getUploadInProgressCount() > 0
             },
             filesBeingUploaded() {
-                return Object.keys(this.$store.state.uploadFileProgress)
+                return Object.keys(this.$store.state.loki.uploadFileProgress)
             },
             finishedUploadsCount() {
-                return this.$store.state.uploadedFiles.length
+                return this.$store.state.loki.uploadedFiles.length
             }
         },
         methods: {
@@ -46,20 +44,20 @@
                 return filename.substr(0, 40) + '...'
             },
             hasProgressForFile(file) {
-                return this.$store.state.uploadFileProgress[file] !== undefined
+                return this.$store.state.loki.uploadFileProgress[file] !== undefined
             },
             getFileUploadProgress(filename) {
-                return this.$store.state.uploadFileProgress[filename].progress
+                return this.$store.state.loki.uploadFileProgress[filename].progress
             },
             hasUploadError(filename) {
-                const fileProgressInfo = this.$store.state.uploadFileProgress[filename]
+                const fileProgressInfo = this.$store.state.loki.uploadFileProgress[filename]
                 return fileProgressInfo && fileProgressInfo.error
             },
             getUploadInProgressCount() {
                 let uploading = 0
 
-                Object.keys(this.$store.state.uploadFileProgress).forEach((filename) => {
-                    const file = this.$store.state.uploadFileProgress[filename]
+                Object.keys(this.$store.state.loki.uploadFileProgress).forEach((filename) => {
+                    const file = this.$store.state.loki.uploadFileProgress[filename]
                     if (file && !file.error) {
                         uploading++
                     }
@@ -68,7 +66,7 @@
                 return uploading
             },
             close() {
-                Object.keys(this.$store.state.uploadFileProgress).forEach((filename) => {
+                Object.keys(this.$store.state.loki.uploadFileProgress).forEach((filename) => {
                     this.$store.commit(actionTypes.REMOVE_UPLOAD_FILE_PROGRESS, filename)
                 })
             }
