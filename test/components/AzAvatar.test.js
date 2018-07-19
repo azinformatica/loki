@@ -1,4 +1,4 @@
-import AzAvatar from '../../components/AzAvatar'
+import AzAvatar from '../../src/components/AzAvatar'
 import Vuex from 'vuex'
 import {shallow, createLocalVue} from 'vue-test-utils'
 import Vuetify from 'vuetify';
@@ -55,7 +55,7 @@ describe('AzAvatar.test.js', () => {
         spyOn(wrapper.vm, 'redirectTo')
         spyOn(wrapper.vm, 'logout')
         wrapper.find('.az-avatar__logout').trigger('click')
-        wrapper.find('.list__tile--link').trigger('click')
+        wrapper.find('.v-list__tile--link').trigger('click')
 
         expect(wrapper.vm.logout).toBeCalled()
         expect(wrapper.vm.redirectTo).toBeCalled()

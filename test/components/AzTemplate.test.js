@@ -1,4 +1,4 @@
-import AzTemplate from '../../components/AzTemplate'
+import AzTemplate from '../../src/components/AzTemplate'
 import {shallow} from 'vue-test-utils'
 
 

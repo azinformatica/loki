@@ -12,6 +12,7 @@ import AzTemplate from './components/AzTemplate'
 import AzForm from './components/AzForm'
 import AzInternalBar from './components/AzInternalBar'
 import AzContainer from './components/AzContainer'
+import AzFileUpload from './components/AzFileUpload'
 import {state, mutations, actions} from './store'
 
 const lokiPlugin = {
@@ -35,6 +36,7 @@ const lokiPlugin = {
         Vue.component('az-container',AzContainer)
         Vue.component('az-internal-bar',AzInternalBar)
         Vue.component('az-form',AzForm)
+        Vue.component('az-file-upload', AzFileUpload)
     }
 }
 

@@ -1,4 +1,4 @@
-import AzMenu from '../../components/AzMenu'
+import AzMenu from '../../src/components/AzMenu'
 import Vuex from 'vuex'
 import {shallow, createLocalVue} from 'vue-test-utils'
 import Vuetify from 'vuetify';
@@ -84,7 +84,7 @@ describe('AzMenu.test.js', () => {
 
     it('Click on Buttons', () => {
         spyOn(wrapper.vm, 'redirectTo')
-        wrapper.find('.list__tile--link').trigger('click')
+        wrapper.find('.v-list__tile--link').trigger('click')
         expect(wrapper.vm.redirectTo).toBeCalled()
     })
 

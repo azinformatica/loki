@@ -15,7 +15,7 @@
     "license": "ISC",
     "dependencies": {
         "vue": "^2.5.16",
-        "vuetify": "^1.1.3",
+        "vuetify": "^1.1.5",
         "vuex": "^3.0.1"
     },
     "devDependencies": {

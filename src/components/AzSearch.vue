@@ -1,7 +1,7 @@
 <template>
     <div class="az-search">
         <div class="input_search">
-            <input class="input-text" placeholder="Informe o código" v-model="inputText"></input>
+            <input class="input-text" placeholder="Informe o código" v-model="inputText"/>
         </div>
 
         <a class="btn-search">
