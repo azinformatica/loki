@@ -6,17 +6,20 @@
                 <v-icon color="grey">close</v-icon>
             </a>
         </div>
-        <ul class="lista_upload">
-            <li v-for="file in filesBeingUploaded" :key="file">
-                <div v-show="hasProgressForFile(file)">
-                    <span class="filename">{{getFileShortName(file)}}</span>
-                    <div class="fas">
-                        <v-progress-circular size="24" :value="getFileUploadProgress(file)" v-show="!hasUploadError(file)"></v-progress-circular>
-                        <v-icon v-show="hasUploadError(file)">error</v-icon>
+        <div class="scroll">
+            <ul class="lista_upload">
+                <li v-for="file in filesBeingUploaded" :key="file">
+                    <div v-show="hasProgressForFile(file)">
+                        <span class="filename">{{getFileShortName(file)}}</span>
+                        <div class="fas">
+                            <v-progress-circular size="24" :value="getFileUploadProgress(file)"
+                                                 v-show="!hasUploadError(file)"></v-progress-circular>
+                            <v-icon v-show="hasUploadError(file)">error</v-icon>
+                        </div>
                     </div>
-                </div>
-            </li>
-        </ul>
+                </li>
+            </ul>
+        </div>
     </div>
 </template>
 
@@ -87,7 +90,12 @@
         background-color: #fff;
     }
 
-    .card_title {
+    .card .scroll {
+        max-height: 350px;
+        overflow-y: scroll;
+    }
+
+    .card .card_title {
         background: #2c2c2c;
         padding: 15px 20px;
         color: #fdfdfd;
@@ -95,7 +103,7 @@
         font-size: 12px;
     }
 
-    .card_title .close {
+    .card .card_title .close {
         position: absolute;
         right: 15px;
         top: 12px;
