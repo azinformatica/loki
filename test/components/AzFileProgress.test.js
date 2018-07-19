@@ -6,11 +6,9 @@ const localVue = createLocalVue();
 localVue.use(Vuex)
 
 describe('AzFileProgress.test.js', () => {
-
     let wrapper, props, store, mutations
 
     beforeEach(() => {
-
         mutations = {
             REMOVE_UPLOAD_FILE_PROGRESS: jest.fn()
         }

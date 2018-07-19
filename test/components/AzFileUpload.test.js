@@ -6,11 +6,9 @@ const localVue = createLocalVue();
 localVue.use(Vuex)
 
 describe('AzFileUpload.test.js', () => {
-
     let wrapper, props, store, actions
 
     beforeEach(() => {
-
         actions = {
             uploadFile: jest.fn()
         }

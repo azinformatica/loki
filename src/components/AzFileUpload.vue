@@ -41,17 +41,27 @@
                 default: '200px'
             }
         },
+        components: {
+            AzFileProgress
+        },
         data() {
             return {
                 uploadFieldName: 'file'
             }
         },
         methods: {
-            onSelectFiles(fileList) {
-                if (!fileList.length) {
-                    return;
+            createFormData(file) {
+                const formData = new FormData()
+                formData.append(this.uploadFieldName, file)
+                return formData
+            },
+            createPayload(file) {
+                return {
+                    repository: this.repository,
+                    thumbnail: this.thumbnail,
+                    formData: this.createFormData(file),
+                    filename: file.name
                 }
-                this.uploadFiles(fileList)
             },
             onDropFiles(eventItems) {
                 if (!Object.keys(eventItems).length) {
@@ -66,6 +76,15 @@
                 })
                 this.uploadFiles(files)
             },
+            onSelectFiles(fileList) {
+                if (!fileList.length) {
+                    return;
+                }
+                this.uploadFiles(fileList)
+            },
+            openFileSelector() {
+                document.getElementById('azFileSelector').click()
+            },
             uploadFiles(fileList) {
                 Array
                     .from(Array(fileList.length).keys())
@@ -73,26 +92,7 @@
                         const payload = this.createPayload(fileList[x])
                         this.$store.dispatch('uploadFile', payload)
                     });
-            },
-            createPayload(file) {
-                return {
-                    repository: this.repository,
-                    thumbnail: this.thumbnail,
-                    formData: this.createFormData(file),
-                    filename: file.name
-                }
-            },
-            createFormData(file) {
-                const formData = new FormData()
-                formData.append(this.uploadFieldName, file)
-                return formData
-            },
-            openFileSelector() {
-                document.getElementById('azFileSelector').click()
             }
-        },
-        components: {
-            AzFileProgress
         }
     }
 

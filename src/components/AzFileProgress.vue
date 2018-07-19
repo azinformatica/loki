@@ -1,13 +1,13 @@
 <template>
     <div class="card" v-show="showDialog">
         <div class="card_title">
-            {{finishedUploadsCount}} upload concluídos
+            {{finishedUploadsCount}} arquivos concluídos
             <a href="#" class="close" @click.prevent="close()" v-show="!isUploading">
                 <v-icon color="grey">close</v-icon>
             </a>
         </div>
         <div class="scroll">
-            <ul class="lista_upload">
+            <ul class="upload_list">
                 <li v-for="file in filesBeingUploaded" :key="file">
                     <div v-show="hasProgressForFile(file)">
                         <span class="filename">{{getFileShortName(file)}}</span>
@@ -43,18 +43,16 @@
             }
         },
         methods: {
+            close() {
+                Object.keys(this.$store.state.loki.uploadFileProgress).forEach((filename) => {
+                    this.$store.commit(actionTypes.REMOVE_UPLOAD_FILE_PROGRESS, filename)
+                })
+            },
             getFileShortName(filename) {
                 return filename.substr(0, 40) + '...'
             },
-            hasProgressForFile(file) {
-                return this.$store.state.loki.uploadFileProgress[file] !== undefined
-            },
             getFileUploadProgress(filename) {
                 return this.$store.state.loki.uploadFileProgress[filename].progress
-            },
-            hasUploadError(filename) {
-                const fileProgressInfo = this.$store.state.loki.uploadFileProgress[filename]
-                return fileProgressInfo && fileProgressInfo.error
             },
             getUploadInProgressCount() {
                 let uploading = 0
@@ -68,10 +66,12 @@
 
                 return uploading
             },
-            close() {
-                Object.keys(this.$store.state.loki.uploadFileProgress).forEach((filename) => {
-                    this.$store.commit(actionTypes.REMOVE_UPLOAD_FILE_PROGRESS, filename)
-                })
+            hasProgressForFile(file) {
+                return this.$store.state.loki.uploadFileProgress[file] !== undefined
+            },
+            hasUploadError(filename) {
+                const fileProgressInfo = this.$store.state.loki.uploadFileProgress[filename]
+                return fileProgressInfo && fileProgressInfo.error
             }
         }
     }
@@ -109,13 +109,13 @@
         top: 12px;
     }
 
-    .lista_upload {
+    .upload_list {
         list-style-type: none;
         margin: 0;
         padding: 0;
     }
 
-    .lista_upload li {
+    .upload_list li {
         padding: 15px 20px;
         border-bottom: 1px solid #ebebeb;
         font-size: 14px;
@@ -123,13 +123,13 @@
         position: relative;
     }
 
-    .lista_upload li .fas {
+    .upload_list li .fas {
         position: absolute;
         right: 15px;
         top: 12px;
     }
 
-    .lista_upload .filename {
+    .upload_list .filename {
         font-family: 'Roboto', sans-serif;
         font-weight: normal;
         font-size: 12px;
