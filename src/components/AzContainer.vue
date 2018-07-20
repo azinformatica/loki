@@ -23,10 +23,6 @@
             color: rgba(0,0,0,.87);
         }
     }
-    .primary{
-        background-color: #006064 !important;
-        border-color: #006064 !important;
-    }
 
     .az-checkbox {
         .v-input {
