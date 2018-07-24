@@ -13,7 +13,7 @@
 </template>
 
 <script>
-    import actionsTypes from '../store/actions-types'
+    import mutationTypes from '../store/mutations-types'
 
     export default {
         data() {
@@ -30,7 +30,7 @@
                 this.isClosed = true
             },
             closeAsideMenu() {
-                this.$store.commit(actionsTypes.SET_ASIDE, true)
+                this.$store.commit(mutationTypes.SET_ASIDE, true)
             }
         }
     }
@@ -69,25 +69,29 @@
         .actions {
             padding: 0 20px;
             a{
-                font-size: 16px;
+                font-size: 14px;
+                padding: 7px 10px;
+                border-radius: 5px;
                 margin-right: 10px;
                 i{
                     margin-right: 5px;
-                    font-size: 20px;
+                    font-size: 18px;
                 }
             }
         }
         .btn-primary {
-            color: #d28a2C;
+            color: white;
+            background-color: #d28a2C;
             i{
-                color: #d28a2C;
+                color: white;
             }
         }
 
         .btn-alternative {
-            color: #777777;
+            color: white;
+            background-color: #777777;
             i{
-                color: #777777;
+                color: white;
             }
         }
     }

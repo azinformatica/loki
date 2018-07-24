@@ -25,7 +25,7 @@
 
 <script>
 
-    import actionTypes from '../store/actions-types'
+    import mutationTypes from '../store/mutations-types'
 
     export default {
         computed: {
@@ -45,7 +45,7 @@
         methods: {
             close() {
                 Object.keys(this.$store.state.loki.uploadFileProgress).forEach((filename) => {
-                    this.$store.commit(actionTypes.REMOVE_UPLOAD_FILE_PROGRESS, filename)
+                    this.$store.commit(mutationTypes.REMOVE_UPLOAD_FILE_PROGRESS, filename)
                 })
             },
             getFileShortName(filename) {

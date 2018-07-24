@@ -139,7 +139,7 @@
                 tr th {
                     color: #3a6861 !important;
                     font-weight: bold;
-                    padding: 0 20px !important;
+                    padding: 0 10px !important;
                 }
             }
 
@@ -151,13 +151,13 @@
                 border-bottom: 1px solid #e9e9e9 !important;
                 td {
                     height: 40px;
-                    color: #888;
+                    color: #777777;
                     font-size: 13px;
                     font-weight: normal;
                     padding: 0 20px !important;
                 }
                 .table-actions a i {
-                    font-size: 18px;
+                    font-size: 20px;
                     color: #888;
                 }
                 .table-actions a {

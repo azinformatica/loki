@@ -27,7 +27,7 @@
 </template>
 
 <script>
-    import actionsTypes from '../store/actions-types'
+    import mutationTypes from '../store/mutations-types'
 
     export default {
         data () {
@@ -45,7 +45,7 @@
                 this.closeAsideMenu()
             },
             closeAsideMenu () {
-                this.$store.commit(actionsTypes.SET_ASIDE, true)
+                this.$store.commit(mutationTypes.SET_ASIDE, true)
             },
             callSearch () {
                 this.$emit('search')

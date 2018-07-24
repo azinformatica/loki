@@ -15,15 +15,15 @@
     </v-navigation-drawer>
 </template>
 <script>
-    import actionsTypes from '../store/actions-types'
+    import mutationTypes from '../store/mutations-types'
 
     export default {
       methods: {
           toogle () {
-            this.$store.commit(actionsTypes.TOOGLE_ASIDE)
+            this.$store.commit(mutationTypes.TOOGLE_ASIDE)
           },
           change (closed) {
-            this.$store.commit(actionsTypes.SET_ASIDE, closed)
+            this.$store.commit(mutationTypes.SET_ASIDE, closed)
           }
       },
       computed: {
