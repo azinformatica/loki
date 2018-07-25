@@ -8,8 +8,8 @@
     export default {}
 </script>
 
-<style lang="less">
-    .az-form{
-        padding: 20px;
-    }
+<style lang="stylus">
+    .az-form
+        padding: 20px
+
 </style>

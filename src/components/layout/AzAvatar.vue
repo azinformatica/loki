@@ -34,7 +34,7 @@
     export default {
         methods: {
             redirectTo(item) {
-                console.log(item)
+                this.$router.push({path: item})
             },
             logout() {
 
@@ -53,52 +53,46 @@
         }
     };
 </script>
-<style lang="less">
-    .az-avatar {
-        position: fixed;
-        top: 0;
-        right: 20px;
-        display: block;
-        font-size: 14px;
-        &__logout {
-            border-top: 1px solid #ccc;
-        }
-        &__username {
-            margin-right: 10px;
-        }
-        &__picture {
-            margin-right: 0;
-        }
-        .v-btn {
-            text-transform: none;
-            .v-icon--right {
-                margin-left: 0;
-            }
-            &__content {
-                color: #777777;
-                font-weight: normal;
-                font-size: 14px;
-                i{
-                    color: #777777;
-                }
-            }
-        }
-        .v-list {
-            padding: 0;
-            &__tile {
-                color: #7f7f7f;
-                height: 38px;
-                &__title {
-                    font-size: 14px;
-                }
-                &__action {
-                    min-width: unset;
-                    padding-right: 10px;
-                    .material-icons {
-                        font-size: 13px;
-                    }
-                }
-            }
-        }
-    }
+<style lang="stylus">
+    .az-avatar
+        position: fixed
+        top: 0
+        right: 20px
+        display: block
+        font-size: 14px
+        &__logout
+            border-top: 1px solid #ccc
+
+        &__username
+            margin-right: 10px
+
+        &__picture
+            margin-right: 0
+
+        .v-btn
+            text-transform: none
+            .v-icon--right
+                margin-left: 0
+
+            &__content
+                color: #777777
+                font-weight: normal
+                font-size: 14px
+                i
+                    color: #777777
+
+        .v-list
+            padding: 0
+            &__tile
+                color: #7f7f7f
+                height: 38px
+                &__title
+                    font-size: 14px
+
+                &__action
+                    min-width: unset
+                    padding-right: 10px
+                    .material-icons
+                        font-size: 13px
+
 </style>

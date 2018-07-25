@@ -1,25 +1,32 @@
 import Vue from 'vue'
-import AzTitle from './components/AzTitle'
-import AzAvatar from './components/AzAvatar'
-import AzLogo from './components/AzLogo'
-import AzMenu from './components/AzMenu'
-import AzAbout from './components/AzAbout'
-import AzSearch from './components/AzSearch'
-import AzAdvancedSearch from './components/AzAdvancedSearch'
-import AzToolbar from './components/AzToolbar'
-import AzAside from './components/AzAside'
-import AzTemplate from './components/AzTemplate'
-import AzForm from './components/AzForm'
-import AzInternalBar from './components/AzInternalBar'
-import AzContainer from './components/AzContainer'
-import AzFileUpload from './components/AzFileUpload'
-import {state, mutations, actions} from './store'
+
+import AzTitle from './components/layout/AzTitle'
+import AzAvatar from './components/layout/AzAvatar'
+import AzLogo from './components/layout/AzLogo'
+import AzMenu from './components/layout/AzMenu'
+import AzAbout from './components/layout/AzAbout'
+import AzAside from './components/layout/AzAside'
+import AzTemplate from './components/layout/AzTemplate'
+import AzContainer from './components/layout/AzContainer'
+
+import AzSearch from './components/search/AzSearch'
+import AzAdvancedSearch from './components/search/AzAdvancedSearch'
+import AzToolbar from './components/search/AzToolbar'
+
+import AzForm from './components/form/AzForm'
+import AzFormbar from './components/form/AzFormbar'
+
+import AzFileUpload from './components/file/AzFileUpload'
+import {state, mutations, actions, mutationsTypes} from './store'
 
 const lokiPlugin = {
 
-    install(vue, {store}) {
+    install(vue, {store, router}) {
         if (!store) {
             throw new Error('Please provide vuex store.')
+        }
+        if (!router) {
+            throw new Error('Please provide router.')
         }
 
         store.registerModule('loki', {state, mutations, actions})
@@ -30,13 +37,19 @@ const lokiPlugin = {
         Vue.component('az-menu', AzMenu)
         Vue.component('az-title', AzTitle)
         Vue.component('az-template', AzTemplate)
-        Vue.component('az-advanced-search',AzAdvancedSearch)
-        Vue.component('az-search',AzSearch)
-        Vue.component('az-toolbar',AzToolbar)
-        Vue.component('az-container',AzContainer)
-        Vue.component('az-internal-bar',AzInternalBar)
-        Vue.component('az-form',AzForm)
+        Vue.component('az-advanced-search', AzAdvancedSearch)
+        Vue.component('az-search', AzSearch)
+        Vue.component('az-toolbar', AzToolbar)
+        Vue.component('az-container', AzContainer)
+        Vue.component('az-formbar', AzFormbar)
+        Vue.component('az-form', AzForm)
         Vue.component('az-file-upload', AzFileUpload)
+
+        store.commit(mutationsTypes.SET_MENU_ACTIONS, router)
+
+        router.afterEach((to, from) => {
+            store.commit(mutationsTypes.SET_CURRENT_PAGE, to)
+        })
     }
 }
 

@@ -19,27 +19,22 @@
         </v-content>
     </v-app>
 </template>
-
 <script>
     export default {}
 </script>
+<style lang="stylus">
+    .toolbar
+        box-shadow: 0 2px 4px -1px rgba(0, 0, 0, .2)
+        background-color: white !important
 
-<style lang="less">
-    .toolbar {
-        box-shadow: 0 2px 4px -1px rgba(0, 0, 0, .2);
-        background-color: white !important;
-    }
-    .az-template{
-        &__container {
-            background-color: #eee;
-            height: 100%;
-        }
-    }
-    .container{
-        padding: 0;
-    }
+    .az-template
+        &__container
+            background-color: #eee
+            height: 100%
 
-    html{
-        overflow-y: auto;
-    }
+    .container
+        padding: 0
+
+    html
+        overflow-y: auto
 </style>

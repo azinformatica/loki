@@ -19,7 +19,6 @@
 </template>
 
 <script>
-
     import AzFileProgress from './AzFileProgress'
 
     export default {
@@ -98,35 +97,29 @@
 
 </script>
 
-<style scoped>
+<style scoped lang="stylus">
+    .az-drop-file
+        background: #f0f0f0
+        color: #7b7b7b
+        display: flex
+        align-items: center
+        border: 2px dashed #b5b5b5
+        text-align: center
+        position: relative
 
-    .az-drop-file {
-        background: #f0f0f0;
-        color: #7b7b7b;
-        display: flex;
-        align-items: center;
-        border: 2px dashed #b5b5b5;
-        text-align: center;
-        position: relative;
-    }
+        .az-drop-file:hover
+            border-color: #939393
 
-    .az-drop-file:hover {
-        border-color: #939393;
-    }
+        .az-drop-file .center
+            margin: 0 auto
+            padding: 0
 
-    .az-drop-file .center {
-        margin: 0 auto;
-        padding: 0;
-    }
-
-    .az-drop-file .input-file {
-        opacity: 0;
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 10px;
-        height: 10px;
-        z-index: 1;
-    }
-
+        .az-drop-file .input-file
+            opacity: 0
+            position: absolute
+            left: 0
+            top: 0
+            width: 10px
+            height: 10px
+            z-index: 1
 </style>
