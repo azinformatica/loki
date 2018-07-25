@@ -17,7 +17,7 @@ import AzToolbar from './components/search/AzToolbar'
 import AzForm from './components/form/AzForm'
 import AzFormbar from './components/form/AzFormbar'
 import AzFileUpload from './components/file/AzFileUpload'
-import AzMoney from './components/money/AzMoney'
+import AzMoney from './components/form/AzMoney'
 
 Vue.use(accounting)
 Vue.use(money, {
