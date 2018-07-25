@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import {actions, mutations, mutationsTypes, state} from './store'
 
 import AzTitle from './components/layout/AzTitle'
 import AzAvatar from './components/layout/AzAvatar'
@@ -8,16 +9,12 @@ import AzAbout from './components/layout/AzAbout'
 import AzAside from './components/layout/AzAside'
 import AzTemplate from './components/layout/AzTemplate'
 import AzContainer from './components/layout/AzContainer'
-
 import AzSearch from './components/search/AzSearch'
 import AzAdvancedSearch from './components/search/AzAdvancedSearch'
 import AzToolbar from './components/search/AzToolbar'
-
 import AzForm from './components/form/AzForm'
 import AzFormbar from './components/form/AzFormbar'
-
 import AzFileUpload from './components/file/AzFileUpload'
-import {state, mutations, actions, mutationsTypes} from './store'
 
 const lokiPlugin = {
 
