@@ -1,4 +1,6 @@
 import Vue from 'vue'
+import money from 'v-money'
+import accounting from 'accounting'
 import {actions, mutations, mutationsTypes, state} from './store'
 
 import AzTitle from './components/layout/AzTitle'
@@ -15,6 +17,16 @@ import AzToolbar from './components/search/AzToolbar'
 import AzForm from './components/form/AzForm'
 import AzFormbar from './components/form/AzFormbar'
 import AzFileUpload from './components/file/AzFileUpload'
+import AzMoney from './components/form/AzMoney'
+
+Vue.use(accounting)
+Vue.use(money, {
+    decimal: ',',
+    thousands: '.',
+    prefix: 'R$ ',
+    suffix: '',
+    precision: 2,
+    masked: true})
 
 const lokiPlugin = {
 
@@ -41,6 +53,7 @@ const lokiPlugin = {
         Vue.component('az-formbar', AzFormbar)
         Vue.component('az-form', AzForm)
         Vue.component('az-file-upload', AzFileUpload)
+        Vue.component('az-money',AzMoney)
 
         store.commit(mutationsTypes.SET_MENU_ACTIONS, router)
 
