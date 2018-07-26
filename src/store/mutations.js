@@ -7,6 +7,10 @@ export default {
         state.uploadedFiles.push(uploadedFile)
     },
 
+    [mutationTypes.HIDE_NOTIFICATION](state) {
+        state.notificacao = {message: '', type: ''}
+    },
+
     [mutationTypes.SET_COPYWRITE](state, copywrite) {
         state.copywrite = copywrite
     },
@@ -26,6 +30,10 @@ export default {
     [mutationTypes.SET_UPLOAD_FILE_PROGRESS_ERROR](state, filename) {
         const progress = state.uploadFileProgress[filename].progress
         Vue.set(state.uploadFileProgress, filename, {progress, error: true})
+    },
+
+    [mutationTypes.SET_FILES_API](state, filesApi) {
+        state.filesApi = filesApi
     },
 
     [mutationTypes.SET_UPLOADED_FILES](state, files) {
@@ -64,6 +72,10 @@ export default {
             state.page.title = to.meta.page.title
             state.page.subtitle = to.meta.page.subtitle
         }
+    },
+
+    [mutationTypes.SHOW_NOTIFICATION](state, {message, type}) {
+        state.notificacao = {message, type}
     },
 
     [mutationTypes.REMOVE_UPLOAD_FILE_PROGRESS](state, filename) {

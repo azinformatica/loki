@@ -1,5 +1,5 @@
 <template>
-    <div class="card" v-show="showDialog">
+    <div id="azFileProgress" class="card" v-show="showDialog">
         <div class="card_title">
             {{finishedUploadsCount}} arquivos concluídos
             <a href="#" class="close" @click.prevent="close()" v-show="!isUploading">
@@ -28,6 +28,7 @@
     import mutationTypes from '../store/mutations-types'
 
     export default {
+        name: 'AzFileProgress',
         computed: {
             showDialog() {
                 return Object.keys(this.$store.state.loki.uploadFileProgress).length > 0
@@ -103,6 +104,7 @@
         position: absolute
         right: 15px
         top: 12px
+        text-decoration: none
 
     .upload_list
         list-style-type: none

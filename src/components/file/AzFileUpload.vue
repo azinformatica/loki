@@ -14,12 +14,10 @@
                 </div>
             </div>
         </form>
-        <az-file-progress></az-file-progress>
     </div>
 </template>
 
 <script>
-    import AzFileProgress from './AzFileProgress'
 
     export default {
         props: {
@@ -40,24 +38,26 @@
                 default: '200px'
             }
         },
-        components: {
-            AzFileProgress
-        },
         data() {
             return {
                 uploadFieldName: 'file'
+            }
+        },
+        created() {
+            if (!document.getElementById('azFileProgress').length) {
+
             }
         },
         methods: {
             createFormData(file) {
                 const formData = new FormData()
                 formData.append(this.uploadFieldName, file)
+                formData.append('repository', this.repository)
+                formData.append('thumbnail', this.thumbnail)
                 return formData
             },
             createPayload(file) {
                 return {
-                    repository: this.repository,
-                    thumbnail: this.thumbnail,
                     formData: this.createFormData(file),
                     filename: file.name
                 }

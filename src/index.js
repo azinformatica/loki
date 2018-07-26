@@ -17,6 +17,7 @@ import AzToolbar from './components/search/AzToolbar'
 import AzForm from './components/form/AzForm'
 import AzFormbar from './components/form/AzFormbar'
 import AzFileUpload from './components/file/AzFileUpload'
+import AzFileProgress from './components/file/AzFileProgress'
 import AzMoney from './components/form/AzMoney'
 
 Vue.use(accounting)
@@ -53,6 +54,7 @@ const lokiPlugin = {
         Vue.component('az-formbar', AzFormbar)
         Vue.component('az-form', AzForm)
         Vue.component('az-file-upload', AzFileUpload)
+        Vue.component('az-file-progress', AzFileProgress)
         Vue.component('az-money',AzMoney)
 
         store.commit(mutationsTypes.SET_MENU_ACTIONS, router)

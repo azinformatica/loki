@@ -23,6 +23,7 @@ export default {
         }
     },
     menuActions: [],
+    notification: {},
 
     filesApi: '/public/arquivos',
     uploadFileProgress: {},
