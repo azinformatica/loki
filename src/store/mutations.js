@@ -33,34 +33,37 @@ export default {
     },
 
     [mutationTypes.SET_MENU_ACTIONS](state, router) {
-        router.routes.forEach((route) => {
-            let action = {
-                name: route.meta.menu.title,
-                icon: route.meta.menu.icon,
-                path: route.path,
-                selected: false
+        router.options.routes.forEach((route) => {
+            if (route.meta && route.meta.menu) {
+                let action = {
+                    name: route.meta.menu.title,
+                    icon: route.meta.menu.icon,
+                    path: route.path,
+                    selected: false
+                }
+                if (route.children && route.children.length > 0) {
+                    action.expanded = false
+                    action.children = []
+                    route.children.forEach((subRoute) => {
+                        let child = {
+                            name: subRoute.meta.menu.title,
+                            icon: subRoute.meta.menu.icon,
+                            path: subRoute.path,
+                            selected: false
+                        }
+                        action.children.push(child)
+                    })
+                }
+                state.menuActions.push(action)
             }
-            if (route.children.length > 0) {
-                action.expanded = false
-                action.children = []
-                route.children.forEach((subRoute) => {
-                    let child = {
-                        name: subRoute.meta.menu.title,
-                        icon: subRoute.meta.menu.icon,
-                        path: subRoute.path,
-                        selected: false
-                    }
-                    action.children.push(child)
-                })
-            }
-            state.menuActions.push(action)
         })
     },
 
-
     [mutationTypes.SET_CURRENT_PAGE](state, to) {
-        state.page.title = to.meta.page.title
-        state.page.subtitle = to.meta.page.subtitle
+        if (to.meta && to.meta.page) {
+            state.page.title = to.meta.page.title
+            state.page.subtitle = to.meta.page.subtitle
+        }
     },
 
     [mutationTypes.REMOVE_UPLOAD_FILE_PROGRESS](state, filename) {
