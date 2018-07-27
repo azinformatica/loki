@@ -7,12 +7,20 @@ export default {
         state.uploadedFiles.push(uploadedFile)
     },
 
-    [mutationTypes.HIDE_NOTIFICATION](state) {
-        state.notificacao = {message: '', type: ''}
+    [mutationTypes.DISABLE_GLOBAL_LOADING](state) {
+        state.isGlobalLoadingEnabled = false
+    },
+
+    [mutationTypes.ENABLE_GLOBAL_LOADING](state) {
+        state.isGlobalLoadingEnabled = true
     },
 
     [mutationTypes.SET_COPYWRITE](state, copywrite) {
         state.copywrite = copywrite
+    },
+
+    [mutationTypes.HIDE_NOTIFICATION](state) {
+        state.notificacao = {message: '', type: ''}
     },
 
     [mutationTypes.SET_VERSION](state, version) {
@@ -34,6 +42,10 @@ export default {
 
     [mutationTypes.SET_FILES_API](state, filesApi) {
         state.filesApi = filesApi
+    },
+
+    [mutationTypes.SET_LOADING_MESSAGE](state, message) {
+        state.loadingMessage = message
     },
 
     [mutationTypes.SET_UPLOADED_FILES](state, files) {

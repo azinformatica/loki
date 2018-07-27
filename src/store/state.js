@@ -27,5 +27,10 @@ export default {
 
     filesApi: '/public/arquivos',
     uploadFileProgress: {},
-    uploadedFiles: []
+    uploadedFiles: [],
+
+    isGlobalLoadingEnabled: true,
+    isLoading: false,
+    loadingMessage: 'Please, wait...'
+
 }

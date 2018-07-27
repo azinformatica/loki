@@ -1,5 +1,6 @@
 <template>
     <v-app class="az-template">
+        <az-loading></az-loading>
         <az-aside>
             <az-logo slot="logo"/>
             <az-menu slot="menu"/>
@@ -16,16 +17,17 @@
                 <v-footer app inset>
                     <az-about/>
                 </v-footer>
+                <az-file-progress></az-file-progress>
             </v-container>
         </v-content>
-        <az-file-progress></az-file-progress>
     </v-app>
 </template>
 <script>
     import AzNotification from './AzNotification'
     import AzFileProgress from '../file/AzFileProgress'
+    import AzLoading from './AzLoading'
     export default {
-        components: {AzNotification, AzFileProgress}
+        components: {AzLoading, AzNotification, AzFileProgress}
     }
 </script>
 <style lang="stylus">
