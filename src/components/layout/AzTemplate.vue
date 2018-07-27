@@ -11,16 +11,22 @@
         </v-toolbar>
         <v-content>
             <v-container fluid class="az-template__container">
+                <az-notification></az-notification>
                 <slot></slot>
                 <v-footer app inset>
                     <az-about/>
                 </v-footer>
             </v-container>
         </v-content>
+        <az-file-progress></az-file-progress>
     </v-app>
 </template>
 <script>
-    export default {}
+    import AzNotification from './AzNotification'
+    import AzFileProgress from '../file/AzFileProgress'
+    export default {
+        components: {AzNotification, AzFileProgress}
+    }
 </script>
 <style lang="stylus">
     .toolbar
