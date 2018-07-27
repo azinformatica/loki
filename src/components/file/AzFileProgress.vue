@@ -88,6 +88,7 @@
         border: 1px solid #ebebeb
         min-width: 350px
         background-color: #fff
+        z-index: 999
 
     .card .scroll
         max-height: 350px
