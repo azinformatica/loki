@@ -43,11 +43,6 @@
                 uploadFieldName: 'file'
             }
         },
-        created() {
-            if (!document.getElementById('azFileProgress').length) {
-
-            }
-        },
         methods: {
             createFormData(file) {
                 const formData = new FormData()

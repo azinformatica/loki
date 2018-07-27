@@ -18,8 +18,8 @@
             }
         },
         created: function () {
-            this.$store.watch(state => state.notification, () => {
-                const notification = this.$store.state.notification
+            this.$store.watch(state => state.loki.notification, () => {
+                const notification = this.$store.state.loki.notification
                 if (notification.message !== '') {
                     this.show = true
                     this.text = notification.message
