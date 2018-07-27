@@ -44,6 +44,12 @@ export default {
         state.filesApi = filesApi
     },
 
+    [mutationTypes.SET_GLOBAL_LOADING](state, loading) {
+        if (state.isGlobalLoadingEnabled) {
+            state.isLoading = loading
+        }
+    },
+
     [mutationTypes.SET_LOADING_MESSAGE](state, message) {
         state.loadingMessage = message
     },
