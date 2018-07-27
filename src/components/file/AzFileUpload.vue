@@ -102,14 +102,14 @@
         text-align: center
         position: relative
 
-        .az-drop-file:hover
+        &:hover
             border-color: #939393
 
-        .az-drop-file .center
+        .center
             margin: 0 auto
             padding: 0
 
-        .az-drop-file .input-file
+        .input-file
             opacity: 0
             position: absolute
             left: 0

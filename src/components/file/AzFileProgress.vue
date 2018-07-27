@@ -90,43 +90,43 @@
         background-color: #fff
         z-index: 999
 
-    .card .scroll
-        max-height: 350px
-        overflow-y: scroll
+        .scroll
+            max-height: 350px
+            overflow-y: scroll
 
-    .card .card_title
-        background: #2c2c2c
-        padding: 15px 20px
-        color: #fdfdfd
-        font-weight: 300
-        font-size: 12px
+        .card_title
+            background: #2c2c2c
+            padding: 15px 20px
+            color: #fdfdfd
+            font-weight: 300
+            font-size: 12px
 
-    .card .card_title .close
-        position: absolute
-        right: 15px
-        top: 12px
-        text-decoration: none
+                .close
+                    position: absolute
+                    right: 15px
+                    top: 12px
+                    text-decoration: none
 
     .upload_list
         list-style-type: none
         margin: 0
         padding: 0
 
-    .upload_list li
-        padding: 15px 20px
-        border-bottom: 1px solid #ebebeb
-        font-size: 14px
-        color: #434343
-        position: relative
+        li
+            padding: 15px 20px
+            border-bottom: 1px solid #ebebeb
+            font-size: 14px
+            color: #434343
+            position: relative
 
-    .upload_list li .fas
-        position: absolute
-        right: 15px
-        top: 12px
+                .fas
+                    position: absolute
+                    right: 15px
+                    top: 12px
 
-    .upload_list .filename
-        font-family: 'Roboto', sans-serif
-        font-weight: normal
-        font-size: 12px
+        .filename
+            font-family: 'Roboto', sans-serif
+            font-weight: normal
+            font-size: 12px
 
 </style>
