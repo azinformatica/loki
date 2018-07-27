@@ -53,13 +53,15 @@ export default {
                     action.expanded = false
                     action.children = []
                     route.children.forEach((subRoute) => {
-                        let child = {
-                            name: subRoute.meta.menu.title,
-                            icon: subRoute.meta.menu.icon,
-                            path: subRoute.path,
-                            selected: false
+                        if (subRoute.meta && subRoute.meta.menu) {
+                            let child = {
+                                name: subRoute.meta.menu.title,
+                                icon: subRoute.meta.menu.icon,
+                                path: subRoute.path,
+                                selected: false
+                            }
+                            action.children.push(child)
                         }
-                        action.children.push(child)
                     })
                 }
                 state.menuActions.push(action)
