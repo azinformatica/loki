@@ -101,11 +101,11 @@
             font-weight: 300
             font-size: 12px
 
-                .close
-                    position: absolute
-                    right: 15px
-                    top: 12px
-                    text-decoration: none
+            .close
+                position: absolute
+                right: 15px
+                top: 12px
+                text-decoration: none
 
     .upload_list
         list-style-type: none
@@ -119,10 +119,10 @@
             color: #434343
             position: relative
 
-                .fas
-                    position: absolute
-                    right: 15px
-                    top: 12px
+            .fas
+                position: absolute
+                right: 15px
+                top: 12px
 
         .filename
             font-family: 'Roboto', sans-serif
