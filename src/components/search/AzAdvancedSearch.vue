@@ -26,7 +26,7 @@
     </div>
 </template>
 <script>
-    import mutationTypes from '../store/mutations-types'
+    import mutationTypes from '../../store/mutations-types'
 
     export default {
         data () {
