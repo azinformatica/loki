@@ -12,11 +12,15 @@
 </template>
 
 <script>
-    import {mapState} from 'vuex'
     export default {
         name: 'AzLoading',
         computed: {
-            ...mapState('loki', ['isLoading', 'loadingMessage'])
+            isLoading() {
+                return this.$store.state.loki.isLoading
+            },
+            loadingMessage() {
+                return this.$store.state.loki.loadingMessage
+            }
         }
     }
 </script>
