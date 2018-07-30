@@ -39,9 +39,16 @@
     }
 </script>
 <style scoped lang="stylus">
+    .az-aside::-webkit-scrollbar
+        width: 6px
+
+    .az-aside::-webkit-scrollbar-thumb
+        background: rgba(255, 255, 255, 0.5)
+
     .az-aside
         /*background-color: #3a6861*/
         padding: 0
+        max-height: unset !important
 
         &__menu
             height: 100%

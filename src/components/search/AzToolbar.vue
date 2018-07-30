@@ -6,8 +6,6 @@
 
         <div class="search">
             <slot name="simpleSearch"></slot>
-            <a class="clear" v-if="false">Limpar</a>
-            <slot name="advanceSearch"></slot>
         </div>
     </div>
 </template>
