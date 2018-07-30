@@ -25,30 +25,31 @@
                 </v-list-tile>
             </v-list>
         </v-menu>
-        <v-avatar class="az-avatar__picture" size="32px">
-            <img :src="userPhoto" alt="Foto do usuário"/>
+        <v-avatar v-if="userName" class="az-avatar__picture" size="32px">
+            <v-icon medium v-if="!userPhoto">account_circle</v-icon>
+            <img v-if="userPhoto" :src="userPhoto" alt="Foto do usuário"/>
         </v-avatar>
     </v-toolbar-items>
 </template>
 <script>
     export default {
+        computed: {
+            userPhoto() {
+                return this.$store.state.loki.user.photo
+            },
+            userName() {
+                return this.$store.state.loki.user.name
+            },
+            avatarActions() {
+                return this.$store.state.loki.avatarActions
+            }
+        },
         methods: {
             redirectTo(item) {
                 this.$router.push({path: item})
             },
             logout() {
-
-            }
-        },
-        computed: {
-            userPhoto() {
-                return this.$store.state.loki.userPhoto
-            },
-            userName() {
-                return this.$store.state.loki.userName
-            },
-            avatarActions() {
-                return this.$store.state.loki.avatarActions
+                window.location.href = this.$store.state.loki.product.logoutUrl
             }
         }
     };
