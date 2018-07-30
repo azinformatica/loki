@@ -69,12 +69,6 @@
     .az-menu::-webkit-scrollbar-thumb
         background: rgba(255, 255, 255, 0.5)
 
-    .az-aside::-webkit-scrollbar
-        width: 6px
-
-    .az-aside::-webkit-scrollbar-thumb
-        background: rgba(255, 255, 255, 0.5)
-
     .az-submenu
         background-color: rgba(0, 0, 0, 0.1)
         &__tile
@@ -124,7 +118,8 @@
                     color: rgba(255, 255, 255, 0.8) !important
 
                 &__title
-                    font-size: 13px
+                    font-size: 14px
+                    font-weight: bold
 
                 &__action
                     min-width: unset

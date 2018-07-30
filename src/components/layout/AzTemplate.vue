@@ -31,6 +31,8 @@
     }
 </script>
 <style lang="stylus">
+    .application--wrap
+        min-height: unset !important
     .toolbar
         box-shadow: 0 2px 4px -1px rgba(0, 0, 0, .2)
         background-color: white !important
