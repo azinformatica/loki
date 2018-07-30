@@ -31,6 +31,12 @@
     }
 </script>
 <style lang="stylus">
+    body
+        background-color: #eee
+
+    .application.theme--light
+        background: unset !important
+
     .application--wrap
         min-height: unset !important
     .toolbar
