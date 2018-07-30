@@ -1,19 +1,25 @@
 export default {
 
-    productId: 1,
-    productName: 'bla',
-    mainLogo: 'https://svgshare.com/i/6Zz.svg',
-    symbolLogo: 'https://svgshare.com/i/6_V.svg',
-    version: '1.2.3',
-    copywrite: 'AZ Informática',
-
-    page: {
-      title: '',
-      subtitle: ''
+    product: {
+        id: null,
+        name: '',
+        mainLogo: '',
+        symbolLogo: '',
+        version: '',
+        copywrite: '',
+        logoutUrl: '/logout'
     },
 
-    userName: 'Charles Viegas',
-    userPhoto: 'https://lh3.googleusercontent.com/-TKlOasafxO8/AAAAAAAAAAI/AAAAAAAAAAA/AIcfdXC20RzAXx8TwvxtQTffQy4nmmArow/s32-c-mo/photo.jpg',
+    page: {
+        title: '',
+        subtitle: ''
+    },
+
+    user: {
+        name: '',
+        fullName: '',
+        photo: ''
+    },
 
     asideClosed: false,
     avatarActions: {

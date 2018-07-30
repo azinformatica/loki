@@ -18,10 +18,10 @@
                 return this.$store.state.loki.asideClosed
             },
             mainLogo() {
-                return this.$store.state.loki.mainLogo
+                return this.$store.state.loki.product.mainLogo
             },
             symbolLogo() {
-                return this.$store.state.loki.symbolLogo
+                return this.$store.state.loki.product.symbolLogo
             }
         }
     };
