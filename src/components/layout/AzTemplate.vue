@@ -15,9 +15,9 @@
                 <az-notification></az-notification>
                 <slot></slot>
                 <v-footer app inset>
+                    <az-file-progress></az-file-progress>
                     <az-about/>
                 </v-footer>
-                <az-file-progress></az-file-progress>
             </v-container>
         </v-content>
     </v-app>
@@ -31,6 +31,12 @@
     }
 </script>
 <style lang="stylus">
+    body
+        background-color: #eee
+
+    .application.theme--light
+        background: unset !important
+
     .application--wrap
         min-height: unset !important
     .toolbar

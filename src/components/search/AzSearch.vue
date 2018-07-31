@@ -2,8 +2,8 @@
     <div class="az-search">
         <div v-if="(!hasSearch && isClosedAdvancedSearch)" class="simple-search">
             <div class="input_search">
-                <input class="input-text" v-model="searchText" placeholder="Informe o código" @focus="onFocus()"
-                       @blur="onBlur()" @keyup.enter="simpleSearch()"/>
+                <input class="input-text" v-model="searchText" :placeholder="simpleSearchPlaceholder"
+                       @focus="onFocus()" @blur="onBlur()" @keyup.enter="simpleSearch()"/>
             </div>
 
             <a class="btn-search" @click="simpleSearch()" v-if="!isSimpleSearch">
@@ -45,7 +45,12 @@
     import mutationTypes from '../../store/mutations-types'
 
     export default {
-        props: ['textSearch'],
+        props: {
+            simpleSearchPlaceholder: {
+                type: String,
+                required: true
+            }
+        },
         data() {
             return {
                 searchText: null,
@@ -206,7 +211,7 @@
                 border-top: 1px solid #eee
                 .ad-search
                     width: 70%
-                    margin-left: 10px
+                    margin-right: 10px
                     background-color: #D28A2C
                     color: white
                     border: 1px solid #D28A2C
@@ -214,7 +219,6 @@
                     padding: 5px
                     font-size: 13px
                     border-radius: 2px
-                    margin: 0
                     &:hover
                         background-color: lighten(#D28A2C,10%)
                         border: 1px solid lighten(#D28A2C,10%)
