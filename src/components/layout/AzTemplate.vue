@@ -15,9 +15,9 @@
                 <az-notification></az-notification>
                 <slot></slot>
                 <v-footer app inset>
+                    <az-file-progress></az-file-progress>
                     <az-about/>
                 </v-footer>
-                <az-file-progress></az-file-progress>
             </v-container>
         </v-content>
     </v-app>
