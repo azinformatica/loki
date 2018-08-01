@@ -67,6 +67,7 @@
             .btn
                 height: 28px
                 color: rgba(255, 255, 255, 0.8) !important
+				margin: 2px 8px !important
 
             .btn--icon
                 border-radius: unset
@@ -81,5 +82,6 @@
             .btn
                 height: 28px
                 color: rgba(255, 255, 255, 0.8) !important
+				margin: 2px 8px !important
 
 </style>
