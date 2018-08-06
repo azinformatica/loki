@@ -16,7 +16,6 @@
             align-items: center
             justify-content: space-between
             transition: 0.2s
-
             .itens
                 display: flex
                 .item
@@ -30,7 +29,6 @@
                     span
                         font-size: 12px
                         color: white
-
             .actions
                 display: flex
                 align-items: center
@@ -67,11 +65,9 @@
             height: 10px
             align-items: center
             justify-content: space-between
-
             .itens
                 display: none
 
             .actions
                 display: none
-
 </style>
