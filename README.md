@@ -9,7 +9,7 @@ Vue UI Components built with Vuetify framework
 
 ## How to use
 
-Usage of az-confirm in Parent:
+Usage example of az-confirm component:
 ````
 <v-flex xs12 sm3 d-flex>
                     <v-btn @click="showDialog = true">Show Dialog Button</v-btn>
@@ -22,13 +22,11 @@ Usage of az-confirm in Parent:
 ````
 Parameters:
 
-|Name|Description|Type|Default| Requerid|
+|Name|Description|Type|Default| Required|
 |----|-----------|----|-------|---------|
-labelConfirm|"Yes" button label| String|'Sim'|no|
-labelDecline|"No" button label| String|'Não'|no|
+label-confirm|"Yes" button label| String|'Sim'|no|
+label-decline|"No" button label| String|'Não'|no|
 maxWidth|Component width| Number|290|no|
-@onConfirm|Yes button event | ||no|
-@onDecline|No botton event|||no|
 question|Content of dialog| String||yes|
 
 Events:
