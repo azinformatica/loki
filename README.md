@@ -12,13 +12,13 @@ Vue UI Components built with Vuetify framework
 Usage example of az-confirm component:
 ````
 <v-flex xs12 sm3 d-flex>
-                    <v-btn @click="showDialog = true">Show Dialog Button</v-btn>
-                    <az-confirm question="This is the text content of the dialog"
-                                v-if="showDialog"
-                                @onConfirm="eventoConfirm()"
-                                @onDecline="eventoDecline()"
-                    ></az-confirm>
-                </v-flex>
+    <v-btn @click="showDialog = true">Show Dialog Button</v-btn>
+    <az-confirm question="This is the text content of the dialog"
+                v-if="showDialog"
+                @onConfirm="eventoConfirm()"
+                @onDecline="eventoDecline()"
+    ></az-confirm>
+</v-flex>
 ````
 Parameters:
 
