@@ -6,6 +6,7 @@ import {actions, mutations, mutationsTypes, state} from './store'
 import AzTitle from './components/layout/AzTitle'
 import AzAvatar from './components/layout/AzAvatar'
 import AzLogo from './components/layout/AzLogo'
+import AzConfirm from './components/actions/AzConfirm'
 import AzMenu from './components/layout/AzMenu'
 import AzAbout from './components/layout/AzAbout'
 import AzAside from './components/layout/AzAside'
@@ -43,6 +44,7 @@ const lokiPlugin = {
         store.registerModule('loki', {state, mutations, actions})
         Vue.component('az-avatar', AzAvatar)
         Vue.component('az-aside', AzAside)
+        Vue.component('az-confirm', AzConfirm)
         Vue.component('az-logo', AzLogo)
         Vue.component('az-about', AzAbout)
         Vue.component('az-menu', AzMenu)
