@@ -28,7 +28,7 @@
                     font-size: 13px
 
     .container.grid-list-xl
-        padding: 0px
+        padding: 0
 
     .container.grid-list-xl .layout .flex
         padding: 0 10px
@@ -87,9 +87,9 @@
                     font-weight: bold
                     padding: 0 10px !important
 
-
-                tbody tr:nth-child(even)
-                    background-color: #f9f9f9
+                tbody tr
+                    &:nth-child(even)
+                        background-color: #f9f9f9
 
     tbody tr
         border-bottom: 1px solid #e9e9e9 !important

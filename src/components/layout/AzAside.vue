@@ -64,8 +64,8 @@
 
             .v-btn
                 height: 28px
+                margin: 2px 8px !important
                 color: rgba(255, 255, 255, 0.8) !important
-				margin: 2px 8px !important
 
             .v-btn--icon
                 border-radius: unset
@@ -78,6 +78,6 @@
 
             .v-btn
                 height: 28px
+                margin: 2px 8px !important
                 color: rgba(255, 255, 255, 0.8) !important
-				        margin: 2px 8px !important
 </style>

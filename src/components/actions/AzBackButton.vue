@@ -40,6 +40,4 @@
                 color: #3a6861;
                 margin: 0;
                 padding: 0;
-
-
 </style>
