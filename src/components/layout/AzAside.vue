@@ -62,12 +62,12 @@
             display: flex
             align-items: center
 
-            .btn
+            .v-btn
                 height: 28px
                 margin: 2px 8px !important
                 color: rgba(255, 255, 255, 0.8) !important
 
-            .btn--icon
+            .v-btn--icon
                 border-radius: unset
 
         .arrow-opened
@@ -76,9 +76,8 @@
             width: 200px
             border-top: 1px solid rgba(255, 255, 255, 0.1)
 
-            .btn
+            .v-btn
                 height: 28px
                 margin: 2px 8px !important
                 color: rgba(255, 255, 255, 0.8) !important
-
 </style>
