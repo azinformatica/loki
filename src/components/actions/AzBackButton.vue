@@ -25,19 +25,21 @@
 
 <style scoped lang="stylus">
     .az-back-button
-        margin-left: 12px;
-        top: 10px;
-        position: relative;
-        color: #3a6861;
-        font-weight: bold;
-        font-size: 14px;
+        margin-left: 12px
+        top: 10px
+        position: relative
+        color: #3a6861
+        font-weight: bold
+        font-size: 14px
 
         a
-            text-decoration: none;
+            text-decoration: none
+            font-size: 14px
             i
-                position: relative;
-                top: 3px;
-                color: #3a6861;
-                margin: 0;
-                padding: 0;
+                position: relative
+                font-size: 22px
+                top: 3px
+                color: #3a6861
+                margin: 0
+                padding: 0
 </style>
