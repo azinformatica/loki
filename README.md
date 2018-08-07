@@ -12,29 +12,31 @@ Vue UI Components built with Vuetify framework
 Usage of az-confirm in Parent:
 ````
 <v-flex xs12 sm3 d-flex>
-                    <v-btn @click="mostrarAzConfirmDialog = true">Mostrar Dialog</v-btn>
-                    <az-confirm question="TEXTO TESTE CHILD AAAA"
-                                v-if="mostrarAzConfirmDialog"
+                    <v-btn @click="showDialog = true">Show Dialog Button</v-btn>
+                    <az-confirm question="This is the text content of the dialog"
+                                v-if="showDialog"
                                 @onConfirm="eventoConfirm()"
                                 @onDecline="eventoDecline()"
                     ></az-confirm>
                 </v-flex>
 ````
-You can also add 'labelConfirm' and 'labelDecline' parameters to change 'yes/no' language. 
-Not required parameters:
-````
-labelConfirm: {
-    type: String,
-    default: 'Sim'
-},
-labelDecline: {
-    type: String,
-    default: 'Não'
-},
-maxWidth: {
-    type: Number,
-    default: 290
-}
-````            
+Parameters:
+
+|Name|Description|Type|Default| Requerid|
+|----|-----------|----|-------|---------|
+labelConfirm|"Yes" button label| String|'Sim'|no|
+labelDecline|"No" button label| String|'Não'|no|
+maxWidth|Component width| Number|290|no|
+@onConfirm|Yes button event | ||no|
+@onDecline|No botton event|||no|
+question|Content of dialog| String||yes|
+
+Events:
+
+|Name|Description|
+|----|-----------|
+@onConfirm|Yes button event|
+@onDecline|No botton event|
+
 
 You can use our UI Libray in your projects, improve it and propose modifications to us.
