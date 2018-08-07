@@ -104,6 +104,14 @@
     }
 </script>
 <style lang="stylus">
+    @media (max-width: 450px)
+        .btn-search__inactive
+            display: none !important
+        .btn-search__active
+            display: none !important
+        .input_search
+            width: 150px !important
+
     .az-search
         display: flex
         align-items: center

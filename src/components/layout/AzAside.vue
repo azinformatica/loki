@@ -46,7 +46,6 @@
         background: rgba(255, 255, 255, 0.5)
 
     .az-aside
-        /*background-color: #3a6861*/
         padding: 0
         max-height: unset !important
 
@@ -59,15 +58,14 @@
             position: absolute
             bottom: 0
             width: 60px
-            /*background-color: #3a6861*/
             border-top: 1px solid rgba(255, 255, 255, 0.1)
             display: flex
             align-items: center
 
             .btn
                 height: 28px
+                margin: 2px 8px !important
                 color: rgba(255, 255, 255, 0.8) !important
-				margin: 2px 8px !important
 
             .btn--icon
                 border-radius: unset
@@ -76,12 +74,11 @@
             position: absolute
             bottom: 0
             width: 200px
-            /*background-color: #3a6861*/
             border-top: 1px solid rgba(255, 255, 255, 0.1)
 
             .btn
                 height: 28px
+                margin: 2px 8px !important
                 color: rgba(255, 255, 255, 0.8) !important
-				margin: 2px 8px !important
 
 </style>
