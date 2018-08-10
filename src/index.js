@@ -15,6 +15,7 @@ import AzContainer from './components/layout/AzContainer'
 import AzSearch from './components/search/AzSearch'
 import AzSearchItem from './components/search/AzSearchItem'
 import AzToolbar from './components/search/AzToolbar'
+import AzDate from './components/form/AzDate'
 import AzForm from './components/form/AzForm'
 import AzFormbar from './components/form/AzFormbar'
 import AzMoney from './components/form/AzMoney'
@@ -54,6 +55,7 @@ const lokiPlugin = {
         Vue.component('az-search', AzSearch)
         Vue.component('az-toolbar', AzToolbar)
         Vue.component('az-container', AzContainer)
+        Vue.component('az-date', AzDate)
         Vue.component('az-formbar', AzFormbar)
         Vue.component('az-form', AzForm)
         Vue.component('az-money',AzMoney)
