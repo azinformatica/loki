@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import money from 'v-money'
 import accounting from 'accounting'
+import moment from 'moment'
 import {actions, mutations, mutationsTypes, state} from './store'
 
 import AzTitle from './components/layout/AzTitle'
@@ -31,6 +32,7 @@ Vue.use(money, {
     suffix: '',
     precision: 2,
     masked: true})
+Vue.prototype.moment = moment
 
 const lokiPlugin = {
 

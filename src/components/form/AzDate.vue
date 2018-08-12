@@ -57,11 +57,16 @@
                     @blur="validateTimeEvent();updateModelTime(time);"
             ></v-text-field>
         </v-flex>
+        <v-flex xs12 sm6 d-flex>
+
+            <p>Date: <strong>{{ date }}</strong></p>
+            <p>Time: <strong>{{ time }}</strong></p>
+
+        </v-flex>
     </v-layout>
 </template>
 <script>
     export default {
-        name: 'AzDate',
         props: {
             dateFormat: {
                 type: String,
@@ -87,6 +92,16 @@
                 timeFormatted: null,
                 menuDate: false,
                 menuTime: false
+            }
+        },
+        computed: {
+            gmt() {
+                return this.$store.state.gmt
+            }
+        },
+        watch: {
+            value(val) {
+                this.updateDateTimeByModel(val)
             }
         },
         methods: {
@@ -168,7 +183,7 @@
                 return this.dayIsValidForMonthAndYear(Number(dateObj.day), Number(dateObj.month), Number(dateObj.year))
             },
             timeStringIsValid() {
-                if (this.timeFormatted.length < 4)
+                if (!this.timeFormatted || this.timeFormatted.length < 4)
                     return false
 
                 const firstTimeDigit = Number(this.timeFormatted.substring(0, 2))
@@ -183,8 +198,8 @@
                     return
                 }
 
-                const hour = Number(this.timeFormatted.substring(0, 2))
-                const minute = Number(this.timeFormatted.substring(2, 4))
+                const hour = this.timeFormatted.substring(0, 2)
+                const minute = this.timeFormatted.substring(2, 4)
 
                 this.time = hour + ':' + minute
             },
@@ -200,7 +215,8 @@
             },
             updateModelDate(value) {
                 if (this.time && value) {
-                    this.$emit('input', value + ' ' + this.time)
+                    const dateTimeZeroGmt = this.getDateTimeByZeroGmt(value + 'T' + this.time + this.gmt)
+                    this.$emit('input', dateTimeZeroGmt)
                     return
                 }
                 if (this.time && !value) {
@@ -212,11 +228,79 @@
             },
             updateModelTime(value) {
                 if (this.date && value) {
-                    this.$emit('input', this.date + ' ' + value)
+                    console.log(value)
+                    const dateTimeZeroGmt = this.getDateTimeByZeroGmt(this.date + 'T' + value + this.gmt)
+                    console.log(dateTimeZeroGmt)
+                    this.$emit('input', dateTimeZeroGmt)
                     return
                 }
                 if (this.date && !value)
                     this.$emit('input', this.date)
+            },
+            setEmptyTimeAndDate() {
+                this.time = null
+                this.timeFormatted = ''
+                this.date = null
+                this.dateFormatted = ''
+            },
+            updateDateTimeByModel(modelVal) {
+                const maxLengthOfModelDateWithTime = 22
+
+                if (modelVal.length > maxLengthOfModelDateWithTime) {
+                    this.setEmptyTimeAndDate()
+                    return
+                }
+
+                if (this.dateWithTime)
+                    this.updateDateWithTimeByModel(modelVal)
+                else
+                    this.updateDateWithoutTimeByModel(modelVal)
+
+            },
+            updateDateWithTimeByModel(modelVal) {
+                const maxLengthOfModel = 22, dateModelLength = 10, dateModelWithSeparatorLength = 11
+
+                if (modelVal && modelVal.length > dateModelWithSeparatorLength && modelVal.length < maxLengthOfModel) {
+                    this.time = null
+                    this.timeFormatted = ''
+                    return
+                } else if (modelVal && modelVal.length < dateModelLength) {
+                    this.date = null
+                    this.dateFormatted = ''
+                    return
+                }
+
+                if (modelVal && modelVal.length === dateModelLength) {
+                    this.date = modelVal
+                    this.dateFormatted = this.formatDate(modelVal)
+                } else if (modelVal && modelVal.length === maxLengthOfModel) {
+                    const dateTime = this.getDateTimeByGmt(modelVal)
+                    const splitDateTime = dateTime.split('T')
+                    this.date = splitDateTime[0]
+                    this.dateFormatted = this.formatDate(this.date)
+                    this.time = splitDateTime[1].substring(0, 5)
+                    this.changeTimeEvent()
+                }
+            },
+            updateDateWithoutTimeByModel(modelVal) {
+                const maxDateModelLength = 10
+
+                if (modelVal && modelVal.length < maxDateModelLength) {
+                    this.date = null
+                    this.dateFormatted = ''
+                    return
+                }
+
+                if (modelVal && modelVal.length >= maxDateModelLength) {
+                    this.date = modelVal.substring(0, maxDateModelLength)
+                    this.dateFormatted = this.formatDate(this.date)
+                }
+            },
+            getDateTimeByGmt(dateTime) {
+                return this.moment(dateTime).utcOffset(this.gmt).format('YYYY-MM-DDTHH:mmZ')
+            },
+            getDateTimeByZeroGmt(dateTime) {
+                return this.moment(dateTime).utcOffset('+0000').format('YYYY-MM-DDTHH:mmZ')
             }
         }
     }
