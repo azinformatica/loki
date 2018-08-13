@@ -39,6 +39,6 @@ export default {
     isLoading: false,
     loadingMessage: 'Please, wait...',
 
-    gmt: '+04:00'
+    timezone: '+03:00'
 
 }

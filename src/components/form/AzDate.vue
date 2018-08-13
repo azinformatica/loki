@@ -1,6 +1,6 @@
 <template>
-    <v-layout row wrap>
-        <v-flex xs12 sm2 d-flex>
+    <div style="display: flex">
+        <div style="width: 60%">
             <v-menu
                     ref="menu"
                     :close-on-content-click="false"
@@ -19,16 +19,15 @@
             </v-menu>
             <v-text-field
                     v-model="dateFormatted"
-                    label="Date"
+                    :label="label"
                     mask="date"
-                    :hint="dateFormat"
+                    :placeholder="dateFormat"
                     append-icon="event"
                     v-bind:append-icon-cb="openMenuDate"
                     @blur="validateAndParseDate(dateFormatted);updateModelDate(date);">
             </v-text-field>
-        </v-flex>
-        <v-flex xs12 sm1 d-flex v-if="dateWithTime">
-
+        </div>
+        <div v-if="dateWithTime" style="margin-left: 10px; width: 40%">
             <v-menu
                     ref="menu"
                     :close-on-content-click="false"
@@ -50,20 +49,15 @@
             </v-menu>
             <v-text-field
                     v-model="timeFormatted"
-                    label="Time"
                     mask="time"
+                    placeholder="HH:mm"
                     append-icon="access_time"
                     v-bind:append-icon-cb="openMenuTime"
                     @blur="validateTimeEvent();updateModelTime(time);"
             ></v-text-field>
-        </v-flex>
-        <v-flex xs12 sm6 d-flex>
+        </div>
+    </div>
 
-            <p>Date: <strong>{{ date }}</strong></p>
-            <p>Time: <strong>{{ time }}</strong></p>
-
-        </v-flex>
-    </v-layout>
 </template>
 <script>
     export default {
@@ -82,6 +76,10 @@
             value: {
                 type: String,
                 default: ''
+            },
+            label: {
+                type: String,
+                default: ''
             }
         },
         data() {
@@ -91,12 +89,19 @@
                 time: null,
                 timeFormatted: null,
                 menuDate: false,
-                menuTime: false
+                menuTime: false,
+                reverseDateFormatObj: {
+                    'DD/MM/YYYY': 'YYYY-MM-DD',
+                    'MM/DD/YYYY': 'YYYY-DD-MM'
+                }
             }
         },
         computed: {
-            gmt() {
-                return this.$store.state.gmt
+            timezone() {
+                return this.$store.state.loki.timezone
+            },
+            reverseDateFormat() {
+                return this.reverseDateFormatObj[this.dateFormat]
             }
         },
         watch: {
@@ -215,8 +220,9 @@
             },
             updateModelDate(value) {
                 if (this.time && value) {
-                    const dateTimeZeroGmt = this.getDateTimeByZeroGmt(value + 'T' + this.time + this.gmt)
-                    this.$emit('input', dateTimeZeroGmt)
+                    const dateTimeWithTimezone = this.buildDateTimeWithTimezone(value, this.time)
+                    const dateTimeTimezoneZero = this.getDateTimeZeroTimezone(dateTimeWithTimezone)
+                    this.$emit('input', dateTimeTimezoneZero)
                     return
                 }
                 if (this.time && !value) {
@@ -228,10 +234,9 @@
             },
             updateModelTime(value) {
                 if (this.date && value) {
-                    console.log(value)
-                    const dateTimeZeroGmt = this.getDateTimeByZeroGmt(this.date + 'T' + value + this.gmt)
-                    console.log(dateTimeZeroGmt)
-                    this.$emit('input', dateTimeZeroGmt)
+                    const dateTimeWithTimezone = this.buildDateTimeWithTimezone(this.date, value)
+                    const dateTimeTimezoneZero = this.getDateTimeZeroTimezone(dateTimeWithTimezone)
+                    this.$emit('input', dateTimeTimezoneZero)
                     return
                 }
                 if (this.date && !value)
@@ -244,7 +249,7 @@
                 this.dateFormatted = ''
             },
             updateDateTimeByModel(modelVal) {
-                const maxLengthOfModelDateWithTime = 22
+                const maxLengthOfModelDateWithTime = 25
 
                 if (modelVal.length > maxLengthOfModelDateWithTime) {
                     this.setEmptyTimeAndDate()
@@ -258,7 +263,7 @@
 
             },
             updateDateWithTimeByModel(modelVal) {
-                const maxLengthOfModel = 22, dateModelLength = 10, dateModelWithSeparatorLength = 11
+                const maxLengthOfModel = 25, dateModelLength = 10, dateModelWithSeparatorLength = 11
 
                 if (modelVal && modelVal.length > dateModelWithSeparatorLength && modelVal.length < maxLengthOfModel) {
                     this.time = null
@@ -274,7 +279,7 @@
                     this.date = modelVal
                     this.dateFormatted = this.formatDate(modelVal)
                 } else if (modelVal && modelVal.length === maxLengthOfModel) {
-                    const dateTime = this.getDateTimeByGmt(modelVal)
+                    const dateTime = this.getDateTimeWithSystemTimezone(modelVal)
                     const splitDateTime = dateTime.split('T')
                     this.date = splitDateTime[0]
                     this.dateFormatted = this.formatDate(this.date)
@@ -296,11 +301,15 @@
                     this.dateFormatted = this.formatDate(this.date)
                 }
             },
-            getDateTimeByGmt(dateTime) {
-                return this.moment(dateTime).utcOffset(this.gmt).format('YYYY-MM-DDTHH:mmZ')
+            getDateTimeWithSystemTimezone(dateTime) {
+                return this.moment(dateTime).utcOffset(this.timezone).format(this.reverseDateFormat + 'THH:mm:ssZ')
             },
-            getDateTimeByZeroGmt(dateTime) {
-                return this.moment(dateTime).utcOffset('+0000').format('YYYY-MM-DDTHH:mmZ')
+            getDateTimeZeroTimezone(dateTime) {
+                return this.moment(dateTime).utcOffset('+0000').format(this.reverseDateFormat + 'THH:mm:ssZ')
+            },
+            buildDateTimeWithTimezone(date, time) {
+                const seconds = '00'
+                return date + 'T' + time + ':' + seconds + this.timezone
             }
         }
     }
