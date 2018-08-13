@@ -1,6 +1,6 @@
 <template>
     <div style="display: flex">
-        <div style="width: 60%">
+        <div v-bind:style="dateTime ? 'width: 60%' : 'width: 100%'">
             <v-menu
                     ref="menu"
                     :close-on-content-click="false"
@@ -27,7 +27,7 @@
                     @blur="validateAndParseDate(dateFormatted);updateModelDate(date);">
             </v-text-field>
         </div>
-        <div v-if="dateWithTime" style="margin-left: 10px; width: 40%">
+        <div v-if="dateTime" style="margin-left: 10px; width: 40%">
             <v-menu
                     ref="menu"
                     :close-on-content-click="false"
@@ -69,7 +69,7 @@
                     return ['DD/MM/YYYY', 'MM/DD/YYYY'].indexOf(value) !== -1
                 }
             },
-            dateWithTime: {
+            dateTime: {
                 type: Boolean,
                 default: false
             },
@@ -256,7 +256,7 @@
                     return
                 }
 
-                if (this.dateWithTime)
+                if (this.dateTime)
                     this.updateDateWithTimeByModel(modelVal)
                 else
                     this.updateDateWithoutTimeByModel(modelVal)
