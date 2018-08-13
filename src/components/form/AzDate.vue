@@ -251,7 +251,7 @@
             updateDateTimeByModel(modelVal) {
                 const maxLengthOfModelDateWithTime = 25
 
-                if (modelVal.length > maxLengthOfModelDateWithTime) {
+                if (!modelVal || modelVal.length > maxLengthOfModelDateWithTime) {
                     this.setEmptyTimeAndDate()
                     return
                 }
@@ -265,7 +265,7 @@
             updateDateWithTimeByModel(modelVal) {
                 const maxLengthOfModel = 25, dateModelLength = 10, dateModelWithSeparatorLength = 11
 
-                if (modelVal && modelVal.length > dateModelWithSeparatorLength && modelVal.length < maxLengthOfModel) {
+                if (modelVal.length > dateModelWithSeparatorLength && modelVal.length < maxLengthOfModel) {
                     this.time = null
                     this.timeFormatted = ''
                     return
@@ -275,10 +275,10 @@
                     return
                 }
 
-                if (modelVal && modelVal.length === dateModelLength) {
+                if (modelVal.length === dateModelLength) {
                     this.date = modelVal
                     this.dateFormatted = this.formatDate(modelVal)
-                } else if (modelVal && modelVal.length === maxLengthOfModel) {
+                } else if (modelVal.length === maxLengthOfModel) {
                     const dateTime = this.getDateTimeWithSystemTimezone(modelVal)
                     const splitDateTime = dateTime.split('T')
                     this.date = splitDateTime[0]
@@ -290,13 +290,13 @@
             updateDateWithoutTimeByModel(modelVal) {
                 const maxDateModelLength = 10
 
-                if (modelVal && modelVal.length < maxDateModelLength) {
+                if (modelVal.length < maxDateModelLength) {
                     this.date = null
                     this.dateFormatted = ''
                     return
                 }
 
-                if (modelVal && modelVal.length >= maxDateModelLength) {
+                if (modelVal.length >= maxDateModelLength) {
                     this.date = modelVal.substring(0, maxDateModelLength)
                     this.dateFormatted = this.formatDate(this.date)
                 }

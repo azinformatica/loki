@@ -39,6 +39,6 @@ export default {
     isLoading: false,
     loadingMessage: 'Please, wait...',
 
-    timezone: '+03:00'
+    timezone: '+00:00'
 
 }
