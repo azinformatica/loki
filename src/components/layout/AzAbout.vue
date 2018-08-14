@@ -28,7 +28,7 @@
 <style lang="stylus">
     .az-about
         border-top: 1px solid #ccc
-        height: 30px
+        height: 46px
         background-color: #f6f9f9
         color: #7f7f7f
         font-size: 14px

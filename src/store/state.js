@@ -22,6 +22,7 @@ export default {
     },
 
     asideClosed: false,
+    asideHide: true,
     avatarActions: {
         1: { title: "Profile", icon: 'star', path: '/profile'
         },

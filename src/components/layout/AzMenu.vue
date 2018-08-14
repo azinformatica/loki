@@ -33,6 +33,27 @@
                     </div>
                 </v-list-group>
             </div>
+            <div class="mobile">
+                <v-list class="menu-avatar-mobile">
+                    <v-list-tile v-for="item in avatarActions" :key="item.title" @click="redirectTo(item.path)" >
+                        <v-list-tile-action>
+                            <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title v-text="item.title"></v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+
+                    <v-list-tile @click="logout()">
+                        <v-list-tile-action>
+                            <v-icon>exit_to_app</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>Sair</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                </v-list>
+            </div>
         </v-list>
     </div>
 </template>
@@ -41,6 +62,9 @@
         methods: {
             redirectTo(item) {
                 this.$router.push({path: item})
+            },
+            logout() {
+                window.location.href = this.$store.state.loki.product.logoutUrl
             }
         },
         computed: {
@@ -49,11 +73,20 @@
             },
             asideClosed() {
                 return this.$store.state.loki.asideClosed
+            },
+            avatarActions() {
+                return this.$store.state.loki.avatarActions
             }
         }
     }
 </script>
 <style lang="stylus">
+
+    .menu-avatar-mobile
+        position: absolute !important
+        bottom: 0 !important
+        width: 100%
+        border-top: 1px solid rgba(255,255,255,0.1)
 
     .az-menu
         height: 100%

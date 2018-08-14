@@ -1,70 +1,91 @@
 <template>
-    <v-app class="az-template">
-        <az-loading></az-loading>
-        <az-aside>
-            <az-logo slot="logo"/>
-            <az-menu slot="menu"/>
-        </az-aside>
-        <v-toolbar app height="60" class="az-template__toolbar">
-            <a @click="" class="mobile_menu"><v-icon>dehaze</v-icon></a>
-            <az-title/>
-            <v-spacer></v-spacer>
-            <az-avatar/>
-        </v-toolbar>
-        <v-content>
-            <v-container fluid class="az-template__container">
-                <az-notification></az-notification>
-                <slot></slot>
-                <v-footer app inset>
-                    <az-file-progress></az-file-progress>
-                    <az-about/>
-                </v-footer>
-            </v-container>
-        </v-content>
-    </v-app>
+    <v-navigation-drawer app :mini-variant.sync="asideClosed" v-model="drawer"
+                         mini-variant-width="60" width="200" class="az-aside primary" floating>
+        <div class="az-aside__logo">
+            <slot name="logo"></slot>
+        </div>
+        <div class="az-aside__menu">
+            <slot name="menu"></slot>
+        </div>
+        <div :class="{'arrow-opened' : !asideClosed, 'arrow-closed' : asideClosed}">
+            <v-btn icon @click="toogle()">
+                <v-icon color="white">{{ asideClosed ? 'keyboard_arrow_right' : 'keyboard_arrow_left' }}</v-icon>
+            </v-btn>
+        </div>
+    </v-navigation-drawer>
 </template>
 <script>
-    import AzNotification from './AzNotification'
-    import AzFileProgress from '../file/AzFileProgress'
-    import AzLoading from './AzLoading'
+    import mutationTypes from '../../store/mutations-types'
+
     export default {
-        components: {AzLoading, AzNotification, AzFileProgress}
+        methods: {
+            toogle() {
+                this.$store.commit(mutationTypes.TOOGLE_ASIDE)
+            },
+            change(closed) {
+                this.$store.commit(mutationTypes.SET_ASIDE, closed)
+            }
+        },
+        computed: {
+            asideClosed: {
+                get() {
+                    return this.$store.state.loki.asideClosed
+                },
+                set(closed) {
+                    this.change(closed)
+                }
+            },
+            drawer: {
+                get() {
+                    return this.$store.state.loki.asideHide
+                },
+                set(hide) {
+                    this.$store.commit(mutationTypes.SET_ASIDE_HIDE, hide)
+                }
+            }
+        }
     }
 </script>
-<style lang="stylus">
+<style scoped lang="stylus">
+    .az-aside::-webkit-scrollbar
+        width: 6px
 
-    .mobile_menu
-        display: none
+    .az-aside::-webkit-scrollbar-thumb
+        background: rgba(255, 255, 255, 0.5)
 
-    @media (max-width: 450px)
-        .mobile_menu
-            margin-right: 10px
-            display: unset
-            top: 1px
-            position: relative
-        .az-title__subtitle
-            display: none
-    body
-        background-color: #eee
-
-    .application.theme--light
-        background: unset !important
-
-    .application--wrap
-        min-height: unset !important
-
-    .toolbar
-        box-shadow: 0 2px 4px -1px rgba(0, 0, 0, .2)
-        background-color: white !important
-
-    .az-template
-        &__container
-            background-color: #eee
-            height: 100%
-
-    .container
+    .az-aside
         padding: 0
+        max-height: unset !important
 
-    html
-        overflow-y: auto
+        &__menu
+            height: 100%
+            padding-bottom: 40px
+            padding-top: 120px
+
+        .arrow-closed
+            position: absolute
+            bottom: 0
+            width: 60px
+            border-top: 1px solid rgba(255, 255, 255, 0.1)
+            display: flex
+            align-items: center
+
+            .v-btn
+                height: 28px
+                margin: 2px 8px !important
+                color: rgba(255, 255, 255, 0.8) !important
+
+            .v-btn--icon
+                border-radius: unset
+
+        .arrow-opened
+            position: absolute
+            bottom: 0
+            width: 200px
+            border-top: 1px solid rgba(255, 255, 255, 0.1)
+
+            .v-btn
+                height: 28px
+                margin: 2px 8px !important
+                color: rgba(255, 255, 255, 0.8) !important
 </style>

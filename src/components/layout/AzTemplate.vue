@@ -6,7 +6,7 @@
             <az-menu slot="menu"/>
         </az-aside>
         <v-toolbar app height="60" class="az-template__toolbar">
-            <v-icon class="mobile_menu" @click="openAsideMenu()">dehaze</v-icon>
+            <v-icon class="mobile_menu" @click="showAside()">dehaze</v-icon>
             <az-title/>
             <v-spacer></v-spacer>
             <az-avatar/>
@@ -28,17 +28,17 @@
     import AzFileProgress from '../file/AzFileProgress'
     import AzLoading from './AzLoading'
     import mutationTypes from '../../store/mutations-types'
+
     export default {
         components: {AzLoading, AzNotification, AzFileProgress},
-        methods:{
-            openAsideMenu() {
-                this.$store.commit(mutationTypes.SET_ASIDE, false)
+        methods: {
+            showAside() {
+                this.$store.commit(mutationTypes.SET_ASIDE_HIDE, true)
             }
         }
     }
 </script>
 <style lang="stylus">
-
     .mobile_menu
         display: none
 
@@ -50,6 +50,7 @@
             position: relative
         .az-title__subtitle
             display: none
+
     body
         background-color: #eee
 
