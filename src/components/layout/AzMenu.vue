@@ -95,37 +95,27 @@
                         border-top: none
                         border-bottom: none
                         height: 30px
-
                         &__tile--active
                             background-color: transparent !important
-                            /*color: #D28A2C !important*/
                 &__header
                     height: 44px
                     &__prepend-icon
                         padding-right: 10px !important
-
                     &__append-icon
                         padding: 0 5px 0 0
-
-            &__tile--active
-                /*background-color: #D28A2C !important*/
-
             &__tile
                 height: 44px
                 padding: 0 12px
                 color: rgba(255, 255, 255, 0.8)
                 :hover
                     color: rgba(255, 255, 255, 0.8) !important
-
                 &__title
                     font-size: 14px
                     font-weight: bold
-
                 &__action
                     min-width: unset
                     padding-right: 10px
                     padding-left: 5px
                     i
                         font-size: 20px
-
 </style>

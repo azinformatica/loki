@@ -9,37 +9,6 @@
 </script>
 
 <style lang="stylus">
-    .v-text-field .v-label
-        overflow: unset
-
-    .az-text
-        margin-bottom: 12px
-        label
-            font-size: 12px
-            color: rgba(0, 0, 0, .54)
-
-        p
-            font-size: 14px
-            color: rgba(0, 0, 0, .87)
-
-    .az-checkbox
-        .v-input
-            margin-top: 0
-            &--selection-controls
-                padding: 0
-
-
-            .checkbox-label
-                font-size: 12px
-                color: rgba(0, 0, 0, .54)
-
-            .v-label
-                font-size: 14px
-
-            .accent--text
-                color: #777777 !important
-                label
-                    color: rgba(0, 0, 0, .87)
 
     .primary--text
         color: #777777 !important
@@ -58,14 +27,8 @@
                 .material-icons
                     font-size: 13px
 
-    .az-form-content
-        padding: 20px
-        width: 100%
-        height: 100%
-        margin-top: 10px
-
     .container.grid-list-xl
-        padding: 0px
+        padding: 0
 
     .container.grid-list-xl .layout .flex
         padding: 0 10px
@@ -124,9 +87,9 @@
                     font-weight: bold
                     padding: 0 10px !important
 
-
-                tbody tr:nth-child(even)
-                    background-color: #f9f9f9
+                tbody tr
+                    &:nth-child(even)
+                        background-color: #f9f9f9
 
     tbody tr
         border-bottom: 1px solid #e9e9e9 !important
