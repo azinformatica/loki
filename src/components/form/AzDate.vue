@@ -18,6 +18,8 @@
                                v-on:input="updateModelDate($event)"></v-date-picker>
             </v-menu>
             <v-text-field
+                    v-validate="{'required': isRequired}" :name="nameDate"
+                    :error-messages="errors.collect(`${nameDate}`)"
                     v-model="dateFormatted"
                     :label="label"
                     mask="date"
@@ -48,6 +50,8 @@
                 </v-time-picker>
             </v-menu>
             <v-text-field
+                    v-validate="{'required': isRequired}" :name="nameHour"
+                    :error-messages="errors.collect(`${nameHour}`)"
                     v-model="timeFormatted"
                     mask="time"
                     placeholder="HH:mm"
@@ -80,8 +84,21 @@
             label: {
                 type: String,
                 default: ''
+            },
+            isRequired: {
+                type: Boolean,
+                default: false
+            },
+            nameDate: {
+                type: String,
+                default: ''
+            },
+            nameHour: {
+                type: String,
+                default: ''
             }
         },
+        inject: ['$validator'],
         data() {
             return {
                 date: null,
@@ -249,7 +266,7 @@
                 this.dateFormatted = ''
             },
             updateDateTimeByModel(modelVal) {
-                const maxLengthOfModelDateWithTime = 25
+                const maxLengthOfModelDateWithTime = 28
 
                 if (!modelVal || modelVal.length > maxLengthOfModelDateWithTime) {
                     this.setEmptyTimeAndDate()
@@ -263,7 +280,7 @@
 
             },
             updateDateWithTimeByModel(modelVal) {
-                const maxLengthOfModel = 25, dateModelLength = 10, dateModelWithSeparatorLength = 11
+                const maxLengthOfModel = 28, dateModelLength = 10, dateModelWithSeparatorLength = 11
 
                 if (modelVal.length > dateModelWithSeparatorLength && modelVal.length < maxLengthOfModel) {
                     this.time = null
@@ -302,10 +319,10 @@
                 }
             },
             getDateTimeWithSystemTimezone(dateTime) {
-                return this.moment(dateTime).utcOffset(this.timezone).format(this.reverseDateFormat + 'THH:mm:ssZ')
+                return this.moment(dateTime).utcOffset(this.timezone).format(this.reverseDateFormat + 'THH:mm:ss.SSSZZ')
             },
             getDateTimeZeroTimezone(dateTime) {
-                return this.moment(dateTime).utcOffset('+0000').format(this.reverseDateFormat + 'THH:mm:ssZ')
+                return this.moment(dateTime).utcOffset('+0000').format(this.reverseDateFormat + 'THH:mm:ss.SSSZZ')
             },
             buildDateTimeWithTimezone(date, time) {
                 const seconds = '00'
