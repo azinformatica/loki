@@ -37,6 +37,8 @@ export default {
 
     isGlobalLoadingEnabled: true,
     isLoading: false,
-    loadingMessage: 'Please, wait...'
+    loadingMessage: 'Please, wait...',
+
+    timezone: '+00:00'
 
 }
