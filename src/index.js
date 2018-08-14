@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import money from 'v-money'
 import accounting from 'accounting'
+import moment from 'moment'
 import {actions, mutations, mutationsTypes, state} from './store'
 
 import AzTitle from './components/layout/AzTitle'
@@ -15,6 +16,7 @@ import AzContainer from './components/layout/AzContainer'
 import AzSearch from './components/search/AzSearch'
 import AzSearchItem from './components/search/AzSearchItem'
 import AzToolbar from './components/search/AzToolbar'
+import AzDate from './components/form/AzDate'
 import AzForm from './components/form/AzForm'
 import AzFormbar from './components/form/AzFormbar'
 import AzMoney from './components/form/AzMoney'
@@ -30,6 +32,7 @@ Vue.use(money, {
     suffix: '',
     precision: 2,
     masked: true})
+Vue.prototype.moment = moment
 
 const lokiPlugin = {
 
@@ -54,6 +57,7 @@ const lokiPlugin = {
         Vue.component('az-search', AzSearch)
         Vue.component('az-toolbar', AzToolbar)
         Vue.component('az-container', AzContainer)
+        Vue.component('az-date', AzDate)
         Vue.component('az-formbar', AzFormbar)
         Vue.component('az-form', AzForm)
         Vue.component('az-money',AzMoney)

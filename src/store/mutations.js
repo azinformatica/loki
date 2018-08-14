@@ -104,5 +104,9 @@ export default {
 
     [mutationTypes.TOOGLE_ASIDE](state) {
         state.asideClosed = !state.asideClosed
+    },
+
+    [mutationTypes.SET_TIMEZONE](state, timezone) {
+        state.timezone = timezone
     }
 }
