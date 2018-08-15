@@ -7,7 +7,8 @@
         <div class="az-aside__menu">
             <slot name="menu"></slot>
         </div>
-        <div :class="{'arrow-opened' : !asideClosed, 'arrow-closed' : asideClosed}">
+
+        <div :class="{'arrow-opened' : !asideClosed, 'arrow-closed' : asideClosed}" class="no-mobile">
             <v-btn icon @click="toogle()">
                 <v-icon color="white">{{ asideClosed ? 'keyboard_arrow_right' : 'keyboard_arrow_left' }}</v-icon>
             </v-btn>

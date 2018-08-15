@@ -104,14 +104,6 @@
     }
 </script>
 <style lang="stylus">
-    @media (max-width: 450px)
-        .btn-search__inactive
-            display: none !important
-        .btn-search__active
-            display: none !important
-        .input_search
-            width: 150px !important
-
     .az-search
         display: flex
         align-items: center
@@ -265,4 +257,28 @@
                     font-size: 14px
                     font-weight: bold
                     width: 90%
+
+    @media (max-width: 450px)
+        .btn-search__inactive
+            display: none !important
+        .btn-search__active
+            display: none !important
+        .input_search
+            width: 100% !important
+        .simple-search
+            width: 100%
+        .btn-search
+            padding: 5px 10px
+            margin-right: 0 !important
+        .search
+            position: absolute
+            right: unset !important
+            top: 15px
+            display: -webkit-box
+            display: -ms-flexbox
+            display: flex
+            width: 100%
+            padding: 0 20px
+        .az-search
+            width: 100%
 </style>
