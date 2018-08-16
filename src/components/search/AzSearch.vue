@@ -1,24 +1,24 @@
 <template>
     <div class="az-search">
-        <div v-if="(!hasSearch && isClosedAdvancedSearch)" class="simple-search">
-            <div class="input_search">
+        <div class="simple-search" >
+            <div class="input-search" :style="inputSearchStyle">
+                <v-tooltip top v-for="(val, key) in filter" v-if="val.value">
+                    <v-chip close @input="removeFilter(key)" slot="activator">
+                        <strong>{{val.label}}:</strong>&nbsp;
+                        <span>{{val.valueTruncated ? val.valueTruncated : val.value}}</span>
+                    </v-chip>
+                    <span>{{val.label}}:{{val.value}}</span>
+                </v-tooltip>
                 <input class="input-text" v-model="searchText" :placeholder="simpleSearchPlaceholder"
-                       @focus="onFocus()" @blur="onBlur()" @keyup.enter="simpleSearch()"/>
+                      @keyup.enter="simpleSearch()"/>
             </div>
 
-            <a class="btn-search" @click="simpleSearch()" v-if="!isSimpleSearch">
+            <a class="btn-search" @click="simpleSearch()">
                 <v-icon small>search</v-icon>
-            </a>
-            <a class="btn-search__clear-btn" @click="simpleClear()" v-else>
-                Limpar
             </a>
         </div>
 
-        <a class="btn-search__clear" @click="advancedClear()" v-if="hasSearch">
-            Limpar
-        </a>
-
-        <a :class="{'btn-search__active' : hasSearch, 'btn-search__inactive' : !hasSearch}" @click="toggle()">
+        <a class="btn-search__inactive" @click="toggle()">
             <v-icon small>chevron_left</v-icon>
             Filtros
         </a>
@@ -26,7 +26,7 @@
         <v-navigation-drawer permanent absolute right width="400" :mini-variant.sync="isClosedAdvancedSearch"
                              mini-variant-width="0" floating>
             <div class="title">
-                <a class="fechar" @click="toggle()">
+                <a class="fechar" @click.prevent="toggle()">
                     <v-icon>close</v-icon>
                 </a>
                 <span>Busca Avançada</span>
@@ -36,7 +36,7 @@
             </div>
             <div class="actions">
                 <a class="ad-search" @click="advancedSearch()">Buscar</a>
-                <a class="ad-clear" @click="advancedClear()">Limpar</a>
+                <a class="ad-clear" @click="clear()">Limpar</a>
             </div>
         </v-navigation-drawer>
     </div>
@@ -46,6 +46,10 @@
 
     export default {
         props: {
+            filter: {
+                type: Object,
+                required: true
+            },
             simpleSearchPlaceholder: {
                 type: String,
                 required: true
@@ -56,49 +60,39 @@
                 searchText: null,
                 isClosedAdvancedSearch: true,
                 isSimpleSearch: false,
-                hasSearch: false
+                searchTextSize: 200
             }
         },
         methods: {
-            onBlur() {
-                document.getElementsByClassName('input_search')[0].classList.remove('extended')
-            },
-            onFocus() {
-                document.getElementsByClassName('input_search')[0].classList.add('extended')
-            },
             cancel() {
                 this.toggle()
+            },
+            clear() {
+                this.$emit('clear')
+            },
+            closeAsideMenu() {
+                this.$store.state.asideClosed = true
+                this.$store.commit(mutationTypes.SET_ASIDE, true)
+            },
+            removeFilter(key) {
+                this.$emit('remove-filter', key)
+            },
+            simpleSearch() {
+                this.$emit('simple-search', this.searchText)
+                this.searchText = null
+            },
+            advancedSearch() {
+                this.$emit('advanced-search')
             },
             toggle() {
                 this.isClosedAdvancedSearch = !this.isClosedAdvancedSearch
                 this.closeAsideMenu()
-            },
-            closeAsideMenu() {
-                this.$store.commit(mutationTypes.SET_ASIDE, true)
-            },
-            simpleSearch() {
-                this.isSimpleSearch = true
-                this.$emit('simple-search', this.searchText)
-            },
-            simpleClear() {
-                this.isSimpleSearch = false
-                this.searchText = null
-                this.$emit('simple-search', this.searchText)
-            },
-            advancedSearch() {
-                this.$emit('advanced-search')
-                this.hasSearch = true
-            },
-            advancedClear() {
-                this.$emit('advanced-clear')
-                this.hasSearch = false
             }
         },
-        watch: {
-            searchText: function (newValue, oldValue) {
-                if (newValue !== oldValue) {
-                    this.isSimpleSearch = false
-                }
+        computed: {
+            inputSearchStyle () {
+                let size = (Object.keys(this.filter).length * 180) + this.searchTextSize
+                return 'width: ' + size + 'px'
             }
         }
     }
@@ -107,9 +101,7 @@
     @media (max-width: 450px)
         .btn-search__inactive
             display: none !important
-        .btn-search__active
-            display: none !important
-        .input_search
+        .input-search
             width: 150px !important
 
     .az-search
@@ -117,23 +109,14 @@
         align-items: center
         .simple-search
             display: flex
-            .input_search
-                width: 300px
+            .input-search
+                display: flex
+                border: 1px solid #ddd
                 background-color: #eee
                 border-radius: 20px 0 0 20px
                 transition: 0.2s
-                .input-text
-                    height: 30px
-                    padding: 10px 15px
-                    width: 100%
-                    outline: none
-                    color: #777777
-
-            .extended
-                width: 500px
-                background-color: #eee
-                border-radius: 20px 0 0 20px
-                transition: 0.2s
+                .v-chip
+                    height: 22px
                 .input-text
                     height: 30px
                     padding: 10px 15px
@@ -172,17 +155,6 @@
 
             &__inactive
                 background-color: #777777
-                padding: 5px
-                border-radius: 20px 0 0 20px
-                color: rgba(255, 255, 255, 0.8)
-
-                i
-                    color: rgba(255, 255, 255, 0.8)
-                    font-size: 16px
-                    font-weight: bold
-
-            &__active
-                background-color: #d28a2c
                 padding: 5px
                 border-radius: 20px 0 0 20px
                 color: rgba(255, 255, 255, 0.8)
