@@ -102,49 +102,49 @@
             margin: 10px 0
             border-bottom: 1px solid #ccc
 
-        .az-actions-form
-            padding: 0 20px 30px 20px
-            margin-top: 15px
-            justify-content: space-between
-            display: flex
-            font-size: 13px
+    .az-actions-form
+        padding: 0 20px 30px 20px
+        margin-top: 15px
+        justify-content: space-between
+        display: flex
+        font-size: 13px
 
-            .align-left
-                .action-secundary
-                    padding: 10px 15px
-                    margin-right: 10px
-                    color: #3a6861
-                    border: 1px solid #3a6861
-                    border-radius: 2px
-                    &:hover
-                        color: white
-                        border: 1px solid #3a6861
-                        background-color: #3a6861
-                .action-delete
-                    padding: 10px 15px
-                    margin-right: 10px
-                    color: #cccccc
-                    border: 1px solid #cccccc
-                    border-radius: 2px
-                    &:hover
-                        color: white
-                        border: 1px solid #a03232
-                        background-color: #a03232
-            .align-right
-                .action-primary
-                    padding: 10px 15px
-                    border: 1px solid #7aa329
-                    background-color: #7aa329
+        .align-left
+            .action-secundary
+                padding: 10px 15px
+                margin-right: 10px
+                color: #3a6861
+                border: 1px solid #3a6861
+                border-radius: 2px
+                &:hover
                     color: white
-                    margin-left: 10px
-                    border-radius: 2px
-                    &:hover
-                        background-color: lighten(#7aa329, 10%)
-                        border: 1px solid lighten(#7aa329, 10%)
-                .action-secundary
-                    padding: 10px 15px
-                    margin-left: 10px
-                    color: #777777
-                    &:hover
-                        color: darkred
+                    border: 1px solid #3a6861
+                    background-color: #3a6861
+            .action-delete
+                padding: 10px 15px
+                margin-right: 10px
+                color: #cccccc
+                border: 1px solid #cccccc
+                border-radius: 2px
+                &:hover
+                    color: white
+                    border: 1px solid #a03232
+                    background-color: #a03232
+        .align-right
+            .action-primary
+                padding: 10px 15px
+                border: 1px solid #7aa329
+                background-color: #7aa329
+                color: white
+                margin-left: 10px
+                border-radius: 2px
+                &:hover
+                    background-color: lighten(#7aa329, 10%)
+                    border: 1px solid lighten(#7aa329, 10%)
+            .action-secundary
+                padding: 10px 15px
+                margin-left: 10px
+                color: #777777
+                &:hover
+                    color: darkred
 </style>
