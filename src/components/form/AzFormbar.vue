@@ -16,6 +16,9 @@
             align-items: center
             justify-content: space-between
             transition: 0.2s
+            .actions button
+                font-size 13px
+                text-transform none
             .itens
                 display: flex
                 .item
