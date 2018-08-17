@@ -40,6 +40,9 @@
                 font-size: 13px
                 overflow: unset
 
+            input:-webkit-autofill
+                background-color: white !important
+
             input
                 font-size: 13px
                 color: #888 !important
