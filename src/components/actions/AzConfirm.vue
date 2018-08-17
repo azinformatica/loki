@@ -1,5 +1,5 @@
 <template>
-    <v-layout row justify-center>
+    <v-layout row justify-center class="az-confirm">
         <v-dialog persistent value="true" :max-width="maxWidth">
             <v-card>
                 <v-card-text>{{question}}</v-card-text>
@@ -36,3 +36,14 @@
         }
     }
 </script>
+
+<style scoped lang="stylus">
+    .az-confirm
+        .v-btn
+            font-size: 13px
+            margin: 0 10px 0 0
+            text-transform: none
+            position: relative
+            height: unset
+            padding: 5px 15px
+</style>
