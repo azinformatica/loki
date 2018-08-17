@@ -1,5 +1,5 @@
 <template>
-    <v-navigation-drawer app :mini-variant.sync="asideClosed"
+    <v-navigation-drawer app :mini-variant.sync="asideClosed" v-model="drawer"
                          mini-variant-width="60" width="200" class="az-aside primary" floating>
         <div class="az-aside__logo">
             <slot name="logo"></slot>
@@ -7,7 +7,8 @@
         <div class="az-aside__menu">
             <slot name="menu"></slot>
         </div>
-        <div :class="{'arrow-opened' : !asideClosed, 'arrow-closed' : asideClosed}">
+
+        <div :class="{'arrow-opened' : !asideClosed, 'arrow-closed' : asideClosed}" class="no-mobile">
             <v-btn icon @click="toogle()">
                 <v-icon color="white">{{ asideClosed ? 'keyboard_arrow_right' : 'keyboard_arrow_left' }}</v-icon>
             </v-btn>
@@ -33,6 +34,14 @@
                 },
                 set(closed) {
                     this.change(closed)
+                }
+            },
+            drawer: {
+                get() {
+                    return this.$store.state.loki.asideHide
+                },
+                set(hide) {
+                    this.$store.commit(mutationTypes.SET_ASIDE_HIDE, hide)
                 }
             }
         }

@@ -46,4 +46,8 @@
 
         &__version
             padding-right: 20px
+
+    @media (max-width: 450px)
+        .v-footer
+            display: none
 </style>

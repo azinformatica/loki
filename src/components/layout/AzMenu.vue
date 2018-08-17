@@ -2,7 +2,7 @@
     <div class="az-menu">
         <v-list subheader>
             <div v-for="menu in menuActions" :key="menu.name">
-                <v-list-tile active-class="secondary" dark v-if="!menu.children" :to="menu.path" exact @click="redirectTo(menu.path)">
+                <v-list-tile active-class="secondary" dark v-if="!menu.children" :to="menu.path" exact @click="redirectTo(menu.path)" class="menu-item">
                     <v-list-tile-action>
                         <v-icon>{{ menu.icon }}</v-icon>
                     </v-list-tile-action>
@@ -33,6 +33,26 @@
                     </div>
                 </v-list-group>
             </div>
+            <div class="mobile">
+                <v-list class="menu-avatar-mobile">
+                    <v-list-tile v-for="item in avatarActions" :key="item.title" @click="redirectTo(item.path)" class="item">
+                        <v-list-tile-action>
+                            <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title v-text="item.title"></v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                    <v-list-tile @click="logout()" class="item">
+                        <v-list-tile-action>
+                            <v-icon>exit_to_app</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>Sair</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                </v-list>
+            </div>
         </v-list>
     </div>
 </template>
@@ -41,6 +61,9 @@
         methods: {
             redirectTo(item) {
                 this.$router.push({path: item})
+            },
+            logout() {
+                window.location.href = this.$store.state.loki.product.logoutUrl
             }
         },
         computed: {
@@ -49,11 +72,17 @@
             },
             asideClosed() {
                 return this.$store.state.loki.asideClosed
+            },
+            avatarActions() {
+                return this.$store.state.loki.avatarActions
             }
         }
     }
 </script>
 <style lang="stylus">
+    .menu-avatar-mobile .item
+        border-top: 1px solid rgba(255,255,255,.2)
+        border-bottom: 1px solid rgba(0,0,0,0.2);
 
     .az-menu
         height: 100%
@@ -118,4 +147,7 @@
                     padding-left: 5px
                     i
                         font-size: 20px
+    .menu-item
+        border-top: 1px solid rgba(255,255,255,.2)
+        border-bottom: 1px solid rgba(0,0,0,0.2);
 </style>

@@ -31,6 +31,10 @@ export default {
         state.asideClosed = closed
     },
 
+    [mutationTypes.SET_ASIDE_HIDE](state, hide) {
+        state.asideHide = hide
+    },
+
     [mutationTypes.SET_UPLOAD_FILE_PROGRESS](state, uploadProgress) {
         Vue.set(state.uploadFileProgress, uploadProgress.filename, {progress: uploadProgress.progress})
     },
