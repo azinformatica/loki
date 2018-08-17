@@ -7,7 +7,7 @@
                         <strong>{{val.label}}:</strong>&nbsp;
                         <span>{{val.valueTruncated ? val.valueTruncated : val.value}}</span>
                     </v-chip>
-                    <span>{{val.label}}:{{val.value}}</span>
+                    <span>{{val.label}}: {{val.value}}</span>
                 </v-tooltip>
                 <input class="input-text" v-model="searchText" :placeholder="simpleSearchPlaceholder"
                       @keyup.enter="simpleSearch()"/>
