@@ -1,10 +1,10 @@
 <template>
     <div style="display: flex">
         <div v-bind:style="dateTime ? 'width: 60%' : 'width: 100%'">
-            <v-menu
+            <v-dialog
                     ref="menu"
                     :close-on-content-click="false"
-                    v-model="menuDate"
+                    v-model="dialogDate"
                     nudge-right="450"
                     nudge-bottom="120"
                     lazy
@@ -13,10 +13,10 @@
                     full-width
                     max-width="290px"
                     min-width="290px">
-                <v-date-picker v-model="date" no-title @input="pickDateEvent()"
+                <v-date-picker v-model="date" @input="pickDateEvent()"
                                v-bind:value="value"
                                v-on:input="updateModelDate($event)"></v-date-picker>
-            </v-menu>
+            </v-dialog>
             <v-text-field
                     v-validate="{'required': isRequired}" :name="nameDate"
                     :error-messages="errors.collect(`${nameDate}`)"
@@ -30,10 +30,10 @@
             </v-text-field>
         </div>
         <div v-if="dateTime" style="margin-left: 10px; width: 40%">
-            <v-menu
+            <v-dialog
                     ref="menu"
                     :close-on-content-click="false"
-                    v-model="menuTime"
+                    v-model="dialogTime"
                     nudge-right="540"
                     nudge-bottom="120"
                     lazy
@@ -43,12 +43,12 @@
                     max-width="290px"
                     min-width="290px">
                 <v-time-picker
-                        v-if="menuTime"
+                        v-if="dialogTime"
                         v-model="time"
                         @change="changeTimeEvent();updateModelTime($event);"
                         format="24hr">
                 </v-time-picker>
-            </v-menu>
+            </v-dialog>
             <v-text-field
                     v-validate="{'required': isRequired}" :name="nameHour"
                     :error-messages="errors.collect(`${nameHour}`)"
@@ -105,8 +105,8 @@
                 dateFormatted: null,
                 time: null,
                 timeFormatted: null,
-                menuDate: false,
-                menuTime: false,
+                dialogDate: false,
+                dialogTime: false,
                 reverseDateFormatObj: {
                     'DD/MM/YYYY': 'YYYY-MM-DD',
                     'MM/DD/YYYY': 'YYYY-DD-MM'
@@ -146,7 +146,7 @@
                 return this.getFormattedDate(day, month, year)
             },
             pickDateEvent() {
-                this.menuDate = false
+                this.dialogDate = false
                 this.dateFormatted = this.formatDate(this.date)
             },
             validateAndParseDate(date) {
@@ -230,10 +230,10 @@
                 this.$refs.menu.save(this.time)
             },
             openMenuDate() {
-                this.menuDate = true
+                this.dialogDate = true
             },
             openMenuTime() {
-                this.menuTime = true
+                this.dialogTime = true
             },
             updateModelDate(value) {
                 if (this.time && value) {
