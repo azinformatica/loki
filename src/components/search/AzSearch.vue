@@ -24,7 +24,7 @@
         </a>
 
         <v-navigation-drawer permanent absolute right width="400" :mini-variant.sync="isClosedAdvancedSearch"
-                             mini-variant-width="0" floating>
+                             mini-variant-width="0" floating class="advanced-search-bar">
             <div class="title">
                 <a class="fechar" @click.prevent="toggle()">
                     <v-icon>close</v-icon>
@@ -233,6 +233,8 @@
                     width: 90%
 
     @media (max-width: 450px)
+        .advanced-search-bar
+            display: none
         .btn-search__inactive
             display: none !important
         .btn-search__active
