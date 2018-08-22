@@ -150,7 +150,7 @@
     .menu-item
         border-top: 1px solid rgba(255,255,255,.2)
         border-bottom: 1px solid rgba(0,0,0,0.2);
-    @media (max-width: 450px)
+    @media (min-width: 450px)
         .mobile
             display: none
 </style>
