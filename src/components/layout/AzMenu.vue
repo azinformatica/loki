@@ -124,8 +124,7 @@
                         border-top: none
                         border-bottom: none
                         height: 30px
-                        &__tile--active
-                            background-color: transparent !important
+
                 &__header
                     height: 44px
                     &__prepend-icon
@@ -138,6 +137,8 @@
                 color: rgba(255, 255, 255, 0.8)
                 :hover
                     color: rgba(255, 255, 255, 0.8) !important
+                &--active:hover
+                    background-color lighten(#d79641,20%) !important
                 &__title
                     font-size: 14px
                     font-weight: bold
@@ -145,6 +146,7 @@
                     min-width: unset
                     padding-right: 10px
                     padding-left: 5px
+                    background-color transparent !important
                     i
                         font-size: 20px
     .menu-item
