@@ -6,7 +6,7 @@
     "private": false,
     "scripts": {
         "test": "jest",
-        "publish": "npm version patch -m 'patch upgrade' && git push && git push --tags && npm publish"
+        "deploy": "npm version patch -m 'patch upgrade' && git push && git push --tags && npm publish"
     },
     "repository": {
         "type": "git",
