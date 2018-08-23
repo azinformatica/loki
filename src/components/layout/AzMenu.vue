@@ -117,6 +117,9 @@
             color: rgba(255, 255, 255, 0.8)
         .v-list
             padding: 0
+            a:hover
+                color: rgba(255, 255, 255, 0.8) !important
+                background-color lighten(#d79641,20%) !important
             &__group
                 border-bottom: 1px solid rgba(255, 255, 255, 0.10)
                 .v-list
@@ -135,10 +138,6 @@
                 height: 44px
                 padding: 0 12px
                 color: rgba(255, 255, 255, 0.8)
-                :hover
-                    color: rgba(255, 255, 255, 0.8) !important
-                &--active:hover
-                    background-color lighten(#d79641,20%) !important
                 &__title
                     font-size: 14px
                     font-weight: bold
@@ -146,7 +145,7 @@
                     min-width: unset
                     padding-right: 10px
                     padding-left: 5px
-                    background-color transparent !important
+                    background-color: none !important
                     i
                         font-size: 20px
     .menu-item
