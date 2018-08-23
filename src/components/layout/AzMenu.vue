@@ -137,6 +137,7 @@
                 color: rgba(255, 255, 255, 0.8)
                 :hover
                     color: rgba(255, 255, 255, 0.8) !important
+                    background-color lighten(#d79641,20%) !important
                 &--active:hover
                     background-color lighten(#d79641,20%) !important
                 &__title
