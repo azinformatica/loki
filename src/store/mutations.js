@@ -36,7 +36,7 @@ export default {
     },
 
     [mutationTypes.SET_UPLOAD_FILE_PROGRESS](state, uploadProgress) {
-        Vue.set(state.uploadFileProgress, uploadProgress.filename, {progress: uploadProgress.progress})
+        Vue.set(state.uploadFileProgress, uploadProgress.hashName, {filename: uploadProgress.filename, progress: uploadProgress.progress})
     },
 
     [mutationTypes.SET_UPLOAD_FILE_PROGRESS_ERROR](state, filename) {
