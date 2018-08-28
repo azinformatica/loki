@@ -23,12 +23,13 @@
                     </v-list-tile>
                     <div class="az-submenu">
                         <v-list-tile active-class="secondary" v-if="!asideClosed" :to="submenu.path" v-for="submenu in menu.children"
-                                     :key="submenu.name" @click="redirectTo(submenu.path)">
-                            <div class="az-submenu__tile">
-                                <v-list-tile-content>
-                                    <v-list-tile-title>{{ submenu.name }}</v-list-tile-title>
-                                </v-list-tile-content>
-                            </div>
+                                     :key="submenu.name" @click="redirectTo(submenu.path)" class="az-submenu__tile">
+                            <v-list-tile-action>
+                                <v-icon>{{ submenu.icon }}</v-icon>
+                            </v-list-tile-action>
+                            <v-list-tile-content>
+                                <v-list-tile-title>{{ submenu.name }}</v-list-tile-title>
+                            </v-list-tile-content>
                         </v-list-tile>
                     </div>
                 </v-list-group>
@@ -101,8 +102,9 @@
     .az-submenu
         background-color: rgba(0, 0, 0, 0.1)
         &__tile
-            padding-left: 50px
-            height: 30px
+            padding-top: 3px
+            padding-left: 25px
+            height: 35px
             border-top: none
             border-bottom: none
 
