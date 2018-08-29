@@ -10,7 +10,7 @@
                     <span>{{val.label}}: {{val.value}}</span>
                 </v-tooltip>
                 <input class="input-text" v-model="searchText" :placeholder="simpleSearchPlaceholder"
-                      @keyup.enter="simpleSearch()"/>
+                       @keyup.enter="simpleSearch()"/>
             </div>
 
             <a class="btn-search" @click="simpleSearch()">
@@ -18,7 +18,7 @@
             </a>
         </div>
 
-        <a class="btn-search__inactive" @click="toggle()">
+        <a class="btn-search__inactive" @click="toggle()" v-if="hasAdvancedSearchItems">
             <v-icon small>chevron_left</v-icon>
             Filtros
         </a>
@@ -57,11 +57,15 @@
         },
         data() {
             return {
+                hasAdvancedSearchItems: false,
                 searchText: null,
                 isClosedAdvancedSearch: true,
                 isSimpleSearch: false,
                 searchTextSize: 200
             }
+        },
+        mounted() {
+            this.hasAdvancedSearchItems = this.$children[0].$children.length > 0
         },
         methods: {
             cancel() {
