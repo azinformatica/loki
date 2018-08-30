@@ -1,4 +1,4 @@
-import AzTitle from '../../src/components/AzTitle'
+import AzTitle from '../../src/components/layout/AzTitle'
 import Vuex from 'vuex'
 import {shallow, createLocalVue} from 'vue-test-utils'
 import Vuetify from 'vuetify';
@@ -19,8 +19,10 @@ describe('AzTitle.test.js', () => {
         store = new Vuex.Store({
             state: {
                 loki: {
-                    pageTitle: '***Page Title***',
-                    pageSubtitle: '***Page SubTitle***'
+                    page : {
+                        title: '***Page Title***',
+                        subtitle: '***Page SubTitle***'
+                    }
                 }
             }
         })
@@ -36,6 +38,5 @@ describe('AzTitle.test.js', () => {
     it('Component style is used', () => {
         expect(wrapper.find('.az-title').exists()).toBe(true)
     })
-
 
 })

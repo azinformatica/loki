@@ -1,4 +1,4 @@
-import AzAside from '../../src/components/AzAside'
+import AzAside from '../../src/components/layout/AzAside'
 import Vue from 'vue'
 import Vuex from 'vuex'
 import {shallow, createLocalVue} from 'vue-test-utils'

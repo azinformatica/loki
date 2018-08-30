@@ -23,6 +23,7 @@ import AzMoney from './components/form/AzMoney'
 import AzFileUpload from './components/file/AzFileUpload'
 import AzFileProgress from './components/file/AzFileProgress'
 import AzBackButton from './components/actions/AzBackButton'
+import menu from './menu'
 
 Vue.use(accounting)
 Vue.use(money, {
@@ -65,7 +66,7 @@ const lokiPlugin = {
         Vue.component('az-file-progress', AzFileProgress)
         Vue.component('az-back-button', AzBackButton)
 
-        store.commit(mutationsTypes.SET_MENU_ACTIONS, router)
+        store.commit(mutationsTypes.SET_MENU_ACTIONS, menu(store, router))
 
         router.afterEach((to, from) => {
             store.commit(mutationsTypes.SET_CURRENT_PAGE, to)
