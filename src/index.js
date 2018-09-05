@@ -72,7 +72,6 @@ const lokiPlugin = {
         Vue.component('az-call-to-action', AzCallToAction)
         Vue.component('az-dialog', AzDialog)
 
-
         store.commit(mutationsTypes.SET_MENU_ACTIONS, menu(store, router))
 
         router.afterEach((to, from) => {

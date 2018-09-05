@@ -1,4 +1,4 @@
-import AzAvatar from '../../src/components/AzAvatar'
+import AzAvatar from '../../src/components/layout/AzAvatar'
 import Vuex from 'vuex'
 import {shallow, createLocalVue} from 'vue-test-utils'
 import Vuetify from 'vuetify';
@@ -17,8 +17,10 @@ describe('AzAvatar.test.js', () => {
         store = new Vuex.Store({
             state: {
                 loki: {
-                    userPhoto: 'picture.jpg',
-                    userName: 'Andrew Stuart Tanenbaum',
+                    user: {
+                        photo: 'picture.jpg',
+                        name: 'Andrew Stuart Tanenbaum',
+                    },
                     avatarActions: {
                         1: {title: "Profile", icon: 'star', path: '/profile'},
                         2: {title: "Settings", icon: 'settings', path: '/settings'},
@@ -32,7 +34,7 @@ describe('AzAvatar.test.js', () => {
     })
 
     it('Computed properties are rendered properly', () => {
-        const renderedHtml= expect(wrapper.html());
+        const renderedHtml = expect(wrapper.html());
 
         renderedHtml.toContain('src="picture.jpg"')
         renderedHtml.toContain('Andrew Stuart Tanenbaum')
@@ -60,6 +62,5 @@ describe('AzAvatar.test.js', () => {
         expect(wrapper.vm.logout).toBeCalled()
         expect(wrapper.vm.redirectTo).toBeCalled()
     })
-
 
 })

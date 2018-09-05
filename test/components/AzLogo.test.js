@@ -1,4 +1,4 @@
-import AzLogo from '../../src/components/AzLogo'
+import AzLogo from '../../src/components/layout/AzLogo'
 import Vuex from 'vuex'
 import {shallow, createLocalVue} from 'vue-test-utils'
 import Vuetify from 'vuetify';
@@ -18,8 +18,12 @@ describe('AzLogo.test.js', () => {
             state: {
                 loki: {
                     asideClosed: true,
-                    mainLogo: 'mainLogoPicture.jpg',
-                    symbolLogo: 'symbolLogoPicture.jpg'
+                    product: {
+                        id: null,
+                        name: '',
+                        mainLogo: 'mainLogoPicture.jpg',
+                        symbolLogo: 'symbolLogoPicture.jpg'
+                    }
                 }
             }
         })
@@ -41,6 +45,5 @@ describe('AzLogo.test.js', () => {
         wrapper.find('a').trigger('click')
         expect(wrapper.vm.redirectToHome).toBeCalled()
     })
-
 
 })
