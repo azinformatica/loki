@@ -16,14 +16,6 @@
             align-items: center
             justify-content: space-between
             transition: 0.2s
-            .v-btn
-                font-size: 13px
-                margin: 0 10px 0 0
-                text-transform: none
-                position: relative
-                height: unset
-                padding: 5px 15px
-                box-shadow: none
             .itens
                 display: flex
                 .item

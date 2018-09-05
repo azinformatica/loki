@@ -39,6 +39,7 @@
             },
             style() {
                 return {
+                    'call-to-action': true,
                     'hide-border': this.hideBorder
                 }
             }
@@ -48,7 +49,19 @@
 
 <style lang="stylus">
 
-    .hide-border
-        border: 0 !important
+    .call-to-action
+        font-size: 14px
+        margin: 0 10px 0 0
+        text-transform: none
+        position: relative
+        height: unset
+        padding: 5px 15px
+        box-shadow: none
+        i
+            margin-right: 5px
+            font-size: 18px
+
+        &.hide-border
+            border: 0 !important
 
 </style>
