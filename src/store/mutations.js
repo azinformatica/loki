@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import mutationTypes from './mutations-types'
+import moment from 'moment-timezone'
 
 export default {
 
@@ -87,5 +88,6 @@ export default {
 
     [mutationTypes.SET_TIMEZONE](state, timezone) {
         state.timezone = timezone
+        state.offset = moment().tz(timezone).format('Z')
     }
 }

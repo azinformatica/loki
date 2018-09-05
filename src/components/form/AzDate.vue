@@ -116,8 +116,8 @@
             }
         },
         computed: {
-            timezone() {
-                return this.$store.state.loki.timezone
+            offset() {
+                return this.$store.state.loki.offset
             },
             reverseDateFormat() {
                 return this.reverseDateFormatObj[this.dateFormat]
@@ -324,15 +324,17 @@
                 }
             },
             getDateTimeWithSystemTimezone(dateTime) {
-                return this.moment(dateTime).utcOffset(this.timezone).format(this.reverseDateFormat + 'THH:mm:ss.SSSZZ')
+                return this.moment(dateTime).utcOffset(this.offset).format(this.reverseDateFormat + 'THH:mm:ss.SSSZZ')
             },
             getDateTimeZeroTimezone(dateTime) {
                 return this.moment(dateTime).utcOffset('+0000').format(this.reverseDateFormat + 'THH:mm:ss.SSSZZ')
             },
             buildDateTimeWithTimezone(date, time) {
                 const seconds = '00'
-                return date + 'T' + time + ':' + seconds + this.timezone
+                return date + 'T' + time + ':' + seconds + this.offset
             }
         }
     }
 </script>
+<style>
+</style>

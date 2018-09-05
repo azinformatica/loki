@@ -1,6 +1,6 @@
 {
     "name": "@azinformatica/loki",
-    "version": "0.0.48",
+    "version": "0.0.51",
     "description": "Biblioteca de componentes visuais compartilhados construidos usando vuejs.",
     "main": "src/index.js",
     "private": false,
@@ -16,11 +16,12 @@
     "license": "ISC",
     "dependencies": {
         "accounting": "^0.4.1",
+        "ajv": "^6.5.3",
         "lodash": "^4.17.10",
-        "moment": "^2.22.2",
+        "moment-timezone": "^0.5.21",
         "v-money": "^0.8.1",
         "vue": "^2.5.16",
-        "vuetify": "^1.1.5",
+        "vuetify": "^1.2.2",
         "vuex": "^3.0.1"
     },
     "devDependencies": {
