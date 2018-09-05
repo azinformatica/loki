@@ -15,6 +15,7 @@
                     min-width="290px">
                 <v-date-picker v-model="date" @input="pickDateEvent()"
                                v-bind:value="value"
+                               :locale="currentLanguage"
                                v-on:input="updateModelDate($event)"></v-date-picker>
             </v-dialog>
             <v-text-field
@@ -45,6 +46,7 @@
                 <v-time-picker
                         v-if="dialogTime"
                         v-model="time"
+                        :locale="currentLanguage"
                         @change="changeTimeEvent();updateModelTime($event);"
                         format="24hr">
                 </v-time-picker>
@@ -119,6 +121,9 @@
             },
             reverseDateFormat() {
                 return this.reverseDateFormatObj[this.dateFormat]
+            },
+            currentLanguage(){
+                return this.$vuetify.lang.current
             }
         },
         watch: {
@@ -331,5 +336,3 @@
         }
     }
 </script>
-<style scoped lang="stylus">
-</style>
