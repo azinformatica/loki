@@ -13,6 +13,7 @@ import AzAside from './components/layout/AzAside'
 import AzTemplate from './components/layout/AzTemplate'
 import AzContainer from './components/layout/AzContainer'
 import AzOps from './components/layout/AzOps'
+import AzModal from './components/layout/AzModal'
 import AzSearch from './components/search/AzSearch'
 import AzSearchItem from './components/search/AzSearchItem'
 import AzToolbar from './components/search/AzToolbar'
@@ -58,6 +59,7 @@ const lokiPlugin = {
         Vue.component('az-template', AzTemplate)
         Vue.component('az-container', AzContainer)
         Vue.component('az-ops', AzOps)
+        Vue.component('az-modal', AzModal)
         Vue.component('az-search', AzSearch)
         Vue.component('az-search-item', AzSearchItem)
         Vue.component('az-toolbar', AzToolbar)
