@@ -1,5 +1,5 @@
 <template>
-    <v-btn :color="color" :dark="isDark" :outline="isOutline" @click="$emit('click')">
+    <v-btn :color="color" :dark="isDark" :outline="isOutline" :class="style" @click="$emit('click')">
         <slot/>
     </v-btn>
 </template>
@@ -13,6 +13,10 @@
                 default: false
             },
             dark: {
+                type: Boolean,
+                default: false
+            },
+            hideBorder: {
                 type: Boolean,
                 default: false
             }
@@ -32,7 +36,19 @@
             },
             isOutline() {
                 return !this.active
+            },
+            style() {
+                return {
+                    'hide-border': this.hideBorder
+                }
             }
         }
     }
 </script>
+
+<style lang="stylus">
+
+    .hide-border
+        border: 0 !important
+
+</style>
