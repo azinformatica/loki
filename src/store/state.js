@@ -40,6 +40,7 @@ export default {
     isLoading: false,
     loadingMessage: 'Please, wait...',
 
-    timezone: '+00:00'
+    timezone: 'America/Sao_Paulo',
+    offset: '-03:00'
 
 }
