@@ -75,6 +75,7 @@
                     return;
                 }
                 this.uploadFiles(fileList)
+                document.getElementById('azFormUpload').reset()
             },
             openFileSelector() {
                 document.getElementById('azFileSelector').click()
