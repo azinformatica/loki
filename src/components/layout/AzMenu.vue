@@ -74,39 +74,34 @@
             }
         },
         mounted() {
-            const {menuItem, parent} = this.getActiveMenu()
-            if (parent !== undefined) {
-                parent.expanded = true
+            const currentActiveMenu = this.getCurrentActiveMenu()
+            if (this.hasChildren(currentActiveMenu)) {
+                this.expand(currentActiveMenu)
             }
         },
         methods: {
-            getActiveMenu() {
+            expand(currentActiveMenu) {
+                currentActiveMenu.expanded = true
+            },
+            getCurrentActiveMenu() {
                 for (let i = 0; i < this.menuActions.length; i++) {
                     const menu = this.menuActions[i]
-                    if (this.isMenuItemActive(menu)) {
-                        return {menuItem: menu, undefined}
-                    }
-                    if (this.isSubmenuActive(menu)) {
-                        return {menuItem: this.getActiveSubmenu(menu), parent: menu}
+                    if (this.isMenuItemActive(menu) || this.isSubmenuActive(menu)) {
+                        return menu
                     }
                 }
+                return undefined
             },
-            getActiveSubmenu(menu) {
-                for (let i = 0; i < menu.children.length; i++) {
-                    const submenu = menu.children[i]
-                    if (this.isMenuItemActive(submenu)) {
-                        return submenu
-                    }
-                }
+            hasChildren(menu) {
+                return menu && menu.children && menu.children.length > 0
             },
             isMenuItemActive(menuItem) {
                 return this.$route.path === menuItem.path
             },
             isSubmenuActive(menu) {
-                if (!menu.children) {
+                if (!this.hasChildren(menu)) {
                     return false
                 }
-
                 for (let i = 0; i < menu.children.length; i++) {
                     const submenu = menu.children[i]
                     if (this.isMenuItemActive(submenu)) {
