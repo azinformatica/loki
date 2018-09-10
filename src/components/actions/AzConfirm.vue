@@ -2,7 +2,9 @@
     <v-layout row justify-center class="az-confirm">
         <v-dialog persistent value="true" :max-width="maxWidth">
             <v-card>
-                <v-card-text>{{question}}</v-card-text>
+                <v-card-text>
+                    <slot></slot>
+                </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="primary" flat @click="$emit('onDecline')">{{labelDecline}}</v-btn>
@@ -17,10 +19,6 @@
     export default {
         name: 'AzConfirmDialog',
         props: {
-            question: {
-                type: String,
-                required: true
-            },
             labelConfirm: {
                 type: String,
                 default: 'Sim'
