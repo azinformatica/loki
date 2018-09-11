@@ -28,7 +28,7 @@
 <style lang="stylus">
     .az-about
         border-top: 1px solid #ccc
-        height: 30px
+        height: 36px
         background-color: #f6f9f9
         color: #7f7f7f
         font-size: 14px
@@ -41,11 +41,15 @@
         display: flex
         justify-content: space-between
 
+        .theme--light.v-footer
+            background: none !important
+
         &__copywrite
             padding-left: 20px
 
         &__version
             padding-right: 20px
+
 
     @media (max-width: 450px)
         .v-footer

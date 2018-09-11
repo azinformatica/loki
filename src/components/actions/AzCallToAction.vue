@@ -1,5 +1,5 @@
 <template>
-    <v-btn :color="color" :dark="isDark" :outline="isOutline" :class="style" @click="$emit('click')">
+    <v-btn depressed :color="color" :dark="isDark" :outline="isOutline" :class="style" @click="$emit('click')">
         <slot/>
     </v-btn>
 </template>
