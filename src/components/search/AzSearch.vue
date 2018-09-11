@@ -65,7 +65,10 @@
             }
         },
         mounted() {
-            this.hasAdvancedSearchItems = this.$children[0].$children.length > 0
+            const advancedSearchItems = this.$children[1].$children.filter(child => {
+                return child.$options._componentTag === 'az-search-item'
+            })
+            this.hasAdvancedSearchItems = advancedSearchItems.length > 0
         },
         methods: {
             cancel() {
