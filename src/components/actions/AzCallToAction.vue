@@ -19,6 +19,10 @@
             hideBorder: {
                 type: Boolean,
                 default: false
+            },
+            class: {
+                type: String,
+                default: ''
             }
         },
         computed: {
@@ -38,10 +42,16 @@
                 return !this.active
             },
             style() {
-                return {
+                let styleObj = {
                     'call-to-action': true,
                     'hide-border': this.hideBorder
                 }
+
+                if (this.class) {
+                    const classes = this.class.split(' ')
+                    classes.forEach(clazz => styleObj[clazz] = true)
+                }
+                return styleObj
             }
         }
     }
