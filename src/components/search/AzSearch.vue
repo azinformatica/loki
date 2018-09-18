@@ -7,35 +7,27 @@
                         <strong>{{val.label}}:</strong>&nbsp;
                         <span>{{val.valueTruncated ? val.valueTruncated : val.value}}</span>
                     </v-chip>
-                    <span>{{val.label}}:{{val.value}}</span>
+                    <span>{{val.label}}: {{val.value}}</span>
                 </v-tooltip>
                 <input class="input-text" v-model="searchText" :placeholder="simpleSearchPlaceholder"
-                      @keyup.enter="simpleSearch()"/>
+                       @keyup.enter="simpleSearch()"/>
             </div>
-
-            <a class="btn-search" @click="simpleSearch()">
-                <v-icon small>search</v-icon>
-            </a>
+            <v-btn class="icon-search" fab dark small depressed color="primary" @click="simpleSearch()"><v-icon small>search</v-icon></v-btn>
         </div>
 
-        <a class="btn-search__inactive" @click="toggle()">
-            <v-icon small>chevron_left</v-icon>
-            Filtros
-        </a>
+        <v-btn class="btn-advanced-search" depressed color="grey" @click="toggle()" v-if="hasAdvancedSearchItems"><v-icon small>chevron_left</v-icon>Filtros</v-btn>
 
         <v-navigation-drawer permanent absolute right width="400" :mini-variant.sync="isClosedAdvancedSearch"
                              mini-variant-width="0" floating class="advanced-search-bar">
-            <div class="title">
-                <a class="fechar" @click.prevent="toggle()">
-                    <v-icon>close</v-icon>
-                </a>
-                <span>Busca Avançada</span>
-            </div>
+            <v-list-tile-title class="title">
+                <v-btn class="btn-close" icon small @click.prevent="toggle()"><v-icon>close</v-icon></v-btn>
+                Busca Avançada
+            </v-list-tile-title>
             <div class="items">
                 <slot name="search-items"></slot>
             </div>
             <div class="actions">
-                <a class="ad-search" @click="advancedSearch()">Buscar</a>
+                <v-btn class="ad-search" depressed color="secondary" @click="advancedSearch()">Buscar</v-btn>
                 <a class="ad-clear" @click="clear()">Limpar</a>
             </div>
         </v-navigation-drawer>
@@ -57,11 +49,18 @@
         },
         data() {
             return {
+                hasAdvancedSearchItems: false,
                 searchText: null,
                 isClosedAdvancedSearch: true,
                 isSimpleSearch: false,
                 searchTextSize: 200
             }
+        },
+        mounted() {
+            const advancedSearchItems = this.$children[1].$children.filter(child => {
+                return child.$options._componentTag === 'az-search-item'
+            })
+            this.hasAdvancedSearchItems = advancedSearchItems.length > 0
         },
         methods: {
             cancel() {
@@ -121,42 +120,30 @@
                 color: #cccccc !important
             :-ms-input-placeholder
                 color: #cccccc !important
+        .icon-search
+            border-radius: 0 20px 20px 0
+            width: 33px
+            height 32px
+            margin: 0 10px 0 0
+            padding: 0
+            font-weight normal
+        .btn-advanced-search
+            border-radius: 20px 0 0 20px
+            width: 32px
+            height: 32px
+            margin: 0
+            padding: 0
+            text-transform: unset
+            color white
+            font-weight normal
         .btn-search
             margin-right: 10px
             padding: 5px 10px
-            background-color: #3a6861
-            border-radius: 0 20px 20px 0
 
             i
                 color: rgba(255, 255, 255, 0.8)
                 font-size: 13px
                 font-weight: bold
-
-            &__clear-btn
-                font-size: 14px
-                background-color: #d28a2c
-                color: white
-                font-weight: normal
-                margin-right: 10px
-                padding: 5px 10px
-                border-radius: 0 20px 20px 0
-
-            &__clear
-                font-size: 14px
-                color: #777
-                font-weight: bold
-                margin-right: 10px
-
-            &__inactive
-                background-color: #777777
-                padding: 5px
-                border-radius: 20px 0 0 20px
-                color: rgba(255, 255, 255, 0.8)
-
-                i
-                    color: rgba(255, 255, 255, 0.8)
-                    font-size: 16px
-                    font-weight: bold
 
         .v-navigation-drawer
             height: 100%
@@ -168,10 +155,14 @@
             overflow-y: hidden
             position: fixed
             border-left: 1px solid #ddd
+            .btn-close
+                font-size: 20px
+                color: rgba(255,255,255,0.8)
+
             .items
-                height: -webkit-calc(100% - 194px);
-                height: -moz-calc(100% - 194px);
-                height: calc(100% - 194px);
+                height: -webkit-calc(100% - 194px)
+                height: -moz-calc(100% - 194px)
+                height: calc(100% - 194px)
                 overflow-y: auto
                 margin: 75px 0 70px 0
             .actions
@@ -185,17 +176,11 @@
                 border-top: 1px solid #eee
                 .ad-search
                     width: 70%
-                    margin-right: 10px
-                    background-color: #D28A2C
                     color: white
-                    border: 1px solid #D28A2C
-                    text-align: center
-                    padding: 5px
                     font-size: 13px
-                    border-radius: 2px
-                    &:hover
-                        background-color: lighten(#D28A2C,10%)
-                        border: 1px solid lighten(#D28A2C,10%)
+                    height: 30px
+                    margin: 0 10px 0 0
+                    text-transform unset
                 .ad-clear
                     width: 30%
                     margin-left: 10px
@@ -214,28 +199,16 @@
                 color: rgba(255, 255, 255, 0.8)
                 position: fixed
                 display: flex
-                top: 0
-                right: 0
-                text-align: center
                 width: 400px
                 height: 60px
                 align-items center
-                a
-                    width: 10%
-                    i
-                        font-size: 18px
-                        color: rgba(255, 255, 255, 0.8)
-                        font-weight: bold
-                span
-                    padding: 20px
-                    font-size: 14px
-                    font-weight: bold
-                    width: 90%
+                font-size: 18px !important
+                font-weight: bold
 
     @media (max-width: 450px)
         .advanced-search-bar
             display: none
-        .btn-search__inactive
+        .btn-advanced-search
             display: none !important
         .btn-search__active
             display: none !important
