@@ -15,7 +15,7 @@
             <v-btn class="icon-search" fab dark small depressed color="primary" @click="simpleSearch()"><v-icon small>search</v-icon></v-btn>
         </div>
 
-        <v-btn class="btn-advanced-search" depressed color="grey" @click="toggle()" v-if="hasAdvancedSearchItems"><v-icon small>chevron_left</v-icon>Filtros</v-btn>
+        <v-btn class="btn-advanced-search" depressed color="grey darken-1" @click="toggle()" v-if="hasAdvancedSearchItems"><v-icon small>chevron_left</v-icon>Filtros</v-btn>
 
         <v-navigation-drawer permanent absolute right width="400" :mini-variant.sync="isClosedAdvancedSearch"
                              mini-variant-width="0" floating class="advanced-search-bar">
