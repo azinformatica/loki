@@ -19,10 +19,10 @@
 
         <v-navigation-drawer permanent absolute right width="400" :mini-variant.sync="isClosedAdvancedSearch"
                              mini-variant-width="0" floating class="advanced-search-bar">
-            <v-list-tile-title class="title">
+            <v-toolbar flat class="title" color="primary">
                 <v-btn class="btn-close" icon small @click.prevent="toggle()"><v-icon>close</v-icon></v-btn>
                 Busca Avançada
-            </v-list-tile-title>
+            </v-toolbar>
             <div class="items">
                 <slot name="search-items"></slot>
             </div>
@@ -158,6 +158,7 @@
             .btn-close
                 font-size: 20px
                 color: rgba(255,255,255,0.8)
+                margin-right: 10px
 
             .items
                 height: -webkit-calc(100% - 194px)
@@ -195,7 +196,6 @@
                         background-color: #777
                         color: white
             .title
-                background-color: #3a6861
                 color: rgba(255, 255, 255, 0.8)
                 position: fixed
                 display: flex
