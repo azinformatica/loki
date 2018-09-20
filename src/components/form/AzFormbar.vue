@@ -1,5 +1,5 @@
 <template>
-    <div class="az-form-bar">
+    <div class="az-form-bar primary">
         <slot/>
     </div>
 </template>
@@ -9,7 +9,6 @@
 <style lang="stylus">
     .az-form-bar
         .show
-            background-color: #3a6861
             padding: 0 20px
             display: flex
             height: 60px
@@ -36,30 +35,9 @@
                     margin-left: 10px
                     i
                         color: white
-                .action
-                    color: white
-                    border: 1px solid white
-                    padding: 8px 15px
-                    border-radius: 2px
-                    font-size: 12px
-                    margin-left: 15px
-                    &:hover
-                        background-color: darken(#D28A2C, 10%)
-                        border-color: darken(#D28A2C, 10%)
-                .action-primary
-                    color: white
-                    background-color: #D28A2C
-                    border: 1px solid #D28A2C
-                    padding: 8px 15px
-                    border-radius: 2px
-                    font-size: 12px
-                    margin-left: 15px
-                    &:hover
-                        background-color: darken(#D28A2C, 10%)
-                        border-color: darken(#D28A2C, 10%)
+
         .hide
             transition: 1s
-            background-color: #3a6861
             padding: 0 20px
             display: flex
             height: 10px

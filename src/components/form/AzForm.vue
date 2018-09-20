@@ -101,7 +101,6 @@
         .az-subtitle
             font-size: 16px
             font-weight: bold
-            color: #3a6861
             margin: 10px 0
             border-bottom: 1px solid #ccc
 
@@ -116,13 +115,13 @@
             .action-secundary
                 padding: 10px 15px
                 margin-right: 10px
-                color: #3a6861
-                border: 1px solid #3a6861
+                color: #555555
+                border: 1px solid #555555
                 border-radius: 2px
                 &:hover
                     color: white
-                    border: 1px solid #3a6861
-                    background-color: #3a6861
+                    border: 1px solid #555555
+                    background-color: #555555
             .action-delete
                 padding: 10px 15px
                 margin-right: 10px

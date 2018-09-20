@@ -39,7 +39,6 @@
             text-transform: none
 
         .v-tabs__item--active
-            color: #d28a2c !important
             font-weight: bold
             border-bottom: 1px solid white
             border-left: 1px solid #ccc
@@ -71,10 +70,6 @@
         margin: 20px
         background-color: white
 
-        .az-resume-bar
-            background-color: #3a6861
-            height: 60px
-
         .az-table-list
             thead
                 border: none
@@ -83,7 +78,6 @@
                     border-bottom: 2px solid #e9e9e9 !important
 
                 tr th
-                    color: #3a6861 !important
                     font-weight: bold
                     padding: 0 10px !important
 

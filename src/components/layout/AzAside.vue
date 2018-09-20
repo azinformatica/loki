@@ -70,7 +70,7 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1)
             display: flex
             align-items: center
-            height:36px
+            height:36px !important
 
             .v-btn
                 height: 28px
@@ -85,7 +85,7 @@
             position: absolute
             bottom: 0
             width: 200px
-            height: 36px
+            height: 36px !important
             border-top: 1px solid rgba(255, 255, 255, 0.1)
 
             .v-btn
