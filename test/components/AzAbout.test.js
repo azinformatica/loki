@@ -1,4 +1,4 @@
-import AzAbout from '../../src/components/AzAbout'
+import AzAbout from '../../src/components/layout/AzAbout'
 import Vuex from 'vuex'
 import {shallow, createLocalVue} from 'vue-test-utils'
 import Vuetify from 'vuetify';
@@ -17,8 +17,10 @@ describe('AzAbout.test.js', () => {
         store = new Vuex.Store({
             state: {
                 loki: {
-                    copywrite: '123456',
-                    version: '1.2.3'
+                    product: {
+                        copywrite: '123456',
+                        version: '1.2.3'
+                    }
                 }
             }
         })
@@ -48,6 +50,5 @@ describe('AzAbout.test.js', () => {
         expect(wrapper.find('.az-about__copywrite').exists()).toBe(true)
         expect(wrapper.find('.az-about__version').exists()).toBe(true)
     })
-
 
 })

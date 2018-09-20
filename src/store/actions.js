@@ -10,11 +10,12 @@ export default {
 
     async uploadFile({commit, state}, {filename, formData}) {
 
-        commit(mutationTypes.SET_UPLOAD_FILE_PROGRESS, {filename, progress: 0})
+        const hashName = filename + (new Date()).getTime()
+        commit(mutationTypes.SET_UPLOAD_FILE_PROGRESS, {hashName, filename, progress: 0})
 
         const onUploadProgress = (progressEvent) => {
             const progress = parseInt(Math.round((progressEvent.loaded * 100) / progressEvent.total))
-            commit(mutationTypes.SET_UPLOAD_FILE_PROGRESS, {filename, progress})
+            commit(mutationTypes.SET_UPLOAD_FILE_PROGRESS, {hashName, filename, progress})
         }
         const options = {
             headers: {
@@ -25,7 +26,8 @@ export default {
 
         try {
             const {data} = await axios.post(state.filesApi, formData, options)
-            commit(mutationTypes.REMOVE_UPLOAD_FILE_PROGRESS, filename)
+            data.name = filename
+            commit(mutationTypes.REMOVE_UPLOAD_FILE_PROGRESS, hashName)
             commit(mutationTypes.ADD_UPLOADED_FILE, Object.assign({}, data, {status: 'success'}))
             return data
         } catch (e) {

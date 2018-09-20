@@ -75,6 +75,7 @@
                     return;
                 }
                 this.uploadFiles(fileList)
+                this.resetSelectedFiles()
             },
             openFileSelector() {
                 document.getElementById('azFileSelector').click()
@@ -86,6 +87,9 @@
                         const payload = this.createPayload(fileList[x])
                         this.$store.dispatch('uploadFile', payload)
                     });
+            },
+            resetSelectedFiles() {
+                document.getElementById('azFileSelector').value = ''
             }
         }
     }

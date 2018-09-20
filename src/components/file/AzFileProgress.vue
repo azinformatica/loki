@@ -8,7 +8,7 @@
         </div>
         <div class="scroll">
             <ul class="upload_list">
-                <li v-for="file in filesBeingUploaded" :key="file">
+                <li v-for="(file, index) in filesBeingUploaded" :key="index">
                     <div v-show="hasProgressForFile(file)">
                         <span class="filename">{{getFileShortName(file)}}</span>
                         <div class="fas">
@@ -37,7 +37,13 @@
                 return this.getUploadInProgressCount() > 0
             },
             filesBeingUploaded() {
-                return Object.keys(this.$store.state.loki.uploadFileProgress)
+                const uploadFileProgress = this.$store.state.loki.uploadFileProgress
+                const hashNames = Object.keys(uploadFileProgress)
+                const files = []
+                hashNames.forEach(hashName => {
+                    files.push(uploadFileProgress[hashName])
+                })
+                return files
             },
             finishedUploadsCount() {
                 return this.$store.state.loki.uploadedFiles.length
@@ -49,11 +55,11 @@
                     this.$store.commit(mutationTypes.REMOVE_UPLOAD_FILE_PROGRESS, filename)
                 })
             },
-            getFileShortName(filename) {
-                return filename.substr(0, 40) + '...'
+            getFileShortName(file) {
+                return file.filename.substr(0, 40) + '...'
             },
-            getFileUploadProgress(filename) {
-                return this.$store.state.loki.uploadFileProgress[filename].progress
+            getFileUploadProgress(file) {
+                return file.progress
             },
             getUploadInProgressCount() {
                 let uploading = 0
@@ -68,11 +74,10 @@
                 return uploading
             },
             hasProgressForFile(file) {
-                return this.$store.state.loki.uploadFileProgress[file] !== undefined
+                return file !== undefined
             },
-            hasUploadError(filename) {
-                const fileProgressInfo = this.$store.state.loki.uploadFileProgress[filename]
-                return fileProgressInfo && fileProgressInfo.error
+            hasUploadError(file) {
+                return file && file.error
             }
         }
     }

@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import mutationTypes from './mutations-types'
+import moment from 'moment-timezone'
 
 export default {
 
@@ -36,7 +37,7 @@ export default {
     },
 
     [mutationTypes.SET_UPLOAD_FILE_PROGRESS](state, uploadProgress) {
-        Vue.set(state.uploadFileProgress, uploadProgress.filename, {progress: uploadProgress.progress})
+        Vue.set(state.uploadFileProgress, uploadProgress.hashName, {filename: uploadProgress.filename, progress: uploadProgress.progress})
     },
 
     [mutationTypes.SET_UPLOAD_FILE_PROGRESS_ERROR](state, filename) {
@@ -62,33 +63,8 @@ export default {
         state.uploadedFiles = files
     },
 
-    [mutationTypes.SET_MENU_ACTIONS](state, router) {
-        router.options.routes.forEach((route) => {
-            if (route.meta && route.meta.menu) {
-                let action = {
-                    name: route.meta.menu.title,
-                    icon: route.meta.menu.icon,
-                    path: route.path,
-                    selected: false
-                }
-                if (route.children && route.children.length > 0) {
-                    action.expanded = false
-                    action.children = []
-                    route.children.forEach((subRoute) => {
-                        if (subRoute.meta && subRoute.meta.menu) {
-                            let child = {
-                                name: subRoute.meta.menu.title,
-                                icon: subRoute.meta.menu.icon,
-                                path: subRoute.path,
-                                selected: false
-                            }
-                            action.children.push(child)
-                        }
-                    })
-                }
-                state.menuActions.push(action)
-            }
-        })
+    [mutationTypes.SET_MENU_ACTIONS](state, actions) {
+        Vue.set(state, 'menuActions', actions)
     },
 
     [mutationTypes.SET_CURRENT_PAGE](state, to) {
@@ -112,5 +88,6 @@ export default {
 
     [mutationTypes.SET_TIMEZONE](state, timezone) {
         state.timezone = timezone
+        state.offset = moment().tz(timezone).format('Z')
     }
 }
