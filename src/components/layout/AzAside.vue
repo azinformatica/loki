@@ -1,5 +1,5 @@
 <template>
-    <v-navigation-drawer app :mini-variant.sync="asideClosed" v-model="drawer"
+    <v-navigation-drawer app :mini-variant.sync="asideClosed" v-model="drawer" mobile-break-point="1024"
                          mini-variant-width="60" width="200" class="az-aside primary" floating>
         <div class="az-aside__logo">
             <slot name="logo"></slot>
@@ -9,7 +9,7 @@
         </div>
 
         <div :class="{'arrow-opened' : !asideClosed, 'arrow-closed' : asideClosed}" class="no-mobile">
-            <v-btn icon @click="toogle()">
+            <v-btn icon @click="toogle()" flat>
                 <v-icon color="white">{{ asideClosed ? 'keyboard_arrow_right' : 'keyboard_arrow_left' }}</v-icon>
             </v-btn>
         </div>
@@ -70,10 +70,12 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1)
             display: flex
             align-items: center
+            height:36px !important
 
             .v-btn
                 height: 28px
-                margin: 2px 8px !important
+                width: 28px
+                margin: 2px 10px !important
                 color: rgba(255, 255, 255, 0.8) !important
 
             .v-btn--icon
@@ -83,10 +85,12 @@
             position: absolute
             bottom: 0
             width: 200px
+            height: 36px !important
             border-top: 1px solid rgba(255, 255, 255, 0.1)
 
             .v-btn
                 height: 28px
-                margin: 2px 8px !important
+                width: 28px
+                margin: 2px 10px !important
                 color: rgba(255, 255, 255, 0.8) !important
 </style>
