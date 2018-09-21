@@ -55,10 +55,6 @@
     };
 </script>
 <style lang="stylus">
-    @media (max-width: 450px)
-        .az-avatar
-            display: none !important
-
     .az-avatar
         position: fixed
         top: 0
@@ -99,4 +95,9 @@
                     padding-right: 10px
                     .material-icons
                         font-size: 13px
+
+    @media (max-width: 720px)
+        .az-avatar
+            display: none !important
+
 </style>

@@ -37,7 +37,7 @@
         text-align: center
         overflow: hidden
         position: fixed
-        border-bottom: 1px solid rgba(255, 255, 255, 0.15)
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2)
         a
             width: 100%
 

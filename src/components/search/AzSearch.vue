@@ -205,14 +205,14 @@
                 font-size: 18px !important
                 font-weight: bold
 
-    @media (max-width: 450px)
+    @media (max-width: 720px)
         .advanced-search-bar
             display: none
         .btn-advanced-search
             display: none !important
         .btn-search__active
             display: none !important
-        .input_search
+        .input-search
             width: 100% !important
         .simple-search
             width: 100%
@@ -230,4 +230,6 @@
             padding: 0 20px
         .az-search
             width: 100%
+            .icon-search
+                margin 0
 </style>

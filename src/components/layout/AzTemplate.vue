@@ -42,15 +42,6 @@
     .mobile_menu
         display: none
 
-    @media (max-width: 450px)
-        .mobile_menu
-            margin-right: 10px
-            display: unset
-            top: 1px
-            position: relative
-        .az-title__subtitle
-            display: none
-
     body
         background-color: #eee
 
@@ -74,4 +65,17 @@
 
     html
         overflow-y: auto
+
+    @media (max-width: 720px)
+        .mobile_menu
+            margin-right: 10px
+            display: unset
+            top: 1px
+            position: relative
+
+        .az-title__subtitle
+            display: none
+
+        .no-mobile
+            display: none !important
 </style>

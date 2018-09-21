@@ -48,4 +48,14 @@
 
             .actions
                 display: none
+
+    @media (max-width: 720px)
+        .az-form-bar
+            .show
+                height unset !important
+                .itens
+                    display: block !important
+                    margin: 10px 0 !important
+                    .item
+                        margin: 10px 0 !important
 </style>

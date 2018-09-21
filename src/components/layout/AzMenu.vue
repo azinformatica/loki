@@ -127,7 +127,7 @@
 </script>
 <style lang="stylus">
     .menu-avatar-mobile .item
-        border-top: 1px solid rgba(255, 255, 255, .2)
+        border-top: 1px solid rgba(255, 255, 255, .1)
         border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 
     .az-menu
@@ -175,7 +175,9 @@
                 color: rgba(255, 255, 255, 0.8) !important
                 background-color lighten(#d79641, 20%) !important
             &__group
-                border-bottom: 1px solid rgba(255, 255, 255, 0.10)
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2)
+                &--active::before
+                    background none !important
                 .v-list
                     &__tile
                         border-top: none
@@ -199,7 +201,6 @@
                     background-color lighten(#d79641, 20%) !important
                 &__title
                     font-size: 14px
-                    font-weight: bold
                 &__action
                     min-width: unset
                     padding-right: 10px
@@ -209,10 +210,9 @@
                         font-size: 20px
 
     .menu-item
-        border-top: 1px solid rgba(255, 255, 255, .2)
-        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+        border-bottom: 1px solid rgba(255, 255, 255, .2)
 
-    @media (min-width: 450px)
+    @media (min-width: 720px)
         .mobile
             display: none
 </style>

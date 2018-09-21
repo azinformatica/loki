@@ -1,5 +1,5 @@
 <template>
-    <v-navigation-drawer app :mini-variant.sync="asideClosed" v-model="drawer" mobile-break-point="1024"
+    <v-navigation-drawer app :mini-variant.sync="asideClosed" v-model="drawer" mobile-break-point="720"
                          mini-variant-width="60" width="200" class="az-aside primary" floating>
         <div class="az-aside__logo">
             <slot name="logo"></slot>
