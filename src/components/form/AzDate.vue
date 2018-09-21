@@ -336,5 +336,11 @@
         }
     }
 </script>
-<style>
+<style lang="stylus">
+    .v-date-picker-table
+        height: 250px !important
+
+
+    .v-date-picker-table tbody tr td
+        padding: 0 !important
 </style>

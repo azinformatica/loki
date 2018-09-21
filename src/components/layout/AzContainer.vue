@@ -9,6 +9,8 @@
 </script>
 
 <style lang="stylus">
+    .az-container .az-table-list thead tr th
+        padding: 0 10px !important
 
     .primary--text
         color: #777777 !important
