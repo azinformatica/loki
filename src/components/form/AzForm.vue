@@ -9,6 +9,78 @@
 </script>
 
 <style lang="stylus">
+    .az-action-link-icon
+        text-decoration: none
+
+    .table-actions
+        text-align: -webkit-center
+
+    .az-table-list
+        .v-select__selection
+            font-size: 13px
+            color: #777
+
+        .v-input__slot
+            margin: 0
+            border: 1px solid #ccc
+            border-radius: 2px
+            padding: 0 10px
+
+        .v-input__slot::before
+            background-color: unset
+
+        .v-text-field__details
+            display: none
+
+        .v-input
+            margin: 0 !important
+
+        tbody tr td
+            height: unset
+            padding: 10px 10px !important
+
+        thead tr th
+            padding: 10px 10px !important
+
+    .az-pagination
+        display: flex
+        justify-content: space-between
+        font-size: 13px
+
+        .v-pagination__item
+            height: 24px
+            width: 24px
+            font-size: 13px
+            margin: 2px
+            border: 1px solid #ccc
+            box-shadow: none
+            -webkit-box-shadow: none
+
+        .v-pagination__navigation
+            height: 24px
+            width: 24px
+            font-size: 13px
+            margin: 2px
+            box-shadow: none
+            -webkit-box-shadow: none
+
+        .v-input
+            width: 100px
+
+        .az-select-pagination
+            align-items: center
+            display: flex
+            color: #777777
+            span
+                color: #777777
+                margin-right: 10px
+            .v-select
+                font-size: 13px
+
+            .v-select__selection--comma
+                font-size: 13px
+                margin: 10px 5px 5px 0 !important
+
     .az-form
         padding: 20px
 
@@ -149,4 +221,61 @@
                 color: #777777
                 &:hover
                     color: darkred
+
+    @media (max-width: 720px)
+        .az-pagination
+            display block !important
+            .az-select-pagination
+                height: 10px
+            .v-pagination
+                height: 50px
+
+        .v-table tbody tr:hover:not(.v-datatable__expand-row)
+            background: unset !important
+
+        .az-table-list
+            tbody tr td
+                padding: 5px 10px !important
+
+            .table-actions
+                text-align center
+                border-top: 2px dotted #ccc
+                padding: 0 !important
+                height: unset !important
+                i
+                    font-size 24px
+                    margin 5px 10px
+
+            td
+                height unset !important
+                &:before
+                    position: relative
+                    top: -2px
+                    padding-right: 10px
+                    white-space: nowrap
+                    font-weight: bold
+                    color #3a6861
+
+            td
+                border: none
+                position: relative
+                padding-left: 50%
+
+            table, thead, tbody, th, td
+                display: block !important
+
+            tr
+                border: 1px solid #ddd
+                display: block !important
+                &:nth-child(even)
+                    background-color #eee !important
+
+            .v-table tbody tr:hover:not(.v-datatable__expand-row)
+                background-color transparent
+
+            thead
+                tr
+                    position: absolute
+                    top: -9999px
+                    left: -9999px
 </style>

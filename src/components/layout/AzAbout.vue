@@ -51,7 +51,7 @@
             padding-right: 20px
 
 
-    @media (max-width: 450px)
+    @media (max-width: 720px)
         .v-footer
             display: none
 </style>
