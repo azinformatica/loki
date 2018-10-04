@@ -20,7 +20,7 @@
                 type: Boolean,
                 default: false
             },
-            class: {
+            cssClass: {
                 type: String,
                 default: ''
             }
@@ -47,8 +47,8 @@
                     'hide-border': this.hideBorder
                 }
 
-                if (this.class) {
-                    const classes = this.class.split(' ')
+                if (this.cssClass) {
+                    const classes = this.cssClass.split(' ')
                     classes.forEach(clazz => styleObj[clazz] = true)
                 }
                 return styleObj
