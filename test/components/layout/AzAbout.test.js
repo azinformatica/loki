@@ -1,4 +1,4 @@
-import AzAbout from '../../src/components/layout/AzAbout'
+import AzAbout from '../../../src/components/layout/AzAbout'
 import Vuex from 'vuex'
 import {shallowMount, createLocalVue} from '@vue/test-utils'
 import Vuetify from 'vuetify'

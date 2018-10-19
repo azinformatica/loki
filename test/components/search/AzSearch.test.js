@@ -1,4 +1,4 @@
-import AzSearch from '../../src/components/search/AzSearch'
+import AzSearch from '../../../src/components/search/AzSearch'
 import {shallowMount, mount, createLocalVue} from '@vue/test-utils'
 import Vuetify from 'vuetify'
 import Vue from 'vue'

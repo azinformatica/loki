@@ -1,4 +1,4 @@
-import AzContainer from '../../src/components/layout/AzContainer'
+import AzContainer from '../../../src/components/layout/AzContainer'
 import {shallowMount, createLocalVue} from '@vue/test-utils'
 import Vuetify from 'vuetify'
 import Vue from 'vue'

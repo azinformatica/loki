@@ -1,4 +1,4 @@
-import AzToolbar from '../../src/components/search/AzToolbar'
+import AzToolbar from '../../../src/components/search/AzToolbar'
 import {shallowMount, createLocalVue} from '@vue/test-utils'
 
 const localVue = createLocalVue();

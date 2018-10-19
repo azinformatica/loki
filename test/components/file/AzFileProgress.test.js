@@ -1,4 +1,4 @@
-import AzFileUpload from '../../src/components/file/AzFileProgress'
+import AzFileUpload from '../../../src/components/file/AzFileProgress'
 import Vuex from 'vuex'
 import {shallowMount, createLocalVue} from '@vue/test-utils'
 import Vuetify from 'vuetify'

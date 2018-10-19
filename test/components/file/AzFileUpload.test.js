@@ -1,4 +1,4 @@
-import AzFileUpload from '../../src/components/file/AzFileUpload'
+import AzFileUpload from '../../../src/components/file/AzFileUpload'
 import Vuex from 'vuex'
 import {shallowMount, createLocalVue} from '@vue/test-utils'
 

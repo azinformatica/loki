@@ -1,4 +1,4 @@
-import AzLogo from '../../src/components/layout/AzLogo'
+import AzLogo from '../../../src/components/layout/AzLogo'
 import Vuex from 'vuex'
 import {shallowMount, createLocalVue} from '@vue/test-utils'
 import Vuetify from 'vuetify'
