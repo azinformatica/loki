@@ -25,6 +25,7 @@
         "vuex": "^3.0.1"
     },
     "devDependencies": {
+        "@vue/test-utils": "^1.0.0-beta.25",
         "babel-core": "^6.26.0",
         "babel-jest": "^23.0.0",
         "babel-loader": "^7.1.2",
@@ -33,13 +34,12 @@
         "cross-env": "^5.0.5",
         "css-loader": "^0.28.7",
         "file-loader": "^1.1.4",
-        "jest": "^23.0.0",
-        "jest-serializer-vue": "^1.0.0",
+        "jest": "^23.6.0",
+        "jest-serializer-vue": "^2.0.2",
         "vue-jest": "^2.6.0",
         "vue-loader": "^13.0.5",
         "vue-router": "^3.0.1",
         "vue-template-compiler": "^2.4.4",
-        "vue-test-utils": "^1.0.0-beta.11",
         "webpack": "^3.6.0",
         "webpack-dev-server": "^2.9.1"
     },

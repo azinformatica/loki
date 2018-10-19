@@ -1,10 +1,12 @@
 import AzAvatar from '../../src/components/layout/AzAvatar'
 import Vuex from 'vuex'
-import {shallow, createLocalVue} from 'vue-test-utils'
-import Vuetify from 'vuetify';
+import {createLocalVue, mount} from '@vue/test-utils'
+import Vuetify from 'vuetify'
+import Vue from 'vue'
+
 
 const localVue = createLocalVue();
-localVue.use(Vuetify)
+Vue.use(Vuetify)
 localVue.use(Vuex)
 
 
@@ -30,7 +32,7 @@ describe('AzAvatar.test.js', () => {
             }
         })
 
-        wrapper = shallow(AzAvatar, {localVue, store})
+        wrapper = mount(AzAvatar, {localVue, store})
     })
 
     it('Computed properties are rendered properly', () => {
@@ -44,8 +46,6 @@ describe('AzAvatar.test.js', () => {
                 renderedHtml.toContain(wrapper.vm.avatarActions[key].icon)
             }
         );
-
-
     })
 
     it('Methods are defined', () => {

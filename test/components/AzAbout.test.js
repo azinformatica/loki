@@ -1,10 +1,12 @@
 import AzAbout from '../../src/components/layout/AzAbout'
 import Vuex from 'vuex'
-import {shallow, createLocalVue} from 'vue-test-utils'
-import Vuetify from 'vuetify';
+import {shallowMount, createLocalVue} from '@vue/test-utils'
+import Vuetify from 'vuetify'
+import Vue from 'vue'
+
 
 const localVue = createLocalVue();
-localVue.use(Vuetify)
+Vue.use(Vuetify)
 localVue.use(Vuex)
 
 
@@ -26,7 +28,7 @@ describe('AzAbout.test.js', () => {
         })
 
         //A Wrapper is an object that contains a mounted component
-        wrapper = shallow(AzAbout, { localVue, store })
+        wrapper = shallowMount(AzAbout, { localVue, store })
     })
 
 

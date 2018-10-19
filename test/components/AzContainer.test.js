@@ -1,9 +1,11 @@
 import AzContainer from '../../src/components/layout/AzContainer'
-import {shallow, createLocalVue} from 'vue-test-utils'
-import Vuetify from 'vuetify';
+import {shallowMount, createLocalVue} from '@vue/test-utils'
+import Vuetify from 'vuetify'
+import Vue from 'vue'
+
 
 const localVue = createLocalVue();
-localVue.use(Vuetify)
+Vue.use(Vuetify)
 
 
 
@@ -12,7 +14,7 @@ describe('AzContainer.test.js', () => {
     let wrapper
 
     beforeEach(() => {
-        wrapper = shallow(AzContainer, {
+        wrapper = shallowMount(AzContainer, {
                 localVue,
                 slots: {default: '**Default Content**'}
         })

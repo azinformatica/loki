@@ -1,11 +1,12 @@
 import AzTitle from '../../src/components/layout/AzTitle'
 import Vuex from 'vuex'
-import {shallow, createLocalVue} from 'vue-test-utils'
-import Vuetify from 'vuetify';
+import {shallowMount, createLocalVue} from '@vue/test-utils'
+import Vuetify from 'vuetify'
+import Vue from 'vue'
 
 
 const localVue = createLocalVue();
-localVue.use(Vuetify)
+Vue.use(Vuetify)
 localVue.use(Vuex)
 
 
@@ -27,7 +28,7 @@ describe('AzTitle.test.js', () => {
             }
         })
 
-        wrapper = shallow(AzTitle, {localVue, store})
+        wrapper = shallowMount(AzTitle, {localVue, store})
     })
 
     it('Computed properties are rendered properly', () => {

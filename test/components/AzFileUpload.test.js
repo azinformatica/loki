@@ -1,11 +1,11 @@
 import AzFileUpload from '../../src/components/file/AzFileUpload'
 import Vuex from 'vuex'
-import {shallow, createLocalVue} from 'vue-test-utils'
+import {shallowMount, createLocalVue} from '@vue/test-utils'
 
 const localVue = createLocalVue();
 localVue.use(Vuex)
 
-xdescribe('AzFileUpload.test.js', () => {
+describe('AzFileUpload.test.js', () => {
     let wrapper, props, store, actions
 
     beforeEach(() => {
@@ -27,7 +27,7 @@ xdescribe('AzFileUpload.test.js', () => {
             repository: 'repo1'
         }
 
-        wrapper = shallow(AzFileUpload, {localVue, store, props})
+        wrapper = shallowMount(AzFileUpload, {localVue, store, props})
         wrapper.setProps(props)
     })
 
@@ -44,6 +44,9 @@ xdescribe('AzFileUpload.test.js', () => {
     })
 
     it('Calls the store to upload the files that were selected through the component', () => {
+        const input = {value: ''}
+        document.getElementById = jest.fn().mockReturnValue(input)
+
         const filesToBeUploaded = [{name: 'file1'}, {name: 'file2'}]
         wrapper.vm.onSelectFiles(filesToBeUploaded)
 
@@ -74,6 +77,8 @@ xdescribe('AzFileUpload.test.js', () => {
             }
         }
         wrapper.vm.onDropFiles(droppedItems)
+
+
 
         expect(actions.uploadFile.mock.calls).toHaveLength(1)
         expect(actions.uploadFile.mock.calls[0][1].filename).toEqual(droppedItems['0'].name)

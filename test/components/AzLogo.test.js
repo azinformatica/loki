@@ -1,11 +1,12 @@
 import AzLogo from '../../src/components/layout/AzLogo'
 import Vuex from 'vuex'
-import {shallow, createLocalVue} from 'vue-test-utils'
-import Vuetify from 'vuetify';
+import {shallowMount, createLocalVue} from '@vue/test-utils'
+import Vuetify from 'vuetify'
+import Vue from 'vue'
 
 const localVue = createLocalVue();
-localVue.use(Vuetify)
-localVue.use(Vuex)
+Vue.use(Vuetify)
+Vue.use(Vuex)
 
 
 describe('AzLogo.test.js', () => {
@@ -28,7 +29,7 @@ describe('AzLogo.test.js', () => {
             }
         })
 
-        wrapper = shallow(AzLogo, {localVue, store})
+        wrapper = shallowMount(AzLogo, {localVue, store})
     })
 
     it('Computed properties are rendered properly', () => {

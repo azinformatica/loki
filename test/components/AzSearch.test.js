@@ -1,44 +1,65 @@
-import AzAdvancedSearch from '../../src/components/search/AzSearch'
-import {shallow, createLocalVue} from 'vue-test-utils'
-import Vuetify from 'vuetify';
+import AzSearch from '../../src/components/search/AzSearch'
+import {shallowMount, mount, createLocalVue} from '@vue/test-utils'
+import Vuetify from 'vuetify'
+import Vue from 'vue'
 
 const localVue = createLocalVue();
-localVue.use(Vuetify)
+Vue.use(Vuetify)
 
 
-xdescribe('AzSearch.test.js', () => {
+describe('AzSearch.test.js', () => {
 
     let wrapper
 
     beforeEach(() => {
-        wrapper = shallow(AzAdvancedSearch, localVue)
+
+        wrapper = shallowMount(AzSearch, {
+            localVue,
+            propsData: {
+                filter: {},
+                simpleSearchPlaceholder: 'Informe o objeto'
+            }
+        })
+
     })
 
-    xit('Default Data is correct', () => {
-        expect(wrapper.vm.isClosed).toBe(true)
-        expect(wrapper.vm.isActiveAdvancedSearch).toBe(false)
+    it('Default Data is correct', () => {
+        expect(wrapper.vm.hasAdvancedSearchItems).toBe(false)
+        expect(wrapper.vm.isClosedAdvancedSearch).toBe(true)
+        expect(wrapper.vm.isSimpleSearch).toBe(false)
+        expect(wrapper.vm.searchTextSize).toBe(200)
     })
 
-    xit('Toggle method is called after closing window', () => {
+    it('Toggle method is called after closing window', () => {
         spyOn(wrapper.vm, 'toggle')
         wrapper.vm.cancel()
         expect(wrapper.vm.toggle).toBeCalled()
     })
 
-    xit('Toggle method is OK', () => {
-        const isClosed = wrapper.vm.isClosed
+    it('Toggle method is OK', () => {
+        const isClosed = wrapper.vm.isClosedAdvancedSearch
         spyOn(wrapper.vm, 'closeAsideMenu')
 
         wrapper.vm.toggle()
 
-        expect(wrapper.vm.isClosed).toBe(!isClosed)
+        expect(wrapper.vm.isClosedAdvancedSearch).toBe(!isClosed)
         expect(wrapper.vm.closeAsideMenu).toBeCalled()
     })
 
-    xit('Search Button emits event', () => {
-        spyOn(wrapper.vm, 'callSearch')
-        wrapper.find('.btn__buscar').trigger('click')
-        expect(wrapper.vm.callSearch).toBeCalled()
+    it('Search Button emits event', () => {
+
+        // Full mount to render vuetify components correctly
+        let wrapperFull = mount(AzSearch, {
+            localVue,
+            propsData: {
+                filter: {},
+                simpleSearchPlaceholder: 'Informe o objeto'
+            }
+        })
+
+        spyOn(wrapperFull.vm, 'advancedSearch')
+        wrapperFull.find('.ad-search').trigger('click.native')
+        expect(wrapperFull.vm.advancedSearch).toBeCalled()
     })
 
 

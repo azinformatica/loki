@@ -1,29 +1,28 @@
 import AzToolbar from '../../src/components/search/AzToolbar'
-import {shallow, createLocalVue} from 'vue-test-utils'
-import Vuetify from 'vuetify';
+import {shallowMount, createLocalVue} from '@vue/test-utils'
 
 const localVue = createLocalVue();
-localVue.use(Vuetify)
 
-xdescribe('AzToolbar.test.js', () => {
+
+
+describe('AzToolbar.test.js', () => {
 
     let wrapper
 
 
     beforeEach(() => {
-        wrapper = shallow(AzToolbar, {
+        wrapper = shallowMount(AzToolbar, {
+            localVue,
             slots: {
-                actions: '*Actions Slot*',
-                simpleSearch: '*Simple Search Slot*',
-                advanceSearch: '*Advanced Search Slot*'
+                actions: '<div>Actions Slot</div>',
+                simpleSearch: '<div>Simple Search Slot</div>'
             }
         })
     })
 
     it('Computed properties are rendered properly', () => {
-        expect(wrapper.html()).toContain('*Actions Slot*');
-        expect(wrapper.html()).toContain('*Simple Search Slot*');
-        expect(wrapper.html()).toContain('*Advanced Search Slot*')
+        expect(wrapper.html()).toContain('Actions Slot');
+        expect(wrapper.html()).toContain('Simple Search Slot');
     })
 
     it('Component style is used', () => {

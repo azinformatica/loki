@@ -1,15 +1,15 @@
 import AzMenu from '../../src/components/layout/AzMenu'
 import Vuex from 'vuex'
-import {shallow, createLocalVue} from 'vue-test-utils'
+import {shallowMount, createLocalVue, mount} from '@vue/test-utils'
 import Vuetify from 'vuetify';
 import VueRouter from 'vue-router'
-
+import Vue from 'vue'
 
 
 const localVue = createLocalVue();
-localVue.use(Vuetify)
-localVue.use(Vuex)
-localVue.use(VueRouter)
+Vue.use(Vuetify)
+Vue.use(Vuex)
+Vue.use(VueRouter)
 
 
 describe('AzMenu.test.js', () => {
@@ -63,7 +63,7 @@ describe('AzMenu.test.js', () => {
             }
         })
 
-        wrapper = shallow(AzMenu, {localVue, store, router})
+        wrapper = shallowMount(AzMenu, {localVue, store, router})
     })
 
     it('Computed properties are rendered properly', () => {
@@ -83,9 +83,12 @@ describe('AzMenu.test.js', () => {
     })
 
     it('Click on Buttons', () => {
-        spyOn(wrapper.vm, 'redirectTo')
-        wrapper.find('.v-list__tile--link').trigger('click')
-        expect(wrapper.vm.redirectTo).toBeCalled()
+        // Full mount to render vuetify components correctly
+        let wrapperFull = mount(AzMenu, {localVue, store, router})
+
+        spyOn(wrapperFull.vm, 'redirectTo')
+        wrapperFull.find('.menu-item').trigger('click.native')
+        expect(wrapperFull.vm.redirectTo).toBeCalled()
     })
 
 

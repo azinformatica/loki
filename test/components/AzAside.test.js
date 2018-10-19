@@ -1,11 +1,11 @@
 import AzAside from '../../src/components/layout/AzAside'
-import Vue from 'vue'
 import Vuex from 'vuex'
-import {shallow, createLocalVue} from 'vue-test-utils'
-import Vuetify from 'vuetify';
+import {shallowMount, createLocalVue} from '@vue/test-utils'
+import Vuetify from 'vuetify'
+import Vue from 'vue'
 
 const localVue = createLocalVue();
-localVue.use(Vuetify)
+Vue.use(Vuetify)
 localVue.use(Vuex)
 
 describe('AzAside.test.js', () => {
@@ -22,7 +22,7 @@ describe('AzAside.test.js', () => {
             }
         })
 
-        wrapper = shallow(AzAside, { localVue, store })
+        wrapper = shallowMount(AzAside, { localVue, store })
     })
 
 
