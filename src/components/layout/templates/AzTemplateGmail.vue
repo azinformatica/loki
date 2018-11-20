@@ -36,7 +36,7 @@
             <az-avatar/>
         </v-toolbar>
         <v-content>
-            <v-container fluid class="container">
+            <v-container fluid class="content-container">
                 <az-notification></az-notification>
                 <slot/>
                 <v-footer app inset>
@@ -116,7 +116,7 @@
                     i
                         font-size 24px !important
 
-        .container
+        .content-container
             background-color #eee
             height 100%
             padding: 0
