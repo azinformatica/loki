@@ -10,7 +10,8 @@ import AzLogo from './components/layout/AzLogo'
 import AzMenu from './components/layout/AzMenu'
 import AzAbout from './components/layout/AzAbout'
 import AzAside from './components/layout/AzAside'
-import AzTemplate from './components/layout/AzTemplate'
+import AzTemplateDefault from './components/layout/templates/AzTemplateDefault'
+import AzTemplateGmail from './components/layout/templates/AzTemplateGmail'
 import AzContainer from './components/layout/AzContainer'
 import AzOps from './components/layout/AzOps'
 import AzModal from './components/layout/AzModal'
@@ -56,7 +57,8 @@ const lokiPlugin = {
         Vue.component('az-menu', AzMenu)
         Vue.component('az-about', AzAbout)
         Vue.component('az-aside', AzAside)
-        Vue.component('az-template', AzTemplate)
+        Vue.component('az-template-default', AzTemplateDefault)
+        Vue.component('az-template-gmail', AzTemplateGmail)
         Vue.component('az-container', AzContainer)
         Vue.component('az-ops', AzOps)
         Vue.component('az-modal', AzModal)

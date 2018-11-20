@@ -76,7 +76,7 @@
                 margin-left: 0
 
             &__content
-                color: #777777
+                color: var(--v-primary-darken3)
                 font-weight: normal
                 font-size: 14px
                 i

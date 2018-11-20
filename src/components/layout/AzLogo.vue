@@ -29,22 +29,16 @@
 
 <style lang="stylus">
     .az-logo
-        display: -webkit-flex
-        display: flex
-        align-items: center
-        height: 120px
-        width: 100%
-        text-align: center
-        overflow: hidden
-        position: fixed
-        border-bottom: 1px solid rgba(255, 255, 255, 0.2)
+        display flex
+        align-items center
+        height 100%
+        width 100%
+        text-align center
+        overflow hidden
         a
             width: 100%
-
         .main
-            width: 200px
-            padding: 40px
+            height 40px
         .symbol
-            width: 30px
-            height: 60px
+            height: 40px
 </style>

@@ -2,7 +2,7 @@
     <div class="az-menu">
         <v-list subheader>
             <div v-for="menu in menuActions" :key="menu.name">
-                <v-list-tile active-class="secondary" dark v-if="!menu.children" :to="menu.path" exact
+                <v-list-tile active-class="active-menu" dark v-if="!menu.children" :to="menu.path" exact
                              @click="redirectTo(menu.path)" class="menu-item">
                     <v-list-tile-action>
                         <v-icon>{{ menu.icon }}</v-icon>
@@ -14,7 +14,7 @@
                 <v-list-group v-else
                               v-model="menu.expanded"
                               no-action class="menu-item">
-                    <v-list-tile active-class="secondary" slot="activator">
+                    <v-list-tile active-class="active-menu" slot="activator">
                         <v-list-tile-action>
                             <v-icon>{{ menu.icon }}</v-icon>
                         </v-list-tile-action>
@@ -126,6 +126,12 @@
     }
 </script>
 <style lang="stylus">
+    .active-menu
+        color white !important
+        font-weight bold !important
+        .v-list__tile__action
+            i
+                color white !important
     .menu-avatar-mobile .item
         border-top: 1px solid rgba(255, 255, 255, .1)
         border-bottom: 1px solid rgba(0, 0, 0, 0.2);
@@ -153,27 +159,42 @@
             border-top: none
             border-bottom: none
             &:hover
-                background-color lighten(#d79641, 20%) !important
+                background-color rgba(0,0,0,0.1) !important
                 transition: 0 !important
+                color white !important
+                font-weight bold !important
+                .v-list__tile__action
+                    i
+                        color white !important
 
             .v-list__tile:hover
-                background-color lighten(#d79641, 20%) !important
+                background-color rgba(0,0,0,0.1) !important
                 transition: 0 !important
+                color white !important
+                font-weight bold !important
+                .v-list__tile__action
+                    i
+                        color white !important
 
     .az-menu
         font-size: 13px
         .icon
-            color: rgba(255, 255, 255, 0.8)
+            color: rgba(255, 255, 255, 0.5)
         .primary--text
-            color: rgba(255, 255, 255, 0.8) !important
+            color: rgba(255, 255, 255, 0.5) !important
         .material-icons
             font-size: 20px
-            color: rgba(255, 255, 255, 0.8)
+            color: rgba(255, 255, 255, 0.5) !important
         .v-list
             padding: 0
             a:hover
-                color: rgba(255, 255, 255, 0.8) !important
-                background-color lighten(#d79641, 20%) !important
+                color: rgba(255, 255, 255, 0.5) !important
+                background-color rgba(0,0,0,0.1) !important
+                color white !important
+                font-weight bold !important
+                .v-list__tile__action
+                    i
+                        color white !important
             &__group
                 border-bottom: 1px solid rgba(255, 255, 255, 0.2)
                 &--active::before
@@ -191,26 +212,34 @@
                     &__append-icon
                         padding: 0 5px 0 0
                     &:hover
-                        background-color: lighten(#d79641, 20%) !important
+                        background-color rgba(0,0,0,0.1) !important
+                        color white !important
+                        font-weight bold !important
+                        .v-list__tile__action
+                            i
+                                color white !important
             &__tile
                 height: 44px
-                padding: 0 12px
+                padding: 0 10px
                 color: rgba(255, 255, 255, 0.8)
                 transition unset !important
                 &:hover
-                    background-color lighten(#d79641, 20%) !important
+                    background-color rgba(0,0,0,0.1) !important
+                    color white !important
+                    font-weight bold !important
+                    .v-list__tile__action
+                        i
+                            color white !important
                 &__title
                     font-size: 14px
                 &__action
                     min-width: unset
-                    padding-right: 10px
-                    padding-left: 5px
+                    padding-right: 20px;
+                    padding-left: 8px;
                     background-color: none !important
                     i
                         font-size: 20px
 
-    .menu-item
-        border-bottom: 1px solid rgba(255, 255, 255, .2)
 
     @media (min-width: 720px)
         .mobile
