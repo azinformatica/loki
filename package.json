@@ -17,8 +17,11 @@
     "dependencies": {
         "accounting": "^0.4.1",
         "ajv": "^6.5.3",
+        "element-resize-event": "^3.0.3",
+        "imagesloaded": "^4.1.4",
         "lodash": "^4.17.10",
         "moment-timezone": "^0.5.21",
+        "scrollmonitor": "^1.2.4",
         "v-money": "^0.8.1",
         "vue": "^2.5.16",
         "vuetify": "^1.2.2",

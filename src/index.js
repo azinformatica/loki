@@ -24,6 +24,7 @@ import AzFormbar from './components/form/AzFormbar'
 import AzMoney from './components/form/AzMoney'
 import AzFileUpload from './components/file/AzFileUpload'
 import AzFileProgress from './components/file/AzFileProgress'
+import AzDocumentViewer from './components/file/AzDocumentViewer'
 import AzConfirm from './components/actions/AzConfirm'
 import AzBackButton from './components/actions/AzBackButton'
 import AzCallToAction from './components/actions/AzCallToAction'
@@ -71,6 +72,7 @@ const lokiPlugin = {
         Vue.component('az-money',AzMoney)
         Vue.component('az-file-upload', AzFileUpload)
         Vue.component('az-file-progress', AzFileProgress)
+        Vue.component('az-document-viewer', AzDocumentViewer)
         Vue.component('az-confirm', AzConfirm)
         Vue.component('az-back-button', AzBackButton)
         Vue.component('az-call-to-action', AzCallToAction)
