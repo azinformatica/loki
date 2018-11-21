@@ -37,8 +37,4 @@
         overflow hidden
         a
             width: 100%
-        .main
-            height 40px
-        .symbol
-            height: 40px
 </style>

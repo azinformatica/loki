@@ -20,7 +20,7 @@
             <az-avatar/>
         </v-toolbar>
         <v-content>
-            <v-container fluid class="content-container">
+            <v-container fluid class="container">
                 <az-notification></az-notification>
                 <slot/>
                 <v-footer app inset>
@@ -51,10 +51,9 @@
         .az-aside
             .logo
                 border-bottom 1px solid rgba(255,255,255,0.1)
-                padding 5px
                 height 120px
 
-        .content-container
+        .container
             background-color #eee
             height 100%
             padding: 0

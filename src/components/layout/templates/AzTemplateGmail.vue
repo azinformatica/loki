@@ -8,10 +8,10 @@
                     <az-logo/>
                 </div>
                 <div class="action">
-                    <v-btn class="show" color="secondary" depressed v-if="!asideClosed" @click="$emit('mainActionEvent')">
+                    <v-btn depressed v-if="!asideClosed" class="show" color="secondary" @click="$emit('mainActionEvent')">
                         {{labelMainAction}}
                     </v-btn>
-                    <v-btn class="hide" color="secondary" depressed v-else fab small @click="$emit('mainActionEvent')">
+                    <v-btn depressed v-else fab small class="hide" color="secondary" @click="$emit('mainActionEvent')">
                         <v-icon>{{iconMainAction}}</v-icon>
                     </v-btn>
                 </div>
@@ -25,7 +25,7 @@
             <v-icon class="mobile_menu" @click="showAside()">dehaze</v-icon>
             <div class="top-search">
                 <div class="input-search">
-                    <input class="input-text" v-model="searchText" placeholder="O que você procura?"
+                    <input class="input-text" v-model="searchText" :placeholder="placeholderSearch"
                            @keyup.enter="$emit('searchEvent', searchText)"/>
                 </div>
                 <v-btn class="icon-search" fab dark small depressed @click="$emit('searchEvent', searchText)">
@@ -33,10 +33,10 @@
                 </v-btn>
             </div>
             <v-spacer></v-spacer>
-            <az-avatar/>
+            <az-avatar color="white"/>
         </v-toolbar>
         <v-content>
-            <v-container fluid class="content-container">
+            <v-container fluid class="container">
                 <az-notification></az-notification>
                 <slot/>
                 <v-footer app inset>
@@ -58,11 +58,15 @@
         props: {
             labelMainAction: {
                 type: String,
-                required: true
+                default: 'NOVO'
             },
             iconMainAction: {
                 type: String,
-                required: true
+                default: 'add'
+            },
+            placeholderSearch: {
+                type: String,
+                default: 'O que você procura?'
             }
         },
         data() {
@@ -91,7 +95,6 @@
                 height 60px
                 border-right 1px solid rgba(255,255,255,0.1)
                 background-color: var(--v-primary-lighten1) !important
-                padding 5px
                 border-bottom: 1px solid rgba(255,255,255,0.1);
             .action
                 text-align: center
@@ -116,7 +119,7 @@
                     i
                         font-size 24px !important
 
-        .content-container
+        .container
             background-color #eee
             height 100%
             padding: 0
@@ -126,7 +129,7 @@
             .top-search
                 width 400px
                 height 28px
-                background-color:var(--v-primary-darken1) !important
+                background-color: var(--v-primary-darken1) !important
                 display flex
                 align-items center
                 .input-search
@@ -138,7 +141,7 @@
                         width 400px
                         font-size 12px
                         outline none
-                        color: rgba(255, 255, 255, 0.8)
+                        color: #fff
                 ::placeholder
                     color: rgba(255, 255, 255, 0.3)
                 :-ms-input-placeholder
@@ -149,7 +152,7 @@
                     margin: 0 10px 0 0
                     padding: 0
                     font-weight normal
-                    background-color:var(--v-primary-darken1) !important
+                    background-color: var(--v-primary-darken1) !important
                     border-radius 0
                     color: rgba(255, 255, 255, 0.3)
 

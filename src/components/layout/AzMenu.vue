@@ -71,7 +71,8 @@
             },
             avatarActions() {
                 return this.$store.state.loki.avatarActions
-            }
+            },
+
         },
         mounted() {
             const currentActiveMenu = this.getCurrentActiveMenu()
@@ -119,7 +120,7 @@
             submenuStyle(submenu) {
                 return {
                     'az-submenu__tile': true,
-                    'secondary': this.isMenuItemActive(submenu)
+                    'active-menu': this.isMenuItemActive(submenu)
                 }
             }
         }
@@ -129,6 +130,10 @@
     .active-menu
         color white !important
         font-weight bold !important
+        background-color var(--v-primary-darken1) !important
+        .v-list__tile__title
+            color white
+            font-weight bold
         .v-list__tile__action
             i
                 color white !important
@@ -152,6 +157,8 @@
 
     .az-submenu
         background-color: rgba(0, 0, 0, 0.1)
+        .v-list__tile
+            padding-left: 0 !important
         &__tile
             padding-top: 3px
             padding-left: 25px
@@ -159,7 +166,7 @@
             border-top: none
             border-bottom: none
             &:hover
-                background-color rgba(0,0,0,0.1) !important
+                background-color var(--v-primary-darken1) !important
                 transition: 0 !important
                 color white !important
                 font-weight bold !important
@@ -168,7 +175,7 @@
                         color white !important
 
             .v-list__tile:hover
-                background-color rgba(0,0,0,0.1) !important
+                background-color var(--v-primary-darken1) !important
                 transition: 0 !important
                 color white !important
                 font-weight bold !important
@@ -189,7 +196,7 @@
             padding: 0
             a:hover
                 color: rgba(255, 255, 255, 0.5) !important
-                background-color rgba(0,0,0,0.1) !important
+                background-color var(--v-primary-darken1) !important
                 color white !important
                 font-weight bold !important
                 .v-list__tile__action
@@ -212,7 +219,7 @@
                     &__append-icon
                         padding: 0 5px 0 0
                     &:hover
-                        background-color rgba(0,0,0,0.1) !important
+                        background-color var(--v-primary-darken1) !important
                         color white !important
                         font-weight bold !important
                         .v-list__tile__action
@@ -224,7 +231,7 @@
                 color: rgba(255, 255, 255, 0.8)
                 transition unset !important
                 &:hover
-                    background-color rgba(0,0,0,0.1) !important
+                    background-color var(--v-primary-darken1) !important
                     color white !important
                     font-weight bold !important
                     .v-list__tile__action
