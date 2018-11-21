@@ -1,17 +1,12 @@
 <template>
     <v-navigation-drawer app :mini-variant.sync="asideClosed" v-model="drawer" mobile-break-point="720"
-                         mini-variant-width="60" width="200" class="az-aside primary" floating>
-        <div class="az-aside__logo">
-            <slot name="logo"></slot>
-        </div>
-        <div class="az-aside__menu">
-            <slot name="menu"></slot>
-        </div>
-
+                         mini-variant-width="60" :width="width" class="az-aside primary" floating>
+        <slot></slot>
         <div :class="{'arrow-opened' : !asideClosed, 'arrow-closed' : asideClosed}" class="no-mobile">
             <v-btn icon @click="toogle()" flat>
-                <v-icon color="white">{{ asideClosed ? 'keyboard_arrow_right' : 'keyboard_arrow_left' }}</v-icon>
+                <v-icon color="rgba(255, 255, 255, 0.3)">{{ asideClosed ? 'keyboard_arrow_right' : 'keyboard_arrow_left' }}</v-icon>
             </v-btn>
+            <a v-if="!asideClosed" class="text-hide-menu" @click="toogle()">Recolher menu</a>
         </div>
     </v-navigation-drawer>
 </template>
@@ -19,6 +14,11 @@
     import mutationTypes from '../../store/mutations-types'
 
     export default {
+        props: {
+            width: {
+                default: 200
+            }
+        },
         methods: {
             toogle() {
                 this.$store.commit(mutationTypes.TOOGLE_ASIDE)
@@ -58,6 +58,9 @@
         padding: 0
         max-height: unset !important
 
+        .text-hide-menu
+            color rgba(255, 255, 255, 0.3)
+
         &__menu
             height: 100%
             padding-bottom: 40px
@@ -66,7 +69,7 @@
         .arrow-closed
             position: absolute
             bottom: 0
-            width: 60px
+            width: 100%
             border-top: 1px solid rgba(255, 255, 255, 0.1)
             display: flex
             align-items: center
@@ -84,7 +87,7 @@
         .arrow-opened
             position: absolute
             bottom: 0
-            width: 200px
+            width: 100%
             height: 36px !important
             border-top: 1px solid rgba(255, 255, 255, 0.1)
 

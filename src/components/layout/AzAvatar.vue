@@ -1,7 +1,7 @@
 <template>
     <v-toolbar-items class="az-avatar">
         <v-menu class="hidden-xs-only" bottom="bottom" left="left" offset-y="offset-y" attach="attach">
-            <v-btn class="az-avatar__username" slot="activator" flat="flat">
+            <v-btn class="az-avatar__username" slot="activator" flat="flat" :color="color">
                 <span>{{ userName }}</span>
                 <v-icon right="right">keyboard_arrow_down</v-icon>
             </v-btn>
@@ -26,13 +26,19 @@
             </v-list>
         </v-menu>
         <v-avatar v-if="userName" class="az-avatar__picture" size="32px">
-            <v-icon medium v-if="!userPhoto">account_circle</v-icon>
+            <v-icon medium v-if="!userPhoto" :color="color">account_circle</v-icon>
             <img v-if="userPhoto" :src="userPhoto" alt="Foto do usuário"/>
         </v-avatar>
     </v-toolbar-items>
 </template>
 <script>
     export default {
+        props: {
+            color: {
+                type: String,
+                default: '#777'
+            }
+        },
         computed: {
             userPhoto() {
                 return this.$store.state.loki.user.photo
@@ -61,6 +67,7 @@
         right: 20px
         display: block
         font-size: 14px
+        align-items center
         &__logout
             border-top: 1px solid #ccc
 
@@ -76,7 +83,6 @@
                 margin-left: 0
 
             &__content
-                color: #777777
                 font-weight: normal
                 font-size: 14px
                 i

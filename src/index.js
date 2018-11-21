@@ -10,7 +10,8 @@ import AzLogo from './components/layout/AzLogo'
 import AzMenu from './components/layout/AzMenu'
 import AzAbout from './components/layout/AzAbout'
 import AzAside from './components/layout/AzAside'
-import AzTemplate from './components/layout/AzTemplate'
+import AzTemplateDefault from './components/layout/templates/AzTemplateDefault'
+import AzTemplateGmail from './components/layout/templates/AzTemplateGmail'
 import AzContainer from './components/layout/AzContainer'
 import AzOps from './components/layout/AzOps'
 import AzModal from './components/layout/AzModal'
@@ -23,6 +24,7 @@ import AzFormbar from './components/form/AzFormbar'
 import AzMoney from './components/form/AzMoney'
 import AzFileUpload from './components/file/AzFileUpload'
 import AzFileProgress from './components/file/AzFileProgress'
+import AzDocumentViewer from './components/file/AzDocumentViewer'
 import AzConfirm from './components/actions/AzConfirm'
 import AzBackButton from './components/actions/AzBackButton'
 import AzCallToAction from './components/actions/AzCallToAction'
@@ -56,7 +58,8 @@ const lokiPlugin = {
         Vue.component('az-menu', AzMenu)
         Vue.component('az-about', AzAbout)
         Vue.component('az-aside', AzAside)
-        Vue.component('az-template', AzTemplate)
+        Vue.component('az-template-default', AzTemplateDefault)
+        Vue.component('az-template-gmail', AzTemplateGmail)
         Vue.component('az-container', AzContainer)
         Vue.component('az-ops', AzOps)
         Vue.component('az-modal', AzModal)
@@ -69,6 +72,7 @@ const lokiPlugin = {
         Vue.component('az-money',AzMoney)
         Vue.component('az-file-upload', AzFileUpload)
         Vue.component('az-file-progress', AzFileProgress)
+        Vue.component('az-document-viewer', AzDocumentViewer)
         Vue.component('az-confirm', AzConfirm)
         Vue.component('az-back-button', AzBackButton)
         Vue.component('az-call-to-action', AzCallToAction)
