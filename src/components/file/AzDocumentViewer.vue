@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="dv-controls" v-if="isZoomEnabled" :style="{'width': containerDimensions.width}">
+        <div class="az-dv-controls" v-if="isZoomEnabled" :style="{'width': containerDimensions.width}">
             <v-btn @click="zoomOut" depressed flat>
                 <v-icon>zoom_out</v-icon>
             </v-btn>
@@ -11,12 +11,12 @@
                 <v-icon>zoom_in</v-icon>
             </v-btn>
         </div>
-        <div id="azDocumentViewer" class="dv-container" :style="containerDimensions" ref="azDocumentViewer">
-            <div class="dv-pages">
+        <div id="azDocumentViewer" class="az-dv-container" :style="containerDimensions" ref="azDocumentViewer">
+            <div class="az-dv-pages">
                 <div :id="page.elementId" v-for="page in pages" :key="page.id">
-                    <img :src="page.image" class="dv-page" :style="pageZoom"/>
+                    <img :src="page.image" class="az-dv-page" :style="pageZoom"/>
                 </div>
-                <div class="dv-page-indicator" :style="pageIndicatorPosition">
+                <div class="az-dv-page-indicator" :style="pageIndicatorPosition">
                     Página {{currentPage}}
                 </div>
             </div>
@@ -159,19 +159,19 @@
 </script>
 
 <style scoped lang="stylus">
-    .dv-container
+    .az-dv-container
         background-color: gray
         position: relative
 
-    .dv-pages
+    .az-dv-pages
         text-align: center
         height: 100%
 
-    .dv-page
+    .az-dv-page
         border: 1px solid #000
         margin: 5% 5% 0 5%
 
-    .dv-page-indicator
+    .az-dv-page-indicator
         position: fixed
         width: 320px
         padding: 20px
@@ -182,7 +182,7 @@
         color: #fff
         background-color: #000
 
-    .dv-controls
+    .az-dv-controls
         display: flex
         background-color: white
         justify-content: center
