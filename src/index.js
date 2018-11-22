@@ -22,6 +22,8 @@ import AzDate from './components/form/AzDate'
 import AzForm from './components/form/AzForm'
 import AzFormbar from './components/form/AzFormbar'
 import AzMoney from './components/form/AzMoney'
+import AzTextView from './components/form/AzTextView'
+import AzComboEnum from './components/form/AzComboEnum'
 import AzFileUpload from './components/file/AzFileUpload'
 import AzFileProgress from './components/file/AzFileProgress'
 import AzDocumentViewer from './components/file/AzDocumentViewer'
@@ -29,7 +31,18 @@ import AzConfirm from './components/actions/AzConfirm'
 import AzBackButton from './components/actions/AzBackButton'
 import AzCallToAction from './components/actions/AzCallToAction'
 import AzDialog from './components/actions/AzDialog'
-import menu from './menu'
+
+import azAuth from './directives/auth'
+
+import azCpfCnpjFilter from './filters/cpf-cnpj'
+import azDateFilter from './filters/date'
+import azClipTextFilter from './filters/clip-text'
+import azPhoneFilter from './filters/phone'
+import azTitleCaseFilter from './filters/title-case'
+
+import AzSearchUrlBuilder from './utils/AzSearchUrlBuilder'
+import AzSoundex from './utils/AzSoundex'
+import buildMenu from './utils/az-menu'
 
 Vue.use(accounting)
 Vue.use(money, {
@@ -70,6 +83,8 @@ const lokiPlugin = {
         Vue.component('az-form', AzForm)
         Vue.component('az-formbar', AzFormbar)
         Vue.component('az-money',AzMoney)
+        Vue.component('az-text-view', AzTextView)
+        Vue.component('az-combo-enum', AzComboEnum)
         Vue.component('az-file-upload', AzFileUpload)
         Vue.component('az-file-progress', AzFileProgress)
         Vue.component('az-document-viewer', AzDocumentViewer)
@@ -78,7 +93,15 @@ const lokiPlugin = {
         Vue.component('az-call-to-action', AzCallToAction)
         Vue.component('az-dialog', AzDialog)
 
-        store.commit(mutationsTypes.SET_MENU_ACTIONS, menu(store, router))
+        Vue.directive('az-auth', azAuth)
+
+        Vue.filter('az-cpf-cnpj', azCpfCnpjFilter)
+        Vue.filter('az-date', azDateFilter)
+        Vue.filter('az-clip-text', azClipTextFilter)
+        Vue.filter('az-phone', azPhoneFilter)
+        Vue.filter('az-title-case', azTitleCaseFilter)
+
+        store.commit(mutationsTypes.SET_MENU_ACTIONS, buildMenu(store, router))
 
         router.afterEach((to, from) => {
             store.commit(mutationsTypes.SET_CURRENT_PAGE, to)
@@ -87,3 +110,19 @@ const lokiPlugin = {
 }
 
 export default lokiPlugin
+
+const filters = {
+    azCpfCnpjFilter,
+    azDateFilter,
+    azClipTextFilter,
+    azPhoneFilter,
+    azTitleCaseFilter
+}
+
+export {
+    lokiPlugin,
+    filters,
+    AzSearchUrlBuilder,
+    AzSoundex,
+    buildMenu
+}
