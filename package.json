@@ -24,6 +24,7 @@
         "scrollmonitor": "^1.2.4",
         "soundex": "^0.2.1",
         "string-mask": "^0.3.0",
+        "string-similarity": "^2.0.0",
         "v-money": "^0.8.1",
         "vue": "^2.5.16",
         "vuetify": "^1.2.2",
