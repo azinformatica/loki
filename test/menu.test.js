@@ -1,4 +1,4 @@
-import menu from '../src/menu'
+import menu from '../src/utils/menu'
 
 describe('menu.test.js', () => {
 
