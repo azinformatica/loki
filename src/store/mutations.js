@@ -75,7 +75,7 @@ export default {
     },
 
     [mutationTypes.SHOW_NOTIFICATION](state, {message, type}) {
-        state.notificacao = {message, type}
+        state.notification = {message, type}
     },
 
     [mutationTypes.REMOVE_UPLOAD_FILE_PROGRESS](state, filename) {
