@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="az-dv-controls" v-if="isZoomEnabled" :style="{'width': containerDimensions.width}">
+        <div class="az-dv-controls" v-if="isZoomEnabled" :style="{'width': containerStyle.width}">
             <v-btn @click="zoomOut" depressed flat>
                 <v-icon>zoom_out</v-icon>
             </v-btn>
@@ -11,7 +11,7 @@
                 <v-icon>zoom_in</v-icon>
             </v-btn>
         </div>
-        <div id="azDocumentViewer" class="az-dv-container" :style="containerDimensions" ref="azDocumentViewer">
+        <div id="azDocumentViewer" class="az-dv-container" :style="containerStyle" ref="azDocumentViewer">
             <div class="az-dv-pages">
                 <div :id="page.elementId" v-for="page in pages" :key="page.id">
                     <img :src="page.image" class="az-dv-page" :style="pageZoom"/>
@@ -32,11 +32,15 @@
     export default {
         name: 'AzDocumentViewer',
         props: {
-            images: {
-                default: []
+            background: {
+                type: String,
+                default: '#ccc'
             },
             height: {
                 type: String
+            },
+            images: {
+                default: []
             },
             width: {
                 type: String
@@ -54,11 +58,12 @@
             }
         },
         computed: {
-            containerDimensions() {
+            containerStyle() {
                 return {
                     width: this.width ? this.width : 'auto',
                     height: this.height ? this.height : 'auto',
-                    overflow: this.width || this.height ? 'scroll' : 'hidden'
+                    overflow: this.width || this.height ? 'scroll' : 'hidden',
+                    'background-color': this.background
                 }
             },
             isZoomEnabled() {
@@ -160,7 +165,6 @@
 
 <style scoped lang="stylus">
     .az-dv-container
-        background-color: gray
         position: relative
 
     .az-dv-pages
@@ -168,7 +172,7 @@
         height: 100%
 
     .az-dv-page
-        border: 1px solid #000
+        border: 1px solid #ccc
         margin: 5% 5% 0 5%
 
     .az-dv-page-indicator
