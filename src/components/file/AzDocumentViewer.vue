@@ -16,7 +16,7 @@
                 <div :id="page.elementId" v-for="page in pages" :key="page.id">
                     <img :src="page.image" class="az-dv-page" :style="pageZoom"/>
                 </div>
-                <div class="az-dv-page-indicator" :style="pageIndicatorPosition">
+                <div class="az-dv-page-indicator" :style="pageIndicatorPosition" v-show="showPageIndicator">
                     Página {{currentPage}}
                 </div>
             </div>
@@ -53,8 +53,9 @@
         data() {
             return {
                 currentPage: 1,
-                zoom: 85,
-                pageIndicatorPosition: {}
+                pageIndicatorPosition: {},
+                showPageIndicator: false,
+                zoom: 85
             }
         },
         computed: {
@@ -141,6 +142,7 @@
                 const azDocumentViewerElement = document.getElementById('azDocumentViewer')
                 imagesloaded(azDocumentViewerElement, () => {
                     this.calcPageIndicatorPosition()
+                    this.showPageIndicator = true
                 })
                 elementResizeEvent(azDocumentViewerElement, () => {
                     this.calcPageIndicatorPosition()
