@@ -251,8 +251,11 @@
                     this.$emit('input', value)
                     return
                 }
-                if (!this.time)
-                    this.$emit('input', value)
+                if (!this.time) {
+                    const dateTimeWithTimezone = this.buildDateTimeWithTimezone(value, '00:00')
+                    const dateTimeTimezoneZero = this.getDateTimeZeroTimezone(dateTimeWithTimezone)
+                    this.$emit('input', dateTimeTimezoneZero)
+                }
             },
             updateModelTime(value) {
                 if (this.date && value) {
