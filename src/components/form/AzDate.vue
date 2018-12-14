@@ -26,7 +26,7 @@
                     mask="date"
                     :placeholder="dateFormat"
                     append-icon="event"
-                    v-bind:append-icon-cb="openMenuDate"
+                    @click:append="openMenuDate"
                     @blur="validateAndParseDate(dateFormatted);updateModelDate(date);">
             </v-text-field>
         </div>
@@ -58,7 +58,7 @@
                     mask="time"
                     placeholder="HH:mm"
                     append-icon="access_time"
-                    v-bind:append-icon-cb="openMenuTime"
+                    @click:append="openMenuTime"
                     @blur="validateTimeEvent();updateModelTime(time);"
             ></v-text-field>
         </div>
