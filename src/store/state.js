@@ -30,7 +30,7 @@ export default {
         }
     },
     menuActions: [],
-    notification: {},
+    alert: {},
 
     filesApi: '/public/arquivos',
     uploadFileProgress: {},
@@ -41,6 +41,14 @@ export default {
     loadingMessage: 'Please, wait...',
 
     timezone: 'America/Sao_Paulo',
-    offset: '-03:00'
+    offset: '-03:00',
+
+    notification: {},
+    notificationConfig: {
+        refreshTimeout: 30 * 1000,
+        activeFilter: 'Todas',
+        filters: ['Todas', 'Lidas', 'Não Lidas'],
+        title: 'Notificações'
+    }
 
 }

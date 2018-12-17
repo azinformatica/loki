@@ -62,7 +62,7 @@
 </script>
 <style lang="stylus">
     .az-avatar
-        position: fixed
+        position: unset
         top: 0
         right: 20px
         display: block

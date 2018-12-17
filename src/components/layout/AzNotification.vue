@@ -1,31 +1,174 @@
 <template>
-    <v-snackbar v-model="show" :color="color" right top>
-        {{ text }}
-        <v-btn dark flat @click="show = false">
-            <v-icon small>close</v-icon>
+    <v-menu offset-y left class="notification notification__no-mobile" :close-on-content-click=false @input="setVisibility">
+        <v-btn icon slot="activator">
+            <v-badge right overlap color="secondary">
+                <span slot="badge" v-if="hasNotificationsToRead">{{notification.unread}}</span>
+                <v-icon color="white">notification_important</v-icon>
+            </v-badge>
         </v-btn>
-    </v-snackbar>
+        <v-list>
+            <div class="notification__top">
+                <b>{{title}}</b>
+                <div v-if="enableFiltering">
+                    <a v-for="filter in filters" :key="filter"
+                       :class="getActiveFilterClass(filter)" @click="filterBy(filter)">
+                        {{filter}}
+                    </a>
+                </div>
+            </div>
+            <div class="notification__body" id="notificationContainer" @scroll="checkEndOfPage">
+                <v-list-tile v-for="(message, index) in notification.messages"
+                             :key="index"
+                             :class="getNotificationCardClass(message)"
+                             @click="$emit('visit', message)">
+                    <div>
+                        <div v-html="message.text" class="text"></div>
+                        <div class="when">
+                            <v-icon size="14px">alarm</v-icon>
+                            {{message.when | az-elapsed-time}}
+                        </div>
+                    </div>
+                    <div>
+                        <v-icon size="14px" @click="$emit('remove', message)">close</v-icon>
+                    </div>
+                </v-list-tile>
+                <span id="notificationListEnd" style="color: #eee">Fim das notificações.</span>
+            </div>
+        </v-list>
+    </v-menu>
 </template>
 
 <script>
+    import {mapState, mapMutations} from 'vuex'
+    import mutationTypes from '../../store/mutations-types'
+
     export default {
         name: 'AzNotification',
-        data() {
-            return {
-                text: '',
-                color: '',
-                show: false
+        props: {
+            enableFiltering: {
+                type: Boolean,
+                default: false
             }
         },
-        created: function () {
-            this.$store.watch(state => state.loki.notification, () => {
-                const notification = this.$store.state.loki.notification
-                if (notification.message !== '') {
-                    this.show = true
-                    this.text = notification.message
-                    this.color = notification.type
+        data() {
+            return {
+                isOpen: false,
+                processUpdate: undefined
+            }
+        },
+        computed: {
+            ...mapState(['loki']),
+            activeFilter() {
+                return this.loki.notificationConfig.activeFilter
+            },
+            filters() {
+                return this.loki.notificationConfig.filters
+            },
+            hasNotificationsToRead() {
+                return this.notification.unread > 0
+            },
+            notification() {
+                return this.loki.notification
+            },
+            notificationConfig() {
+                return this.loki.notificationConfig
+            },
+            title() {
+                return this.loki.notificationConfig.title
+            }
+        },
+        created() {
+            this.setupUpdateInterval()
+        },
+        beforeDestroy() {
+            this.cancelAutoUpdate()
+        },
+        methods: {
+            ...mapMutations([mutationTypes.SET_NOTIFICATION_ACTIVE_FILTER]),
+            askForPagination() {
+                this.$emit('paginate')
+            },
+            askForRefresh() {
+                if (!this.isOpen) {
+                    this.$emit('refresh', this.activeFilter)
                 }
-            })
+            },
+            cancelAutoUpdate() {
+                if (this.processUpdate) {
+                    window.clearInterval(this.processUpdate)
+                }
+            },
+            checkEndOfPage() {
+                if (this.hasReachedEndOfPage()) {
+                    this.askForPagination()
+                }
+            },
+            filterBy(filter) {
+                this.setNotificationActiveFilter(filter)
+                this.askForRefresh()
+            },
+            getNotificationCardClass(message) {
+                return {
+                    notification__card: true,
+                    notification__unread: !message.read
+                }
+            },
+            getActiveFilterClass(filter) {
+                return {
+                    'font-weight-bold': filter === this.activeFilter
+                }
+            },
+            hasReachedEndOfPage() {
+                const docViewTop = document.getElementById('notificationContainer').scrollTop
+                const containerHeight = document.getElementById('notificationContainer').getBoundingClientRect().height
+                const docViewBottom = docViewTop + containerHeight
+                const elemTop = document.getElementById('notificationListEnd').getBoundingClientRect().top
+                const elemHeight = document.getElementById('notificationListEnd').getBoundingClientRect().height
+                return elemTop + elemHeight - 2 <= docViewBottom
+            },
+            setupUpdateInterval() {
+                const refreshTimeout = this.notificationConfig.refreshTimeout
+                this.processUpdate = window.setInterval(this.askForRequest, refreshTimeout)
+            },
+            setVisibility(visibility) {
+                this.isOpen = visibility
+            }
         }
     }
 </script>
+
+<style lang="stylus">
+    .notification
+        &__body
+            max-height 250px
+            overflow-y auto
+        &__top
+            padding 10px 20px
+            justify-content space-between
+            border-bottom 1px solid #eee
+            display flex
+            font-size 13px
+            color #777
+            a
+                color #777
+                margin-left 15px
+        &__unread
+            background-color #edf2fa
+        &__card a
+            border-bottom 1px solid #eee
+            width 400px
+            padding 10px 20px
+            height auto
+            .text
+                font-size 13px
+                color #777
+            .when
+                margin-top 5px
+                font-size 11px
+                color #777
+
+    @media (max-width: 720px)
+        .notification
+            &__no-mobile
+                display none !important
+</style>

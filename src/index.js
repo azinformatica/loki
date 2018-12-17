@@ -14,6 +14,7 @@ import AzTemplateDefault from './components/layout/templates/AzTemplateDefault'
 import AzTemplateGmail from './components/layout/templates/AzTemplateGmail'
 import AzTemplateVader from './components/layout/templates/AzTemplateVader'
 import AzContainer from './components/layout/AzContainer'
+import AzAlert from './components/layout/AzAlert'
 import AzOps from './components/layout/AzOps'
 import AzModal from './components/layout/AzModal'
 import AzSearch from './components/search/AzSearch'
@@ -35,9 +36,10 @@ import AzDialog from './components/actions/AzDialog'
 
 import azAuth from './directives/auth'
 
+import azClipTextFilter from './filters/clip-text'
 import azCpfCnpjFilter from './filters/cpf-cnpj'
 import azDateFilter from './filters/date'
-import azClipTextFilter from './filters/clip-text'
+import azElapsedTime from './filters/elapsed-time'
 import azPhoneFilter from './filters/phone'
 import azTitleCaseFilter from './filters/title-case'
 
@@ -76,6 +78,7 @@ const lokiPlugin = {
         Vue.component('az-template-gmail', AzTemplateGmail)
         Vue.component('az-template-vader', AzTemplateVader)
         Vue.component('az-container', AzContainer)
+        Vue.component('az-alert', AzAlert)
         Vue.component('az-ops', AzOps)
         Vue.component('az-modal', AzModal)
         Vue.component('az-search', AzSearch)
@@ -97,9 +100,10 @@ const lokiPlugin = {
 
         Vue.directive('az-auth', azAuth)
 
+        Vue.filter('az-clip-text', azClipTextFilter)
         Vue.filter('az-cpf-cnpj', azCpfCnpjFilter)
         Vue.filter('az-date', azDateFilter)
-        Vue.filter('az-clip-text', azClipTextFilter)
+        Vue.filter('az-elapsed-time', azElapsedTime)
         Vue.filter('az-phone', azPhoneFilter)
         Vue.filter('az-title-case', azTitleCaseFilter)
 

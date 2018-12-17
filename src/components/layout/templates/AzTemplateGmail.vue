@@ -33,11 +33,12 @@
                 </v-btn>
             </div>
             <v-spacer></v-spacer>
+            <az-notification/>
             <az-avatar color="white"/>
         </v-toolbar>
         <v-content>
             <v-container fluid class="container">
-                <az-notification></az-notification>
+                <az-alert/>
                 <slot/>
                 <v-footer app inset>
                     <az-file-progress></az-file-progress>
@@ -48,13 +49,14 @@
     </v-app>
 </template>
 <script>
-    import AzNotification from '../AzNotification'
+    import AzAlert from '../AzAlert'
     import AzFileProgress from '../../file/AzFileProgress'
     import AzLoading from '../AzLoading'
     import mutationTypes from '../../../store/mutations-types'
+    import AzNotification from '../AzNotification'
 
     export default {
-        components: {AzLoading, AzNotification, AzFileProgress},
+        components: {AzNotification, AzLoading, AzAlert, AzFileProgress},
         props: {
             labelMainAction: {
                 type: String,

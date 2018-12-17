@@ -59,6 +59,18 @@ export default {
         state.loadingMessage = message
     },
 
+    [mutationTypes.SET_NOTIFICATION](state, notification) {
+        state.notification = notification
+    },
+
+    [mutationTypes.SET_NOTIFICATION_CONFIG](state, notificationConfig) {
+        Vue.set(state, 'notificationConfig', notificationConfig)
+    },
+
+    [mutationTypes.SET_NOTIFICATION_ACTIVE_FILTER](state, activeFilter) {
+        Vue.set(state.notificationConfig, 'activeFilter', activeFilter)
+    },
+
     [mutationTypes.SET_UPLOADED_FILES](state, files) {
         state.uploadedFiles = files
     },
@@ -74,8 +86,8 @@ export default {
         }
     },
 
-    [mutationTypes.SHOW_NOTIFICATION](state, {message, type}) {
-        state.notification = {message, type}
+    [mutationTypes.SHOW_ALERT](state, {message, type}) {
+        state.alert = {message, type}
     },
 
     [mutationTypes.REMOVE_UPLOAD_FILE_PROGRESS](state, filename) {
