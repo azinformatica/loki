@@ -21,7 +21,7 @@
         </v-toolbar>
         <v-content>
             <v-container fluid class="container">
-                <az-notification></az-notification>
+                <az-alert/>
                 <slot/>
                 <v-footer app inset>
                     <az-file-progress></az-file-progress>
@@ -32,13 +32,13 @@
     </v-app>
 </template>
 <script>
-    import AzNotification from '../AzNotification'
+    import AzAlert from '../AzAlert'
     import AzFileProgress from '../../file/AzFileProgress'
     import AzLoading from '../AzLoading'
     import mutationTypes from '../../../store/mutations-types'
 
     export default {
-        components: {AzLoading, AzNotification, AzFileProgress},
+        components: {AzLoading, AzAlert, AzFileProgress},
         methods: {
             showAside() {
                 this.$store.commit(mutationTypes.SET_ASIDE_HIDE, true)

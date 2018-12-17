@@ -21,10 +21,13 @@ export default {
     SET_FILES_API: 'SET_FILES_API',
     SET_GLOBAL_LOADING: 'setGlobalLoading',
     SET_LOADING_MESSAGE: 'setLoadingMessage',
+    SET_NOTIFICATION: 'setNotification',
+    SET_NOTIFICATION_ACTIVE_FILTER: 'setNotificationActiveFilter',
+    SET_NOTIFICATION_CONFIG: 'setNotificationConfig',
     SET_UPLOADED_FILES: 'SET_UPLOADED_FILES',
     SET_PRODUCT_EXTENDED_ATTRS: 'SET_PRODUCT_EXTENDED_ATTRS',
     SET_TIMEZONE: 'setTimezone',
-    SHOW_NOTIFICATION: 'showNotification',
+    SHOW_ALERT: 'showAlert',
     REMOVE_UPLOAD_FILE_PROGRESS: 'REMOVE_UPLOAD_FILE_PROGRESS',
     TOOGLE_ASIDE: 'TOOGLE_ASIDE'
 }
