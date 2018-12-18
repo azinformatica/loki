@@ -1,6 +1,6 @@
 <template>
     <v-menu offset-y left class="notification notification__no-mobile" :close-on-content-click=false @input="setVisibility">
-        <v-btn icon slot="activator">
+        <v-btn icon slot="activator" @click="$emit('read')">
             <v-badge right overlap color="secondary">
                 <span slot="badge" v-if="hasNotificationsToRead">{{notification.unread}}</span>
                 <v-icon color="white">notification_important</v-icon>
@@ -16,7 +16,7 @@
                     </a>
                 </div>
             </div>
-            <div class="notification__body" id="notificationContainer" @scroll="checkEndOfPage">
+            <div class="notification__body" id="notificationContainer" @scroll="checkEndOfPage" v-if="hasMessages">
                 <v-list-tile v-for="(message, index) in notification.messages"
                              :key="index"
                              :class="getNotificationCardClass(message)"
@@ -34,6 +34,7 @@
                 </v-list-tile>
                 <span id="notificationListEnd" style="color: #eee">Fim das notificações.</span>
             </div>
+            <div v-else class="notification notification__top">Nenhuma notificação encontrada...</div>
         </v-list>
     </v-menu>
 </template>
@@ -63,6 +64,9 @@
             },
             filters() {
                 return this.loki.notificationConfig.filters
+            },
+            hasMessages() {
+                return this.notification.messages && this.notification.messages.length > 0
             },
             hasNotificationsToRead() {
                 return this.notification.unread > 0
@@ -128,7 +132,7 @@
             },
             setupUpdateInterval() {
                 const refreshTimeout = this.notificationConfig.refreshTimeout
-                this.processUpdate = window.setInterval(this.askForRequest, refreshTimeout)
+                this.processUpdate = window.setInterval(this.askForRefresh, refreshTimeout)
             },
             setVisibility(visibility) {
                 this.isOpen = visibility

@@ -8,7 +8,8 @@
                     <az-logo/>
                 </div>
                 <div class="action">
-                    <v-btn depressed v-if="!asideClosed" class="show" color="secondary" @click="$emit('mainActionEvent')">
+                    <v-btn depressed v-if="!asideClosed" class="show" color="secondary"
+                           @click="$emit('mainActionEvent')">
                         {{labelMainAction}}
                     </v-btn>
                     <v-btn depressed v-else fab small class="hide" color="secondary" @click="$emit('mainActionEvent')">
@@ -33,7 +34,9 @@
                 </v-btn>
             </div>
             <v-spacer></v-spacer>
-            <az-notification/>
+            <az-notification @paginate="$emit('paginateNotifications')" @refresh="$emit('refreshNotifications')"
+                             @read="$emit('readNotifications')" @visit="visitNotification"
+                             @remove="removeNotification"/>
             <az-avatar color="white"/>
         </v-toolbar>
         <v-content>
@@ -82,8 +85,14 @@
             }
         },
         methods: {
+            removeNotification(message) {
+                this.$emit('removeNotification', message)
+            },
             showAside() {
                 this.$store.commit(mutationTypes.SET_ASIDE_HIDE, true)
+            },
+            visitNotification(message) {
+                this.$emit('visitNotification', message)
             }
         }
     }
@@ -95,13 +104,13 @@
         .az-aside
             .logo
                 height 60px
-                border-right 1px solid rgba(255,255,255,0.1)
+                border-right 1px solid rgba(255, 255, 255, 0.1)
                 background-color: var(--v-primary-lighten1) !important
-                border-bottom: 1px solid rgba(255,255,255,0.1);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             .action
                 text-align: center
                 padding: 30px 0
-                border-bottom: 1px solid rgba(255,255,255,0.1);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
                 .show
                     color: white
@@ -176,7 +185,6 @@
     .application--wrap
         min-height: unset !important
 
-
     html
         overflow-y: auto
 
@@ -191,7 +199,6 @@
 
             .top-search
                 display none !important
-
 
             .no-mobile
                 display: none !important
