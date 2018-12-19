@@ -1,5 +1,6 @@
 <template>
-    <v-menu offset-y left class="notification notification__no-mobile" :close-on-content-click=false @input="setVisibility">
+    <v-menu offset-y transition="slide-x-transition" bottom left
+            class="notification notification__no-mobile" :close-on-content-click=false @input="setVisibility">
         <v-btn icon slot="activator" @click="$emit('read')">
             <v-badge right overlap color="secondary">
                 <span slot="badge" v-if="hasNotificationsToRead">{{notification.unread}}</span>
@@ -18,10 +19,8 @@
             </div>
             <div class="notification__body" id="notificationContainer" @scroll="checkEndOfPage" v-if="hasMessages">
                 <v-list-tile v-for="(message, index) in notification.messages"
-                             :key="index"
-                             :class="getNotificationCardClass(message)"
-                             @click="$emit('visit', message)">
-                    <div>
+                             :key="index" :class="getNotificationCardClass(message)">
+                    <div @click="$emit('visit', message)">
                         <div v-html="message.text" class="text"></div>
                         <div class="when">
                             <v-icon size="14px">alarm</v-icon>
@@ -29,7 +28,9 @@
                         </div>
                     </div>
                     <div>
-                        <v-icon size="14px" @click="$emit('remove', message)">close</v-icon>
+                        <a @click.prevent="$emit('remove', message)">
+                            <v-icon size="14px">close</v-icon>
+                        </a>
                     </div>
                 </v-list-tile>
                 <span id="notificationListEnd" style="color: #eee">Fim das notificações.</span>
@@ -144,8 +145,21 @@
 <style lang="stylus">
     .notification
         &__body
+            cursor pointer
             max-height 250px
             overflow-y auto
+            .v-list__tile
+                border-bottom 1px solid #eee
+                width 400px
+                padding 10px 20px !important
+                height auto !important
+                .text
+                    font-size 13px
+                    color #777
+                .when
+                    margin-top 5px
+                    font-size 11px
+                    color #777
         &__top
             padding 10px 20px
             justify-content space-between
@@ -158,18 +172,6 @@
                 margin-left 15px
         &__unread
             background-color #edf2fa
-        &__card a
-            border-bottom 1px solid #eee
-            width 400px
-            padding 10px 20px
-            height auto
-            .text
-                font-size 13px
-                color #777
-            .when
-                margin-top 5px
-                font-size 11px
-                color #777
 
     @media (max-width: 720px)
         .notification
