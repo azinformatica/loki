@@ -4,7 +4,7 @@
         <v-btn icon slot="activator" @click="$emit('read')">
             <v-badge right overlap color="secondary">
                 <span slot="badge" v-if="hasNotificationsToRead">{{notification.unread}}</span>
-                <v-icon color="white">notification_important</v-icon>
+                <v-icon color="white">notification</v-icon>
             </v-badge>
         </v-btn>
         <v-list>
