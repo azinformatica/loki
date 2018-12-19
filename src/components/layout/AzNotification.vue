@@ -149,6 +149,8 @@
             max-height 250px
             overflow-y auto
             .v-list__tile
+                display flex
+                justify-content space-between
                 border-bottom 1px solid #eee
                 width 400px
                 padding 10px 20px !important
