@@ -4,20 +4,18 @@
             <v-btn @click="zoomOut" depressed flat>
                 <v-icon>zoom_out</v-icon>
             </v-btn>
-            <v-btn @click="restoreZoom" depressed>
+            <v-btn @click="restoreZoom" depressed flat>
                 <v-icon>aspect_ratio</v-icon>
             </v-btn>
-            <v-btn @click="zoomIn" depressed>
+            <v-btn @click="zoomIn" depressed flat>
                 <v-icon>zoom_in</v-icon>
             </v-btn>
+            <div class="pagination-label">Página {{currentPage}} de {{totalPages}}</div>
         </div>
         <div id="azDocumentViewer" class="az-dv-container" :style="containerStyle" ref="azDocumentViewer">
             <div class="az-dv-pages">
                 <div :id="page.elementId" v-for="page in pages" :key="page.id">
                     <img :src="page.image" class="az-dv-page" :style="pageZoom"/>
-                </div>
-                <div class="az-dv-page-indicator" :style="pageIndicatorPosition" v-show="showPageIndicator">
-                    Página {{currentPage}}
                 </div>
             </div>
         </div>
@@ -27,7 +25,9 @@
 <script>
     import scrollmonitor from 'scrollmonitor'
     import imagesloaded from 'imagesloaded'
-    import elementResizeEvent from 'element-resize-event'
+
+    const INITIAL_ZOOM = 75
+    const INCREASE_ZOOM_BY = 5
 
     export default {
         name: 'AzDocumentViewer',
@@ -55,7 +55,7 @@
                 currentPage: 1,
                 pageIndicatorPosition: {},
                 showPageIndicator: false,
-                zoom: 85
+                zoom: INITIAL_ZOOM
             }
         },
         computed: {
@@ -83,6 +83,9 @@
             },
             pageZoom() {
                 return `width:${this.zoom}%`
+            },
+            totalPages() {
+                return this.pages.length
             }
         },
         mounted() {
@@ -90,25 +93,6 @@
             this.createPageChangeListeners()
         },
         methods: {
-            calcPageIndicatorPosition() {
-                const boundingRect = this.getElementCoordinates('azDocumentViewer')
-                const startingX = boundingRect.x
-                const startingY = boundingRect.y
-                const elementWidth = boundingRect.width
-                const elementHeight = boundingRect.height
-                const windowHeight = window.innerHeight
-                const leftOffset = startingX + (elementWidth / 2) - 160
-                let topOffset = 0
-                if (elementHeight + startingY > windowHeight) {
-                    topOffset = windowHeight - 110
-                } else {
-                    topOffset = startingY + elementHeight - 90
-                }
-                this.pageIndicatorPosition = {
-                    left: `${leftOffset}px`,
-                    top: `${topOffset}px`
-                }
-            },
             createPageChangeListeners() {
                 if (this.isZoomEnabled) {
                     this.createPageChangeListenersForScrollableContainer()
@@ -121,19 +105,18 @@
                 for (let page of this.pages) {
                     const domElement = document.getElementById(page.elementId)
                     const elementWatcher = scrollmonitor.create(domElement)
-                    elementWatcher.enterViewport(() => {
+                    elementWatcher.fullyEnterViewport(() => {
                         this.currentPage = page.index + 1
                     })
                 }
             },
             createPageChangeListenersForScrollableContainer() {
                 const containerElement = document.getElementById('azDocumentViewer')
-                const containerMonitor = scrollMonitor.createContainer(containerElement)
-
+                const containerMonitor = scrollmonitor.createContainer(containerElement)
                 for (let page of this.pages) {
                     const childElement = document.getElementById(page.elementId)
                     const elementWatcher = containerMonitor.create(childElement)
-                    elementWatcher.enterViewport(() => {
+                    elementWatcher.fullyEnterViewport(() => {
                         this.currentPage = page.index + 1
                     })
                 }
@@ -141,25 +124,17 @@
             createWindowListeners() {
                 const azDocumentViewerElement = document.getElementById('azDocumentViewer')
                 imagesloaded(azDocumentViewerElement, () => {
-                    this.calcPageIndicatorPosition()
                     this.showPageIndicator = true
                 })
-                elementResizeEvent(azDocumentViewerElement, () => {
-                    this.calcPageIndicatorPosition()
-                })
-            },
-            getElementCoordinates(elementId) {
-                const element = document.getElementById(elementId)
-                return element.getBoundingClientRect()
             },
             restoreZoom() {
-                this.zoom = 85
+                this.zoom = INITIAL_ZOOM
             },
             zoomIn() {
-                this.zoom += 5
+                this.zoom += INCREASE_ZOOM_BY
             },
             zoomOut() {
-                this.zoom -= 5
+                this.zoom -= INCREASE_ZOOM_BY
             }
         }
     }
@@ -177,22 +152,16 @@
         border: 1px solid #ccc
         margin: 5% 5% 0 5%
 
-    .az-dv-page-indicator
-        position: fixed
-        width: 320px
-        padding: 20px
-        opacity: .52
-        border-radius: 4px
-        text-align: center
-        font-weight: 700
-        color: #fff
-        background-color: #000
-
     .az-dv-controls
         display: flex
         background-color: white
         justify-content: center
         height: 50px
+        .pagination-label
+            position: absolute
+            right: 15px
+            top: 15px
+            color: #777
         .v-btn__content
             i
                 color: #777
