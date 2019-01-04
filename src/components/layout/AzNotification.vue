@@ -33,7 +33,7 @@
                         </a>
                     </div>
                 </v-list-tile>
-                <span id="notificationListEnd" style="color: #eee">Fim das notificações.</span>
+                <span id="notificationListEnd" style="visibility: hidden">Fim das notificações.</span>
             </div>
             <div v-else class="notification notification__top">Nenhuma notificação encontrada...</div>
         </v-list>
