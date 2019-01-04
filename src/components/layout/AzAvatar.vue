@@ -2,7 +2,10 @@
     <v-toolbar-items class="az-avatar">
         <v-menu class="hidden-xs-only" bottom="bottom" left="left" offset-y="offset-y" attach="attach">
             <v-btn class="az-avatar__username" slot="activator" flat="flat" :color="color">
-                <span>{{ userName }}</span>
+                <div class="infos">
+                    <div class="name">{{ userName }}</div>
+                    <div class="plan" v-if="plan">{{plan}}</div>
+                </div>
                 <v-icon right="right">keyboard_arrow_down</v-icon>
             </v-btn>
             <v-list>
@@ -48,6 +51,9 @@
             },
             avatarActions() {
                 return this.$store.state.loki.avatarActions
+            },
+            plan() {
+                return this.$store.state.loki.user.plan
             }
         },
         methods: {
@@ -58,7 +64,7 @@
                 window.location.href = this.$store.state.loki.product.logoutUrl
             }
         }
-    };
+    }
 </script>
 <style lang="stylus">
     .az-avatar
@@ -73,6 +79,13 @@
 
         &__username
             margin-right: 10px
+            text-align end
+            .infos
+                display block
+                margin-right 5px
+                .plan
+                    font-size 10px
+                    opacity 0.7
 
         &__picture
             margin-right: 0
