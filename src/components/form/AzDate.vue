@@ -63,7 +63,6 @@
             ></v-text-field>
         </div>
     </div>
-
 </template>
 <script>
     export default {
@@ -116,13 +115,10 @@
             }
         },
         computed: {
-            offset() {
-                return this.$store.state.loki.offset
-            },
             reverseDateFormat() {
                 return this.reverseDateFormatObj[this.dateFormat]
             },
-            currentLanguage(){
+            currentLanguage() {
                 return this.$vuetify.lang.current
             }
         },
@@ -240,6 +236,12 @@
             openMenuTime() {
                 this.dialogTime = true
             },
+            setEmptyTimeAndDate() {
+                this.time = null
+                this.timeFormatted = ''
+                this.date = null
+                this.dateFormatted = ''
+            },
             updateModelDate(value) {
                 if (this.time && value) {
                     const dateTimeWithTimezone = this.buildDateTimeWithTimezone(value, this.time)
@@ -270,12 +272,6 @@
                 }
                 if (this.date && !value)
                     this.$emit('input', this.date)
-            },
-            setEmptyTimeAndDate() {
-                this.time = null
-                this.timeFormatted = ''
-                this.date = null
-                this.dateFormatted = ''
             },
             updateDateTimeByModel(modelVal) {
                 const maxLengthOfModelDateWithTime = 28
@@ -331,14 +327,20 @@
                 }
             },
             getDateTimeWithSystemTimezone(dateTime) {
-                return this.moment(dateTime).utcOffset(this.offset).format(this.reverseDateFormat + 'THH:mm:ss.SSSZZ')
+                const offset = this.getOffsetFromCurrentDateTime(dateTime)
+                return this.moment(dateTime).utcOffset(offset).format(this.reverseDateFormat + 'THH:mm:ss.SSSZZ')
             },
             getDateTimeZeroTimezone(dateTime) {
                 return this.moment(dateTime).utcOffset('+0000').format(this.reverseDateFormat + 'THH:mm:ss.SSSZZ')
             },
             buildDateTimeWithTimezone(date, time) {
                 const seconds = '00'
-                return date + 'T' + time + ':' + seconds + this.offset
+                const dateTime = date + 'T' + time + ':' + seconds
+                const offset = this.getOffsetFromCurrentDateTime(dateTime)
+                return dateTime + offset
+            },
+            getOffsetFromCurrentDateTime(dateTime) {
+                return this.moment(dateTime).tz(this.$store.state.loki.timezone).format('Z')
             }
         }
     }
@@ -346,7 +348,6 @@
 <style lang="stylus">
     .v-date-picker-table
         height: 250px !important
-
 
     .v-date-picker-table tbody tr td
         padding: 0 !important
