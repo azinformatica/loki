@@ -39,7 +39,7 @@
             <div class="mobile">
                 <v-list class="menu-avatar-mobile">
                     <v-list-tile v-for="item in avatarActions" :key="item.title" @click="redirectTo(item.path)"
-                                 class="item">
+                                 class="item" v-az-auth="item.authorities">
                         <v-list-tile-action>
                             <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
                         </v-list-tile-action>

@@ -46,6 +46,7 @@ import azTitleCaseFilter from './filters/title-case'
 import AzSearchUrlBuilder from './utils/AzSearchUrlBuilder'
 import AzSoundex from './utils/AzSoundex'
 import buildMenu from './utils/az-menu'
+import hasPermissions from './utils/az-auth'
 
 Vue.use(accounting)
 Vue.use(money, {
@@ -109,7 +110,7 @@ const lokiPlugin = {
 
         store.commit(mutationsTypes.SET_MENU_ACTIONS, buildMenu(store, router))
 
-        router.afterEach((to, from) => {
+        router.afterEach((to) => {
             store.commit(mutationsTypes.SET_CURRENT_PAGE, to)
         })
     }
@@ -130,5 +131,6 @@ export {
     filters,
     AzSearchUrlBuilder,
     AzSoundex,
-    buildMenu
+    buildMenu,
+    hasPermissions
 }

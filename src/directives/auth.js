@@ -1,29 +1,11 @@
-const userHasPermission = (userPermissions, requiredPermission) => {
-    let hasPermission = false
-    for (let i = 0; i < userPermissions.length && !hasPermission; i++) {
-        const userPermission = userPermissions[i]
-        if (userPermission.name === requiredPermission && userPermission.hasAccess) {
-            hasPermission = true
-        }
-    }
-    return hasPermission
-}
-
-const hasAccess = (userPermissions, requiredPermissions) => {
-    let hasPermission = false
-    for (let i = 0; i < requiredPermissions.length && !hasPermission; i++) {
-        const requiredPermission = requiredPermissions[i]
-        hasPermission = userHasPermission(userPermissions, requiredPermission)
-    }
-    return hasPermission
-}
+import hasPermissions from '../utils/az-auth'
 
 export default {
     inserted(el, {value}, vnode) {
         const userPermissions = vnode.context.$store.state.loki.user.authorities
-        const requiredPermissions = value.split(',')
+        const requiredPermissions = value ? value.split(',') : []
 
-        if (!hasAccess(userPermissions, requiredPermissions)) {
+        if (!hasPermissions(userPermissions, requiredPermissions)) {
             el.parentNode.removeChild(el)
         }
     }
