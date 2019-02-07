@@ -9,7 +9,8 @@
                 <v-icon right="right">keyboard_arrow_down</v-icon>
             </v-btn>
             <v-list>
-                <v-list-tile v-for="item in avatarActions" :key="item.title" @click="redirectTo(item.path)">
+                <v-list-tile v-for="item in avatarActions" :key="item.title" @click="redirectTo(item.path)"
+                             v-az-auth="item.authorities">
                     <v-list-tile-action>
                         <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
                     </v-list-tile-action>
