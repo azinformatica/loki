@@ -34,9 +34,14 @@
                 </v-btn>
             </div>
             <v-spacer></v-spacer>
-            <az-notification @paginate="$emit('paginateNotifications')" @refresh="$emit('refreshNotifications')"
-                             @read="$emit('readNotifications')" @visit="visitNotification"
-                             @remove="removeNotification"/>
+            <az-notification
+                    @open="$emit('openNotifications')"
+                    @close="$emit('closeNotifications')"
+                    @paginate="$emit('paginateNotifications')"
+                    @refresh="$emit('refreshNotifications')"
+                    @read="$emit('readNotifications')"
+                    @visit="visitNotification"
+                    @remove="removeNotification"/>
             <az-avatar color="white"/>
         </v-toolbar>
         <v-content>
