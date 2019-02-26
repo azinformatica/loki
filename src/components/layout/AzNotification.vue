@@ -17,11 +17,12 @@
                     </a>
                 </div>
             </div>
-            <div class="notification__body" id="notificationContainer" @scroll="checkEndOfPage" v-if="hasMessages">
+            <div class="notification__body" id="notificationContainer" v-if="hasMessages">
                 <v-list-tile v-for="(message, index) in notification.messages"
-                             :key="index" :class="getNotificationCardClass(message)">
+                             :key="index"
+                             :class="getNotificationCardClass(message)">
                     <div @click="$emit('visit', message)">
-                        <div v-html="message.text" class="text"></div>
+                        <div v-html="message.text" class="text"/>
                         <div class="when">
                             <v-icon size="14px">alarm</v-icon>
                             {{message.when | az-elapsed-time}}
@@ -32,6 +33,9 @@
                             <v-icon size="14px">close</v-icon>
                         </a>
                     </div>
+                </v-list-tile>
+                <v-list-tile>
+                    <a class="more" @click="$emit('paginate')">Ver mais</a>
                 </v-list-tile>
                 <span id="notificationListEnd" style="visibility: hidden">Fim das notificações.</span>
             </div>
@@ -103,11 +107,6 @@
                     window.clearInterval(this.processUpdate)
                 }
             },
-            checkEndOfPage() {
-                if (this.hasReachedEndOfPage()) {
-                    this.askForPagination()
-                }
-            },
             filterBy(filter) {
                 this.setNotificationActiveFilter(filter)
                 this.askForRefresh()
@@ -123,20 +122,17 @@
                     'font-weight-bold': filter === this.activeFilter
                 }
             },
-            hasReachedEndOfPage() {
-                const docViewTop = document.getElementById('notificationContainer').scrollTop
-                const containerHeight = document.getElementById('notificationContainer').getBoundingClientRect().height
-                const docViewBottom = docViewTop + containerHeight
-                const elemTop = document.getElementById('notificationListEnd').getBoundingClientRect().top
-                const elemHeight = document.getElementById('notificationListEnd').getBoundingClientRect().height
-                return elemTop + elemHeight - 2 <= docViewBottom
-            },
             setupUpdateInterval() {
                 const refreshTimeout = this.notificationConfig.refreshTimeout
                 this.processUpdate = window.setInterval(this.askForRefresh, refreshTimeout)
             },
             setVisibility(visibility) {
                 this.isOpen = visibility
+                if (this.isOpen) {
+                    this.$emit('open')
+                } else {
+                    this.$emit('close')
+                }
             }
         }
     }
@@ -148,6 +144,11 @@
             cursor pointer
             max-height 250px
             overflow-y auto
+            .more
+                width 100%
+                text-align center
+                color gray
+                font-size 12px
             .v-list__tile
                 display flex
                 justify-content space-between
