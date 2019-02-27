@@ -12,11 +12,12 @@
                     offset-y
                     full-width
                     max-width="290px"
-                    min-width="290px">
-                <v-date-picker v-model="date" @input="pickDateEvent()"
-                               v-bind:value="value"
-                               :locale="currentLanguage"
-                               v-on:input="updateModelDate($event)"></v-date-picker>
+                    min-width="290px"
+                    v-if="!isDisabled">
+                <v-date-picker v-model="date"
+                               @input="pickDateEvent();updateModelDate($event)"
+                               :value="value"
+                               :locale="currentLanguage"/>
             </v-dialog>
             <v-text-field
                     v-validate="{'required': isRequired}" :name="nameDate"
@@ -25,6 +26,7 @@
                     :label="label"
                     mask="date"
                     :placeholder="dateFormat"
+                    :disabled="isDisabled"
                     append-icon="event"
                     @click:append="openMenuDate"
                     @blur="validateAndParseDate(dateFormatted);updateModelDate(date);">
@@ -42,18 +44,19 @@
                     offset-y
                     full-width
                     max-width="290px"
-                    min-width="290px">
+                    min-width="290px"
+                    v-if="!isDisabled">
                 <v-time-picker
                         v-if="dialogTime"
                         v-model="time"
                         :locale="currentLanguage"
                         @change="changeTimeEvent();updateModelTime($event);"
-                        format="24hr">
-                </v-time-picker>
+                        format="24hr"/>
             </v-dialog>
             <v-text-field
                     v-validate="{'required': isRequired}" :name="nameHour"
                     :error-messages="errors.collect(`${nameHour}`)"
+                    :disabled="isDisabled"
                     v-model="timeFormatted"
                     mask="time"
                     placeholder="HH:mm"
@@ -97,6 +100,10 @@
             nameHour: {
                 type: String,
                 default: ''
+            },
+            isDisabled: {
+                type: Boolean,
+                default: false
             }
         },
         inject: ['$validator'],
