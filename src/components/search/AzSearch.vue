@@ -2,7 +2,7 @@
     <div class="az-search">
         <div class="simple-search" >
             <div class="input-search" :style="inputSearchStyle">
-                <v-tooltip top v-for="(val, key) in filter" v-if="val.value">
+                <v-tooltip top v-for="(val, key) in filter" :key="val.value" v-if="val.value">
                     <v-chip close @input="removeFilter(key)" slot="activator">
                         <strong>{{val.label}}:</strong>&nbsp;
                         <span>{{val.valueTruncated ? val.valueTruncated : val.value}}</span>
