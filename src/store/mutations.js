@@ -52,6 +52,8 @@ export default {
     [mutationTypes.SET_GLOBAL_LOADING](state, loading) {
         if (state.isGlobalLoadingEnabled) {
             state.isLoading = loading
+        } else if (!loading) {
+            state.isLoading = loading
         }
     },
 
