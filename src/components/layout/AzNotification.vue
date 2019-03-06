@@ -34,7 +34,7 @@
                         </a>
                     </div>
                 </v-list-tile>
-                <v-list-tile>
+                <v-list-tile v-if="notification.viewMore">
                     <a class="more" @click="$emit('paginate')">Ver mais</a>
                 </v-list-tile>
                 <span id="notificationListEnd" style="visibility: hidden">Fim das notificações.</span>
