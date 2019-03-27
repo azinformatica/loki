@@ -14,10 +14,12 @@
                     max-width="290px"
                     min-width="290px"
                     v-if="!isDisabled">
-                <v-date-picker v-model="date"
-                               @input="pickDateEvent();updateModelDate($event)"
-                               :value="value"
-                               :locale="currentLanguage"/>
+                <v-date-picker
+                        class="az-date"
+                        v-model="date"
+                        :value="value"
+                        :locale="currentLanguage"
+                        @input="pickDateEvent();updateModelDate($event)"/>
             </v-dialog>
             <v-text-field
                     v-validate="{'required': isRequired}" :name="nameDate"
@@ -353,9 +355,19 @@
     }
 </script>
 <style lang="stylus">
-    .v-date-picker-table
-        height: 250px !important
+    .az-date
+        .v-date-picker-header
+            background-color var(--v-primary-base) !important;
+            .v-icon
+                color white !important
+            .accent--text button
+                color white !important
+        .v-picker__title
+            display none
+        .v-date-picker-table
+            min-height: 250px !important
+            height unset !important
 
-    .v-date-picker-table tbody tr td
-        padding: 0 !important
+        .v-date-picker-table tbody tr td
+            padding: 0 !important
 </style>
