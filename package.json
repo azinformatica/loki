@@ -26,7 +26,7 @@
         "string-similarity": "^2.0.0",
         "v-money": "^0.8.1",
         "vue": "^2.5.16",
-        "vuetify": "^1.2.2",
+        "vuetify": "^1.5.7",
         "vuex": "^3.0.1"
     },
     "devDependencies": {
