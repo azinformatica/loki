@@ -25,7 +25,7 @@
                         <div v-html="message.text" class="text"/>
                         <div class="when">
                             <v-icon size="14px">alarm</v-icon>
-                            {{message.when | az-elapsed-time}}
+                            {{message.when | azElapsedTime}}
                         </div>
                     </div>
                     <div>
