@@ -32,7 +32,8 @@
                 get() {
                     return this.$store.state.loki.asideClosed
                 },
-                set(closed) {
+                set(currentState) {
+                    const closed = !currentState
                     this.change(closed)
                 }
             },
@@ -47,7 +48,7 @@
         }
     }
 </script>
-<style scoped lang="stylus">
+<style lang="stylus">
     .az-aside::-webkit-scrollbar
         width: 6px
 
