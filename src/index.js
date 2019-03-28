@@ -36,12 +36,12 @@ import AzDialog from './components/actions/AzDialog'
 
 import azAuth from './directives/auth'
 
-import azClipTextFilter from './filters/clip-text'
-import azCpfCnpjFilter from './filters/cpf-cnpj'
-import azDateFilter from './filters/date'
+import azClipText from './filters/clip-text'
+import azCpfCnpj from './filters/cpf-cnpj'
+import azDate from './filters/date'
 import azElapsedTime from './filters/elapsed-time'
-import azPhoneFilter from './filters/phone'
-import azTitleCaseFilter from './filters/title-case'
+import azPhone from './filters/phone'
+import azTitleCase from './filters/title-case'
 
 import AzSearchUrlBuilder from './utils/AzSearchUrlBuilder'
 import AzSoundex from './utils/AzSoundex'
@@ -101,12 +101,12 @@ const lokiPlugin = {
 
         Vue.directive('az-auth', azAuth)
 
-        Vue.filter('az-clip-text', azClipTextFilter)
-        Vue.filter('az-cpf-cnpj', azCpfCnpjFilter)
-        Vue.filter('az-date', azDateFilter)
-        Vue.filter('az-elapsed-time', azElapsedTime)
-        Vue.filter('az-phone', azPhoneFilter)
-        Vue.filter('az-title-case', azTitleCaseFilter)
+        Vue.filter('azClipText', azClipText)
+        Vue.filter('azCpfCnpj', azCpfCnpj)
+        Vue.filter('azDate', azDate)
+        Vue.filter('azElapsedTime', azElapsedTime)
+        Vue.filter('azPhone', azPhone)
+        Vue.filter('azTitleCase', azTitleCase)
 
         store.commit(mutationsTypes.SET_MENU_ACTIONS, buildMenu(store, router))
 
@@ -119,11 +119,11 @@ const lokiPlugin = {
 export default lokiPlugin
 
 const filters = {
-    azCpfCnpjFilter,
-    azDateFilter,
-    azClipTextFilter,
-    azPhoneFilter,
-    azTitleCaseFilter
+    azCpfCnpj,
+    azDate,
+    azClipText,
+    azPhone,
+    azTitleCase
 }
 
 export {
