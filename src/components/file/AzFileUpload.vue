@@ -5,7 +5,7 @@
                  :style="{'height': height}"
                  @drop.prevent="onDropFiles($event.dataTransfer.items)"
                  @dragover.prevent="">
-                <input id="azFileSelector" type="file" multiple class="input-file"
+                <input id="azFileSelector" type="file" :multiple="multiple" class="input-file"
                        :name="uploadFieldName"
                        :accept="accept"
                        @change="onSelectFiles($event.target.files)"/>
@@ -36,6 +36,10 @@
             height: {
                 type: String,
                 default: '200px'
+            },
+            multiple: {
+                type: Boolean,
+                default: true
             }
         },
         data() {
@@ -44,6 +48,10 @@
             }
         },
         methods: {
+            calcFileSize(bytes, unit) {
+                const k = 1024
+                return parseFloat((bytes / Math.pow(k, unit)).toFixed(2))
+            },
             createFormData(file) {
                 const formData = new FormData()
                 formData.append(this.uploadFieldName, file)
@@ -56,6 +64,17 @@
                     formData: this.createFormData(file),
                     filename: file.name
                 }
+            },
+            getMaxSizeConfig() {
+                const fileConfig = this.$store.state.loki.file
+                const maxSize = fileConfig.maxSize.replace(/([A-Za-z]+)/g, '')
+                const unit = ['B', 'KB', 'MB', 'GB', 'TB'].indexOf(fileConfig.maxSize.replace(/\d+/g, '').toUpperCase())
+                return {maxSize, unit}
+            },
+            isFileBiggerThanExpected(file) {
+                const {maxSize, unit} = this.getMaxSizeConfig()
+                const fileSize = this.calcFileSize(file.size, unit)
+                return fileSize > maxSize
             },
             onDropFiles(eventItems) {
                 if (!Object.keys(eventItems).length) {
@@ -84,12 +103,23 @@
                 Array
                     .from(Array(fileList.length).keys())
                     .map(x => {
-                        const payload = this.createPayload(fileList[x])
-                        this.$store.dispatch('uploadFile', payload)
+                        const file = fileList[x]
+                        if (this.isFileBiggerThanExpected(file)) {
+                            this.throwFileExceedMaxLimitSizeEvent(file)
+                        } else {
+                            const payload = this.createPayload(file)
+                            this.$store.dispatch('uploadFile', payload)
+                        }
                     });
             },
             resetSelectedFiles() {
                 document.getElementById('azFileSelector').value = ''
+            },
+            throwFileExceedMaxLimitSizeEvent(file) {
+                this.$emit('error', {
+                    type: 'FILE_EXCEEDED_MAX_SIZE_LIMIT',
+                    filename: file.name
+                })
             }
         }
     }

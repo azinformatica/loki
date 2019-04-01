@@ -45,8 +45,8 @@ export default {
         Vue.set(state.uploadFileProgress, filename, {progress, error: true})
     },
 
-    [mutationTypes.SET_FILES_API](state, filesApi) {
-        state.filesApi = filesApi
+    [mutationTypes.SET_FILES_CONFIG](state, config) {
+        state.file = config
     },
 
     [mutationTypes.SET_GLOBAL_LOADING](state, loading) {
