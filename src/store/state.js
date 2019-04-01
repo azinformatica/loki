@@ -32,7 +32,10 @@ export default {
     menuActions: [],
     alert: {},
 
-    filesApi: '/public/arquivos',
+    file: {
+        api: '/public/arquivos',
+        maxSize: '16Mb'
+    },
     uploadFileProgress: {},
     uploadedFiles: [],
 

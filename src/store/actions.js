@@ -25,7 +25,7 @@ export default {
         }
 
         try {
-            const {data} = await axios.post(state.filesApi, formData, options)
+            const {data} = await axios.post(state.file.api, formData, options)
             data.name = filename
             commit(mutationTypes.REMOVE_UPLOAD_FILE_PROGRESS, hashName)
             commit(mutationTypes.ADD_UPLOADED_FILE, Object.assign({}, data, {status: 'success'}))
