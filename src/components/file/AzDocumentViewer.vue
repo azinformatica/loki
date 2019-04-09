@@ -26,7 +26,6 @@
     import scrollmonitor from 'scrollmonitor'
     import imagesloaded from 'imagesloaded'
 
-    const INITIAL_ZOOM = 75
     const INCREASE_ZOOM_BY = 5
 
     export default {
@@ -48,6 +47,10 @@
             enableZoom: {
                 type: Boolean,
                 default: false
+            },
+            initialZoom: {
+                type: Number,
+                default: 75
             }
         },
         data() {
@@ -55,7 +58,7 @@
                 currentPage: 1,
                 pageIndicatorPosition: {},
                 showPageIndicator: false,
-                zoom: INITIAL_ZOOM
+                zoom: this.initialZoom
             }
         },
         computed: {
