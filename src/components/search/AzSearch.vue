@@ -12,10 +12,10 @@
                 <input class="input-text" v-model="searchText" :placeholder="simpleSearchPlaceholder"
                        @keyup.enter="simpleSearch()"/>
             </div>
-            <v-btn class="icon-search" fab dark small depressed color="secondary" @click="simpleSearch()"><v-icon small>search</v-icon></v-btn>
+            <v-btn class="icon-search" fab dark small depressed color="primary" @click="simpleSearch()"><v-icon small>search</v-icon></v-btn>
         </div>
 
-        <v-btn class="btn-advanced-search" depressed color="secondary" @click="toggle()" v-if="hasAdvancedSearchItems"><v-icon small>chevron_left</v-icon>Filtros</v-btn>
+        <v-btn class="btn-advanced-search" depressed color="grey darken-1" @click="toggle()" v-if="hasAdvancedSearchItems"><v-icon small>chevron_left</v-icon>Filtros</v-btn>
 
         <v-navigation-drawer permanent absolute right width="400" :mini-variant.sync="isClosedAdvancedSearch"
                              mini-variant-width="0" floating class="advanced-search-bar">
@@ -97,8 +97,6 @@
     }
 </script>
 <style lang="stylus">
-    .advanced-search-bar
-        border-left 1px solid rgba(255,255,255,0.1)
     .az-search
         display: flex
         align-items: center
@@ -106,17 +104,15 @@
             display: flex
             .input-search
                 display: flex
-                border: 1px solid var(--v-background-base) !important
-                background-color: var(--v-background-base) !important
+                border: 1px solid #ddd
+                background-color: #eee
                 border-radius: 20px 0 0 20px
                 transition: 0.2s
-                height 32px
                 .v-chip
                     height: 22px
                 .input-text
                     height: 30px
                     padding: 10px 15px
-                    font-size: 13px;
                     width: 100%
                     outline: none
                     color: #777777
@@ -126,8 +122,8 @@
                 color: #cccccc !important
         .icon-search
             border-radius: 0 20px 20px 0
-            width: 30px
-            height 32px !important
+            width: 33px
+            height 32px
             margin: 0 10px 0 0
             padding: 0
             font-weight normal
@@ -137,7 +133,6 @@
             height: 32px
             margin: 0
             padding: 0
-            font-size: 13px
             text-transform: unset
             color white
             font-weight normal
@@ -159,6 +154,7 @@
             padding: 0
             overflow-y: hidden
             position: fixed
+            border-left: 1px solid #ddd
             .btn-close
                 font-size: 20px
                 color: rgba(255,255,255,0.8)
@@ -178,7 +174,7 @@
                 width: 400px
                 right: 0
                 display: flex
-                border-top: 1px solid rgba(255,255,255,0.1)
+                border-top: 1px solid #eee
                 .ad-search
                     width: 70%
                     color: white
@@ -206,10 +202,8 @@
                 width: 400px
                 height: 60px
                 align-items center
-                font-size: 16px !important
+                font-size: 18px !important
                 font-weight: bold
-                button
-                    margin-right 5px
 
     @media (max-width: 720px)
         .advanced-search-bar

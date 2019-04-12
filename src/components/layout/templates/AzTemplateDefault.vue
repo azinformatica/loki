@@ -59,7 +59,8 @@
             padding: 0
         .toolbar
             box-shadow 0 2px 4px -1px rgba(0, 0, 0, .2)
-            background-color white
+            background-color white !important
+
 
         .mobile_menu
             display: none
@@ -72,6 +73,7 @@
 
     .application--wrap
         min-height: unset !important
+
 
     html
         overflow-y: auto

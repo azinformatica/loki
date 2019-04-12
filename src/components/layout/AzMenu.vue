@@ -5,11 +5,7 @@
                 <v-list-tile active-class="active-menu" dark v-if="!menu.children" :to="menu.path" exact
                              @click="redirectTo(menu.path)" class="menu-item">
                     <v-list-tile-action>
-                        <v-tooltip right color="dark-grey" v-if="asideClosed">
-                            <v-icon slot="activator">{{ menu.icon }}</v-icon>
-                            <span>{{ menu.name }}</span>
-                        </v-tooltip>
-                        <v-icon v-else>{{ menu.icon }}</v-icon>
+                        <v-icon>{{ menu.icon }}</v-icon>
                     </v-list-tile-action>
                     <v-list-tile-content>
                         <v-list-tile-title>{{ menu.name }}</v-list-tile-title>
