@@ -45,18 +45,32 @@ export default {
         Vue.set(state.uploadFileProgress, filename, {progress, error: true})
     },
 
-    [mutationTypes.SET_FILES_API](state, filesApi) {
-        state.filesApi = filesApi
+    [mutationTypes.SET_FILES_CONFIG](state, config) {
+        state.file = config
     },
 
     [mutationTypes.SET_GLOBAL_LOADING](state, loading) {
         if (state.isGlobalLoadingEnabled) {
+            state.isLoading = loading
+        } else if (!loading) {
             state.isLoading = loading
         }
     },
 
     [mutationTypes.SET_LOADING_MESSAGE](state, message) {
         state.loadingMessage = message
+    },
+
+    [mutationTypes.SET_NOTIFICATION](state, notification) {
+        state.notification = notification
+    },
+
+    [mutationTypes.SET_NOTIFICATION_CONFIG](state, notificationConfig) {
+        Vue.set(state, 'notificationConfig', notificationConfig)
+    },
+
+    [mutationTypes.SET_NOTIFICATION_ACTIVE_FILTER](state, activeFilter) {
+        Vue.set(state.notificationConfig, 'activeFilter', activeFilter)
     },
 
     [mutationTypes.SET_UPLOADED_FILES](state, files) {
@@ -74,8 +88,8 @@ export default {
         }
     },
 
-    [mutationTypes.SHOW_NOTIFICATION](state, {message, type}) {
-        state.notificacao = {message, type}
+    [mutationTypes.SHOW_ALERT](state, {message, type}) {
+        state.alert = {message, type}
     },
 
     [mutationTypes.REMOVE_UPLOAD_FILE_PROGRESS](state, filename) {

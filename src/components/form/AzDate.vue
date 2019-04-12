@@ -12,11 +12,14 @@
                     offset-y
                     full-width
                     max-width="290px"
-                    min-width="290px">
-                <v-date-picker v-model="date" @input="pickDateEvent()"
-                               v-bind:value="value"
-                               :locale="currentLanguage"
-                               v-on:input="updateModelDate($event)"></v-date-picker>
+                    min-width="290px"
+                    v-if="!isDisabled">
+                <v-date-picker
+                        class="az-date"
+                        v-model="date"
+                        :value="value"
+                        :locale="currentLanguage"
+                        @input="pickDateEvent();updateModelDate($event)"/>
             </v-dialog>
             <v-text-field
                     v-validate="{'required': isRequired}" :name="nameDate"
@@ -25,6 +28,7 @@
                     :label="label"
                     mask="date"
                     :placeholder="dateFormat"
+                    :disabled="isDisabled"
                     append-icon="event"
                     @click:append="openMenuDate"
                     @blur="validateAndParseDate(dateFormatted);updateModelDate(date);">
@@ -42,18 +46,19 @@
                     offset-y
                     full-width
                     max-width="290px"
-                    min-width="290px">
+                    min-width="290px"
+                    v-if="!isDisabled">
                 <v-time-picker
                         v-if="dialogTime"
                         v-model="time"
                         :locale="currentLanguage"
                         @change="changeTimeEvent();updateModelTime($event);"
-                        format="24hr">
-                </v-time-picker>
+                        format="24hr"/>
             </v-dialog>
             <v-text-field
                     v-validate="{'required': isRequired}" :name="nameHour"
                     :error-messages="errors.collect(`${nameHour}`)"
+                    :disabled="isDisabled"
                     v-model="timeFormatted"
                     mask="time"
                     placeholder="HH:mm"
@@ -63,7 +68,6 @@
             ></v-text-field>
         </div>
     </div>
-
 </template>
 <script>
     export default {
@@ -98,6 +102,10 @@
             nameHour: {
                 type: String,
                 default: ''
+            },
+            isDisabled: {
+                type: Boolean,
+                default: false
             }
         },
         inject: ['$validator'],
@@ -116,13 +124,10 @@
             }
         },
         computed: {
-            offset() {
-                return this.$store.state.loki.offset
-            },
             reverseDateFormat() {
                 return this.reverseDateFormatObj[this.dateFormat]
             },
-            currentLanguage(){
+            currentLanguage() {
                 return this.$vuetify.lang.current
             }
         },
@@ -240,6 +245,12 @@
             openMenuTime() {
                 this.dialogTime = true
             },
+            setEmptyTimeAndDate() {
+                this.time = null
+                this.timeFormatted = ''
+                this.date = null
+                this.dateFormatted = ''
+            },
             updateModelDate(value) {
                 if (this.time && value) {
                     const dateTimeWithTimezone = this.buildDateTimeWithTimezone(value, this.time)
@@ -251,8 +262,15 @@
                     this.$emit('input', value)
                     return
                 }
-                if (!this.time)
-                    this.$emit('input', value)
+                if (!this.time && !value) {
+                    this.$emit('input', null)
+                    return
+                }
+                if (!this.time) {
+                    const dateTimeWithTimezone = this.buildDateTimeWithTimezone(value, '00:00')
+                    const dateTimeTimezoneZero = this.getDateTimeZeroTimezone(dateTimeWithTimezone)
+                    this.$emit('input', dateTimeTimezoneZero)
+                }
             },
             updateModelTime(value) {
                 if (this.date && value) {
@@ -263,12 +281,6 @@
                 }
                 if (this.date && !value)
                     this.$emit('input', this.date)
-            },
-            setEmptyTimeAndDate() {
-                this.time = null
-                this.timeFormatted = ''
-                this.date = null
-                this.dateFormatted = ''
             },
             updateDateTimeByModel(modelVal) {
                 const maxLengthOfModelDateWithTime = 28
@@ -324,23 +336,38 @@
                 }
             },
             getDateTimeWithSystemTimezone(dateTime) {
-                return this.moment(dateTime).utcOffset(this.offset).format(this.reverseDateFormat + 'THH:mm:ss.SSSZZ')
+                const offset = this.getOffsetFromCurrentDateTime(dateTime)
+                return this.moment(dateTime).utcOffset(offset).format(this.reverseDateFormat + 'THH:mm:ss.SSSZZ')
             },
             getDateTimeZeroTimezone(dateTime) {
                 return this.moment(dateTime).utcOffset('+0000').format(this.reverseDateFormat + 'THH:mm:ss.SSSZZ')
             },
             buildDateTimeWithTimezone(date, time) {
                 const seconds = '00'
-                return date + 'T' + time + ':' + seconds + this.offset
+                const dateTime = date + 'T' + time + ':' + seconds
+                const offset = this.getOffsetFromCurrentDateTime(dateTime)
+                return dateTime + offset
+            },
+            getOffsetFromCurrentDateTime(dateTime) {
+                return this.moment(dateTime).tz(this.$store.state.loki.timezone).format('Z')
             }
         }
     }
 </script>
 <style lang="stylus">
-    .v-date-picker-table
-        height: 250px !important
+    .az-date
+        .v-date-picker-header
+            background-color var(--v-primary-base) !important;
+            .v-icon
+                color white !important
+            .accent--text button
+                color white !important
+        .v-picker__title
+            display none
+        .v-date-picker-table
+            min-height: 250px !important
+            height unset !important
 
-
-    .v-date-picker-table tbody tr td
-        padding: 0 !important
+        .v-date-picker-table tbody tr td
+            padding: 0 !important
 </style>

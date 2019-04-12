@@ -8,7 +8,8 @@
                     <az-logo/>
                 </div>
                 <div class="action">
-                    <v-btn depressed v-if="!asideClosed" class="show" color="secondary" @click="$emit('mainActionEvent')">
+                    <v-btn depressed v-if="!asideClosed" class="show" color="secondary"
+                           @click="$emit('mainActionEvent')">
                         {{labelMainAction}}
                     </v-btn>
                     <v-btn depressed v-else fab small class="hide" color="secondary" @click="$emit('mainActionEvent')">
@@ -33,11 +34,19 @@
                 </v-btn>
             </div>
             <v-spacer></v-spacer>
+            <az-notification
+                    @open="$emit('openNotifications')"
+                    @close="$emit('closeNotifications')"
+                    @paginate="$emit('paginateNotifications')"
+                    @refresh="$emit('refreshNotifications')"
+                    @read="$emit('readNotifications')"
+                    @visit="visitNotification"
+                    @remove="removeNotification"/>
             <az-avatar color="white"/>
         </v-toolbar>
         <v-content>
             <v-container fluid class="container">
-                <az-notification></az-notification>
+                <az-alert/>
                 <slot/>
                 <v-footer app inset>
                     <az-file-progress></az-file-progress>
@@ -48,13 +57,14 @@
     </v-app>
 </template>
 <script>
-    import AzNotification from '../AzNotification'
+    import AzAlert from '../AzAlert'
     import AzFileProgress from '../../file/AzFileProgress'
     import AzLoading from '../AzLoading'
     import mutationTypes from '../../../store/mutations-types'
+    import AzNotification from '../AzNotification'
 
     export default {
-        components: {AzLoading, AzNotification, AzFileProgress},
+        components: {AzNotification, AzLoading, AzAlert, AzFileProgress},
         props: {
             labelMainAction: {
                 type: String,
@@ -80,8 +90,14 @@
             }
         },
         methods: {
+            removeNotification(message) {
+                this.$emit('removeNotification', message)
+            },
             showAside() {
                 this.$store.commit(mutationTypes.SET_ASIDE_HIDE, true)
+            },
+            visitNotification(message) {
+                this.$emit('visitNotification', message)
             }
         }
     }
@@ -93,13 +109,13 @@
         .az-aside
             .logo
                 height 60px
-                border-right 1px solid rgba(255,255,255,0.1)
+                border-right 1px solid rgba(255, 255, 255, 0.1)
                 background-color: var(--v-primary-lighten1) !important
-                border-bottom: 1px solid rgba(255,255,255,0.1);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             .action
                 text-align: center
                 padding: 30px 0
-                border-bottom: 1px solid rgba(255,255,255,0.1);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
                 .show
                     color: white
@@ -174,7 +190,6 @@
     .application--wrap
         min-height: unset !important
 
-
     html
         overflow-y: auto
 
@@ -189,7 +204,6 @@
 
             .top-search
                 display none !important
-
 
             .no-mobile
                 display: none !important

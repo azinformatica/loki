@@ -24,15 +24,18 @@ export default {
     asideClosed: false,
     asideHide: true,
     avatarActions: {
-        1: { title: "Profile", icon: 'star', path: '/profile'
+        1: { title: "Profile", icon: 'person', path: '/profile'
         },
         2: { title: "Settings", icon: 'settings', path: '/settings'
         }
     },
     menuActions: [],
-    notification: {},
+    alert: {},
 
-    filesApi: '/public/arquivos',
+    file: {
+        api: '/public/arquivos',
+        maxSize: '16Mb'
+    },
     uploadFileProgress: {},
     uploadedFiles: [],
 
@@ -41,6 +44,14 @@ export default {
     loadingMessage: 'Please, wait...',
 
     timezone: 'America/Sao_Paulo',
-    offset: '-03:00'
+    offset: '-03:00',
+
+    notification: {},
+    notificationConfig: {
+        refreshTimeout: 30 * 1000,
+        activeFilter: 'Todas',
+        filters: ['Todas', 'Lidas', 'Não Lidas'],
+        title: 'Notificações'
+    }
 
 }

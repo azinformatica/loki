@@ -2,11 +2,15 @@
     <v-toolbar-items class="az-avatar">
         <v-menu class="hidden-xs-only" bottom="bottom" left="left" offset-y="offset-y" attach="attach">
             <v-btn class="az-avatar__username" slot="activator" flat="flat" :color="color">
-                <span>{{ userName }}</span>
+                <div class="infos">
+                    <div class="name">{{ userName }}</div>
+                    <div class="plan" v-if="plan">{{plan}}</div>
+                </div>
                 <v-icon right="right">keyboard_arrow_down</v-icon>
             </v-btn>
             <v-list>
-                <v-list-tile v-for="item in avatarActions" :key="item.title" @click="redirectTo(item.path)">
+                <v-list-tile v-for="item in avatarActions" :key="item.title" @click="redirectTo(item.path)"
+                             v-az-auth="item.authorities">
                     <v-list-tile-action>
                         <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
                     </v-list-tile-action>
@@ -48,6 +52,9 @@
             },
             avatarActions() {
                 return this.$store.state.loki.avatarActions
+            },
+            plan() {
+                return this.$store.state.loki.user.plan
             }
         },
         methods: {
@@ -58,11 +65,11 @@
                 window.location.href = this.$store.state.loki.product.logoutUrl
             }
         }
-    };
+    }
 </script>
 <style lang="stylus">
     .az-avatar
-        position: fixed
+        position: unset
         top: 0
         right: 20px
         display: block
@@ -73,6 +80,13 @@
 
         &__username
             margin-right: 10px
+            text-align end
+            .infos
+                display block
+                margin-right 5px
+                .plan
+                    font-size 10px
+                    opacity 0.7
 
         &__picture
             margin-right: 0

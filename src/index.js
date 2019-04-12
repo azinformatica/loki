@@ -13,6 +13,7 @@ import AzAside from './components/layout/AzAside'
 import AzTemplateDefault from './components/layout/templates/AzTemplateDefault'
 import AzTemplateGmail from './components/layout/templates/AzTemplateGmail'
 import AzContainer from './components/layout/AzContainer'
+import AzAlert from './components/layout/AzAlert'
 import AzOps from './components/layout/AzOps'
 import AzModal from './components/layout/AzModal'
 import AzSearch from './components/search/AzSearch'
@@ -34,15 +35,17 @@ import AzDialog from './components/actions/AzDialog'
 
 import azAuth from './directives/auth'
 
-import azCpfCnpjFilter from './filters/cpf-cnpj'
-import azDateFilter from './filters/date'
-import azClipTextFilter from './filters/clip-text'
-import azPhoneFilter from './filters/phone'
-import azTitleCaseFilter from './filters/title-case'
+import azClipText from './filters/clip-text'
+import azCpfCnpj from './filters/cpf-cnpj'
+import azDate from './filters/date'
+import azElapsedTime from './filters/elapsed-time'
+import azPhone from './filters/phone'
+import azTitleCase from './filters/title-case'
 
 import AzSearchUrlBuilder from './utils/AzSearchUrlBuilder'
 import AzSoundex from './utils/AzSoundex'
 import buildMenu from './utils/az-menu'
+import hasPermissions from './utils/az-auth'
 
 Vue.use(accounting)
 Vue.use(money, {
@@ -74,6 +77,7 @@ const lokiPlugin = {
         Vue.component('az-template-default', AzTemplateDefault)
         Vue.component('az-template-gmail', AzTemplateGmail)
         Vue.component('az-container', AzContainer)
+        Vue.component('az-alert', AzAlert)
         Vue.component('az-ops', AzOps)
         Vue.component('az-modal', AzModal)
         Vue.component('az-search', AzSearch)
@@ -95,15 +99,16 @@ const lokiPlugin = {
 
         Vue.directive('az-auth', azAuth)
 
-        Vue.filter('az-cpf-cnpj', azCpfCnpjFilter)
-        Vue.filter('az-date', azDateFilter)
-        Vue.filter('az-clip-text', azClipTextFilter)
-        Vue.filter('az-phone', azPhoneFilter)
-        Vue.filter('az-title-case', azTitleCaseFilter)
+        Vue.filter('azClipText', azClipText)
+        Vue.filter('azCpfCnpj', azCpfCnpj)
+        Vue.filter('azDate', azDate)
+        Vue.filter('azElapsedTime', azElapsedTime)
+        Vue.filter('azPhone', azPhone)
+        Vue.filter('azTitleCase', azTitleCase)
 
         store.commit(mutationsTypes.SET_MENU_ACTIONS, buildMenu(store, router))
 
-        router.afterEach((to, from) => {
+        router.afterEach((to) => {
             store.commit(mutationsTypes.SET_CURRENT_PAGE, to)
         })
     }
@@ -112,11 +117,11 @@ const lokiPlugin = {
 export default lokiPlugin
 
 const filters = {
-    azCpfCnpjFilter,
-    azDateFilter,
-    azClipTextFilter,
-    azPhoneFilter,
-    azTitleCaseFilter
+    azCpfCnpj,
+    azDate,
+    azClipText,
+    azPhone,
+    azTitleCase
 }
 
 export {
@@ -124,5 +129,6 @@ export {
     filters,
     AzSearchUrlBuilder,
     AzSoundex,
-    buildMenu
+    buildMenu,
+    hasPermissions
 }

@@ -1,5 +1,5 @@
 <template>
-    <v-app class="az-template-default">
+    <v-app class="az-template-vader" dark>
         <az-loading></az-loading>
 
         <az-aside>
@@ -47,31 +47,65 @@
     }
 </script>
 <style lang="stylus">
-    .az-template-default
+    .application--wrap
+        position: absolute !important
+        width: 100%
+        height: 100%
+    .v-content
+        height: 100%
+    .az-template-vader
+        font-family 'Open Sans' !important
+        .az-about
+            background-color var(--v-primary-lighten2) !important
+            border-top 1px solid var(--v-primary-lighten2)
         .az-aside
             .logo
-                border-bottom 1px solid rgba(255,255,255,0.1)
+                border-bottom 1px solid rgba(255,255,255,0.05)
                 height 120px
+                color rgba(255,255,255,0.4) !important
+            .az-menu
+
+                .v-list__tile__title
+                    font-size 13px
+                    color rgba(255,255,255,0.4)
+                    font-weight: normal
+                .v-list__tile
+                    height 55px
+                    border-bottom: 1px solid rgba(255,255,255,0.05);
+                    &:hover
+                        .v-list__tile__title
+                            color var(--v-secondary-lighten5) !important
+                        i
+                            color var(--v-secondary-lighten5) !important
+                .active-menu
+                    .v-list__tile__action i
+                        color var(--v-secondary-lighten5) !important
+                    .v-list__tile__title
+                        font-weight bold
+                        color var(--v-secondary-lighten5) !important
 
         .container
-            background-color #eee
+            background-color #2b2b2a
             height 100%
             padding: 0
         .toolbar
             box-shadow 0 2px 4px -1px rgba(0, 0, 0, .2)
-            background-color white
+            background-color var(--v-secondary-base) !important
+            .az-title
+                &__title
+                    color rgba(255,255,255,0.7) !important
+                &__subtitle
+                    color rgba(255,255,255,0.7) !important
 
         .mobile_menu
-            display: none
-
-    body
-        background-color: #eee
+            display none
 
     .application.theme--light
         background: unset !important
 
     .application--wrap
         min-height: unset !important
+
 
     html
         overflow-y: auto
