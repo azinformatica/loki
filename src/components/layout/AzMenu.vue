@@ -5,7 +5,11 @@
                 <v-list-tile active-class="active-menu" dark v-if="!menu.children" :to="menu.path" exact
                              @click="redirectTo(menu.path)" class="menu-item">
                     <v-list-tile-action>
-                        <v-icon>{{ menu.icon }}</v-icon>
+                        <v-tooltip right color="dark-grey" v-if="asideClosed">
+                            <v-icon slot="activator">{{ menu.icon }}</v-icon>
+                            <span>{{ menu.name }}</span>
+                        </v-tooltip>
+                        <v-icon v-else>{{ menu.icon }}</v-icon>
                     </v-list-tile-action>
                     <v-list-tile-content>
                         <v-list-tile-title>{{ menu.name }}</v-list-tile-title>
@@ -129,9 +133,11 @@
 <style lang="stylus">
     .active-menu
         color white !important
-        background-color rgba(0,0,0,0.2) !important
+        font-weight bold !important
+        background-color var(--v-primary-darken1) !important
         .v-list__tile__title
             color white
+            font-weight bold
         .v-list__tile__action
             i
                 color white !important
@@ -165,14 +171,18 @@
             border-bottom: none
             &:hover
                 background-color var(--v-primary-darken1) !important
+                transition: 0 !important
                 color white !important
+                font-weight bold !important
                 .v-list__tile__action
                     i
                         color white !important
 
             .v-list__tile:hover
                 background-color var(--v-primary-darken1) !important
+                transition: 0 !important
                 color white !important
+                font-weight bold !important
                 .v-list__tile__action
                     i
                         color white !important
@@ -190,8 +200,9 @@
             padding: 0
             a:hover
                 color: rgba(255, 255, 255, 0.5) !important
-                background-color rgba(0,0,0,0.5) !important
+                background-color var(--v-primary-darken1) !important
                 color white !important
+                font-weight bold !important
                 .v-list__tile__action
                     i
                         color white !important
@@ -214,6 +225,7 @@
                     &:hover
                         background-color var(--v-primary-darken1) !important
                         color white !important
+                        font-weight bold !important
                         .v-list__tile__action
                             i
                                 color white !important
@@ -221,9 +233,11 @@
                 height: 44px
                 padding: 0 10px
                 color: rgba(255, 255, 255, 0.8)
+                transition unset !important
                 &:hover
-                    background-color rgba(0,0,0,0.5) !important
+                    background-color var(--v-primary-darken1) !important
                     color white !important
+                    font-weight bold !important
                     .v-list__tile__action
                         i
                             color white !important
