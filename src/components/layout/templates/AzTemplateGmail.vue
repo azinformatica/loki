@@ -24,7 +24,7 @@
 
         <v-toolbar app height="60" class="toolbar">
             <v-icon class="mobile_menu" @click="showAside()">dehaze</v-icon>
-            <img :src="logoMobile"/>
+            <img class="mobile" :src="logoMobile"/>
             <div class="top-search">
                 <div class="input-search">
                     <input class="input-text" v-model="searchText" :placeholder="placeholderSearch"
