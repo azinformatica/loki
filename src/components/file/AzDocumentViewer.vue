@@ -10,7 +10,7 @@
             <v-btn @click="zoomIn" depressed flat>
                 <v-icon>zoom_in</v-icon>
             </v-btn>
-            <div class="pagination-label">Página {{currentPage}} de {{totalPages}}</div>
+            <div class="pagination-label no-mobile">Página {{currentPage}} de {{totalPages}}</div>
         </div>
         <div id="azDocumentViewer" class="az-dv-container" :style="containerStyle" ref="azDocumentViewer">
             <div class="az-dv-pages">
@@ -66,12 +66,12 @@
                 return {
                     width: this.width ? this.width : 'auto',
                     height: this.height ? this.height : 'auto',
-                    overflow: this.width || this.height ? 'scroll' : 'hidden',
+                    'overflow-x': 'scroll',
                     'background-color': this.background
                 }
             },
             isZoomEnabled() {
-                return this.width && this.height
+                return (this.width && this.height) || this.enableZoom
             },
             pages() {
                 const pages = []
@@ -168,4 +168,10 @@
         .v-btn__content
             i
                 color: #777
+
+    @media (max-width: 720px)
+        .az-dv-controls
+            height 40px !important
+            button
+                height 30px !important
 </style>
