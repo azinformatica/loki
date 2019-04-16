@@ -7,7 +7,7 @@
                 <div class="logo">
                     <az-logo/>
                 </div>
-                <div class="action">
+                <div v-if="showMainAction" class="action">
                     <v-btn depressed v-if="!asideClosed" class="show" color="secondary"
                            @click="$emit('mainActionEvent')">
                         {{labelMainAction}}
@@ -24,6 +24,7 @@
 
         <v-toolbar app height="60" class="toolbar">
             <v-icon class="mobile_menu" @click="showAside()">dehaze</v-icon>
+            <img :src="logoMobile"/>
             <div class="top-search">
                 <div class="input-search">
                     <input class="input-text" v-model="searchText" :placeholder="placeholderSearch"
@@ -74,6 +75,10 @@
                 type: String,
                 default: 'add'
             },
+            showMainAction: {
+                type: Boolean,
+                default: true
+            },
             placeholderSearch: {
                 type: String,
                 default: 'O que você procura?'
@@ -87,7 +92,10 @@
         computed: {
             asideClosed() {
                 return this.$store.state.loki.asideClosed
-            }
+            },
+            logoMobile() {
+                return this.$store.state.loki.product.logoMobile
+            },
         },
         methods: {
             removeNotification(message) {
