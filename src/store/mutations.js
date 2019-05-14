@@ -42,7 +42,7 @@ export default {
 
     [mutationTypes.SET_UPLOAD_FILE_PROGRESS_ERROR](state, filename) {
         const progress = state.uploadFileProgress[filename].progress
-        Vue.set(state.uploadFileProgress, filename, {progress, error: true})
+        Vue.set(state.uploadFileProgress, filename, {filename, progress, error: true})
     },
 
     [mutationTypes.SET_FILES_CONFIG](state, config) {

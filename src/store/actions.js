@@ -31,7 +31,7 @@ export default {
             commit(mutationTypes.ADD_UPLOADED_FILE, Object.assign({}, data, {status: 'success'}))
             return data
         } catch (e) {
-            commit(mutationTypes.SET_UPLOAD_FILE_PROGRESS_ERROR, filename)
+            commit(mutationTypes.SET_UPLOAD_FILE_PROGRESS_ERROR, hashName)
         }
     }
 
