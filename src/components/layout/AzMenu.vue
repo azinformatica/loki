@@ -2,7 +2,7 @@
     <div class="az-menu">
         <v-list subheader>
             <div v-for="menu in menuActions" :key="menu.name">
-                <v-list-tile active-class="active-menu" dark v-if="!menu.children" :to="menu.path" exact
+                <v-list-tile active-class="active-menu" dark v-if="!menu.children" :to="menu.path"
                              @click="redirectTo(menu.path)" class="menu-item">
                     <v-list-tile-action>
                         <v-tooltip right color="dark-grey" v-if="asideClosed">
