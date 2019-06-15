@@ -2,11 +2,11 @@
     <v-navigation-drawer app :mini-variant.sync="asideClosed" v-model="drawer" mobile-break-point="720"
                          mini-variant-width="60" :width="width" class="az-aside primary" floating>
         <slot></slot>
-        <div :class="{'arrow-opened' : !asideClosed, 'arrow-closed' : asideClosed}" class="no-mobile">
-            <v-btn icon @click="toogle()" flat>
+        <div :class="{'arrow-opened' : !asideClosed, 'arrow-closed' : asideClosed}" class="no-mobile" @click="toogle()">
+            <v-btn icon flat>
                 <v-icon color="rgba(255, 255, 255, 0.3)">{{ asideClosed ? 'keyboard_arrow_right' : 'keyboard_arrow_left' }}</v-icon>
             </v-btn>
-            <a v-if="!asideClosed" class="text-hide-menu" @click="toogle()">Recolher menu</a>
+            <a v-if="!asideClosed" class="text-hide-menu">Recolher menu</a>
         </div>
     </v-navigation-drawer>
 </template>
@@ -33,7 +33,7 @@
                     return this.$store.state.loki.asideClosed
                 },
                 set(currentState) {
-                    const closed = !currentState
+                    const closed = currentState
                     this.change(closed)
                 }
             },
