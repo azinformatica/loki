@@ -32,10 +32,7 @@
                 get() {
                     return this.$store.state.loki.asideClosed
                 },
-                set(currentState) {
-                    const closed = currentState
-                    this.change(closed)
-                }
+                set() {}
             },
             drawer: {
                 get() {
@@ -74,7 +71,7 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1)
             display: flex
             align-items: center
-            height:36px !important
+            height: 36px !important
 
             .v-btn
                 height: 28px
