@@ -1,5 +1,5 @@
 import moment from 'moment-timezone'
-import store from '@/commons/store'
+import {state} from '../store'
 
 const filter = (date) => {
     if (!date) {
@@ -27,11 +27,11 @@ const filter = (date) => {
 }
 
 function getReferenceDate(date) {
-    return moment(date).tz(store.state.loki.timezone)
+    return moment(date).tz(state.timezone)
 }
 
 function getCurrentTime() {
-    return moment().tz(store.state.loki.timezone)
+    return moment().tz(state.timezone)
 }
 
 function isLessThanMinute(refDate, currentTime) {
