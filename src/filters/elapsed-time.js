@@ -27,11 +27,11 @@ const filter = (date) => {
 }
 
 function getReferenceDate(date) {
-    return moment(date).tz(state.loki.timezone)
+    return moment(date).tz(state.timezone)
 }
 
 function getCurrentTime() {
-    return moment().tz(state.loki.timezone)
+    return moment().tz(state.timezone)
 }
 
 function isLessThanMinute(refDate, currentTime) {
