@@ -12,15 +12,21 @@
                 <input class="input-text" v-model="searchText" :placeholder="simpleSearchPlaceholder"
                        @keyup.enter="simpleSearch()"/>
             </div>
-            <v-btn class="icon-search" fab dark small depressed color="primary" @click="simpleSearch()"><v-icon small>search</v-icon></v-btn>
+            <v-btn class="icon-search" fab dark small depressed color="primary" @click="simpleSearch()">
+                <v-icon small>search</v-icon>
+            </v-btn>
         </div>
 
-        <v-btn class="btn-advanced-search" depressed color="grey darken-1" @click="toggle()" v-if="hasAdvancedSearchItems"><v-icon small>chevron_left</v-icon>Filtros</v-btn>
+        <v-btn class="btn-advanced-search" depressed color="grey darken-1" @click="toggle()" v-if="hasAdvancedSearchItems">
+            <v-icon small>chevron_left</v-icon>Filtros
+        </v-btn>
 
-        <v-navigation-drawer permanent absolute right width="400" :mini-variant.sync="isClosedAdvancedSearch"
+        <v-navigation-drawer absolute right width="400" v-model="isClosedAdvancedSearch"
                              mini-variant-width="0" floating class="advanced-search-bar">
             <v-toolbar flat class="title" color="primary">
-                <v-btn class="btn-close" icon small @click.prevent="toggle()"><v-icon>close</v-icon></v-btn>
+                <v-btn class="btn-close" icon small @click.prevent="toggle()">
+                    <v-icon>close</v-icon>
+                </v-btn>
                 Busca Avançada
             </v-toolbar>
             <div class="items">
@@ -51,7 +57,7 @@
             return {
                 hasAdvancedSearchItems: false,
                 searchText: null,
-                isClosedAdvancedSearch: true,
+                isClosedAdvancedSearch: false,
                 isSimpleSearch: false,
                 searchTextSize: 200
             }
@@ -191,7 +197,6 @@
                     padding: 5px
                     font-size: 13px
                     border-radius: 2px
-                    margin: 0
                     &:hover
                         background-color: #777
                         color: white
