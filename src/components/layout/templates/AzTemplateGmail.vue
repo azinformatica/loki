@@ -8,13 +8,7 @@
                     <az-logo/>
                 </div>
                 <div v-if="showMainAction" class="action">
-                    <v-btn depressed v-if="!asideClosed" class="show" color="secondary"
-                           @click="$emit('mainActionEvent')">
-                        {{labelMainAction}}
-                    </v-btn>
-                    <v-btn depressed v-else fab small class="hide" color="secondary" @click="$emit('mainActionEvent')">
-                        <v-icon>{{iconMainAction}}</v-icon>
-                    </v-btn>
+                    <slot name="main-action"/>
                 </div>
                 <div class="menu">
                     <az-menu/>
@@ -67,14 +61,6 @@
     export default {
         components: {AzNotification, AzLoading, AzAlert, AzFileProgress},
         props: {
-            labelMainAction: {
-                type: String,
-                default: 'NOVO'
-            },
-            iconMainAction: {
-                type: String,
-                default: 'add'
-            },
             showMainAction: {
                 type: Boolean,
                 default: true
@@ -90,12 +76,9 @@
             }
         },
         computed: {
-            asideClosed() {
-                return this.$store.state.loki.asideClosed
-            },
             logoMobile() {
                 return this.$store.state.loki.product.logoMobile
-            },
+            }
         },
         methods: {
             removeNotification(message) {
@@ -120,28 +103,6 @@
                 border-right 1px solid rgba(255, 255, 255, 0.1)
                 background-color: var(--v-primary-lighten1) !important
                 border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            .action
-                text-align: center
-                padding: 30px 0
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-
-                .show
-                    color: white
-                    border-radius: 20px
-                    transition 0s
-                    width 210px !important
-                    margin 0 !important
-                    font-size 16px
-
-                .hide
-                    color: white
-                    font-weight bold
-                    transition 0s
-                    width 36px
-                    height 36px
-                    margin 0 !important
-                    i
-                        font-size 24px !important
 
         .container
             background-color #eee
