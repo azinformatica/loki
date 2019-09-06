@@ -7,6 +7,9 @@
                 <div class="logo">
                     <az-logo/>
                 </div>
+                <div v-if="showMainAction" class="action">
+                    <slot name="main-action"/>
+                </div>
                 <div class="menu">
                     <az-menu/>
                 </div>
@@ -39,6 +42,12 @@
 
     export default {
         components: {AzLoading, AzAlert, AzFileProgress},
+        props: {
+            showMainAction: {
+                type: Boolean,
+                default: false
+            }
+        },
         methods: {
             showAside() {
                 this.$store.commit(mutationTypes.SET_ASIDE_HIDE, true)

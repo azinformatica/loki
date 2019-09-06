@@ -5,17 +5,18 @@
                 <div class="infos">
                     <div class="name">{{ userName }}</div>
                     <div class="plan" v-if="plan">{{plan}}</div>
+                    <div class="domain" v-if="userDomain">{{userDomain}}</div>
                 </div>
                 <v-icon right="right">keyboard_arrow_down</v-icon>
             </v-btn>
             <v-list>
                 <v-list-tile v-for="item in avatarActions" :key="item.title" @click="redirectTo(item.path)"
-                             v-az-auth="item.authorities" :class="{'item-html': item.isHtml }">
-                    <v-list-tile-action v-if="!item.isHtml">
+                             v-az-auth="item.authorities">
+                    <v-list-tile-action>
                         <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
                     </v-list-tile-action>
                     <v-list-tile-content>
-                        <v-list-tile-title v-html="item.title"></v-list-tile-title>
+                        <v-list-tile-title v-text="item.title"></v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
 
@@ -50,6 +51,9 @@
             userName() {
                 return this.$store.state.loki.user.name
             },
+            userDomain() {
+                return this.$store.state.loki.user.domainName
+            },
             avatarActions() {
                 return this.$store.state.loki.avatarActions
             },
@@ -69,17 +73,16 @@
 </script>
 <style lang="stylus">
     .az-avatar
-        position unset
-        top 0
-        right 20px
-        display block
-        font-size 14px
+        position: unset
+        top: 0
+        right: 20px
+        display: block
+        font-size: 14px
         align-items center
         &__logout
-            border-top 1px solid #ccc
-
+            border-top: 1px solid #ccc
         &__username
-            margin-right 10px
+            margin-right: 10px
             text-align end
             .infos
                 display block
@@ -87,47 +90,32 @@
                 .plan
                     font-size 10px
                     opacity 0.7
-
+                .domain
+                    opacity 0.7
         &__picture
-            margin-right 0
-
+            margin-right: 0
         .v-btn
-            text-transform none
+            text-transform: none
             .v-icon--right
-                margin-left 0
-
+                margin-left: 0
             &__content
-                font-weight normal
-                font-size 14px
+                font-weight: normal
+                font-size: 14px
                 i
-                    color #777777
-
+                    color: #777777
         .v-list
-            padding 0
+            padding: 0
             &__tile
-                color #7f7f7f
-                height 38px
+                color: #7f7f7f
+                height: 38px
                 &__title
-                    font-size 14px
-
+                    font-size: 14px
                 &__action
-                    min-width unset
-                    padding-right 10px
+                    min-width: unset
+                    padding-right: 10px
                     .material-icons
-                        font-size 13px
-
-        .item-html
-            .v-list
-                &__tile
-                    height auto
-                    padding 0
-                    &__title
-                        height auto
-                        overflow auto
-                &__tile--link
-                    cursor initial
-
+                        font-size: 13px
     @media (max-width: 720px)
         .az-avatar
-            display none !important
+            display: none !important
 </style>
