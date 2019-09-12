@@ -92,6 +92,8 @@
                     opacity 0.7
                 .domain
                     opacity 0.7
+                    line-height 12px
+                    font-size 12px
         &__picture
             margin-right: 0
         .v-btn
