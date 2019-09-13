@@ -5,6 +5,7 @@
                 <div class="infos">
                     <div class="name">{{ userName }}</div>
                     <div class="plan" v-if="plan">{{plan}}</div>
+                    <div class="domain" v-if="userDomain">{{userDomain}}</div>
                 </div>
                 <v-icon right="right">keyboard_arrow_down</v-icon>
             </v-btn>
@@ -50,6 +51,9 @@
             userName() {
                 return this.$store.state.loki.user.name
             },
+            userDomain() {
+                return this.$store.state.loki.user.domainName
+            },
             avatarActions() {
                 return this.$store.state.loki.avatarActions
             },
@@ -77,7 +81,6 @@
         align-items center
         &__logout
             border-top: 1px solid #ccc
-
         &__username
             margin-right: 10px
             text-align end
@@ -87,21 +90,21 @@
                 .plan
                     font-size 10px
                     opacity 0.7
-
+                .domain
+                    opacity 0.7
+                    line-height 12px
+                    font-size 12px
         &__picture
             margin-right: 0
-
         .v-btn
             text-transform: none
             .v-icon--right
                 margin-left: 0
-
             &__content
                 font-weight: normal
                 font-size: 14px
                 i
                     color: #777777
-
         .v-list
             padding: 0
             &__tile
@@ -109,15 +112,12 @@
                 height: 38px
                 &__title
                     font-size: 14px
-
                 &__action
                     min-width: unset
                     padding-right: 10px
                     .material-icons
                         font-size: 13px
-
     @media (max-width: 720px)
         .az-avatar
             display: none !important
-
 </style>

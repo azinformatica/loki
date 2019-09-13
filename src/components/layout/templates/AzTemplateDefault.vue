@@ -7,6 +7,9 @@
                 <div class="logo">
                     <az-logo/>
                 </div>
+                <div v-if="showMainAction" class="action">
+                    <slot name="main-action"/>
+                </div>
                 <div class="menu">
                     <az-menu/>
                 </div>
@@ -17,6 +20,14 @@
             <v-icon class="mobile_menu" @click="showAside()">dehaze</v-icon>
             <az-title/>
             <v-spacer></v-spacer>
+            <az-notification v-if="showNotification" class=""
+                    @open="$emit('openNotifications')"
+                    @close="$emit('closeNotifications')"
+                    @paginate="$emit('paginateNotifications')"
+                    @refresh="$emit('refreshNotifications')"
+                    @read="$emit('readNotifications')"
+                    @visit="visitNotification"
+                    @remove="removeNotification"/>
             <az-avatar/>
         </v-toolbar>
         <v-content>
@@ -35,13 +46,30 @@
     import AzAlert from '../AzAlert'
     import AzFileProgress from '../../file/AzFileProgress'
     import AzLoading from '../AzLoading'
+    import AzNotification from '../AzNotification'
     import mutationTypes from '../../../store/mutations-types'
 
     export default {
-        components: {AzLoading, AzAlert, AzFileProgress},
+        components: {AzLoading, AzAlert, AzFileProgress, AzNotification},
+        props: {
+            showMainAction: {
+                type: Boolean,
+                default: false
+            },
+            showNotification: {
+                type: Boolean,
+                default: false
+            }
+        },
         methods: {
             showAside() {
                 this.$store.commit(mutationTypes.SET_ASIDE_HIDE, true)
+            },
+            removeNotification(message) {
+                this.$emit('removeNotification', message)
+            },
+            visitNotification(message) {
+                this.$emit('visitNotification', message)
             }
         }
     }
