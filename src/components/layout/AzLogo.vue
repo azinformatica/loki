@@ -10,7 +10,7 @@
     export default {
         methods: {
             redirectToHome() {
-                console.log('Go')
+                this.$router.push({path: '/'})
             }
         },
         computed: {
