@@ -108,8 +108,7 @@
                             this.throwFileExceedMaxLimitSizeEvent(file)
                         } else {
                             const payload = this.createPayload(file)
-                            const fileSent = this.$store.dispatch('uploadFile', payload)
-                            this.$emit('uploadFile', fileSent)
+                            this.$store.dispatch('uploadFile', payload)
                         }
                     });
             },
