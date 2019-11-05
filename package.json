@@ -1,68 +1,68 @@
 {
-    "name": "@azinformatica/loki",
-    "version": "0.4.1",
-    "description": "Biblioteca de componentes visuais compartilhados construidos usando vuejs.",
-    "main": "src/index.js",
-    "private": false,
-    "scripts": {
-        "test": "jest",
-        "deploy": "npm version patch -m 'patch upgrade' && git push && git push --tags && npm publish"
+  "name": "@azinformatica/loki",
+  "version": "0.4.2",
+  "description": "Biblioteca de componentes visuais compartilhados construidos usando vuejs.",
+  "main": "src/index.js",
+  "private": false,
+  "scripts": {
+    "test": "jest",
+    "deploy": "npm version patch -m 'patch upgrade' && git push && git push --tags && npm publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azinformatica/loki.git"
+  },
+  "author": "Charles Viegas",
+  "license": "ISC",
+  "dependencies": {
+    "accounting": "^0.4.1",
+    "ajv": "^6.5.3",
+    "imagesloaded": "^4.1.4",
+    "lodash": "^4.17.10",
+    "moment-timezone": "^0.5.27",
+    "scrollmonitor": "^1.2.4",
+    "soundex": "^0.2.1",
+    "string-mask": "^0.3.0",
+    "string-similarity": "^2.0.0",
+    "v-money": "^0.8.1",
+    "vue": "^2.5.16",
+    "vuetify": "^1.5.7",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vue/test-utils": "^1.0.0-beta.25",
+    "babel-core": "^6.26.0",
+    "babel-jest": "^23.0.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-stage-3": "^6.24.1",
+    "cross-env": "^5.0.5",
+    "css-loader": "^0.28.7",
+    "file-loader": "^1.1.4",
+    "jest": "^23.6.0",
+    "jest-serializer-vue": "^2.0.2",
+    "vue-jest": "^2.6.0",
+    "vue-loader": "^13.0.5",
+    "vue-router": "^3.0.1",
+    "vue-template-compiler": "^2.4.4",
+    "webpack": "^3.6.0",
+    "webpack-dev-server": "^2.9.1"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "vue"
+    ],
+    "transform": {
+      "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
+      ".*\\.(vue)$": "<rootDir>/node_modules/vue-jest"
     },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/azinformatica/loki.git"
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
     },
-    "author": "Charles Viegas",
-    "license": "ISC",
-    "dependencies": {
-        "accounting": "^0.4.1",
-        "ajv": "^6.5.3",
-        "imagesloaded": "^4.1.4",
-        "lodash": "^4.17.10",
-        "moment-timezone": "^0.5.27",
-        "scrollmonitor": "^1.2.4",
-        "soundex": "^0.2.1",
-        "string-mask": "^0.3.0",
-        "string-similarity": "^2.0.0",
-        "v-money": "^0.8.1",
-        "vue": "^2.5.16",
-        "vuetify": "^1.5.7",
-        "vuex": "^3.0.1"
-    },
-    "devDependencies": {
-        "@vue/test-utils": "^1.0.0-beta.25",
-        "babel-core": "^6.26.0",
-        "babel-jest": "^23.0.0",
-        "babel-loader": "^7.1.2",
-        "babel-preset-env": "^1.6.0",
-        "babel-preset-stage-3": "^6.24.1",
-        "cross-env": "^5.0.5",
-        "css-loader": "^0.28.7",
-        "file-loader": "^1.1.4",
-        "jest": "^23.6.0",
-        "jest-serializer-vue": "^2.0.2",
-        "vue-jest": "^2.6.0",
-        "vue-loader": "^13.0.5",
-        "vue-router": "^3.0.1",
-        "vue-template-compiler": "^2.4.4",
-        "webpack": "^3.6.0",
-        "webpack-dev-server": "^2.9.1"
-    },
-    "jest": {
-        "moduleFileExtensions": [
-            "js",
-            "json",
-            "vue"
-        ],
-        "transform": {
-            "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
-            ".*\\.(vue)$": "<rootDir>/node_modules/vue-jest"
-        },
-        "moduleNameMapper": {
-            "^@/(.*)$": "<rootDir>/src/$1"
-        },
-        "snapshotSerializers": [
-            "<rootDir>/node_modules/jest-serializer-vue"
-        ]
-    }
+    "snapshotSerializers": [
+      "<rootDir>/node_modules/jest-serializer-vue"
+    ]
+  }
 }
