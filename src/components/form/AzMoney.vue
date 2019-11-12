@@ -4,11 +4,11 @@
             :name="name"
             :label="label"
             :maxLength="maxLength"
-            :min="min"
             :disabled="disabled"
             :required="required"
             :value="value"
-            @input="updateValue($event)"/>
+            @input="updateValue($event)"
+            @keydown="validatorNegative($event)"/>
 </template>
 
 <script>
@@ -39,9 +39,9 @@
                 type: Number,
                 default: 24
             },
-            min: {
-                type: Number,
-                default: 0
+            negative: {
+                type: Boolean,
+                default: false
             },
             precision: {
                 type: Number,
@@ -81,6 +81,11 @@
                     valueNumber = valueNumber.substring(0, valueNumber.length - this.suffix.length)
                 }
                 this.$emit('input', accounting.unformat(valueNumber, ','))
+            },
+            validatorNegative($event) {
+                if ($event.key === '-' && !this.negative) {
+                    $event.preventDefault()
+                }
             }
         }
     }
