@@ -15,7 +15,6 @@
                 min-width="290px"
                 v-if="!isDisabled">
                 <v-date-picker
-                    class="az-date"
                     v-model="date"
                     :value="value"
                     :locale="currentLanguage"
@@ -364,20 +363,3 @@
         }
     }
 </script>
-<style lang="stylus">
-    .az-date
-        .v-date-picker-header
-            background-color var(--v-primary-base) !important;
-            .v-icon
-                color white !important
-            .accent--text button
-                color white !important
-        .v-picker__title
-            display none
-        .v-date-picker-table
-            min-height: 250px !important
-            height unset !important
-
-        .v-date-picker-table tbody tr td
-            padding: 0 !important
-</style>

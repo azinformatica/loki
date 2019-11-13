@@ -17,15 +17,18 @@
 
     .v-list
         padding: 0
+
         &__tile
             color: #7f7f7f
             height: 38px
+
             &__title
                 font-size: 14px
 
             &__action
                 min-width: unset
                 padding-right: 10px
+
                 .material-icons
                     font-size: 13px
 
@@ -37,6 +40,7 @@
 
     .az-tabs
         margin: 20px
+
         .v-tabs__div
             text-transform: none
 
@@ -75,6 +79,7 @@
         .az-table-list
             thead
                 border: none
+
                 tr:first-child
                     height: 35px !important
                     border-bottom: 2px solid #e9e9e9 !important
@@ -86,21 +91,5 @@
                 tbody tr
                     &:nth-child(even)
                         background-color: #f9f9f9
-
-    tbody tr
-        border-bottom: 1px solid #e9e9e9 !important
-        td
-            height: 40px
-            color: #777777
-            font-size: 13px
-            font-weight: normal
-            padding: 0 20px !important
-
-        .table-actions a i
-            font-size: 20px
-            color: #888
-
-        .table-actions a
-            margin-left: 10px
 
 </style>
