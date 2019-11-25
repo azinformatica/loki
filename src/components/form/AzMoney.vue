@@ -9,7 +9,7 @@
             :value="value"
             @input="updateValue($event)"
             @keydown="validatorNegative($event)"
-            @keyup.enter="$emit('keyup')"/>
+            @keyup.enter="$emit('keyupEnter')"/>
 </template>
 
 <script>
