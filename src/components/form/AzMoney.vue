@@ -8,7 +8,8 @@
             :required="required"
             :value="value"
             @input="updateValue($event)"
-            @keydown="validatorNegative($event)"/>
+            @keydown="validatorNegative($event)"
+            @keyup.enter="$emit('keyup')"/>
 </template>
 
 <script>
