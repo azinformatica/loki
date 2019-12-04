@@ -37,9 +37,11 @@ import AzDialog from './components/actions/AzDialog'
 import azAuth from './directives/auth'
 
 import azClipText from './filters/clip-text'
+import azConcat from './filters/concat'
 import azCpfCnpj from './filters/cpf-cnpj'
 import azDate from './filters/date'
 import azElapsedTime from './filters/elapsed-time'
+import azEnum from './filters/enum'
 import azPhone from './filters/phone'
 import azTitleCase from './filters/title-case'
 
@@ -102,9 +104,11 @@ const lokiPlugin = {
         Vue.directive('az-auth', azAuth)
 
         Vue.filter('azClipText', azClipText)
+        Vue.filter('azConcat', azConcat)
         Vue.filter('azCpfCnpj', azCpfCnpj)
         Vue.filter('azDate', azDate)
         Vue.filter('azElapsedTime', azElapsedTime)
+        Vue.filter('azEnum', azEnum)
         Vue.filter('azPhone', azPhone)
         Vue.filter('azTitleCase', azTitleCase)
 
@@ -119,9 +123,11 @@ const lokiPlugin = {
 export default lokiPlugin
 
 const filters = {
+    azConcat,
     azCpfCnpj,
     azDate,
     azClipText,
+    azEnum,
     azPhone,
     azTitleCase
 }
