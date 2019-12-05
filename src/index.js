@@ -39,12 +39,15 @@ import azAuth from './directives/auth'
 import azClipText from './filters/clip-text'
 import azConcat from './filters/concat'
 import azCpfCnpj from './filters/cpf-cnpj'
+import azCurrency from './filters/currency'
 import azDate from './filters/date'
 import azElapsedTime from './filters/elapsed-time'
 import azEnum from './filters/enum'
+import azNumber from './filters/number'
 import azPhone from './filters/phone'
 import azTitleCase from './filters/title-case'
 
+import AzCurrency from './utils/AzCurrency'
 import AzSearchUrlBuilder from './utils/AzSearchUrlBuilder'
 import AzSoundex from './utils/AzSoundex'
 import buildMenu from './utils/az-menu'
@@ -57,7 +60,8 @@ Vue.use(money, {
     prefix: 'R$ ',
     suffix: '',
     precision: 2,
-    masked: true})
+    masked: true
+})
 Vue.prototype.moment = moment
 
 const lokiPlugin = {
@@ -90,7 +94,7 @@ const lokiPlugin = {
         Vue.component('az-date', AzDate)
         Vue.component('az-form', AzForm)
         Vue.component('az-formbar', AzFormbar)
-        Vue.component('az-money',AzMoney)
+        Vue.component('az-money', AzMoney)
         Vue.component('az-text-view', AzTextView)
         Vue.component('az-combo-enum', AzComboEnum)
         Vue.component('az-file-upload', AzFileUpload)
@@ -106,9 +110,11 @@ const lokiPlugin = {
         Vue.filter('azClipText', azClipText)
         Vue.filter('azConcat', azConcat)
         Vue.filter('azCpfCnpj', azCpfCnpj)
+        Vue.filter('azCurrency', azCurrency)
         Vue.filter('azDate', azDate)
         Vue.filter('azElapsedTime', azElapsedTime)
         Vue.filter('azEnum', azEnum)
+        Vue.filter('azNumber', azNumber)
         Vue.filter('azPhone', azPhone)
         Vue.filter('azTitleCase', azTitleCase)
 
@@ -125,9 +131,11 @@ export default lokiPlugin
 const filters = {
     azConcat,
     azCpfCnpj,
+    azCurrency,
     azDate,
     azClipText,
     azEnum,
+    azNumber,
     azPhone,
     azTitleCase
 }
@@ -135,6 +143,7 @@ const filters = {
 export {
     lokiPlugin,
     filters,
+    AzCurrency,
     AzSearchUrlBuilder,
     AzSoundex,
     buildMenu,
