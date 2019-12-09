@@ -81,12 +81,23 @@
                 if (this.suffix) {
                     valueNumber = valueNumber.substring(0, valueNumber.length - this.suffix.length)
                 }
-                this.$emit('input', accounting.unformat(valueNumber, ','))
+                const valueFormated = accounting.unformat(valueNumber, ',')
+                if (valueFormated !== this.value && this.validadePrecison(valueFormated)) {
+                    this.$emit('input', valueFormated)
+                }
             },
             validatorNegative($event) {
                 if ($event.key === '-' && !this.negative) {
                     $event.preventDefault()
                 }
+            },
+            validadePrecison(value) {
+                const valueText = value + ''
+                const valueParts = valueText.split('.')
+                if (valueParts > 0 && valueParts[1].length > this.precision) {
+                    return false
+                }
+                return true
             }
         }
     }

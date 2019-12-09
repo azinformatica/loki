@@ -76,7 +76,7 @@
         margin: 20px
         background-color: white
 
-        .az-table-list
+        .az-table-list .v-table
             thead
                 border: none
 
@@ -88,8 +88,8 @@
                     font-weight: bold
                     padding: 0 10px !important
 
-                tbody tr
-                    &:nth-child(even)
-                        background-color: #f9f9f9
+            tbody tr
+                &:nth-child(even)
+                    background-color: #f9f9f9
 
 </style>
