@@ -37,10 +37,10 @@
 
         .v-table tbody tr td
             height unset
-            padding 10px !important
+            padding 10px
 
         .v-table thead tr th
-            padding 10px !important
+            padding 10px
 
     .az-pagination
         display flex
