@@ -6,7 +6,7 @@
             :maxLength="maxLength"
             :disabled="disabled"
             :required="required"
-            :value="value"
+            :value="valueFormated"
             @input="updateValue($event)"
             @keydown="validatorNegative($event)"
             @keyup.enter="$emit('keyupEnter')"/>
@@ -72,37 +72,33 @@
                 masked: false
             }
         },
+        computed: {
+            valueFormated() {
+                return accounting.formatMoney(this.value, this.prefix, this.precision, this.thousands, this.decimal)
+            }
+        },
         methods: {
             updateValue(value) {
                 let valueNumber = value
                 if (this.prefix) {
-                    valueNumber = valueNumber.substring(this.prefix.length - 1, valueNumber.length)
+                    valueNumber = valueNumber.replace(this.prefix, '')
                 }
                 if (this.suffix) {
-                    valueNumber = valueNumber.substring(0, valueNumber.length - this.suffix.length)
+                    valueNumber = valueNumber.replace(this.suffix, '')
                 }
-                const valueFormated = accounting.unformat(valueNumber, ',')
-                if (valueFormated !== this.value && this.validadePrecison(valueFormated)) {
-                    this.$emit('input', valueFormated)
+                const valueFormatedSimple = accounting.unformat(valueNumber, ',')
+                if (valueFormatedSimple !== this.value) {
+                    this.$emit('input', valueFormatedSimple)
                 }
             },
             validatorNegative($event) {
                 if ($event.key === '-' && !this.negative) {
                     $event.preventDefault()
                 }
-            },
-            validadePrecison(value) {
-                const valueText = value + ''
-                const valueParts = valueText.split('.')
-                if (valueParts > 0 && valueParts[1].length > this.precision) {
-                    return false
-                }
-                return true
             }
         }
     }
 </script>
 
 <style scoped lang="stylus">
-
 </style>
