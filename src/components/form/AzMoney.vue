@@ -1,15 +1,20 @@
 <template>
     <v-text-field
-            v-money="moneyConfig"
+            v-money="(value !== null || restarted) ? moneyConfig : null"
             :name="name"
             :label="label"
             :maxLength="maxLength"
             :disabled="disabled"
             :required="required"
             :value="valueFormated"
-            @input="updateValue($event)"
+            :placeholder="placeholder"
+            class="clear-button"
+            :prepend-inner-icon="(value !== null) ? 'fas fa-times-circle' : ''"
+            @click:prepend-inner="cleanValue"
+            @blur="updateValue($event.target.value)"
             @keydown="validatorNegative($event)"
-            @keyup.enter="$emit('keyupEnter')"/>
+            @keyup.enter="$emit('keyupEnter')"
+            @focus="restartMoneyConfig"/>
 </template>
 
 <script>
@@ -21,6 +26,10 @@
                 required: true
             },
             label: {
+                type: String,
+                default: ''
+            },
+            placeholder: {
                 type: String,
                 default: ''
             },
@@ -59,7 +68,8 @@
         },
         data() {
             return {
-                moneyConfig: {}
+                moneyConfig: {},
+                restarted: false
             }
         },
         mounted() {
@@ -74,7 +84,11 @@
         },
         computed: {
             valueFormated() {
-                return accounting.formatMoney(this.value, this.prefix, this.precision, this.thousands, this.decimal)
+                if (this.value !== null) {
+                    return accounting.formatMoney(this.value, this.prefix, this.precision, this.thousands, this.decimal)
+                } else {
+                    return null
+                }
             }
         },
         methods: {
@@ -88,17 +102,27 @@
                 }
                 const valueFormatedSimple = accounting.unformat(valueNumber, ',')
                 if (valueFormatedSimple !== this.value) {
-                    this.$emit('input', valueFormatedSimple)
+                    this.$emit('blur', valueFormatedSimple)
                 }
             },
             validatorNegative($event) {
                 if ($event.key === '-' && !this.negative) {
                     $event.preventDefault()
                 }
+            },
+            restartMoneyConfig() {
+                this.restarted = true
+            },
+            cleanValue() {
+                this.restarted = false
+                this.$emit('blur', null)
             }
         }
     }
 </script>
 
-<style scoped lang="stylus">
+<style lang="stylus">
+    .clear-button i
+        font-size 13px
+
 </style>
