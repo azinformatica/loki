@@ -1,6 +1,6 @@
 <template>
     <v-text-field
-            v-money="(value !== null || restarted) ? moneyConfig : null"
+            v-money="conditionalMoneyConfig"
             :name="name"
             :label="label"
             :maxLength="maxLength"
@@ -8,8 +8,9 @@
             :required="required"
             :value="valueFormated"
             :placeholder="placeholder"
+            :showClearButton="showClearButton"
             class="clear-button"
-            :prepend-inner-icon="(value !== null) ? 'fas fa-times-circle' : ''"
+            :prepend-inner-icon="showClearButtonIf"
             @click:prepend-inner="cleanValue"
             @blur="updateValue($event.target.value)"
             @keydown="validatorNegative($event)"
@@ -44,6 +45,10 @@
             disabled: {
                 type: Boolean,
                 default: false
+            },
+            showClearButton: {
+                type: Boolean,
+                default: true
             },
             maxLength: {
                 type: Number,
@@ -89,6 +94,12 @@
                 } else {
                     return null
                 }
+            },
+            conditionalMoneyConfig() {
+                return (this.value !== null || this.restarted) ? this.moneyConfig : null
+            },
+            showClearButtonIf() {
+                return ((this.value !== null) && this.showClearButton) ? 'fas fa-times-circle' : ''
             }
         },
         methods: {
