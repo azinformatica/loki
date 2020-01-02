@@ -1,15 +1,21 @@
 <template>
     <v-text-field
-            v-money="moneyConfig"
+            v-money="conditionalMoneyConfig"
             :name="name"
             :label="label"
             :maxLength="maxLength"
             :disabled="disabled"
             :required="required"
             :value="valueFormated"
-            @input="updateValue($event)"
+            :placeholder="placeholder"
+            :showClearButton="showClearButton"
+            class="clear-button"
+            :prepend-inner-icon="showClearButtonIf"
+            @click:prepend-inner="cleanValue"
+            @blur="updateValue($event.target.value)"
             @keydown="validatorNegative($event)"
-            @keyup.enter="$emit('keyupEnter')"/>
+            @keyup.enter="$emit('keyupEnter')"
+            @focus="restartMoneyConfig"/>
 </template>
 
 <script>
@@ -24,6 +30,10 @@
                 type: String,
                 default: ''
             },
+            placeholder: {
+                type: String,
+                default: ''
+            },
             name: {
                 type: String,
                 default: ''
@@ -35,6 +45,10 @@
             disabled: {
                 type: Boolean,
                 default: false
+            },
+            showClearButton: {
+                type: Boolean,
+                default: true
             },
             maxLength: {
                 type: Number,
@@ -59,7 +73,8 @@
         },
         data() {
             return {
-                moneyConfig: {}
+                moneyConfig: {},
+                restarted: false
             }
         },
         mounted() {
@@ -74,7 +89,17 @@
         },
         computed: {
             valueFormated() {
-                return accounting.formatMoney(this.value, this.prefix, this.precision, this.thousands, this.decimal)
+                if (this.value !== null) {
+                    return accounting.formatMoney(this.value, this.prefix, this.precision, this.thousands, this.decimal)
+                } else {
+                    return null
+                }
+            },
+            conditionalMoneyConfig() {
+                return (this.value !== null || this.restarted) ? this.moneyConfig : null
+            },
+            showClearButtonIf() {
+                return ((this.value !== null) && this.showClearButton) ? 'fas fa-times-circle' : ''
             }
         },
         methods: {
@@ -88,17 +113,27 @@
                 }
                 const valueFormatedSimple = accounting.unformat(valueNumber, ',')
                 if (valueFormatedSimple !== this.value) {
-                    this.$emit('input', valueFormatedSimple)
+                    this.$emit('blur', valueFormatedSimple)
                 }
             },
             validatorNegative($event) {
                 if ($event.key === '-' && !this.negative) {
                     $event.preventDefault()
                 }
+            },
+            restartMoneyConfig() {
+                this.restarted = true
+            },
+            cleanValue() {
+                this.restarted = false
+                this.$emit('blur', null)
             }
         }
     }
 </script>
 
-<style scoped lang="stylus">
+<style lang="stylus">
+    .clear-button i
+        font-size 13px
+
 </style>
