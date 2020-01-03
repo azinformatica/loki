@@ -20,6 +20,9 @@
             <v-icon class="mobile_menu" @click="showAside()">dehaze</v-icon>
             <az-title/>
             <v-spacer></v-spacer>
+            <div v-if="showMainHeader" class="action">
+                <slot name="main-header"/>
+            </div>
             <az-notification v-if="showNotification" class=""
                     @open="$emit('openNotifications')"
                     @close="$emit('closeNotifications')"
@@ -53,6 +56,10 @@
         components: {AzLoading, AzAlert, AzFileProgress, AzNotification},
         props: {
             showMainAction: {
+                type: Boolean,
+                default: false
+            },
+            showMainHeader: {
                 type: Boolean,
                 default: false
             },

@@ -1,74 +1,77 @@
 <template>
-    <div style="display: flex">
+    <div style="display: flex;">
         <div v-bind:style="dateTime ? 'width: 60%' : 'width: 100%'">
             <v-dialog
-                ref="menu"
-                :close-on-content-click="false"
-                v-model="dialogDate"
-                nudge-right="450"
-                nudge-bottom="120"
-                lazy
-                transition="scale-transition"
-                offset-y
-                full-width
-                max-width="290px"
-                min-width="290px"
-                v-if="!isDisabled">
+                    ref="menu"
+                    :close-on-content-click="false"
+                    v-model="dialogDate"
+                    nudge-right="450"
+                    nudge-bottom="120"
+                    lazy
+                    transition="scale-transition"
+                    offset-y
+                    full-width
+                    max-width="290px"
+                    min-width="290px"
+                    v-if="!isDisabled">
                 <v-date-picker
-                    v-model="date"
-                    :value="value"
-                    :locale="currentLanguage"
-                    @input="pickDateEvent();updateModelDate($event)"/>
+                        v-model="date"
+                        :value="value"
+                        :locale="currentLanguage"
+                        @input="pickDateEvent();updateModelDate($event)"
+                        class="az-date"/>
             </v-dialog>
             <v-text-field
-                v-validate="{'required': isRequired}" :name="nameDate"
-                :error-messages="errors.collect(`${nameDate}`)"
-                v-model="dateFormatted"
-                :label="label"
-                mask="date"
-                :placeholder="dateFormat"
-                :disabled="isDisabled"
-                append-icon="event"
-                @click:append="openMenuDate"
-                @blur="validateAndParseDate(dateFormatted);updateModelDate(date);">
+                    v-validate="{'required': isRequired}" :name="nameDate"
+                    :error-messages="errors.collect(`${nameDate}`)"
+                    v-model="dateFormatted"
+                    :label="label"
+                    mask="date"
+                    :placeholder="dateFormat"
+                    :disabled="isDisabled"
+                    append-icon="event"
+                    @click:append="openMenuDate"
+                    @blur="validateAndParseDate(dateFormatted);updateModelDate(date);">
             </v-text-field>
         </div>
         <div v-if="dateTime" style="margin-left: 10px; width: 40%">
             <v-dialog
-                ref="menu"
-                :close-on-content-click="false"
-                v-model="dialogTime"
-                nudge-right="540"
-                nudge-bottom="120"
-                lazy
-                transition="scale-transition"
-                offset-y
-                full-width
-                max-width="290px"
-                min-width="290px"
-                v-if="!isDisabled">
+                    ref="menu"
+                    :close-on-content-click="false"
+                    v-model="dialogTime"
+                    nudge-right="540"
+                    nudge-bottom="120"
+                    lazy
+                    transition="scale-transition"
+                    offset-y
+                    full-width
+                    max-width="290px"
+                    min-width="290px"
+                    v-if="!isDisabled">
                 <v-time-picker
-                    v-if="dialogTime"
-                    v-model="time"
-                    :locale="currentLanguage"
-                    @change="changeTimeEvent();updateModelTime($event);"
-                    format="24hr"/>
+                        v-if="dialogTime"
+                        v-model="time"
+                        :locale="currentLanguage"
+                        @change="changeTimeEvent();updateModelTime($event);"
+                        format="24hr"
+                        class="az-date"/>
             </v-dialog>
             <v-text-field
-                v-validate="{'required': isRequired}" :name="nameHour"
-                :error-messages="errors.collect(`${nameHour}`)"
-                :disabled="isDisabled"
-                v-model="timeFormatted"
-                mask="time"
-                placeholder="HH:mm"
-                append-icon="access_time"
-                @click:append="openMenuTime"
-                @focus="selectContentInputHour"
-                @blur="validateTimeEvent();updateModelTime(time);"
+                    v-validate="{'required': isRequired}" :name="nameHour"
+                    :error-messages="errors.collect(`${nameHour}`)"
+                    :disabled="isDisabled"
+                    v-model="timeFormatted"
+                    mask="time"
+                    placeholder="HH:mm"
+                    append-icon="access_time"
+                    @click:append="openMenuTime"
+                    @focus="selectContentInputHour"
+                    @blur="validateTimeEvent();updateModelTime(time);"
             ></v-text-field>
         </div>
     </div>
 </template>
+
 <script>
     export default {
         props: {
@@ -363,3 +366,21 @@
         }
     }
 </script>
+
+<style lang="stylus">
+    .az-date
+        .v-picker__title
+            padding 10px 15px
+
+        .v-date-picker-title__date
+            font-size 20px
+
+        .v-time-picker-title__time .v-picker__title__btn, .v-time-picker-title__time span
+            font-size 40px
+            height 50px
+
+        .v-time-picker-title
+            -webkit-box-pack center
+            -ms-flex-pack center
+            justify-content center
+</style>
