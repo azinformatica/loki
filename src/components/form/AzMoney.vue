@@ -12,9 +12,9 @@
             class="clear-button"
             :prepend-inner-icon="showClearButtonIf"
             @click:prepend-inner="cleanValue"
-            @blur="updateValue($event.target.value)"
+            @blur="updateValue($event.target.value, 'blur')"
             @keydown="validatorNegative($event)"
-            @keyup.enter="$emit('keyupEnter')"
+            @keyup.enter="updateValue($event.target.value, 'keyupEnter')"
             @focus="restartMoneyConfig"/>
 </template>
 
@@ -103,7 +103,7 @@
             }
         },
         methods: {
-            updateValue(value) {
+            updateValue(value, event) {
                 let valueNumber = value
                 if (this.prefix) {
                     valueNumber = valueNumber.replace(this.prefix, '')
@@ -113,7 +113,7 @@
                 }
                 const valueFormatedSimple = accounting.unformat(valueNumber, ',')
                 if (valueFormatedSimple !== this.value) {
-                    this.$emit('blur', valueFormatedSimple)
+                    this.$emit(event, valueFormatedSimple)
                 }
             },
             validatorNegative($event) {
@@ -135,5 +135,4 @@
 <style lang="stylus">
     .clear-button i
         font-size 13px
-
 </style>
