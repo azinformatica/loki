@@ -15,7 +15,7 @@
             @blur="updateValue($event.target.value, 'blur')"
             @keydown="validatorNegative($event)"
             @keyup.enter="updateValue($event.target.value, 'keyupEnter')"
-            @focus="restartMoneyConfig"/>
+            @keyup="checkKey"/>
 </template>
 
 <script>
@@ -74,18 +74,15 @@
         },
         data() {
             return {
-                moneyConfig: {},
-                restarted: false
-            }
-        },
-        mounted() {
-            this.moneyConfig = {
-                decimal: ',',
-                thousands: '.',
-                prefix: this.prefix,
-                suffix: this.suffix,
-                precision: this.precision,
-                masked: false
+                moneyConfig: {
+                    decimal: ',',
+                    thousands: '.',
+                    prefix: this.prefix,
+                    suffix: this.suffix,
+                    precision: this.precision,
+                    masked: false
+                },
+                clickedField: false
             }
         },
         computed: {
@@ -97,10 +94,10 @@
                 }
             },
             conditionalMoneyConfig() {
-                return (this.value !== null || this.restarted) ? this.moneyConfig : null
+                return this.value !== null || this.clickedField ? this.moneyConfig : null
             },
             showClearButtonIf() {
-                return ((this.value !== null) && this.showClearButton) ? 'fas fa-times-circle' : ''
+                return this.value !== null && this.showClearButton ? 'fas fa-times-circle' : ''
             }
         },
         methods: {
@@ -113,8 +110,9 @@
                     valueNumber = valueNumber.replace(this.suffix, '')
                 }
                 const valueFormatedSimple = accounting.unformat(valueNumber, ',')
-                if (valueFormatedSimple !== this.value) {
+                if (valueFormatedSimple !== this.value && this.clickedField) {
                     this.$emit(event, valueFormatedSimple)
+                    this.clickedField = false
                 }
             },
             validatorNegative($event) {
@@ -122,18 +120,25 @@
                     $event.preventDefault()
                 }
             },
-            restartMoneyConfig() {
-                this.restarted = true
-            },
             cleanValue() {
-                this.restarted = false
                 this.$emit('blur', null)
+                this.clickedField = false
+            },
+            checkKey($event) {
+                if ($event.key !== 'Tab') {
+                    this.clickedField = true
+                }
             }
         }
     }
 </script>
 
 <style lang="stylus">
-    .clear-button i
-        font-size 13px
+    .clear-button
+        .v-input__icon
+            min-width 13px
+            width 13px
+
+        i
+            font-size 13px
 </style>

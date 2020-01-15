@@ -1,5 +1,5 @@
 <template>
-    <v-app class="az-template-default">
+    <v-app class="az-template-default" v-cloak>
         <az-loading></az-loading>
 
         <az-aside>
@@ -82,6 +82,9 @@
     }
 </script>
 <style lang="stylus">
+    [v-cloak]
+        display none
+
     .az-template-default
         .az-aside
             .logo
