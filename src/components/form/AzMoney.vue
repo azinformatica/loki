@@ -122,6 +122,7 @@
             },
             cleanValue() {
                 this.$emit('blur', null)
+                this.clickedField = false
             },
             checkKey($event) {
                 if ($event.key !== 'Tab') {
@@ -133,6 +134,11 @@
 </script>
 
 <style lang="stylus">
-    .clear-button i
-        font-size 13px
+    .clear-button
+        .v-input__icon
+            min-width 13px
+            width 13px
+
+        i
+            font-size 13px
 </style>
