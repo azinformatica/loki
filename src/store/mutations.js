@@ -103,5 +103,26 @@ export default {
     [mutationTypes.SET_TIMEZONE](state, timezone) {
         state.timezone = timezone
         state.offset = moment().tz(timezone).format('Z')
+    },
+
+    [mutationTypes.DOCUMENT.SET_PAGE_CONTAINER](state, { height, width }) {
+        state.document.pageContainer.height = height;
+        state.document.pageContainer.width = width;
+    },
+
+    [mutationTypes.DOCUMENT.SET_PAGES](state, pages) {
+        state.document.pages = pages;
+    },
+
+    [mutationTypes.DOCUMENT.SET_CURRENT_PAGE_NUM](state, currentPageNum) {
+        state.document.paginator.currentPageNum = currentPageNum;
+    },
+
+    [mutationTypes.DOCUMENT.SET_TOTAL_PAGE_NUM](state, totalPageNum) {
+        state.document.paginator.totalPageNum = totalPageNum;
+    },
+
+    [mutationTypes.DOCUMENT.SET_CURRENT_SCALE](state, scale) {
+        state.document.scale.current = scale;
     }
 }

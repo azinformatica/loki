@@ -52,6 +52,23 @@ export default {
         activeFilter: 'Todas',
         filters: ['Todas', 'Lidas', 'Não Lidas'],
         title: 'Notificações'
+    },
+
+    document: {
+        pageContainer: {
+            height: 0,
+            width: 0
+        },
+        pages: [],
+        paginator: {
+            currentPageNum: 1,
+            totalPageNum: 1
+        },
+        scale: {
+            current: 1.0,
+            default: 1.0,
+            max: 3.0
+        }
     }
 
 }
