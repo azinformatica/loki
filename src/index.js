@@ -28,8 +28,8 @@ import AzTextView from './components/form/AzTextView'
 import AzComboEnum from './components/form/AzComboEnum'
 import AzFileUpload from './components/file/AzFileUpload'
 import AzFileProgress from './components/file/AzFileProgress'
-// import AzDocumentViewer from './components/file/AzDocumentViewer'
-import AzDocumentViewer from './components/viewer/AzPdfDocumentViewer'
+import AzDocumentViewer from './components/file/AzDocumentViewer'
+import AzPdfDocumentViewer from './components/viewer/AzPdfDocumentViewer'
 import AzConfirm from './components/actions/AzConfirm'
 import AzBackButton from './components/actions/AzBackButton'
 import AzCallToAction from './components/actions/AzCallToAction'
@@ -101,6 +101,7 @@ const lokiPlugin = {
         Vue.component('az-file-upload', AzFileUpload)
         Vue.component('az-file-progress', AzFileProgress)
         Vue.component('az-document-viewer', AzDocumentViewer)
+        Vue.component('az-pdf-document-viewer', AzPdfDocumentViewer)
         Vue.component('az-confirm', AzConfirm)
         Vue.component('az-back-button', AzBackButton)
         Vue.component('az-call-to-action', AzCallToAction)
