@@ -19,9 +19,9 @@
 </template>
 
 <script>
-import Toolbar from "@/components/viewer/AzPdfDocumentViewerToolbar";
-import Page from "@/components/viewer/AzPdfDocumentViewerPage";
-import { actionsTypes } from "@/store";
+import Toolbar from "./AzPdfDocumentViewerToolbar";
+import Page from "./AzPdfDocumentViewerPage";
+import { actionsTypes } from "../../store";
 export default {
   components: {
     Toolbar,

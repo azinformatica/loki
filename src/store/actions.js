@@ -1,5 +1,5 @@
 import axios from 'axios'
-import pdfjs from "@/utils/pdfJsLib";
+import pdfjs from "../utils/pdfJsLib";
 import mutationsTypes from './mutations-types'
 import actionsTypes from './actions-types'
 

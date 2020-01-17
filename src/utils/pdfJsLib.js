@@ -1,21 +1,22 @@
-import pdfjs from "pdfjs-dist/webpack";
+import pdfjs from "pdfjs-dist/build/pdf";
+pdfjs.GlobalWorkerOptions.workerSrc = "pdfjs-dist/buid/pdf.worker";
 
 class pdfHandler {
-  fetchDocument = async src => {
+  async fetchDocument(src) {
     return await pdfjs.getDocument(src).promise;
   };
 
-  getPages = async pdf => {
+  async getPages(pdf) {
     let promises = [];
     for (let page = 1; page <= pdf.numPages; page++) promises.push(pdf.getPage(page));
     return Promise.all(promises);
   };
 
-  getPageContainer = (page, scale) => {
+  getPageContainer(page, scale) {
     return page.getViewport({ scale });
   };
 
-  renderPage = async ({ page, scale, canvasContext }) => {
+  async renderPage({ page, scale, canvasContext }) {
     let viewport = page.getViewport({ scale });
     await page.render({ canvasContext, viewport }).promise;
   };
