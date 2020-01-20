@@ -2,7 +2,7 @@ import Vue from 'vue'
 import money from 'v-money'
 import accounting from 'accounting'
 import moment from 'moment'
-import {actions, mutations, mutationTypes, state} from './store'
+import {actions, mutations, mutationTypes, state, getters} from './store'
 
 import AzTitle from './components/layout/AzTitle'
 import AzAvatar from './components/layout/AzAvatar'
@@ -75,7 +75,7 @@ const lokiPlugin = {
             throw new Error('Please provide router.')
         }
 
-        store.registerModule('loki', {state, mutations, actions})
+        store.registerModule('loki', {state, mutations, actions, getters})
         Vue.component('az-title', AzTitle)
         Vue.component('az-avatar', AzAvatar)
         Vue.component('az-logo', AzLogo)
