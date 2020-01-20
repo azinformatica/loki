@@ -35,19 +35,24 @@
         }),
         computed: {
             currentPage() {
-                return this.$store.getters.currentPageNum;
+                return this.$store.state.loki.document.paginator.currentPageNum
+                // return this.$store.getters.currentPageNum
             },
             pageHeight() {
-                return this.$store.getters.pageContainer.height;
+                return this.$store.state.loki.document.pageContainer.height
+                // return this.$store.getters.pageContainer.height
             },
             pages() {
-                return this.$store.getters.pages;
+                return this.$store.state.loki.document.pages
+                // return this.$store.getters.pages
             },
             pageSize() {
-                return this.$store.getters.pageContainer;
+                return this.$store.state.loki.document.pageContainer
+                // return this.$store.getters.pageContainer
             },
             totalPages() {
-                return this.$store.getters.totalPageNum;
+                return this.$store.state.loki.document.paginator.totalPageNum
+                // return this.$store.getters.totalPageNum
             }
         },
         async created() {
