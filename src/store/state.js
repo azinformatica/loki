@@ -24,9 +24,9 @@ export default {
     asideClosed: false,
     asideHide: true,
     avatarActions: {
-        1: { title: "Profile", icon: 'person', path: '/profile'
+        1: { title: 'Profile', icon: 'person', path: '/profile'
         },
-        2: { title: "Settings", icon: 'settings', path: '/settings'
+        2: { title: 'Settings', icon: 'settings', path: '/settings'
         }
     },
     menuActions: [],

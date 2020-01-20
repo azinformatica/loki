@@ -2,7 +2,7 @@ import Vue from 'vue'
 import money from 'v-money'
 import accounting from 'accounting'
 import moment from 'moment'
-import {actions, mutations, mutationsTypes, state} from './store'
+import {actions, mutations, mutationTypes, state} from './store'
 
 import AzTitle from './components/layout/AzTitle'
 import AzAvatar from './components/layout/AzAvatar'
@@ -120,10 +120,10 @@ const lokiPlugin = {
         Vue.filter('azPhone', azPhone)
         Vue.filter('azTitleCase', azTitleCase)
 
-        store.commit(mutationsTypes.SET_MENU_ACTIONS, buildMenu(store, router))
+        store.commit(mutationTypes.SET_MENU_ACTIONS, buildMenu(store, router))
 
         router.afterEach((to) => {
-            store.commit(mutationsTypes.SET_CURRENT_PAGE, to)
+            store.commit(mutationTypes.SET_CURRENT_PAGE, to)
         })
     }
 }

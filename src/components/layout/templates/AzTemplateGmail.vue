@@ -55,7 +55,7 @@
     import AzAlert from '../AzAlert'
     import AzFileProgress from '../../file/AzFileProgress'
     import AzLoading from '../AzLoading'
-    import mutationTypes from '../../../store/mutations-types'
+    import mutationTypes from '../../../store/mutation-types'
     import AzNotification from '../AzNotification'
 
     export default {

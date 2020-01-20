@@ -15,7 +15,7 @@
             @blur="updateValue($event.target.value, 'blur')"
             @keydown="validatorNegative($event)"
             @keyup.enter="updateValue($event.target.value, 'keyupEnter')"
-            @keyup="checkKey"/>
+            @keyup="checkKey($event)"/>
 </template>
 
 <script>

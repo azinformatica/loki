@@ -1,7 +1,7 @@
 import axios from 'axios'
-import pdfjs from "../utils/pdfJsLib";
-import mutationTypes from './mutations-types'
-import actionsTypes from './actions-types'
+import pdfjs from '../utils/AzPdfJsLib'
+import mutationTypes from './mutation-types'
+import actionTypes from './action-types'
 
 export default {
 
@@ -37,46 +37,46 @@ export default {
         }
     },
 
-    async [actionsTypes.DOCUMENT.FETCH_DOCUMENT](context, src) {
-        let pdf = await pdfjs.fetchDocument(src);
-        context.commit(mutationTypes.DOCUMENT.SET_TOTAL_PAGE_NUM, pdf.numPages);
-        context.commit(mutationTypes.DOCUMENT.SET_PAGES, await pdfjs.getPages(pdf));
+    async [actionTypes.DOCUMENT.FETCH_DOCUMENT](context, src) {
+        let pdf = await pdfjs.fetchDocument(src)
+        context.commit(mutationTypes.DOCUMENT.SET_TOTAL_PAGE_NUM, pdf.numPages)
+        context.commit(mutationTypes.DOCUMENT.SET_PAGES, await pdfjs.getPages(pdf))
     },
 
-    [actionsTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM](context, currentPageNum) {
-        context.commit(mutationTypes.DOCUMENT.SET_CURRENT_PAGE_NUM, currentPageNum);
+    [actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM](context, currentPageNum) {
+        context.commit(mutationTypes.DOCUMENT.SET_CURRENT_PAGE_NUM, currentPageNum)
     },
 
-    [actionsTypes.DOCUMENT.UPDATE_PAGE_CONTAINER](context) {
-        let pageContainer = pdfjs.getPageContainer(context.state.document.pages[0], context.state.document.scale.current);
-        context.commit(mutationTypes.DOCUMENT.SET_PAGE_CONTAINER, pageContainer);
+    [actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER](context) {
+        let pageContainer = pdfjs.getPageContainer(context.state.document.pages[0], context.state.document.scale.current)
+        context.commit(mutationTypes.DOCUMENT.SET_PAGE_CONTAINER, pageContainer)
     },
 
-    [actionsTypes.DOCUMENT.INCREASE_SCALE](context) {
+    [actionTypes.DOCUMENT.INCREASE_SCALE](context) {
         if (context.state.document.scale.current < context.state.document.scale.max) {
-            context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.current + 0.5);
-            context.dispatch(actionsTypes.DOCUMENT.UPDATE_PAGE_CONTAINER);
+            context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.current + 0.5)
+            context.dispatch(actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER)
         }
     },
 
-    [actionsTypes.DOCUMENT.DECREASE_SCALE](context) {
+    [actionTypes.DOCUMENT.DECREASE_SCALE](context) {
         if (context.state.document.scale.current > context.state.document.scale.default) {
-            context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.current - 0.5);
-            context.dispatch(actionsTypes.DOCUMENT.UPDATE_PAGE_CONTAINER);
+            context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.current - 0.5)
+            context.dispatch(actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER)
         }
     },
 
-    [actionsTypes.DOCUMENT.RESTORE_SCALE](context) {
+    [actionTypes.DOCUMENT.RESTORE_SCALE](context) {
         if (context.state.document.scale.current != context.state.document.scale.default) {
-            context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.default);
-            context.dispatch(actionsTypes.DOCUMENT.UPDATE_PAGE_CONTAINER);
+            context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.default)
+            context.dispatch(actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER)
         }
     },
 
-    async [actionsTypes.DOCUMENT.RENDER_PAGE](context, { pageNum, canvasContext }) {
-        let page = context.state.document.pages[pageNum - 1];
-        let scale = context.state.document.scale.current;
-        await pdfjs.renderPage({ page, scale, canvasContext });
+    async [actionTypes.DOCUMENT.RENDER_PAGE](context, { pageNum, canvasContext }) {
+        let page = context.state.document.pages[pageNum - 1]
+        let scale = context.state.document.scale.current
+        await pdfjs.renderPage({page, scale, canvasContext})
     }
 
 }
