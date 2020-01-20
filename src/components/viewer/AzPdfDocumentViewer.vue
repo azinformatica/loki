@@ -1,12 +1,12 @@
 <template>
-    <div>
+    <div class="az-pdf-document-viewer">
         <az-pdf-document-viewer-toolbar
                 v-bind="{ currentPage, totalPages }"
                 @zoomOut="resolveEventZoomOut"
                 @zoomIn="resolveEventZoomIn"
                 @resetZoom="resolveEventResetZoom"
         />
-        <div id="documentContainer" class="documentContainer">
+        <div id="documentContainer" class="az-document-container">
             <az-pdf-document-viewer-page
                     v-for="page in pages"
                     :key="page.pageIndex + 1"
@@ -82,6 +82,6 @@
 </script>
 
 <style lang="stylus" scoped>
-    .documentContainer
+    .az-document-container
         margin-top 15px
 </style>
