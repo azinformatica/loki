@@ -1,20 +1,20 @@
 export default {
     currentPageNum: state => {
-        return state.loki.document.paginator.currentPageNum;
+        return state.document.paginator.currentPageNum;
     },
     pageContainer: state => {
         return {
-            height: state.loki.document.pageContainer.height,
-            width: state.loki.document.pageContainer.width
+            height: state.document.pageContainer.height,
+            width: state.document.pageContainer.width
         };
     },
     pages: state => {
-        return state.loki.document.pages;
+        return state.document.pages;
     },
     scale: state => {
-        return state.loki.document.scale.current;
+        return state.document.scale.current;
     },
     totalPageNum: state => {
-        return state.loki.document.paginator.totalPageNum;
+        return state.document.paginator.totalPageNum;
     }
 }
