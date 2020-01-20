@@ -82,6 +82,12 @@
 </script>
 
 <style lang="stylus" scoped>
+    .az-pdf-document-viewer
+        position absolute
+        text-align center
+        clear both
+        width 100%
+
     .az-document-container
-        margin-top 15px
+        margin-top 75px
 </style>
