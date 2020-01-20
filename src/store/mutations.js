@@ -104,6 +104,7 @@ export default {
         state.timezone = timezone
         state.offset = moment().tz(timezone).format('Z')
     },
+
     [mutationTypes.DOCUMENT.SET_PAGE_CONTAINER](state, { height, width }) {
         state.document.pageContainer.height = height;
         state.document.pageContainer.width = width;
@@ -123,6 +124,10 @@ export default {
 
     [mutationTypes.DOCUMENT.SET_CURRENT_SCALE](state, scale) {
         state.document.scale.current = scale;
+    },
+
+    [mutationTypes.DOCUMENT.SET_ZOOM_CONTROL](state, zoomControl) {
+        state.document.zoomControl = zoomControl;
     }
     
 }

@@ -68,7 +68,8 @@ export default {
             current: 1.0,
             default: 1.0,
             max: 3.0
-        }
+        },
+        zoomControl: false,
     }
 
 }

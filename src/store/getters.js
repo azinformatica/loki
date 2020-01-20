@@ -16,5 +16,8 @@ export default {
     },
     totalPageNum: state => {
         return state.document.paginator.totalPageNum;
+    },
+    zoomControl: state => {
+        return state.document.zoomControl;
     }
 }

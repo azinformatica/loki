@@ -48,8 +48,12 @@ export default {
     },
 
     [actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER](context) {
-        let pageContainer = pdfjs.getPageContainer(context.state.document.pages[0], context.state.document.scale.current)
-        context.commit(mutationTypes.DOCUMENT.SET_PAGE_CONTAINER, pageContainer)
+        setTimeout(() => {
+            context.commit(mutationTypes.DOCUMENT.SET_ZOOM_CONTROL, true)
+            let pageContainer = pdfjs.getPageContainer(context.state.document.pages[0], context.state.document.scale.current)
+            context.commit(mutationTypes.DOCUMENT.SET_PAGE_CONTAINER, pageContainer)
+            context.commit(mutationTypes.DOCUMENT.SET_ZOOM_CONTROL, false)
+        }, 50)
     },
 
     [actionTypes.DOCUMENT.INCREASE_SCALE](context) {
