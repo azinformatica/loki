@@ -6,7 +6,7 @@
                 @zoomIn="resolveEventZoomIn"
                 @resetZoom="resolveEventResetZoom"
         />
-        <div id="documentContainer" class="documentContainer" justify-center align-center>
+        <div id="documentContainer" class="documentContainer">
             <az-pdf-document-viewer-page
                     v-for="page in pages"
                     :key="page.pageIndex + 1"
@@ -35,24 +35,19 @@
         }),
         computed: {
             currentPage() {
-                return this.$store.state.loki.document.paginator.currentPageNum
-                // return this.$store.getters.currentPageNum
+                return this.$store.getters.currentPageNum
             },
             pageHeight() {
-                return this.$store.state.loki.document.pageContainer.height
-                // return this.$store.getters.pageContainer.height
+                return this.$store.getters.pageContainer.height
             },
             pages() {
-                return this.$store.state.loki.document.pages
-                // return this.$store.getters.pages
+                return this.$store.getters.pages
             },
             pageSize() {
-                return this.$store.state.loki.document.pageContainer
-                // return this.$store.getters.pageContainer
+                return this.$store.getters.pageContainer
             },
             totalPages() {
-                return this.$store.state.loki.document.paginator.totalPageNum
-                // return this.$store.getters.totalPageNum
+                return this.$store.getters.totalPageNum
             }
         },
         async created() {
@@ -79,8 +74,8 @@
             resolveEventResetZoom() {
                 this.$store.dispatch(actionTypes.DOCUMENT.RESTORE_SCALE)
             },
-            resolveEventResize({ pageNum, canvasContext }) {
-                this.$store.dispatch(actionTypes.DOCUMENT.RENDER_PAGE, { pageNum, canvasContext })
+            async resolveEventResize({ pageNum, canvasContext }) {
+                await this.$store.dispatch(actionTypes.DOCUMENT.RENDER_PAGE, { pageNum, canvasContext })
             }
         }
     }
@@ -88,5 +83,5 @@
 
 <style lang="stylus" scoped>
     .documentContainer
-        margin-top 65px
+        margin-top 15px
 </style>

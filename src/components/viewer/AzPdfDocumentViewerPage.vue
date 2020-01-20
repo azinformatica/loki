@@ -1,7 +1,9 @@
 <template>
-    <div :id="'page' + pageNum" :height="pageSize.height" :width="pageSize.width" class="page">
-        <canvas :height="pageSize.height" :width="pageSize.width" />
-    </div>
+    <v-layout justify-center align-center>
+        <div :id="'page' + pageNum" :height="pageSize.height" :width="pageSize.width" class="page">
+            <canvas :height="pageSize.height" :width="pageSize.width" />
+        </div>
+    </v-layout>
 </template>
 
 <script>

@@ -1,6 +1,5 @@
 <template>
-    <v-toolbar>
-        <v-spacer></v-spacer>
+    <v-toolbar class="az-toolbar">
         <v-btn @click="zoomOut" icon data-test="zoomOut">
             <v-icon>zoom_out</v-icon>
         </v-btn>
@@ -11,7 +10,6 @@
             <v-icon>zoom_in</v-icon>
         </v-btn>
         <div class="pageViewer">{{ currentPage }} / {{ totalPages }}</div>
-        <v-spacer></v-spacer>
     </v-toolbar>
 </template>
 
@@ -41,11 +39,14 @@
     }
 </script>
 
-<style scoped lang="stylus">
+<style lang="stylus">
     .pageViewer
-        margin-left 30px
-        padding 2px
-        border-radius 2px
+        margin-left 10px
         color #777
-        background-color #fafafa
+
+    .az-toolbar
+        background-color #fff !important
+
+        .v-toolbar__content
+            margin 0 auto
 </style>
