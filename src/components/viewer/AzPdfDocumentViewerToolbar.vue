@@ -1,5 +1,6 @@
 <template>
     <v-toolbar class="az-pdf-toolbar" flat>
+        <v-spacer />
         <v-btn @click="zoomOut" icon data-test="zoomOut">
             <v-icon>zoom_out</v-icon>
         </v-btn>
@@ -10,6 +11,7 @@
             <v-icon>zoom_in</v-icon>
         </v-btn>
         <div class="az-pdf-toolbar__page-viewer">{{ currentPage }} / {{ totalPages }}</div>
+        <v-spacer />
     </v-toolbar>
 </template>
 
@@ -42,14 +44,9 @@
 <style lang="stylus">
     .az-pdf-toolbar
         background-color #fff !important
-        position fixed
+        margin-bottom  5px
 
         &__page-viewer
             margin-left 10px
             color #777
-
-        .v-toolbar__content
-            margin 0 auto
-            justify-content center
-            padding 0
 </style>
