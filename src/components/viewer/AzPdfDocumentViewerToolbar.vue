@@ -1,5 +1,5 @@
 <template>
-    <v-toolbar class="az-toolbar" flat>
+    <v-toolbar class="az-pdf-toolbar" flat>
         <v-btn @click="zoomOut" icon data-test="zoomOut">
             <v-icon>zoom_out</v-icon>
         </v-btn>
