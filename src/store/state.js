@@ -65,7 +65,7 @@ export default {
             totalPageNum: 1
         },
         scale: {
-            current: 1.0,
+            current: 1.5,
             default: 1.0,
             max: 3.0
         },
