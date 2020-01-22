@@ -17,6 +17,7 @@
   "dependencies": {
     "accounting": "^0.4.1",
     "ajv": "^6.5.3",
+    "axios": "^0.19.2",
     "imagesloaded": "^4.1.4",
     "lodash": "^4.17.10",
     "moment-timezone": "^0.5.27",
