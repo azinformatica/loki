@@ -41,7 +41,7 @@
     }
 </script>
 
-<style lang="stylus">
+<style scoped lang="stylus">
     .az-pdf-toolbar
         background-color #fff !important
         margin-bottom  5px
