@@ -11,13 +11,13 @@ export default {
     pages: state => {
         return state.document.pages;
     },
+    renderedPages: state => {
+        return state.document.renderedPages;
+    },
     scale: state => {
         return state.document.scale.current;
     },
     totalPageNum: state => {
         return state.document.paginator.totalPageNum;
-    },
-    zoomControl: state => {
-        return state.document.zoomControl;
     }
 }

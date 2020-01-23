@@ -41,6 +41,7 @@ export default {
         let pdf = await pdfjs.fetchDocument(src)
         context.commit(mutationTypes.DOCUMENT.SET_TOTAL_PAGE_NUM, pdf.numPages)
         context.commit(mutationTypes.DOCUMENT.SET_PAGES, await pdfjs.getPages(pdf))
+        context.dispatch(actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER)
     },
 
     [actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM](context, currentPageNum) {
@@ -48,12 +49,8 @@ export default {
     },
 
     [actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER](context) {
-        setTimeout(() => {
-            context.commit(mutationTypes.DOCUMENT.SET_ZOOM_CONTROL, true)
-            let pageContainer = pdfjs.getPageContainer(context.state.document.pages[0], context.state.document.scale.current)
-            context.commit(mutationTypes.DOCUMENT.SET_PAGE_CONTAINER, pageContainer)
-            context.commit(mutationTypes.DOCUMENT.SET_ZOOM_CONTROL, false)
-        }, 50)
+        let pageContainer = pdfjs.getPageContainer(context.state.document.pages[0], context.state.document.scale.current)
+        context.commit(mutationTypes.DOCUMENT.SET_PAGE_CONTAINER, pageContainer)
     },
 
     [actionTypes.DOCUMENT.INCREASE_SCALE](context) {
@@ -81,6 +78,14 @@ export default {
         let page = context.state.document.pages[pageNum - 1]
         let scale = context.state.document.scale.current
         await pdfjs.renderPage({page, scale, canvasContext})
+    },
+
+    [actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES](context, pageNum) {
+        context.commit(mutationTypes.DOCUMENT.SET_RENDERED_PAGES, pageNum)
+    },
+
+    [actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES](context) {
+        context.commit(mutationTypes.DOCUMENT.SET_RENDERED_PAGES, 'clear')
     }
 
 }

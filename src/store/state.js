@@ -64,12 +64,12 @@ export default {
             currentPageNum: 1,
             totalPageNum: 1
         },
+        renderedPages: [],
         scale: {
             current: 1.5,
             default: 1.0,
             max: 3.0
-        },
-        zoomControl: false,
+        }
     }
 
 }

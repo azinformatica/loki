@@ -12,17 +12,23 @@
             pageNum: { type: Number, required: true },
             pageSize: { type: Object, required: true }
         },
+        mounted() {
+            this.emitEventWithContext('resize')
+        },
         methods: {
+            emitEventWithContext(event) {
+                this.$emit(event, {
+                    pageNum: this.$props.pageNum,
+                    canvasContext: this.getCanvasContext()
+                })
+            },
             getCanvasContext() {
                 return document.getElementById(`page${this.$props.pageNum}`).firstChild.getContext('2d')
             }
         },
         watch: {
             pageSize() {
-                this.$emit('resize', {
-                    pageNum: this.$props.pageNum,
-                    canvasContext: this.getCanvasContext()
-                })
+                this.emitEventWithContext('resize')
             }
         }
     }

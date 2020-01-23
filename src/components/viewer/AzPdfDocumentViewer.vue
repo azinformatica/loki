@@ -39,7 +39,9 @@
             }
         },
         data: () => ({
-            visiblePageNum: 0
+            okToRender: false,
+            pagesCanvasContext: {},
+            visiblePageNum: 1
         }),
         computed: {
             currentPage() {
@@ -54,22 +56,23 @@
             pageSize() {
                 return this.$store.getters.pageContainer
             },
-            totalPages() {
-                return this.$store.getters.totalPageNum
+            renderedPages() {
+                return this.$store.getters.renderedPages
             },
             style() {
                 let styleObj = {}
-
                 if (this.cssClass) {
                     const classes = this.cssClass.split(' ')
                     classes.forEach(clazz => styleObj[clazz] = true)
                 }
                 return styleObj
-            }
+            },
+            totalPages() {
+                return this.$store.getters.totalPageNum
+            },
         },
         async created() {
             await this.$store.dispatch(actionTypes.DOCUMENT.FETCH_DOCUMENT, this.$props.src)
-            this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER)
         },
         mounted() {
             this.getDocumentContainer().addEventListener('scroll', this.handleScroll)
@@ -81,21 +84,36 @@
             getDocumentContainer() {
                 return document.getElementById("documentContainer")
             },
-            handleScroll(e) {
+            async handleScroll(e) {
                 this.visiblePageNum = Math.round(e.target.scrollTop / this.pageHeight) + 1
                 this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, this.visiblePageNum)
+                if (this.renderedPages.indexOf(this.visiblePageNum) === -1) {
+                    this.okToRender = true
+                    this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES, this.visiblePageNum)
+                }
+                if (this.okToRender) {
+                    this.okToRender = false
+                    await this.$store.dispatch(actionTypes.DOCUMENT.RENDER_PAGE, this.pagesCanvasContext[this.visiblePageNum])
+                }
             },
             resolveEventZoomOut() {
                 this.$store.dispatch(actionTypes.DOCUMENT.DECREASE_SCALE)
+                this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES)
             },
             resolveEventZoomIn() {
                 this.$store.dispatch(actionTypes.DOCUMENT.INCREASE_SCALE)
+                this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES)
             },
             resolveEventResetZoom() {
                 this.$store.dispatch(actionTypes.DOCUMENT.RESTORE_SCALE)
+                this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES)
             },
-            async resolveEventResize({ pageNum, canvasContext }) {
-                await this.$store.dispatch(actionTypes.DOCUMENT.RENDER_PAGE, { pageNum, canvasContext })
+            async resolveEventResize(payload) {
+                this.pagesCanvasContext[payload.pageNum] = payload
+                if (payload.pageNum === this.visiblePageNum) {
+                    this.$store.dispatch(actionTypes.DOCUMENT.RENDER_PAGE, this.pagesCanvasContext[this.visiblePageNum])
+                    this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES, payload.pageNum)
+                }
             }
         }
     }

@@ -126,8 +126,12 @@ export default {
         state.document.scale.current = scale;
     },
 
-    [mutationTypes.DOCUMENT.SET_ZOOM_CONTROL](state, zoomControl) {
-        state.document.zoomControl = zoomControl;
+    [mutationTypes.DOCUMENT.SET_RENDERED_PAGES](state, payload) {
+        if (typeof payload === 'number') {
+            state.document.renderedPages.push(payload);
+        } else {
+            state.document.renderedPages = [];
+        }
     }
     
 }
