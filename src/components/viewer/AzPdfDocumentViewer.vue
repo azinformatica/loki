@@ -1,18 +1,18 @@
 <template>
     <div class="az-pdf-document-viewer" justify-center :class="style">
         <az-pdf-document-viewer-toolbar
-                v-bind="{ currentPage, totalPages }"
-                @zoomOut="resolveEventZoomOut"
-                @zoomIn="resolveEventZoomIn"
-                @resetZoom="resolveEventResetZoom"
+            v-bind="{ currentPage, totalPages }"
+            @zoomOut="resolveEventZoomOut"
+            @zoomIn="resolveEventZoomIn"
+            @resetZoom="resolveEventResetZoom"
         />
-        <div id="documentContainer" class="az-pdf-document-viewer__container" >
+        <div id="documentContainer" class="az-pdf-document-viewer__container">
             <az-pdf-document-viewer-page
-                    v-for="page in pages"
-                    :key="page.pageIndex + 1"
-                    :pageNum="page.pageIndex + 1"
-                    :pageSize="pageSize"
-                    @resize="resolveEventResize"
+                v-for="page in pages"
+                :key="page.pageIndex + 1"
+                :pageNum="page.pageIndex + 1"
+                :pageSize="pageSize"
+                @resize="resolveEventResize"
             />
         </div>
     </div>
@@ -63,13 +63,13 @@
                 let styleObj = {}
                 if (this.cssClass) {
                     const classes = this.cssClass.split(' ')
-                    classes.forEach(clazz => styleObj[clazz] = true)
+                    classes.forEach(clazz => (styleObj[clazz] = true))
                 }
                 return styleObj
             },
             totalPages() {
                 return this.$store.getters.totalPageNum
-            },
+            }
         },
         async created() {
             await this.$store.dispatch(actionTypes.DOCUMENT.FETCH_DOCUMENT, this.$props.src)
@@ -82,7 +82,7 @@
         },
         methods: {
             getDocumentContainer() {
-                return document.getElementById("documentContainer")
+                return document.getElementById('documentContainer')
             },
             async handleScroll(e) {
                 this.visiblePageNum = Math.round(e.target.scrollTop / this.pageHeight) + 1
@@ -93,7 +93,10 @@
                 }
                 if (this.okToRender) {
                     this.okToRender = false
-                    await this.$store.dispatch(actionTypes.DOCUMENT.RENDER_PAGE, this.pagesCanvasContext[this.visiblePageNum])
+                    await this.$store.dispatch(
+                        actionTypes.DOCUMENT.RENDER_PAGE,
+                        this.pagesCanvasContext[this.visiblePageNum]
+                    )
                 }
             },
             resolveEventZoomOut() {
