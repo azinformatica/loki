@@ -50,6 +50,11 @@
     "webpack": "^3.6.0",
     "webpack-dev-server": "^2.9.1"
   },
+  "peerDependencies": {
+    "axios": "0.19.x",
+    "moment-timezone": "0.5.x",
+    "pdfjs-dist": "2.x"
+  },
   "jest": {
     "moduleFileExtensions": [
       "js",
