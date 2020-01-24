@@ -53,7 +53,7 @@
   "peerDependencies": {
     "axios": "0.19.x",
     "moment-timezone": "0.5.x",
-    "pdfjs-dist": "2.x"
+    "pdfjs-dist": "2.2.x"
   },
   "jest": {
     "moduleFileExtensions": [
