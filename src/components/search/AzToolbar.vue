@@ -10,7 +10,7 @@
     </div>
 </template>
 <script>
-    import mutationTypes from '../../store/mutations-types'
+    import mutationTypes from '../../store/mutation-types'
 
     export default {
         data() {

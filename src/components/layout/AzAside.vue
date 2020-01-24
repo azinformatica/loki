@@ -11,7 +11,7 @@
     </v-navigation-drawer>
 </template>
 <script>
-    import mutationTypes from '../../store/mutations-types'
+    import mutationTypes from '../../store/mutation-types'
 
     export default {
         props: {

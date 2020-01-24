@@ -46,7 +46,7 @@
 
 <script>
     import {mapState, mapMutations} from 'vuex'
-    import mutationTypes from '../../store/mutations-types'
+    import mutationTypes from '../../store/mutation-types'
 
     export default {
         name: 'AzNotification',

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import money from 'v-money'
 import accounting from 'accounting'
 import moment from 'moment'
-import {actions, mutations, mutationsTypes, state} from './store'
+import {actions, mutations, mutationTypes, state, getters} from './store'
 
 import AzTitle from './components/layout/AzTitle'
 import AzAvatar from './components/layout/AzAvatar'
@@ -29,6 +29,7 @@ import AzComboEnum from './components/form/AzComboEnum'
 import AzFileUpload from './components/file/AzFileUpload'
 import AzFileProgress from './components/file/AzFileProgress'
 import AzDocumentViewer from './components/file/AzDocumentViewer'
+import AzPdfDocumentViewer from './components/viewer/AzPdfDocumentViewer'
 import AzConfirm from './components/actions/AzConfirm'
 import AzBackButton from './components/actions/AzBackButton'
 import AzCallToAction from './components/actions/AzCallToAction'
@@ -74,7 +75,7 @@ const lokiPlugin = {
             throw new Error('Please provide router.')
         }
 
-        store.registerModule('loki', {state, mutations, actions})
+        store.registerModule('loki', {state, mutations, actions, getters})
         Vue.component('az-title', AzTitle)
         Vue.component('az-avatar', AzAvatar)
         Vue.component('az-logo', AzLogo)
@@ -100,6 +101,7 @@ const lokiPlugin = {
         Vue.component('az-file-upload', AzFileUpload)
         Vue.component('az-file-progress', AzFileProgress)
         Vue.component('az-document-viewer', AzDocumentViewer)
+        Vue.component('az-pdf-document-viewer', AzPdfDocumentViewer)
         Vue.component('az-confirm', AzConfirm)
         Vue.component('az-back-button', AzBackButton)
         Vue.component('az-call-to-action', AzCallToAction)
@@ -118,10 +120,10 @@ const lokiPlugin = {
         Vue.filter('azPhone', azPhone)
         Vue.filter('azTitleCase', azTitleCase)
 
-        store.commit(mutationsTypes.SET_MENU_ACTIONS, buildMenu(store, router))
+        store.commit(mutationTypes.SET_MENU_ACTIONS, buildMenu(store, router))
 
         router.afterEach((to) => {
-            store.commit(mutationsTypes.SET_CURRENT_PAGE, to)
+            store.commit(mutationTypes.SET_CURRENT_PAGE, to)
         })
     }
 }

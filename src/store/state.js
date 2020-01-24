@@ -24,9 +24,9 @@ export default {
     asideClosed: false,
     asideHide: true,
     avatarActions: {
-        1: { title: "Profile", icon: 'person', path: '/profile'
+        1: { title: 'Profile', icon: 'person', path: '/profile'
         },
-        2: { title: "Settings", icon: 'settings', path: '/settings'
+        2: { title: 'Settings', icon: 'settings', path: '/settings'
         }
     },
     menuActions: [],
@@ -52,6 +52,24 @@ export default {
         activeFilter: 'Todas',
         filters: ['Todas', 'Lidas', 'Não Lidas'],
         title: 'Notificações'
+    },
+
+    document: {
+        pageContainer: {
+            height: 0,
+            width: 0
+        },
+        pages: [],
+        paginator: {
+            currentPageNum: 1,
+            totalPageNum: 1
+        },
+        renderedPages: [],
+        scale: {
+            current: 1.5,
+            default: 1.0,
+            max: 3.0
+        }
     }
 
 }
