@@ -1,17 +1,15 @@
 import AzCallToActionn from '../../../src/components/actions/AzCallToAction'
-import {createLocalVue, shallowMount} from '@vue/test-utils'
+import { createLocalVue, shallowMount } from '@vue/test-utils'
 import Vuetify from 'vuetify'
 import Vue from 'vue'
 
-const localVue = createLocalVue();
+const localVue = createLocalVue()
 Vue.use(Vuetify)
 
 describe('AzCallToAction.test.js', () => {
-
     let wrapper
 
     beforeEach(() => {
-
         const propsData = {
             active: true,
             dark: true,
@@ -19,24 +17,23 @@ describe('AzCallToAction.test.js', () => {
             cssClass: 'myCssClass'
         }
 
-        wrapper = shallowMount(AzCallToActionn, {localVue, propsData })
+        wrapper = shallowMount(AzCallToActionn, { localVue, propsData })
     })
-
 
     it('Color property is properly returned', () => {
         expect(wrapper.vm.color).toContain('secondary')
 
-        wrapper.setProps({active: false})
+        wrapper.setProps({ active: false })
         expect(wrapper.vm.color).toContain('')
 
-        wrapper.setProps({dark: false})
+        wrapper.setProps({ dark: false })
         expect(wrapper.vm.color).toContain('primary')
     })
 
     it('isDark property is properly returned', () => {
         expect(wrapper.vm.isDark).toBe(false)
 
-        wrapper.setProps({active: false})
+        wrapper.setProps({ active: false })
         expect(wrapper.vm.isDark).toBe(true)
     })
 
@@ -45,8 +42,7 @@ describe('AzCallToAction.test.js', () => {
         expect(wrapper.html()).toContain('myCssClass')
         expect(wrapper.html()).toContain('hide-border')
 
-        wrapper.setProps({active: false})
+        wrapper.setProps({ active: false })
         expect(wrapper.vm.hideBorder).not.toContain('hide-border')
     })
-
 })

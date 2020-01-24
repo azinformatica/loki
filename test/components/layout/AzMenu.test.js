@@ -1,26 +1,22 @@
 import AzMenu from '../../../src/components/layout/AzMenu'
 import Vuex from 'vuex'
-import {shallowMount, createLocalVue, mount} from '@vue/test-utils'
-import Vuetify from 'vuetify';
+import { shallowMount, createLocalVue, mount } from '@vue/test-utils'
+import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import Vue from 'vue'
 
-
-const localVue = createLocalVue();
+const localVue = createLocalVue()
 Vue.use(Vuetify)
 Vue.use(Vuex)
 Vue.use(VueRouter)
 
-
 describe('AzMenu.test.js', () => {
-
     let wrapper, store
 
-    const routes = [];
-    const router = new VueRouter({ routes });
+    const routes = []
+    const router = new VueRouter({ routes })
 
     beforeEach(() => {
-
         store = new Vuex.Store({
             state: {
                 loki: {
@@ -63,19 +59,17 @@ describe('AzMenu.test.js', () => {
             }
         })
 
-        wrapper = shallowMount(AzMenu, {localVue, store, router})
+        wrapper = shallowMount(AzMenu, { localVue, store, router })
     })
 
     it('Computed properties are rendered properly', () => {
-        const renderedHtml = expect(wrapper.html());
+        const renderedHtml = expect(wrapper.html())
 
-        wrapper.vm.menuActions.map(
-            (action) => {
-                renderedHtml.toContain(action.name)
-                renderedHtml.toContain(action.icon)
-                //renderedHtml.toContain(action.path)
-            }
-        );
+        wrapper.vm.menuActions.map(action => {
+            renderedHtml.toContain(action.name)
+            renderedHtml.toContain(action.icon)
+            //renderedHtml.toContain(action.path)
+        })
     })
 
     it('Methods are defined', () => {
@@ -84,12 +78,10 @@ describe('AzMenu.test.js', () => {
 
     it('Click on Buttons', () => {
         // Full mount to render vuetify components correctly
-        let wrapperFull = mount(AzMenu, {localVue, store, router})
+        let wrapperFull = mount(AzMenu, { localVue, store, router })
 
         spyOn(wrapperFull.vm, 'redirectTo')
         wrapperFull.find('.menu-item').trigger('click.native')
         expect(wrapperFull.vm.redirectTo).toBeCalled()
     })
-
-
 })

@@ -1,7 +1,6 @@
 import filtroTelefone from '../../src/filters/phone'
 
 describe('FiltroTelefone', () => {
-
     it('Deve retornar valor "Não informado"', () => {
         const resultado = filtroTelefone()
         expect(resultado).toEqual('Não informado')
@@ -16,5 +15,4 @@ describe('FiltroTelefone', () => {
         const resultado = filtroTelefone('67981616161')
         expect(resultado).toEqual('(67) 98161-6161')
     })
-
 })

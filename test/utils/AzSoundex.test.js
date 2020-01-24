@@ -1,7 +1,6 @@
 import azSoundex from '../../src/utils/AzSoundex'
 
 describe('AzSoundex', () => {
-
     it('Deve retornar o código soundex para a string', () => {
         expect(azSoundex.gerarSoundex('str')).toBeDefined()
     })
@@ -12,5 +11,4 @@ describe('AzSoundex', () => {
         const result = azSoundex.selecionarMaisParecido(fruits, chosenFruit)
         expect(result.bestMatch.target).toEqual('strawberry')
     })
-
 })

@@ -2,7 +2,6 @@ import soundex from 'soundex'
 import stringSimilarity from 'string-similarity'
 
 class AzSoundex {
-
     gerarSoundex(str, longFormat) {
         return soundex(str, longFormat === true)
     }

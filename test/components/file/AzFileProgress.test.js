@@ -1,10 +1,10 @@
 import AzFileUpload from '../../../src/components/file/AzFileProgress'
 import Vuex from 'vuex'
-import {shallowMount, createLocalVue} from '@vue/test-utils'
+import { shallowMount, createLocalVue } from '@vue/test-utils'
 import Vuetify from 'vuetify'
 import Vue from 'vue'
 
-const localVue = createLocalVue();
+const localVue = createLocalVue()
 localVue.use(Vuex)
 Vue.use(Vuetify)
 
@@ -20,10 +20,10 @@ describe('AzFileProgress.test.js', () => {
             state: {
                 loki: {
                     uploadFileProgress: {
-                        'default.png': {filename: 'default.png'},
-                        'error.png': {filename: 'error.png', error: true}
+                        'default.png': { filename: 'default.png' },
+                        'error.png': { filename: 'error.png', error: true }
                     },
-                    uploadedFiles: [{name: 'picture.png'}]
+                    uploadedFiles: [{ name: 'picture.png' }]
                 }
             },
             mutations
@@ -33,7 +33,7 @@ describe('AzFileProgress.test.js', () => {
             repository: 'repo1'
         }
 
-        wrapper = shallowMount(AzFileUpload, {localVue, store, props})
+        wrapper = shallowMount(AzFileUpload, { localVue, store, props })
         wrapper.setProps(props)
     })
 
@@ -46,7 +46,7 @@ describe('AzFileProgress.test.js', () => {
     })
 
     it('Returns short name for file', () => {
-        const file = {filename:"file12345678901234567890123456789012345678901234567890.pdf"};
+        const file = { filename: 'file12345678901234567890123456789012345678901234567890.pdf' }
         expect(wrapper.vm.getFileShortName(file).length).toBe(43)
     })
 
@@ -59,13 +59,12 @@ describe('AzFileProgress.test.js', () => {
     })
 
     it('Checks if there was error while uploading an specified file', () => {
-
-        let file = {filename:"default.png", error: false};
+        let file = { filename: 'default.png', error: false }
         expect(wrapper.vm.hasUploadError(file)).toBeFalsy()
 
         expect(wrapper.vm.hasUploadError(file)).toBeFalsy()
 
-        file = {filename:"erro.png", error: true};
+        file = { filename: 'erro.png', error: true }
         expect(wrapper.vm.hasUploadError(file)).toBeTruthy()
     })
 
@@ -77,5 +76,4 @@ describe('AzFileProgress.test.js', () => {
         wrapper.vm.close()
         expect(mutations.REMOVE_UPLOAD_FILE_PROGRESS).toHaveBeenCalled()
     })
-
 })

@@ -1,7 +1,5 @@
 class AzSearchUrlBuilder {
-
     build(urlPath = '', filters = {}, pagingAndSorting = {}) {
-
         const hasFilters = this._hasFilters(filters)
         const hasPagingAndSorting = this._hasPagingAndSorting(pagingAndSorting)
 

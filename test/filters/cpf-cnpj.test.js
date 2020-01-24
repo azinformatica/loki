@@ -1,7 +1,6 @@
 import filtroCpfCnpj from '../../src/filters/cpf-cnpj'
 
 describe('FiltroCpfCnpj', () => {
-
     it('Deve retornar valor "Não informado"', () => {
         const resultado = filtroCpfCnpj()
         expect(resultado).toEqual('Não informado')
@@ -16,5 +15,4 @@ describe('FiltroCpfCnpj', () => {
         const resultado = filtroCpfCnpj('38878062000173')
         expect(resultado).toEqual('38.878.062/0001-73')
     })
-
 })

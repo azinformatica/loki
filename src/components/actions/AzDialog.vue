@@ -16,13 +16,13 @@
 </template>
 
 <script>
-    export default {
-        name: 'AzDialog',
-        props: {
-            width: {
-                type: Number,
-                default: 500
-            }
+export default {
+    name: 'AzDialog',
+    props: {
+        width: {
+            type: Number,
+            default: 500
         }
     }
+}
 </script>

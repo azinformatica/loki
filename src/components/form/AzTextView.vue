@@ -6,16 +6,16 @@
 </template>
 
 <script>
-    export default {
-        name: 'AzTextView',
-        props: {
-            label: {
-                type: String,
-                default: ''
-            },
-            text: {
-                required: true
-            }
+export default {
+    name: 'AzTextView',
+    props: {
+        label: {
+            type: String,
+            default: ''
+        },
+        text: {
+            required: true
         }
     }
+}
 </script>

@@ -1,6 +1,6 @@
 import StringMask from 'string-mask'
 
-const filter = (phone) => {
+const filter = phone => {
     if (!phone) {
         return 'Não informado'
     }

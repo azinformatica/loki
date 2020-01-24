@@ -5,8 +5,9 @@
   "main": "src/index.js",
   "private": false,
   "scripts": {
-    "test": "jest",
-    "deploy": "npm version patch -m 'patch upgrade' && git push && git push --tags && npm publish"
+    "lint": "vue-cli-service lint .",
+    "deploy": "npm version patch -m 'patch upgrade' && git push && git push --tags && npm publish",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -27,26 +28,34 @@
     "string-mask": "^0.3.0",
     "string-similarity": "^2.0.0",
     "v-money": "^0.8.1",
-    "vue": "^2.5.16",
+    "vue": "^2.6.10",
     "vuetify": "^1.5.7",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "@vue/cli-plugin-eslint": "^4.1.2",
+    "@vue/cli-service": "^4.1.2",
+    "@vue/eslint-config-prettier": "^5.0.0",
     "@vue/test-utils": "^1.0.0-beta.25",
     "babel-core": "^6.26.0",
+    "babel-eslint": "^10.0.3",
     "babel-jest": "^23.0.0",
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.0",
     "babel-preset-stage-3": "^6.24.1",
     "cross-env": "^5.0.5",
     "css-loader": "^0.28.7",
+    "eslint": "^5.16.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-vue": "^5.0.0",
     "file-loader": "^1.1.4",
     "jest": "^23.6.0",
     "jest-serializer-vue": "^2.0.2",
+    "prettier": "^1.19.1",
     "vue-jest": "^2.6.0",
     "vue-loader": "^13.0.5",
     "vue-router": "^3.0.1",
-    "vue-template-compiler": "^2.4.4",
+    "vue-template-compiler": "^2.6.10",
     "webpack": "^3.6.0",
     "webpack-dev-server": "^3.10.1"
   },
@@ -54,6 +63,59 @@
     "axios": "0.19.x",
     "moment-timezone": "0.5.x",
     "pdfjs-dist": "2.2.x"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "@vue/prettier"
+    ],
+    "rules": {
+      "quotes": [
+        "error",
+        "single"
+      ],
+      "semi": [
+        "error",
+        "never"
+      ],
+      "indent": [
+        "error",
+        4
+      ],
+      "max-len": [
+        "error",
+        {
+          "code": 120
+        },
+        {
+          "tabWidth": 4
+        }
+      ]
+    },
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "overrides": [
+      {
+        "files": [
+          "**/test/**/*.test.{j,t}s?(x)"
+        ],
+        "env": {
+          "jest": true
+        }
+      }
+    ]
+
+  },
+  "prettier": {
+    "printWidth": 120,
+    "singleQuote": true,
+    "semi": false,
+    "tabWidth": 4
   },
   "jest": {
     "moduleFileExtensions": [
@@ -71,5 +133,9 @@
     "snapshotSerializers": [
       "<rootDir>/node_modules/jest-serializer-vue"
     ]
-  }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ]
 }
