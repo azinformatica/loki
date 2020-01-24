@@ -1,13 +1,12 @@
 import AzConfirm from '../../../src/components/actions/AzConfirm'
-import {createLocalVue, mount} from '@vue/test-utils'
+import { createLocalVue, mount } from '@vue/test-utils'
 import Vuetify from 'vuetify'
 import Vue from 'vue'
 
-const localVue = createLocalVue();
+const localVue = createLocalVue()
 Vue.use(Vuetify)
 
 describe('AzConfirm.test.js', () => {
-
     let wrapper
 
     beforeEach(() => {
@@ -15,9 +14,8 @@ describe('AzConfirm.test.js', () => {
             labelConfirm: 'Confirm',
             labelDecline: 'Decline'
         }
-        wrapper = mount(AzConfirm, {localVue, propsData })
+        wrapper = mount(AzConfirm, { localVue, propsData })
     })
-
 
     it('Labels are properly rendered', () => {
         expect(wrapper.html()).toContain('Confirm')
@@ -29,12 +27,16 @@ describe('AzConfirm.test.js', () => {
     })
 
     it('Events are being emmited', () => {
-        wrapper.findAll('button').at(0).trigger('click.native')
+        wrapper
+            .findAll('button')
+            .at(0)
+            .trigger('click.native')
         expect(wrapper.emitted().onDecline).toBeTruthy()
 
-        wrapper.findAll('button').at(1).trigger('click.native')
+        wrapper
+            .findAll('button')
+            .at(1)
+            .trigger('click.native')
         expect(wrapper.emitted().onConfirm).toBeTruthy()
-
     })
-
 })

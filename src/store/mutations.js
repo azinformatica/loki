@@ -3,7 +3,6 @@ import mutationTypes from './mutation-types'
 import moment from 'moment-timezone'
 
 export default {
-
     [mutationTypes.ADD_UPLOADED_FILE](state, uploadedFile) {
         state.uploadedFiles.push(uploadedFile)
     },
@@ -21,7 +20,7 @@ export default {
     },
 
     [mutationTypes.HIDE_NOTIFICATION](state) {
-        state.notificacao = {message: '', type: ''}
+        state.notificacao = { message: '', type: '' }
     },
 
     [mutationTypes.SET_VERSION](state, version) {
@@ -37,12 +36,15 @@ export default {
     },
 
     [mutationTypes.SET_UPLOAD_FILE_PROGRESS](state, uploadProgress) {
-        Vue.set(state.uploadFileProgress, uploadProgress.hashName, {filename: uploadProgress.filename, progress: uploadProgress.progress})
+        Vue.set(state.uploadFileProgress, uploadProgress.hashName, {
+            filename: uploadProgress.filename,
+            progress: uploadProgress.progress
+        })
     },
 
     [mutationTypes.SET_UPLOAD_FILE_PROGRESS_ERROR](state, filename) {
         const progress = state.uploadFileProgress[filename].progress
-        Vue.set(state.uploadFileProgress, filename, {filename, progress, error: true})
+        Vue.set(state.uploadFileProgress, filename, { filename, progress, error: true })
     },
 
     [mutationTypes.SET_FILES_CONFIG](state, config) {
@@ -88,8 +90,8 @@ export default {
         }
     },
 
-    [mutationTypes.SHOW_ALERT](state, {message, type}) {
-        state.alert = {message, type}
+    [mutationTypes.SHOW_ALERT](state, { message, type }) {
+        state.alert = { message, type }
     },
 
     [mutationTypes.REMOVE_UPLOAD_FILE_PROGRESS](state, filename) {
@@ -102,36 +104,37 @@ export default {
 
     [mutationTypes.SET_TIMEZONE](state, timezone) {
         state.timezone = timezone
-        state.offset = moment().tz(timezone).format('Z')
+        state.offset = moment()
+            .tz(timezone)
+            .format('Z')
     },
 
     [mutationTypes.DOCUMENT.SET_PAGE_CONTAINER](state, { height, width }) {
-        state.document.pageContainer.height = height;
-        state.document.pageContainer.width = width;
+        state.document.pageContainer.height = height
+        state.document.pageContainer.width = width
     },
 
     [mutationTypes.DOCUMENT.SET_PAGES](state, pages) {
-        state.document.pages = pages;
+        state.document.pages = pages
     },
 
     [mutationTypes.DOCUMENT.SET_CURRENT_PAGE_NUM](state, currentPageNum) {
-        state.document.paginator.currentPageNum = currentPageNum;
+        state.document.paginator.currentPageNum = currentPageNum
     },
 
     [mutationTypes.DOCUMENT.SET_TOTAL_PAGE_NUM](state, totalPageNum) {
-        state.document.paginator.totalPageNum = totalPageNum;
+        state.document.paginator.totalPageNum = totalPageNum
     },
 
     [mutationTypes.DOCUMENT.SET_CURRENT_SCALE](state, scale) {
-        state.document.scale.current = scale;
+        state.document.scale.current = scale
     },
 
     [mutationTypes.DOCUMENT.SET_RENDERED_PAGES](state, payload) {
         if (typeof payload === 'number') {
-            state.document.renderedPages.push(payload);
+            state.document.renderedPages.push(payload)
         } else {
-            state.document.renderedPages = [];
+            state.document.renderedPages = []
         }
     }
-    
 }

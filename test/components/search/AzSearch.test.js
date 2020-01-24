@@ -1,18 +1,15 @@
 import AzSearch from '../../../src/components/search/AzSearch'
-import {shallowMount, mount, createLocalVue} from '@vue/test-utils'
+import { shallowMount, mount, createLocalVue } from '@vue/test-utils'
 import Vuetify from 'vuetify'
 import Vue from 'vue'
 
-const localVue = createLocalVue();
+const localVue = createLocalVue()
 Vue.use(Vuetify)
 
-
 describe('AzSearch.test.js', () => {
-
     let wrapper
 
     beforeEach(() => {
-
         wrapper = shallowMount(AzSearch, {
             localVue,
             propsData: {
@@ -20,7 +17,6 @@ describe('AzSearch.test.js', () => {
                 simpleSearchPlaceholder: 'Informe o objeto'
             }
         })
-
     })
 
     it('Default Data is correct', () => {
@@ -47,7 +43,6 @@ describe('AzSearch.test.js', () => {
     })
 
     it('Search Button emits event', () => {
-
         // Full mount to render vuetify components correctly
         let wrapperFull = mount(AzSearch, {
             localVue,
@@ -61,6 +56,4 @@ describe('AzSearch.test.js', () => {
         wrapperFull.find('.ad-search').trigger('click.native')
         expect(wrapperFull.vm.advancedSearch).toBeCalled()
     })
-
-
 })

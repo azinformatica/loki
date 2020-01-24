@@ -1,7 +1,6 @@
 import filtroDelimitarTexto from '../../src/filters/clip-text'
 
 describe('FiltroDelimitarTexto', () => {
-
     it('Deve retornar valor delimitado com sufixo default', () => {
         const texto = 'bla bla bla bla bla bla'
         const resultado = filtroDelimitarTexto(texto, 7)
@@ -20,5 +19,4 @@ describe('FiltroDelimitarTexto', () => {
         const resultado = filtroDelimitarTexto(texto, 7, sufixo)
         expect(resultado).toEqual('bla bla' + sufixo)
     })
-
 })

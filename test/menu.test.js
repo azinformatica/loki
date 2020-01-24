@@ -1,7 +1,6 @@
 import menu from '../src/utils/menu'
 
 describe('menu.test.js', () => {
-
     let store
 
     beforeEach(() => {
@@ -32,7 +31,8 @@ describe('menu.test.js', () => {
                                 name: 'D',
                                 hasAccess: false,
                                 produtoId: 150
-                            }]
+                            }
+                        ]
                     }
                 }
             }
@@ -40,9 +40,8 @@ describe('menu.test.js', () => {
     })
 
     describe('empty returns', () => {
-
         it('should create a empty object for empty router', () => {
-            const router = {options: {routes: []}}
+            const router = { options: { routes: [] } }
             expect(menu(store, router)).toEqual([])
         })
 
@@ -96,7 +95,6 @@ describe('menu.test.js', () => {
     })
 
     describe('nenu one level', () => {
-
         it('should create one level menu for all routes with menu in meta object', () => {
             const router = {
                 options: {
@@ -266,7 +264,6 @@ describe('menu.test.js', () => {
             ]
             expect(menu(store, router)).toEqual(expectedMenu)
         })
-
     })
 
     describe('nenu two levels', () => {
@@ -306,7 +303,8 @@ describe('menu.test.js', () => {
                                         },
                                         authorities: ['B']
                                     }
-                                }]
+                                }
+                            ]
                         }
                     ]
                 }
@@ -337,5 +335,4 @@ describe('menu.test.js', () => {
             expect(menu(store, router)).toEqual(expectedMenu)
         })
     })
-
 })

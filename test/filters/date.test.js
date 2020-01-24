@@ -2,7 +2,6 @@ import filtroData from '../../src/filters/date'
 import store from '../../src/store'
 
 describe('FiltroData', () => {
-
     const stateOriginal = store.state
 
     beforeEach(() => {
@@ -31,5 +30,4 @@ describe('FiltroData', () => {
         const resultado = filtroData('2018-01-01', 'YYYY/MM/DD')
         expect(resultado).toEqual('2018/01/01')
     })
-
 })

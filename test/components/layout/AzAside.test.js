@@ -1,19 +1,17 @@
 import AzAside from '../../../src/components/layout/AzAside'
 import Vuex from 'vuex'
-import {shallowMount, createLocalVue} from '@vue/test-utils'
+import { shallowMount, createLocalVue } from '@vue/test-utils'
 import Vuetify from 'vuetify'
 import Vue from 'vue'
 
-const localVue = createLocalVue();
+const localVue = createLocalVue()
 Vue.use(Vuetify)
 localVue.use(Vuex)
 
 describe('AzAside.test.js', () => {
-
     let wrapper, store
 
     beforeEach(() => {
-
         store = new Vuex.Store({
             state: {
                 loki: {
@@ -24,7 +22,6 @@ describe('AzAside.test.js', () => {
 
         wrapper = shallowMount(AzAside, { localVue, store })
     })
-
 
     it('asideClosed computed property works properly', () => {
         expect(wrapper.find('.arrow-opened').exists()).toBe(false)
@@ -37,8 +34,4 @@ describe('AzAside.test.js', () => {
         //expect(wrapper.find('.arrow-opened').exists()).toBe(true)
         //expect(wrapper.find('.arrow-closed').exists()).toBe(false)
     })
-
-
-
-
 })

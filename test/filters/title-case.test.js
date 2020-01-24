@@ -1,7 +1,6 @@
 import filtroTitleCase from '../../src/filters/title-case'
 
 describe('FiltroTitleCase', () => {
-
     it('Deve retornar string vazia', () => {
         const resultado = filtroTitleCase()
         expect(resultado).toEqual('')
@@ -11,5 +10,4 @@ describe('FiltroTitleCase', () => {
         const resultado = filtroTitleCase('valor')
         expect(resultado).toEqual('Valor')
     })
-
 })

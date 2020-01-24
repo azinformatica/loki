@@ -1,20 +1,17 @@
 import AzLogo from '../../../src/components/layout/AzLogo'
 import Vuex from 'vuex'
-import {shallowMount, createLocalVue} from '@vue/test-utils'
+import { shallowMount, createLocalVue } from '@vue/test-utils'
 import Vuetify from 'vuetify'
 import Vue from 'vue'
 
-const localVue = createLocalVue();
+const localVue = createLocalVue()
 Vue.use(Vuetify)
 Vue.use(Vuex)
 
-
 describe('AzLogo.test.js', () => {
-
     let wrapper, store
 
     beforeEach(() => {
-
         store = new Vuex.Store({
             state: {
                 loki: {
@@ -29,7 +26,7 @@ describe('AzLogo.test.js', () => {
             }
         })
 
-        wrapper = shallowMount(AzLogo, {localVue, store})
+        wrapper = shallowMount(AzLogo, { localVue, store })
     })
 
     it('Computed properties are rendered properly', () => {
@@ -46,5 +43,4 @@ describe('AzLogo.test.js', () => {
         wrapper.find('a').trigger('click')
         expect(wrapper.vm.redirectToHome).toBeCalled()
     })
-
 })

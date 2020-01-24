@@ -2,7 +2,7 @@ import Vue from 'vue'
 import money from 'v-money'
 import accounting from 'accounting'
 import moment from 'moment'
-import {actions, mutations, mutationTypes, state, getters} from './store'
+import { actions, mutations, mutationTypes, state, getters } from './store'
 
 import AzTitle from './components/layout/AzTitle'
 import AzAvatar from './components/layout/AzAvatar'
@@ -66,8 +66,7 @@ Vue.use(money, {
 Vue.prototype.moment = moment
 
 const lokiPlugin = {
-
-    install(vue, {store, router}) {
+    install(vue, { store, router }) {
         if (!store) {
             throw new Error('Please provide vuex store.')
         }
@@ -75,7 +74,7 @@ const lokiPlugin = {
             throw new Error('Please provide router.')
         }
 
-        store.registerModule('loki', {state, mutations, actions, getters})
+        store.registerModule('loki', { state, mutations, actions, getters })
         Vue.component('az-title', AzTitle)
         Vue.component('az-avatar', AzAvatar)
         Vue.component('az-logo', AzLogo)
@@ -122,7 +121,7 @@ const lokiPlugin = {
 
         store.commit(mutationTypes.SET_MENU_ACTIONS, buildMenu(store, router))
 
-        router.afterEach((to) => {
+        router.afterEach(to => {
             store.commit(mutationTypes.SET_CURRENT_PAGE, to)
         })
     }
@@ -142,12 +141,4 @@ const filters = {
     azTitleCase
 }
 
-export {
-    lokiPlugin,
-    filters,
-    AzCurrency,
-    AzSearchUrlBuilder,
-    AzSoundex,
-    buildMenu,
-    hasPermissions
-}
+export { lokiPlugin, filters, AzCurrency, AzSearchUrlBuilder, AzSoundex, buildMenu, hasPermissions }

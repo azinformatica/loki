@@ -2,7 +2,7 @@ import _ from 'lodash'
 
 export default function menu(store, router) {
     const actions = []
-    router.options.routes.forEach((route) => {
+    router.options.routes.forEach(route => {
         if (shouldShowInMenu(store, route)) {
             let action = createAction(route)
             if (hasChildren(route)) {
@@ -26,7 +26,7 @@ function createAction(route) {
 
 function createSubActions(store, route) {
     let subactions = []
-    route.children.forEach((subRoute) => {
+    route.children.forEach(subRoute => {
         if (shouldShowInMenu(store, subRoute)) {
             let child = createAction(subRoute)
             subactions.push(child)
@@ -55,9 +55,9 @@ function hasAuthorities(store, route) {
 
 function isAllowed(sourceAuthorities, expectedAuthorities) {
     let allowed = false
-    _.forEach(sourceAuthorities, (authority) => {
+    _.forEach(sourceAuthorities, authority => {
         if (_.findIndex(expectedAuthorities, authority) > -1) {
-            return allowed = true
+            return (allowed = true)
         }
     })
     return allowed
@@ -65,8 +65,8 @@ function isAllowed(sourceAuthorities, expectedAuthorities) {
 
 function convertToAuthoritiesObject(authoritiesSimpleArray, productId) {
     let authoritiesObject = []
-    _.forEach(authoritiesSimpleArray, (value) => {
-        authoritiesObject.push({name: value, hasAccess: true, produtoId: productId})
+    _.forEach(authoritiesSimpleArray, value => {
+        authoritiesObject.push({ name: value, hasAccess: true, produtoId: productId })
     })
     return authoritiesObject
 }

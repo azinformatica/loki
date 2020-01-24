@@ -1,8 +1,8 @@
 import AzFileUpload from '../../../src/components/file/AzFileUpload'
 import Vuex from 'vuex'
-import {shallowMount, createLocalVue} from '@vue/test-utils'
+import { shallowMount, createLocalVue } from '@vue/test-utils'
 
-const localVue = createLocalVue();
+const localVue = createLocalVue()
 localVue.use(Vuex)
 
 describe('AzFileUpload.test.js', () => {
@@ -18,7 +18,7 @@ describe('AzFileUpload.test.js', () => {
                 loki: {
                     uploadFileProgress: {},
                     uploadedFiles: []
-                },
+                }
             },
             actions
         })
@@ -27,7 +27,7 @@ describe('AzFileUpload.test.js', () => {
             repository: 'repo1'
         }
 
-        wrapper = shallowMount(AzFileUpload, {localVue, store, props})
+        wrapper = shallowMount(AzFileUpload, { localVue, store, props })
         wrapper.setProps(props)
     })
 
@@ -44,10 +44,10 @@ describe('AzFileUpload.test.js', () => {
     })
 
     it('Calls the store to upload the files that were selected through the component', () => {
-        const input = {value: ''}
+        const input = { value: '' }
         document.getElementById = jest.fn().mockReturnValue(input)
 
-        const filesToBeUploaded = [{name: 'file1'}, {name: 'file2'}]
+        const filesToBeUploaded = [{ name: 'file1' }, { name: 'file2' }]
         wrapper.vm.onSelectFiles(filesToBeUploaded)
 
         expect(actions.uploadFile.mock.calls).toHaveLength(2)
@@ -68,7 +68,7 @@ describe('AzFileUpload.test.js', () => {
                 name: 'file1',
                 kind: 'file',
                 getAsFile() {
-                    return {name: 'file1'}
+                    return { name: 'file1' }
                 }
             },
             1: {
@@ -78,19 +78,16 @@ describe('AzFileUpload.test.js', () => {
         }
         wrapper.vm.onDropFiles(droppedItems)
 
-
-
         expect(actions.uploadFile.mock.calls).toHaveLength(1)
         expect(actions.uploadFile.mock.calls[0][1].filename).toEqual(droppedItems['0'].name)
     })
 
     it('Opens the file selector', () => {
-        const mockedInput= {
+        const mockedInput = {
             click: jest.fn()
         }
         spyOn(document, 'getElementById').and.returnValue(mockedInput)
         wrapper.vm.openFileSelector()
         expect(mockedInput.click).toHaveBeenCalled()
     })
-
 })
