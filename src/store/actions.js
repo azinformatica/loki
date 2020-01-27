@@ -39,6 +39,7 @@ export default {
         let pdf = await pdfjs.fetchDocument(src)
         context.commit(mutationTypes.DOCUMENT.SET_TOTAL_PAGE_NUM, pdf.numPages)
         context.commit(mutationTypes.DOCUMENT.SET_PAGES, await pdfjs.getPages(pdf))
+        context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, 1.5)
         context.dispatch(actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER)
     },
 
