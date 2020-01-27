@@ -1,7 +1,7 @@
 <template>
     <v-toolbar-title class="az-title">
         <span class="az-title__title primary--text">{{ title }}</span>
-        <span class="az-title__subtitle">» {{ subtitle }}</span>
+        <span class="az-title__subtitle" v-if="subtitle">» {{ subtitle }}</span>
     </v-toolbar-title>
 </template>
 <script>
