@@ -17,16 +17,18 @@ export default {
             show: false
         }
     },
-    created: function () {
-        this.$store.watch(state => state.loki.alert, () => {
-            const alert = this.$store.state.loki.alert
-            if (alert.message !== '') {
-                this.show = true
-                this.text = alert.message
-                this.color = alert.type
+    created: function() {
+        this.$store.watch(
+            state => state.loki.alert,
+            () => {
+                const alert = this.$store.state.loki.alert
+                if (alert.message !== '') {
+                    this.show = true
+                    this.text = alert.message
+                    this.color = alert.type
+                }
             }
-        }
+        )
     }
-}
 }
 </script>
