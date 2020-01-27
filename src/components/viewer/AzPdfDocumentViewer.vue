@@ -72,13 +72,12 @@ export default {
         }
     },
     async created() {
+        this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, this.visiblePageNum)
+        this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES)
         await this.$store.dispatch(actionTypes.DOCUMENT.FETCH_DOCUMENT, this.$props.src)
     },
     mounted() {
         this.getDocumentContainer().addEventListener('scroll', this.handleScroll)
-    },
-    destroyed() {
-        this.getDocumentContainer().removeEventListener('scroll', this.handleScroll)
     },
     methods: {
         getDocumentContainer() {
