@@ -8,12 +8,14 @@
         :close-on-content-click="false"
         @input="setVisibility"
     >
-        <v-btn icon slot="activator" @click="$emit('read')">
-            <v-badge right overlap color="secondary">
-                <span slot="badge" v-if="hasNotificationsToRead">{{ notification.unread }}</span>
-                <v-icon color="white">notification_important</v-icon>
-            </v-badge>
-        </v-btn>
+        <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on" @click="$emit('read')">
+                <v-badge right overlap color="secondary">
+                    <span slot="badge" v-if="hasNotificationsToRead">{{ notification.unread }}</span>
+                    <v-icon color="white">notification_important</v-icon>
+                </v-badge>
+            </v-btn>
+        </template>
         <v-list>
             <div class="notification__top">
                 <b>{{ title }}</b>
@@ -29,7 +31,7 @@
                 </div>
             </div>
             <div class="notification__body" id="notificationContainer" v-if="hasMessages">
-                <v-list-tile
+                <v-list-item
                     v-for="(message, index) in notification.messages"
                     :key="index"
                     :class="getNotificationCardClass(message)"
@@ -46,10 +48,10 @@
                             <v-icon size="14px">close</v-icon>
                         </a>
                     </div>
-                </v-list-tile>
-                <v-list-tile v-if="notification.viewMore">
+                </v-list-item>
+                <v-list-item v-if="notification.viewMore">
                     <a class="more" @click="$emit('paginate')">Ver mais</a>
-                </v-list-tile>
+                </v-list-item>
                 <span id="notificationListEnd" style="visibility: hidden">Fim das notificações.</span>
             </div>
             <div v-else class="notification notification__top">Nenhuma notificação encontrada...</div>
@@ -162,7 +164,7 @@ export default {
             text-align center
             color gray
             font-size 12px
-        .v-list__tile
+        .v-list-item
             display flex
             justify-content space-between
             border-bottom 1px solid #eee
@@ -189,7 +191,7 @@ export default {
     &__unread
         background-color #edf2fa
 
-@media (max-width: 720px)
+@media (max-width 720px)
     .notification
         &__no-mobile
             display none !important

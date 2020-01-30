@@ -13,12 +13,12 @@
             </div>
         </az-aside>
 
-        <v-toolbar app height="60" class="toolbar">
+        <v-app-bar app height="60" class="toolbar">
             <v-icon class="mobile_menu" @click="showAside()">dehaze</v-icon>
             <az-title />
             <v-spacer></v-spacer>
             <az-avatar />
-        </v-toolbar>
+        </v-app-bar>
         <v-content>
             <v-container fluid class="container">
                 <az-alert />
@@ -60,27 +60,27 @@ export default {
         border-top 1px solid var(--v-primary-lighten2)
     .az-aside
         .logo
-            border-bottom 1px solid rgba(255,255,255,0.05)
+            border-bottom 1px solid rgba(255,255,255,.05)
             height 120px
-            color rgba(255,255,255,0.4) !important
+            color rgba(255,255,255,.4) !important
         .az-menu
 
-            .v-list__tile__title
+            .v-list-item__title
                 font-size 13px
-                color rgba(255,255,255,0.4)
+                color rgba(255,255,255,.4)
                 font-weight: normal
-            .v-list__tile
+            .v-list-item
                 height 55px
-                border-bottom: 1px solid rgba(255,255,255,0.05);
+                border-bottom: 1px solid rgba(255,255,255,.05);
                 &:hover
-                    .v-list__tile__title
+                    .v-list-item__title
                         color var(--v-secondary-lighten5) !important
                     i
                         color var(--v-secondary-lighten5) !important
             .active-menu
-                .v-list__tile__action i
+                .v-list-item__action i
                     color var(--v-secondary-lighten5) !important
-                .v-list__tile__title
+                .v-list-item__title
                     font-weight bold
                     color var(--v-secondary-lighten5) !important
 
@@ -93,9 +93,9 @@ export default {
         background-color var(--v-secondary-base) !important
         .az-title
             &__title
-                color rgba(255,255,255,0.7) !important
+                color rgba(255,255,255,.7) !important
             &__subtitle
-                color rgba(255,255,255,0.7) !important
+                color rgba(255,255,255,.7) !important
 
     .mobile_menu
         display none
@@ -106,11 +106,10 @@ export default {
 .application--wrap
     min-height: unset !important
 
-
 html
     overflow-y: auto
 
-@media (max-width: 720px)
+@media (max-width 720px)
     .az-template-default
         .mobile_menu
             margin-right: 10px

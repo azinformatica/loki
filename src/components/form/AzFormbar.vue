@@ -14,7 +14,7 @@ export default {}
         height: 60px
         align-items: center
         justify-content: space-between
-        transition: 0.2s
+        transition: .2s
         .itens
             display: flex
             .item
@@ -49,13 +49,14 @@ export default {}
         .actions
             display: none
 
-@media (max-width: 720px)
-    .az-form-bar
-        .show
-            height unset !important
-            .itens
-                display: block !important
+@media (max-width 720px)
+    .az-form-bar .show
+        height unset !important
+
+        .itens
+            display: block !important
+            margin: 10px 0 !important
+
+            .item
                 margin: 10px 0 !important
-                .item
-                    margin: 10px 0 !important
 </style>

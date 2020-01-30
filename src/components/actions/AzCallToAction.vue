@@ -1,5 +1,5 @@
 <template>
-    <v-btn depressed :color="color" :dark="isDark" :outline="isOutline" :class="style" @click="$emit('click')">
+    <v-btn depressed :color="color" :dark="isDark" :outlined="isOutline" :class="style" @click="$emit('click')">
         <slot />
     </v-btn>
 </template>
@@ -58,19 +58,20 @@ export default {
 </script>
 
 <style lang="stylus">
-
 .call-to-action
-    font-size: 14px
-    margin: 0 10px 0 0
-    text-transform: none
-    position: relative
-    height: unset
-    padding: 5px 15px
-    box-shadow: none
+    font-size 14px
+    margin 0
+    text-transform none
+    position relative
+    height unset
+    padding 5px 15px
+    box-shadow none
+    font-weight bold
+
     i
-        margin-right: 5px
-        font-size: 18px
+        margin-right 5px
+        font-size 18px
 
     &.hide-border
-        border: 0 !important
+        border 0 !important
 </style>

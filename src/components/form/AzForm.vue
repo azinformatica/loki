@@ -35,17 +35,22 @@ export default {}
     .v-input
         margin 0 !important
 
-    .v-table tbody tr td
+    &.v-data-table tbody tr td
         height unset
         padding 10px
 
-    .v-table thead tr th
+    &.v-data-table thead tr th
         padding 10px
+        height 35px
 
 .az-pagination
     display flex
     justify-content space-between
     font-size 13px
+
+    .v-pagination
+        justify-content left
+        width auto
 
     .v-pagination__item
         height 24px
@@ -63,6 +68,10 @@ export default {}
         margin 2px
         -webkit-box-shadow none
         box-shadow none
+        background transparent !important
+
+        .v-icon
+            font-size 15px
 
     .v-input
         width 100px
@@ -181,8 +190,8 @@ export default {}
         border-bottom 1px solid #ccc
 
 .az-actions-form
-    padding 0 20px 30px 20px
-    margin-top 15px
+    padding 0 20px 20px
+    margin-top 20px
     justify-content space-between
     display flex
     font-size 13px
@@ -233,7 +242,7 @@ export default {}
             &:hover
                 color darkred
 
-@media (max-width: 720px)
+@media (max-width 720px)
     .az-pagination
         display block !important
 
@@ -243,7 +252,7 @@ export default {}
         .v-pagination
             height 50px
 
-    .v-table tbody tr:hover:not(.v-datatable__expand-row)
+    .v-data-table tbody tr:hover:not(.v-datatable__expand-row)
         background unset !important
 
     .az-table-list
@@ -286,7 +295,7 @@ export default {}
             &:nth-child(even)
                 background-color #eee !important
 
-        .v-table tbody tr:hover:not(.v-datatable__expand-row)
+        &.v-data-table tbody tr:hover:not(.v-datatable__expand-row)
             background-color transparent
 
         thead

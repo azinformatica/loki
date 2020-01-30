@@ -13,7 +13,7 @@ describe('AzDialog.test.js', () => {
         const slots = {
             default: '<div>Sample Text</div>'
         }
-        wrapper = mount(AzDialog, { localVue, slots })
+        wrapper = mount(AzDialog, { localVue, slots, vuetify: new Vuetify()})
     })
 
     it('Slot is being rendered', () => {

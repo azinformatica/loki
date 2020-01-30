@@ -7,10 +7,8 @@
                 v-model="dialogDate"
                 nudge-right="450"
                 nudge-bottom="120"
-                lazy
                 transition="scale-transition"
                 offset-y
-                full-width
                 max-width="290px"
                 min-width="290px"
                 v-if="!isDisabled"
@@ -51,10 +49,8 @@
                 v-model="dialogTime"
                 nudge-right="540"
                 nudge-bottom="120"
-                lazy
                 transition="scale-transition"
                 offset-y
-                full-width
                 max-width="290px"
                 min-width="290px"
                 v-if="!isDisabled"

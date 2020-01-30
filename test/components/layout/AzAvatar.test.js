@@ -51,7 +51,7 @@ describe('AzAvatar.test.js', () => {
         spyOn(wrapper.vm, 'redirectTo')
         spyOn(wrapper.vm, 'logout')
         wrapper.find('.az-avatar__logout').trigger('click')
-        wrapper.find('.v-list__tile--link').trigger('click')
+        wrapper.find('.v-list-item--link').trigger('click')
 
         expect(wrapper.vm.logout).toBeCalled()
         expect(wrapper.vm.redirectTo).toBeCalled()
