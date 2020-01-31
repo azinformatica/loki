@@ -14,6 +14,7 @@ describe('AzPdfDocumentViewerToolbar.vue', () => {
         totalPages = 3
         wrapper = mount(AzPdfDocumentViewerToolbar, {
             localVue,
+            vuetify: new Vuetify({}),
             propsData: { currentPage, totalPages }
         })
     })
@@ -31,33 +32,33 @@ describe('AzPdfDocumentViewerToolbar.vue', () => {
     })
 
     it('Should have a zoomOut button', () => {
-        let zoomOutBtn = wrapper.find("[data-test='zoomOut']")
+        let zoomOutBtn = wrapper.find('[data-test="zoomOut"]')
         expect(zoomOutBtn).toBeTruthy()
     })
 
     it('Should emit an event on click at zoomOut button', () => {
-        let zoomOutBtn = wrapper.find("[data-test='zoomOut']")
+        let zoomOutBtn = wrapper.find('[data-test="zoomOut"]')
         zoomOutBtn.trigger('click')
         expect(wrapper.emitted().zoomOut).toBeTruthy()
     })
 
     it('Should have a zoomIn button', () => {
-        let zoomInBtn = wrapper.find("[data-test='zoomIn']")
+        let zoomInBtn = wrapper.find('[data-test="zoomIn"]')
         expect(zoomInBtn).toBeTruthy()
     })
 
     it('Shoud emit an event on click at zoomIn button', () => {
-        let zoomInBtn = wrapper.find("[data-test='zoomIn']")
+        let zoomInBtn = wrapper.find('[data-test="zoomIn"]')
         zoomInBtn.trigger('click')
         expect(wrapper.emitted().zoomIn).toBeTruthy()
     })
 
     it('Should have a resetZoom button', () => {
-        expect(wrapper.find("[data-test='resetZoom']")).toBeTruthy()
+        expect(wrapper.find('[data-test="resetZoom"]')).toBeTruthy()
     })
 
     it('Should emit an event on click at resetZoom button', () => {
-        let resetZoomBtn = wrapper.find("[data-test='resetZoom']")
+        let resetZoomBtn = wrapper.find('[data-test="esetZoom"]')
         resetZoomBtn.trigger('click')
         expect(wrapper.emitted().resetZoom).toBeTruthy()
     })

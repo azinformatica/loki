@@ -1,5 +1,6 @@
 import AzFileUpload from '../../../src/components/file/AzFileUpload'
 import Vuex from 'vuex'
+import Vuetify from 'vuetify'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 
 const localVue = createLocalVue()
@@ -27,7 +28,7 @@ describe('AzFileUpload.test.js', () => {
             repository: 'repo1'
         }
 
-        wrapper = shallowMount(AzFileUpload, { localVue, store, props })
+        wrapper = shallowMount(AzFileUpload, { localVue, store, props, vuetify: new Vuetify({}) })
         wrapper.setProps(props)
     })
 
@@ -86,7 +87,7 @@ describe('AzFileUpload.test.js', () => {
         const mockedInput = {
             click: jest.fn()
         }
-        spyOn(document, 'getElementById').and.returnValue(mockedInput)
+        jest.spyOn(document, 'getElementById').and.returnValue(mockedInput)
         wrapper.vm.openFileSelector()
         expect(mockedInput.click).toHaveBeenCalled()
     })

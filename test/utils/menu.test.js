@@ -1,4 +1,4 @@
-import menu from '../src/utils/menu'
+import menu from '../../src/utils/az-menu'
 
 describe('menu.test.js', () => {
     let store

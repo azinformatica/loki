@@ -39,7 +39,7 @@ describe('AzLogo.test.js', () => {
     })
 
     it('Click events', () => {
-        spyOn(wrapper.vm, 'redirectToHome')
+        jest.spyOn(wrapper.vm, 'redirectToHome')
         wrapper.find('a').trigger('click')
         expect(wrapper.vm.redirectToHome).toBeCalled()
     })

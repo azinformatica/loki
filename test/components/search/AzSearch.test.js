@@ -27,14 +27,14 @@ describe('AzSearch.test.js', () => {
     })
 
     it('Toggle method is called after closing window', () => {
-        spyOn(wrapper.vm, 'toggle')
+        jest.spyOn(wrapper.vm, 'toggle')
         wrapper.vm.cancel()
         expect(wrapper.vm.toggle).toBeCalled()
     })
 
     it('Toggle method is OK', () => {
         const isClosed = wrapper.vm.isClosedAdvancedSearch
-        spyOn(wrapper.vm, 'closeAsideMenu')
+        jest.spyOn(wrapper.vm, 'closeAsideMenu')
 
         wrapper.vm.toggle()
 
@@ -52,7 +52,7 @@ describe('AzSearch.test.js', () => {
             }
         })
 
-        spyOn(wrapperFull.vm, 'advancedSearch')
+        jest.spyOn(wrapperFull.vm, 'advancedSearch')
         wrapperFull.find('.ad-search').trigger('click.native')
         expect(wrapperFull.vm.advancedSearch).toBeCalled()
     })

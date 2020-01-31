@@ -80,7 +80,7 @@ describe('AzMenu.test.js', () => {
         // Full mount to render vuetify components correctly
         let wrapperFull = mount(AzMenu, { localVue, store, router })
 
-        spyOn(wrapperFull.vm, 'redirectTo')
+        jest.spyOn(wrapperFull.vm, 'redirectTo')
         wrapperFull.find('.menu-item').trigger('click.native')
         expect(wrapperFull.vm.redirectTo).toBeCalled()
     })

@@ -36,7 +36,7 @@ describe('AzAvatar.test.js', () => {
 
         renderedHtml.toContain('src="picture.jpg"')
         renderedHtml.toContain('Andrew Stuart Tanenbaum')
-        Object.keys(wrapper.vm.avatarActions).map((key, index) => {
+        Object.keys(wrapper.vm.avatarActions).map(key => {
             renderedHtml.toContain(wrapper.vm.avatarActions[key].title)
             renderedHtml.toContain(wrapper.vm.avatarActions[key].icon)
         })
@@ -48,8 +48,8 @@ describe('AzAvatar.test.js', () => {
     })
 
     it('Click on Buttons', () => {
-        spyOn(wrapper.vm, 'redirectTo')
-        spyOn(wrapper.vm, 'logout')
+        jest.spyOn(wrapper.vm, 'redirectTo')
+        jest.spyOn(wrapper.vm, 'logout')
         wrapper.find('.az-avatar__logout').trigger('click')
         wrapper.find('.v-list-item--link').trigger('click')
 

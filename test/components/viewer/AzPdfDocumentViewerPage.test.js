@@ -14,6 +14,7 @@ describe('AzPdfDocumentViewerPage.vue', () => {
         pageSize = { height: 100, width: 100 }
         wrapper = shallowMount(AzPdfDocumentViewerPage, {
             localVue,
+            vuetify: new Vuetify({}),
             propsData: { pageNum, pageSize }
         })
     })
