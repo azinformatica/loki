@@ -133,6 +133,11 @@ export default {
     display flex
     align-items center
 
+    .v-overlay__scrim
+        opacity 0 !important
+        background-color transparent !important
+        border-color  transparent !important
+
     .simple-search
         display flex
 

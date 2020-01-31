@@ -73,6 +73,9 @@ export default {}
         .v-icon
             font-size 15px
 
+        &--disabled
+            display none
+
     .v-input
         width 100px
 
