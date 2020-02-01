@@ -36,7 +36,7 @@ describe('AzAvatar.test.js', () => {
 
         renderedHtml.toContain('src="picture.jpg"')
         renderedHtml.toContain('Andrew Stuart Tanenbaum')
-        Object.keys(wrapper.vm.avatarActions).map((key, index) => {
+        Object.keys(wrapper.vm.avatarActions).map(key => {
             renderedHtml.toContain(wrapper.vm.avatarActions[key].title)
             renderedHtml.toContain(wrapper.vm.avatarActions[key].icon)
         })

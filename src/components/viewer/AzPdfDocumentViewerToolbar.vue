@@ -1,13 +1,13 @@
 <template>
     <v-toolbar class="az-pdf-toolbar" flat>
         <v-spacer />
-        <v-btn @click="zoomOut" icon data-test="zoomOut">
+        <v-btn @click="zoomOut" icon data-test="zoomOut" :disabled="totalPages === 0">
             <v-icon>zoom_out</v-icon>
         </v-btn>
-        <v-btn @click="resetZoom" icon data-test="resetZoom">
+        <v-btn @click="resetZoom" icon data-test="resetZoom" :disabled="totalPages === 0">
             <v-icon>aspect_ratio</v-icon>
         </v-btn>
-        <v-btn @click="zoomIn" icon data-test="zoomIn">
+        <v-btn @click="zoomIn" icon data-test="zoomIn" :disabled="totalPages === 0">
             <v-icon>zoom_in</v-icon>
         </v-btn>
         <div class="az-pdf-toolbar__page-viewer">{{ currentPage }} / {{ totalPages }}</div>

@@ -1,4 +1,4 @@
-import AzTemplate from '../../../src/components/layout/AzTemplate'
+import AzTemplateDefault from '../../../src/components/layout/templates/AzTemplateDefault'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 import Vuetify from 'vuetify'
 import Vue from 'vue'
@@ -10,7 +10,7 @@ describe('AzTemplate.test.js', () => {
     let wrapper
 
     beforeEach(() => {
-        wrapper = shallowMount(AzTemplate, { localVue })
+        wrapper = shallowMount(AzTemplateDefault, { localVue })
     })
 
     it('Component style is used', () => {

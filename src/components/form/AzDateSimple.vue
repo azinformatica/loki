@@ -348,8 +348,9 @@ export default {
                 .format(this.reverseDateFormat + 'THH:mm:ss.SSSZZ')
         },
         getDateTimeZeroTimezone(dateTime) {
+            const offset = this.getOffsetFromCurrentDateTime(dateTime)
             return this.moment(dateTime)
-                .utcOffset('+0000')
+                .utcOffset(offset)
                 .format(this.reverseDateFormat + 'THH:mm:ss.SSSZZ')
         },
         buildDateTimeWithTimezone(date, time) {

@@ -48,7 +48,8 @@ describe('AzPdfDocumentViewer.vue', () => {
         [actionTypes.DOCUMENT.DECREASE_SCALE]: jest.fn(),
         [actionTypes.DOCUMENT.INCREASE_SCALE]: jest.fn(),
         [actionTypes.DOCUMENT.RESTORE_SCALE]: jest.fn(),
-        [actionTypes.DOCUMENT.RENDER_PAGE]: jest.fn()
+        [actionTypes.DOCUMENT.RENDER_PAGE]: jest.fn(),
+        [actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES]: jest.fn()
     }
 
     documentContainer = document.createElement('div')
@@ -120,10 +121,6 @@ describe('AzPdfDocumentViewer.vue', () => {
                 mounted: mountedMock
             })
             expect(mountedMock).toBeCalled()
-        })
-
-        it('Should have a destroyed method', () => {
-            expect(typeof AzPdfDocumentViewer.destroyed).toBe('function')
         })
 
         it('Should execute the destroyed method', () => {
@@ -232,7 +229,7 @@ describe('AzPdfDocumentViewer.vue', () => {
             }
             wrapper.vm.handleScroll(e)
             expect(actions[actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM]).toHaveBeenCalled()
-            expect(actions[actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM].mock.calls[0][1]).toBe(11)
+            expect(actions[actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM].mock.calls[0][1]).toBe(1)
         })
     })
 })
