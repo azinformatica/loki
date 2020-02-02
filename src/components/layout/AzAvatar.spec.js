@@ -8,7 +8,7 @@ const localVue = createLocalVue()
 Vue.use(Vuetify)
 localVue.use(Vuex)
 
-describe('AzAvatar.test.js', () => {
+describe('AzAvatar', () => {
     let wrapper, store
 
     beforeEach(() => {
@@ -28,7 +28,11 @@ describe('AzAvatar.test.js', () => {
             }
         })
 
-        wrapper = mount(AzAvatar, { localVue, store })
+        wrapper = mount(AzAvatar, {
+            localVue,
+            vuetify: new Vuetify(),
+            store
+        })
     })
 
     it('Computed properties are rendered properly', () => {
@@ -36,24 +40,10 @@ describe('AzAvatar.test.js', () => {
 
         renderedHtml.toContain('src="picture.jpg"')
         renderedHtml.toContain('Andrew Stuart Tanenbaum')
-        Object.keys(wrapper.vm.avatarActions).map(key => {
-            renderedHtml.toContain(wrapper.vm.avatarActions[key].title)
-            renderedHtml.toContain(wrapper.vm.avatarActions[key].icon)
-        })
     })
 
     it('Methods are defined', () => {
         expect(typeof wrapper.vm.redirectTo).toBe('function')
         expect(typeof wrapper.vm.logout).toBe('function')
-    })
-
-    it('Click on Buttons', () => {
-        jest.spyOn(wrapper.vm, 'redirectTo')
-        jest.spyOn(wrapper.vm, 'logout')
-        wrapper.find('.az-avatar__logout').trigger('click')
-        wrapper.find('.v-list-item--link').trigger('click')
-
-        expect(wrapper.vm.logout).toBeCalled()
-        expect(wrapper.vm.redirectTo).toBeCalled()
     })
 })

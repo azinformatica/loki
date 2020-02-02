@@ -1,13 +1,13 @@
-import filtroTitleCase from './title-case'
+import azTitleCase from './az-title-case'
 
-describe('FiltroTitleCase', () => {
+describe('azTitleCase', () => {
     it('Deve retornar string vazia', () => {
-        const resultado = filtroTitleCase()
+        const resultado = azTitleCase()
         expect(resultado).toEqual('')
     })
 
     it('Deve retornar valor com primeira letra maiúscula', () => {
-        const resultado = filtroTitleCase('valor')
+        const resultado = azTitleCase('valor')
         expect(resultado).toEqual('Valor')
     })
 })

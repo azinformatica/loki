@@ -1,20 +1,20 @@
-import concatFiltro from './concat'
+import azConcat from './az-concat'
 
 const valor = ['ME', 'EPP', 'MEI', 'EIRELI']
 
-describe('concatFiltro', () => {
+describe('azConcat', () => {
     it('Deve retornar o valor concatenado', () => {
-        const resultado = concatFiltro(valor)
+        const resultado = azConcat(valor)
         expect(resultado).toEqual('ME/EPP/MEI/EIRELI')
     })
 
     it('Deve retornar o valor concatenado com outro separador', () => {
-        const resultado = concatFiltro(valor, ' - ')
+        const resultado = azConcat(valor, ' - ')
         expect(resultado).toEqual('ME - EPP - MEI - EIRELI')
     })
 
     it('Deve retornar o valor vazio', () => {
-        const resultado = concatFiltro()
+        const resultado = azConcat()
         expect(resultado).toBe('')
     })
 })

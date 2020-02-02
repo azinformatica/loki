@@ -6,12 +6,13 @@ import Vue from 'vue'
 const localVue = createLocalVue()
 Vue.use(Vuetify)
 
-describe('AzContainer.test.js', () => {
+describe('AzContainer', () => {
     let wrapper
 
     beforeEach(() => {
         wrapper = shallowMount(AzContainer, {
             localVue,
+            vuetify: new Vuetify(),
             slots: { default: '**Default Content**' }
         })
     })

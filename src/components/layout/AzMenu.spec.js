@@ -10,7 +10,7 @@ Vue.use(Vuetify)
 Vue.use(Vuex)
 Vue.use(VueRouter)
 
-describe('AzMenu.test.js', () => {
+describe('AzMenu', () => {
     let wrapper, store
 
     const routes = []

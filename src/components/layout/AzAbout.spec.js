@@ -8,7 +8,7 @@ const localVue = createLocalVue()
 Vue.use(Vuetify)
 localVue.use(Vuex)
 
-describe('AzAbout.test.js', () => {
+describe('AzAbout', () => {
     let wrapper, store
 
     beforeEach(() => {

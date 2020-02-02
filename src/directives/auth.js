@@ -1,4 +1,4 @@
-import hasPermissions from '../utils/az-auth'
+import hasPermissions from '../utils/AzHasPermissions'
 
 export default {
     inserted(el, { value }, vnode) {

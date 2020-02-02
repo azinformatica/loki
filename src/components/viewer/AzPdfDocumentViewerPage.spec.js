@@ -6,7 +6,7 @@ import { createLocalVue, shallowMount } from '@vue/test-utils'
 const localVue = createLocalVue()
 Vue.use(Vuetify)
 
-describe('AzPdfDocumentViewerPage', () => {
+xdescribe('AzPdfDocumentViewerPage', () => {
     let wrapper, pageNum, pageSize
 
     beforeEach(() => {

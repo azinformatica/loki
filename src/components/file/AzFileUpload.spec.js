@@ -5,8 +5,9 @@ import { shallowMount, createLocalVue } from '@vue/test-utils'
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
+localVue.use(Vuetify)
 
-describe('AzFileUpload.spec.js', () => {
+describe('AzFileUpload', () => {
     let wrapper, props, store, actions
 
     beforeEach(() => {
@@ -18,7 +19,10 @@ describe('AzFileUpload.spec.js', () => {
             state: {
                 loki: {
                     uploadFileProgress: {},
-                    uploadedFiles: []
+                    uploadedFiles: [],
+                    file: {
+                        maxSize: '16Mb'
+                    }
                 }
             },
             actions
@@ -87,7 +91,7 @@ describe('AzFileUpload.spec.js', () => {
         const mockedInput = {
             click: jest.fn()
         }
-        jest.spyOn(document, 'getElementById').and.returnValue(mockedInput)
+        document.getElementById = jest.fn().mockReturnValue(mockedInput)
         wrapper.vm.openFileSelector()
         expect(mockedInput.click).toHaveBeenCalled()
     })

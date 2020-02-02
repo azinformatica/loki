@@ -1,13 +1,13 @@
-import filtroCurrency from './currency'
+import azCurrency from './az-currency'
 
-describe('FiltroCurrency', () => {
+describe('azCurrency', () => {
     it('Deve retornar valor formatado', () => {
-        const resultado = filtroCurrency(1267.9)
+        const resultado = azCurrency(1267.9)
         expect(resultado).toEqual('R$ 1.267,90')
     })
 
     it('Deve retornar valor ZERO', () => {
-        const resultado = filtroCurrency()
+        const resultado = azCurrency()
         expect(resultado).toEqual('R$ 0,00')
     })
 })

@@ -1,6 +1,6 @@
-import menu from './az-menu'
+import azBuildMenu from './azBuildMenu'
 
-describe('menu', () => {
+describe('azBuildMenu', () => {
     let store
 
     beforeEach(() => {
@@ -42,7 +42,7 @@ describe('menu', () => {
     describe('empty returns', () => {
         it('should create a empty object for empty router', () => {
             const router = { options: { routes: [] } }
-            expect(menu(store, router)).toEqual([])
+            expect(azBuildMenu(store, router)).toEqual([])
         })
 
         it('should create a empty object for router without meta object', () => {
@@ -60,7 +60,7 @@ describe('menu', () => {
                     ]
                 }
             }
-            expect(menu(store, router)).toEqual([])
+            expect(azBuildMenu(store, router)).toEqual([])
         })
 
         it('should create a empty object for router without menu in meta object', () => {
@@ -90,7 +90,7 @@ describe('menu', () => {
                     ]
                 }
             }
-            expect(menu(store, router)).toEqual([])
+            expect(azBuildMenu(store, router)).toEqual([])
         })
     })
 
@@ -136,7 +136,7 @@ describe('menu', () => {
                     selected: false
                 }
             ]
-            expect(menu(store, router)).toEqual(expectedMenu)
+            expect(azBuildMenu(store, router)).toEqual(expectedMenu)
         })
 
         it('should create one level menu for all routes with menu in meta object and current user has permission', () => {
@@ -182,7 +182,7 @@ describe('menu', () => {
                     selected: false
                 }
             ]
-            expect(menu(store, router)).toEqual(expectedMenu)
+            expect(azBuildMenu(store, router)).toEqual(expectedMenu)
         })
 
         it('should create one level menu just one route because current user has not permission', () => {
@@ -222,7 +222,7 @@ describe('menu', () => {
                     selected: false
                 }
             ]
-            expect(menu(store, router)).toEqual(expectedMenu)
+            expect(azBuildMenu(store, router)).toEqual(expectedMenu)
         })
 
         it('should create one level menu just one route because current user has a permission for another productId', () => {
@@ -262,7 +262,7 @@ describe('menu', () => {
                     selected: false
                 }
             ]
-            expect(menu(store, router)).toEqual(expectedMenu)
+            expect(azBuildMenu(store, router)).toEqual(expectedMenu)
         })
     })
 
@@ -332,7 +332,7 @@ describe('menu', () => {
                     ]
                 }
             ]
-            expect(menu(store, router)).toEqual(expectedMenu)
+            expect(azBuildMenu(store, router)).toEqual(expectedMenu)
         })
     })
 })

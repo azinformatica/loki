@@ -2,16 +2,27 @@ import AzSearch from './AzSearch'
 import { shallowMount, mount, createLocalVue } from '@vue/test-utils'
 import Vuetify from 'vuetify'
 import Vue from 'vue'
+import Vuex from 'vuex'
 
 const localVue = createLocalVue()
 Vue.use(Vuetify)
+localVue.use(Vuex)
 
 describe('AzSearch', () => {
-    let wrapper
+    let store, wrapper
 
     beforeEach(() => {
+        store = new Vuex.Store({
+            state: {
+                loki: {
+                    asideClosed: true
+                }
+            }
+        })
+
         wrapper = shallowMount(AzSearch, {
             localVue,
+            store,
             propsData: {
                 filter: {},
                 simpleSearchPlaceholder: 'Informe o objeto'
@@ -22,7 +33,7 @@ describe('AzSearch', () => {
 
     it('Default Data is correct', () => {
         expect(wrapper.vm.hasAdvancedSearchItems).toBe(false)
-        expect(wrapper.vm.isClosedAdvancedSearch).toBe(true)
+        expect(wrapper.vm.isClosedAdvancedSearch).toBe(false)
         expect(wrapper.vm.isSimpleSearch).toBe(false)
         expect(wrapper.vm.searchTextSize).toBe(200)
     })
@@ -47,6 +58,7 @@ describe('AzSearch', () => {
         // Full mount to render vuetify components correctly
         let wrapperFull = mount(AzSearch, {
             localVue,
+            vuetify: new Vuetify(),
             propsData: {
                 filter: {},
                 simpleSearchPlaceholder: 'Informe o objeto'

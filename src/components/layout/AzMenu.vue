@@ -4,12 +4,10 @@
             <div v-for="menu in menuActions" :key="menu.name">
                 <v-list-item
                     active-class="active-menu"
-                    dark
                     v-if="!menu.children"
                     :to="menu.path"
                     @click="redirectTo(menu.path)"
-                    class="menu-item"
-                >
+                    class="menu-item">
                     <v-list-item-action>
                         <v-tooltip right color="dark-grey" v-if="asideClosed">
                             <template v-slot:activator="{ on }">
@@ -37,26 +35,25 @@
                                 <v-list-item-title>{{ menu.name }}</v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
+                    </template>
 
-                        <div class="az-submenu">
-                            <v-list-item
+                    <div class="az-submenu">
+                        <v-list-item
                                 v-if="!asideClosed"
                                 :to="submenu.path"
                                 v-for="submenu in menu.children"
                                 :key="submenu.name"
                                 @click="redirectTo(submenu.path)"
-                                :class="submenuStyle(submenu)"
-                            >
-                                <v-list-item-action>
-                                    <v-icon>{{ submenu.icon }}</v-icon>
-                                </v-list-item-action>
+                                :class="submenuStyle(submenu)">
+                            <v-list-item-action>
+                                <v-icon>{{ submenu.icon }}</v-icon>
+                            </v-list-item-action>
 
-                                <v-list-item-content>
-                                    <v-list-item-title>{{ submenu.name }}</v-list-item-title>
-                                </v-list-item-content>
-                            </v-list-item>
-                        </div>
-                    </template>
+                            <v-list-item-content>
+                                <v-list-item-title>{{ submenu.name }}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </div>
                 </v-list-group>
             </div>
 

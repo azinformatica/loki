@@ -37,22 +37,22 @@ import AzDialog from './components/actions/AzDialog'
 
 import azAuth from './directives/auth'
 
-import azClipText from './filters/clip-text'
-import azConcat from './filters/concat'
-import azCpfCnpj from './filters/cpf-cnpj'
-import azCurrency from './filters/currency'
-import azDate from './filters/date'
-import azElapsedTime from './filters/elapsed-time'
-import azEnum from './filters/enum'
-import azNumber from './filters/number'
-import azPhone from './filters/phone'
-import azTitleCase from './filters/title-case'
+import azClipText from './filters/az-clip-text'
+import azConcat from './filters/az-concat'
+import azCpfCnpj from './filters/az-cpf-cnpj'
+import azCurrency from './filters/az-currency'
+import azDate from './filters/az-date'
+import azElapsedTime from './filters/az-elapsed-time'
+import azEnum from './filters/az-enum'
+import azNumber from './filters/az-number'
+import azPhone from './filters/az-phone'
+import azTitleCase from './filters/az-title-case'
 
 import AzCurrency from './utils/AzCurrency'
 import AzSearchUrlBuilder from './utils/AzSearchUrlBuilder'
 import AzSoundex from './utils/AzSoundex'
-import buildMenu from './utils/az-menu'
-import hasPermissions from './utils/az-auth'
+import buildMenu from './utils/azBuildMenu'
+import hasPermissions from './utils/AzHasPermissions'
 
 Vue.use(accounting)
 Vue.use(money, {
@@ -127,8 +127,6 @@ const lokiPlugin = {
     }
 }
 
-export default lokiPlugin
-
 const filters = {
     azConcat,
     azCpfCnpj,
@@ -141,4 +139,13 @@ const filters = {
     azTitleCase
 }
 
-export { lokiPlugin, filters, AzCurrency, AzSearchUrlBuilder, AzSoundex, buildMenu, hasPermissions }
+const utils = {
+    AzCurrency,
+    AzSearchUrlBuilder,
+    AzSoundex,
+    buildMenu,
+    hasPermissions
+}
+
+export default lokiPlugin
+export { lokiPlugin, filters, utils }
