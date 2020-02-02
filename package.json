@@ -14,7 +14,7 @@
     "url": "https://github.com/azinformatica/loki.git"
   },
   "author": "Charles Viegas",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "accounting": "^0.4.1",
     "ajv": "^6.5.3",
