@@ -85,7 +85,7 @@ describe('AzPdfDocumentViewer', () => {
             expect(documentContainer.is('div')).toBeTruthy()
         })
 
-        xit('Should have a AzPdfDocumentViewerPage component with the same pages amount of the pdf', () => {
+        it.skip('Should have a AzPdfDocumentViewerPage component with the same pages amount of the pdf', () => {
             wrapper = mount(AzPdfDocumentViewer, {
                 localVue,
                 store,
@@ -94,7 +94,7 @@ describe('AzPdfDocumentViewer', () => {
 
             let pages = wrapper.findAll(AzPdfDocumentViewerPage)
             expect(pages.exists()).toBeTruthy()
-            expect(pages.length).toBe(3)
+            expect(pages).toHaveLength(3)
         })
     })
 
@@ -103,7 +103,7 @@ describe('AzPdfDocumentViewer', () => {
             expect(typeof AzPdfDocumentViewer.created).toBe('function')
         })
 
-        xit('Should load the document and update pages size in the created method', () => {
+        it.skip('Should load the document and update pages size in the created method', () => {
             expect(actions[actionTypes.DOCUMENT.FETCH_DOCUMENT].mock.calls[0][1]).toEqual(src)
             expect(actions[actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER]).toBeCalled()
         })
@@ -124,7 +124,7 @@ describe('AzPdfDocumentViewer', () => {
             expect(mountedMock).toBeCalled()
         })
 
-        xit('Should have a destroyed method', () => {
+        it.skip('Should have a destroyed method', () => {
             expect(typeof AzPdfDocumentViewer.destroyed).toBe('function')
         })
 
@@ -176,7 +176,7 @@ describe('AzPdfDocumentViewer', () => {
             })
             wrapper.find('button').trigger('click')
 
-            expect(actions[actionTypes.DOCUMENT.INCREASE_SCALE].mock.calls.length).toBe(1)
+            expect(actions[actionTypes.DOCUMENT.INCREASE_SCALE].mock.calls).toHaveLength(1)
         })
 
         it('Should execute the resolveEventZoomOut method', () => {
@@ -191,7 +191,7 @@ describe('AzPdfDocumentViewer', () => {
             })
             wrapper.find('button').trigger('click')
 
-            expect(actions[actionTypes.DOCUMENT.DECREASE_SCALE].mock.calls.length).toBe(1)
+            expect(actions[actionTypes.DOCUMENT.DECREASE_SCALE].mock.calls).toHaveLength(1)
         })
 
         it('Should execute the resolveEventResetZoom method', () => {
@@ -206,7 +206,7 @@ describe('AzPdfDocumentViewer', () => {
             })
             wrapper.find('button').trigger('click')
 
-            expect(actions[actionTypes.DOCUMENT.RESTORE_SCALE].mock.calls.length).toBe(1)
+            expect(actions[actionTypes.DOCUMENT.RESTORE_SCALE].mock.calls).toHaveLength(1)
         })
 
         it('Should execute the resolveEventResize method', () => {
@@ -222,7 +222,7 @@ describe('AzPdfDocumentViewer', () => {
             })
             wrapper.find('button').trigger('click')
 
-            expect(actions[actionTypes.DOCUMENT.RENDER_PAGE].mock.calls.length).toBe(1)
+            expect(actions[actionTypes.DOCUMENT.RENDER_PAGE].mock.calls).toHaveLength(1)
         })
     })
 

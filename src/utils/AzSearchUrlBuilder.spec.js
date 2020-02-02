@@ -59,7 +59,7 @@ describe('AzSearchUrlBuilder', () => {
         )
     })
 
-    it('Deve retornar uma exceção com descrevendo o atributo do filtro que o nome é igual ao atributo da paginação ou ordenação', () => {
+    it('Deve retornar uma exceção descrevendo o atributo do filtro que o nome é igual ao atributo utilizado', () => {
         filters.page = 1
         let error = () => {
             azSearchUrlBuilder.build(pathUrl, filters, pagination)

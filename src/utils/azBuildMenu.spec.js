@@ -139,7 +139,7 @@ describe('azBuildMenu', () => {
             expect(azBuildMenu(store, router)).toEqual(expectedMenu)
         })
 
-        it('should create one level menu for all routes with menu in meta object and current user has permission', () => {
+        it('should create one level menu for all routes with menu in meta object and user has permission', () => {
             const router = {
                 options: {
                     routes: [
@@ -225,7 +225,7 @@ describe('azBuildMenu', () => {
             expect(azBuildMenu(store, router)).toEqual(expectedMenu)
         })
 
-        it('should create one level menu just one route because current user has a permission for another productId', () => {
+        it('should create one level menu just one route because user has a permission for another productId', () => {
             const router = {
                 options: {
                     routes: [

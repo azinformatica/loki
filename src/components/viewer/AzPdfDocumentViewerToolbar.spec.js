@@ -57,7 +57,7 @@ describe('AzPdfDocumentViewerToolbar.vue', () => {
         expect(wrapper.find('[data-test="resetZoom"]')).toBeTruthy()
     })
 
-    xit('Should emit an event on click at resetZoom button', () => {
+    it.skip('Should emit an event on click at resetZoom button', () => {
         let resetZoomBtn = wrapper.find('[data-test="esetZoom"]')
         resetZoomBtn.trigger('click')
         expect(wrapper.emitted().resetZoom).toBeTruthy()

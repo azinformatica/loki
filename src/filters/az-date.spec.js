@@ -1,7 +1,6 @@
 import azDate from './az-date'
 
 describe('azDate', () => {
-
     it('Deve retornar valor "-"', () => {
         const resultado = azDate()
         expect(resultado).toEqual('-')

@@ -7,7 +7,8 @@
                     v-if="!menu.children"
                     :to="menu.path"
                     @click="redirectTo(menu.path)"
-                    class="menu-item">
+                    class="menu-item"
+                >
                     <v-list-item-action>
                         <v-tooltip right color="dark-grey" v-if="asideClosed">
                             <template v-slot:activator="{ on }">
@@ -37,14 +38,14 @@
                         </v-list-item>
                     </template>
 
-                    <div class="az-submenu">
+                    <div class="az-submenu" v-if="!asideClosed">
                         <v-list-item
-                                v-if="!asideClosed"
-                                :to="submenu.path"
-                                v-for="submenu in menu.children"
-                                :key="submenu.name"
-                                @click="redirectTo(submenu.path)"
-                                :class="submenuStyle(submenu)">
+                            v-for="submenu in menu.children"
+                            :to="submenu.path"
+                            :key="submenu.name"
+                            @click="redirectTo(submenu.path)"
+                            :class="submenuStyle(submenu)"
+                        >
                             <v-list-item-action>
                                 <v-icon>{{ submenu.icon }}</v-icon>
                             </v-list-item-action>

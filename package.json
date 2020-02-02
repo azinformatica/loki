@@ -1,6 +1,6 @@
 {
-  "name": "@azinformatica/loki",
-  "version": "0.6.27",
+  "name": "@jeferson.urbieta/loki",
+  "version": "2.0.0-BETA.1",
   "description": "Biblioteca de componentes visuais compartilhados construidos usando vuejs.",
   "main": "src/index.js",
   "private": false,
@@ -12,6 +12,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/azinformatica/loki.git"
+  },
+  "publishConfig": {
+    "registry": "http://registry.nexus.azi.srv.br/repository/npm-private/"
   },
   "author": "Charles Viegas",
   "license": "MIT",
@@ -48,6 +51,7 @@
     "cross-env": "^6.0.3",
     "css-loader": "^3.2.0",
     "eslint": "^5.16.0",
+    "eslint-plugin-jest": "^23.6.0",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-vue": "^5.0.0",
     "file-loader": "^4.2.0",
@@ -66,8 +70,10 @@
     "env": {
       "node": true
     },
+    "plugins": ["jest"],
     "extends": [
       "plugin:vue/essential",
+      "plugin:jest/recommended",
       "@vue/prettier"
     ],
     "rules": {
@@ -90,7 +96,12 @@
           "tabWidth": 4,
           "ignoreUrls": true
         }
-      ]
+      ],
+      "jest/no-disabled-tests": "warn",
+      "jest/no-focused-tests": "error",
+      "jest/no-identical-title": "error",
+      "jest/prefer-to-have-length": "warn",
+      "jest/valid-expect": "error"
     },
     "parserOptions": {
       "parser": "babel-eslint"

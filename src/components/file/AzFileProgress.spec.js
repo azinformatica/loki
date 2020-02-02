@@ -47,7 +47,7 @@ describe('AzFileProgress.spec.js', () => {
 
     it('Returns short name for file', () => {
         const file = { filename: 'file12345678901234567890123456789012345678901234567890.pdf' }
-        expect(wrapper.vm.getFileShortName(file).length).toBe(43)
+        expect(wrapper.vm.getFileShortName(file)).toHaveLength(43)
     })
 
     it('Checks if there is progress info for the specified file', () => {
