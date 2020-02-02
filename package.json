@@ -1,6 +1,6 @@
 {
   "name": "@jeferson.urbieta/loki",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Biblioteca de componentes visuais compartilhados construidos usando vuejs.",
   "main": "src/index.js",
   "private": false,
