@@ -28,7 +28,7 @@
             AzPdfDocumentViewerPage
         },
         props: {
-            value: {
+            src: {
                 type: String,
                 required: true,
                 default: ''
@@ -74,8 +74,8 @@
             totalPages() {
                 return this.$store.getters.totalPageNum
             },
-            updateValue() {
-                return this.value
+            updateSrc() {
+                return this.src
             }
         },
         async mounted() {
@@ -84,10 +84,10 @@
         },
         methods: {
             async updatePdfRendering() {
-                if (this.updateValue) {
+                if (this.updateSrc) {
                     this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, this.visiblePageNum)
                     this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES)
-                    await this.$store.dispatch(actionTypes.DOCUMENT.FETCH_DOCUMENT, this.updateValue)
+                    await this.$store.dispatch(actionTypes.DOCUMENT.FETCH_DOCUMENT, this.updateSrc)
                 }
             },
             getDocumentContainer() {
@@ -132,7 +132,7 @@
             }
         },
         watch: {
-            async updateValue() {
+            async updateSrc() {
                 await this.updatePdfRendering()
             }
         }
