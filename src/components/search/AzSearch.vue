@@ -2,7 +2,7 @@
     <div class="az-search">
         <div class="simple-search">
             <div class="input-search" :style="inputSearchStyle">
-                <v-tooltip top v-for="(val, key) in filter" :key="val.value" v-if="val.value">
+                <v-tooltip top v-for="(val, key) in filledFilters" :key="val.value">
                     <v-chip close @input="removeFilter(key)" slot="activator">
                         <strong>{{ val.label }}:</strong>&nbsp;
                         <span>{{ val.valueTruncated ? val.valueTruncated : val.value }}</span>
@@ -79,6 +79,20 @@ export default {
             searchTextSize: 200
         }
     },
+    computed: {
+        inputSearchStyle() {
+            let size = Object.keys(this.filter).length * 180 + this.searchTextSize
+            return 'width: ' + size + 'px'
+        },
+        filledFilters() {
+            return Object.keys(this.filter)
+                .filter(key => this.filter[key].value)
+                .reduce((obj, key) => {
+                    obj[key] = this.filter[key]
+                    return obj
+                }, {})
+        }
+    },
     mounted() {
         const advancedSearchItems = this.$children[1].$children.filter(child => {
             return child.$options._componentTag === 'az-search-item'
@@ -109,12 +123,6 @@ export default {
         toggle() {
             this.isClosedAdvancedSearch = !this.isClosedAdvancedSearch
             this.closeAsideMenu()
-        }
-    },
-    computed: {
-        inputSearchStyle() {
-            let size = Object.keys(this.filter).length * 180 + this.searchTextSize
-            return 'width: ' + size + 'px'
         }
     }
 }

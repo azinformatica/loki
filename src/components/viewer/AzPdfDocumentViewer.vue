@@ -6,7 +6,7 @@
             @zoomIn="resolveEventZoomIn"
             @resetZoom="resolveEventResetZoom"
         />
-        <div id="documentContainer" class="az-pdf-document-viewer__container">
+        <div id="documentContainer" class="az-pdf-document-viewer__container" :style="{ height: height }">
             <az-pdf-document-viewer-page
                 v-for="page in pages"
                 :key="page.pageIndex + 1"
@@ -36,6 +36,10 @@ export default {
         cssClass: {
             type: String,
             default: ''
+        },
+        height: {
+            type: String,
+            default: '100hv'
         }
     },
     data: () => ({
@@ -69,17 +73,23 @@ export default {
         },
         totalPages() {
             return this.$store.getters.totalPageNum
+        },
+        updateSrc() {
+            return this.src
         }
     },
-    async created() {
-        this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, this.visiblePageNum)
-        this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES)
-        await this.$store.dispatch(actionTypes.DOCUMENT.FETCH_DOCUMENT, this.$props.src)
-    },
-    mounted() {
-        this.getDocumentContainer().addEventListener('scroll', this.handleScroll)
+    async mounted() {
+        await this.getDocumentContainer().addEventListener('scroll', this.handleScroll)
+        await this.updatePdfRendering()
     },
     methods: {
+        async updatePdfRendering() {
+            if (this.updateSrc) {
+                this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, this.visiblePageNum)
+                this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES)
+                await this.$store.dispatch(actionTypes.DOCUMENT.FETCH_DOCUMENT, this.updateSrc)
+            }
+        },
         getDocumentContainer() {
             return document.getElementById('documentContainer')
         },
@@ -113,9 +123,17 @@ export default {
         async resolveEventResize(payload) {
             this.pagesCanvasContext[payload.pageNum] = payload
             if (payload.pageNum === this.visiblePageNum) {
-                this.$store.dispatch(actionTypes.DOCUMENT.RENDER_PAGE, this.pagesCanvasContext[this.visiblePageNum])
+                await this.$store.dispatch(
+                    actionTypes.DOCUMENT.RENDER_PAGE,
+                    this.pagesCanvasContext[this.visiblePageNum]
+                )
                 this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES, payload.pageNum)
             }
+        }
+    },
+    watch: {
+        async updateSrc() {
+            await this.updatePdfRendering()
         }
     }
 }

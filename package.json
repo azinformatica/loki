@@ -1,12 +1,12 @@
 {
   "name": "@azinformatica/loki",
-  "version": "0.4.15",
+  "version": "1.0.0",
   "description": "Biblioteca de componentes visuais compartilhados construidos usando vuejs.",
   "main": "src/index.js",
   "private": false,
   "scripts": {
-    "lint": "vue-cli-service lint .",
     "deploy": "npm version patch -m 'patch upgrade' && git push && git push --tags && npm publish",
+    "lint": "vue-cli-service lint",
     "test": "jest"
   },
   "repository": {
@@ -14,7 +14,7 @@
     "url": "https://github.com/azinformatica/loki.git"
   },
   "author": "Charles Viegas",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "accounting": "^0.4.1",
     "ajv": "^6.5.3",
@@ -36,7 +36,7 @@
     "@vue/cli-plugin-eslint": "^4.1.2",
     "@vue/cli-service": "^4.1.2",
     "@vue/eslint-config-prettier": "^5.0.0",
-    "@vue/test-utils": "^1.0.0-beta.25",
+    "@vue/test-utils": "^1.0.0-beta.29",
     "babel-core": "^6.26.0",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^23.0.0",
@@ -46,6 +46,7 @@
     "cross-env": "^5.0.5",
     "css-loader": "^0.28.7",
     "eslint": "^5.16.0",
+    "eslint-plugin-jest": "^23.6.0",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-vue": "^5.0.0",
     "file-loader": "^1.1.4",
@@ -61,16 +62,19 @@
   },
   "peerDependencies": {
     "axios": "0.19.x",
-    "moment-timezone": "0.5.x",
-    "pdfjs-dist": "2.2.x"
+    "moment-timezone": "0.5.x"
   },
   "eslintConfig": {
     "root": true,
     "env": {
       "node": true
     },
+    "plugins": [
+      "jest"
+    ],
     "extends": [
       "plugin:vue/essential",
+      "plugin:jest/recommended",
       "@vue/prettier"
     ],
     "rules": {
@@ -89,12 +93,16 @@
       "max-len": [
         "error",
         {
-          "code": 120
-        },
-        {
-          "tabWidth": 4
+          "code": 120,
+          "tabWidth": 4,
+          "ignoreUrls": true
         }
-      ]
+      ],
+      "jest/no-disabled-tests": "warn",
+      "jest/no-focused-tests": "error",
+      "jest/no-identical-title": "error",
+      "jest/prefer-to-have-length": "warn",
+      "jest/valid-expect": "error"
     },
     "parserOptions": {
       "parser": "babel-eslint"
