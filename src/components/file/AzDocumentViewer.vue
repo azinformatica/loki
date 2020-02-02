@@ -1,13 +1,13 @@
 <template>
     <div>
         <div class="az-dv-controls" v-if="isZoomEnabled" :style="{ width: containerStyle.width }">
-            <v-btn @click="zoomOut" depressed flat>
+            <v-btn @click="zoomOut" depressed text>
                 <v-icon>zoom_out</v-icon>
             </v-btn>
-            <v-btn @click="restoreZoom" depressed flat>
+            <v-btn @click="restoreZoom" depressed text>
                 <v-icon>aspect_ratio</v-icon>
             </v-btn>
-            <v-btn @click="zoomIn" depressed flat>
+            <v-btn @click="zoomIn" depressed text>
                 <v-icon>zoom_in</v-icon>
             </v-btn>
             <div class="pagination-label no-mobile">Página {{ currentPage }} de {{ totalPages }}</div>
@@ -145,33 +145,36 @@ export default {
 
 <style scoped lang="stylus">
 .az-dv-container
-    position: relative
+    position relative
 
 .az-dv-pages
-    text-align: center
-    height: 100%
+    text-align center
+    height 100%
 
 .az-dv-page
-    border: 1px solid #ccc
-    margin: 5% 5% 0 5%
+    border 1px solid #ccc
+    margin 5% 5% 0 5%
 
 .az-dv-controls
-    display: flex
-    background-color: white
-    justify-content: center
-    height: 50px
+    display flex
+    background-color #fff
+    justify-content center
+    height 50px
+
     .pagination-label
-        position: absolute
-        right: 15px
-        top: 15px
-        color: #777
+        position absolute
+        right 15px
+        top 15px
+        color #777
+
     .v-btn__content
         i
-            color: #777
+            color #777
 
-@media (max-width: 720px)
+@media (max-width 720px)
     .az-dv-controls
         height 40px !important
+
         button
             height 30px !important
 </style>

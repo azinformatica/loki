@@ -8,6 +8,7 @@
         v-validate="{ required: isRequired }"
         :name="name"
         :error-messages="errors.collect(`${name}`)"
+        :disabled="disabled"
     ></v-select>
 </template>
 
@@ -38,6 +39,10 @@ export default {
         },
         value: {
             required: true
+        },
+        disabled: {
+            type: Boolean,
+            default: false
         }
     },
     inject: ['$validator'],

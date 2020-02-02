@@ -16,7 +16,7 @@
             </div>
         </az-aside>
 
-        <v-toolbar app height="60" class="toolbar">
+        <v-app-bar app height="60" class="toolbar">
             <v-icon class="mobile_menu" @click="showAside()">dehaze</v-icon>
             <img class="mobile" :src="logoMobile" />
             <div class="top-search">
@@ -43,7 +43,7 @@
                 @remove="removeNotification"
             />
             <az-avatar color="white" />
-        </v-toolbar>
+        </v-app-bar>
         <v-content>
             <v-container fluid class="container">
                 <az-alert />
@@ -105,9 +105,9 @@ export default {
     .az-aside
         .logo
             height 60px
-            border-right 1px solid rgba(255, 255, 255, 0.1)
+            border-right 1px solid rgba(255, 255, 255, .1)
             background-color: var(--v-primary-lighten1) !important
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, .1);
 
     .container
         background-color #eee
@@ -124,7 +124,7 @@ export default {
             align-items center
             .input-search
                 display flex
-                transition 0.2s
+                transition .2s
                 .input-text
                     height 28px
                     padding 10px 15px
@@ -133,7 +133,7 @@ export default {
                     outline none
                     color: #fff
             ::placeholder
-                color: rgba(255, 255, 255, 0.3)
+                color: rgba(255, 255, 255, .3)
             :-ms-input-placeholder
                 color: #cccccc !important
             .icon-search
@@ -144,14 +144,14 @@ export default {
                 font-weight normal
                 background-color: var(--v-primary-darken1) !important
                 border-radius 0
-                color: rgba(255, 255, 255, 0.3)
+                color: rgba(255, 255, 255, .3)
 
             .btn-search
                 margin-right: 10px
                 padding: 5px 10px
 
                 i
-                    color: rgba(255, 255, 255, 0.8)
+                    color: rgba(255, 255, 255, .8)
                     font-size: 13px
                     font-weight: bold
 
@@ -167,7 +167,7 @@ body
 html
     overflow-y: auto
 
-@media (max-width: 720px)
+@media (max-width 720px)
     .az-template-gmail
         .mobile_menu
             margin-right: 10px

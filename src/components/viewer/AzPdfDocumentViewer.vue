@@ -126,7 +126,6 @@ export default {
     position relative
     width 100%
     background-color #f8f9fa
-
     &__container
         height 100vh
         overflow scroll

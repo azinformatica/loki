@@ -1,37 +1,39 @@
 <template>
     <v-toolbar-items class="az-avatar">
         <v-menu class="hidden-xs-only" bottom="bottom" left="left" offset-y="offset-y" attach="attach">
-            <v-btn class="az-avatar__username" slot="activator" flat="flat" :color="color">
-                <div class="infos">
-                    <div class="name">{{ userName }}</div>
-                    <div class="plan" v-if="plan">{{ plan }}</div>
-                    <div class="domain" v-if="userDomain">{{ userDomain }}</div>
-                </div>
-                <v-icon right="right">keyboard_arrow_down</v-icon>
-            </v-btn>
+            <template v-slot:activator="{ on }">
+                <v-btn class="az-avatar__username" v-on="on" text :color="color">
+                    <div class="infos">
+                        <div class="name">{{ userName }}</div>
+                        <div class="plan" v-if="plan">{{ plan }}</div>
+                        <div class="domain" v-if="userDomain">{{ userDomain }}</div>
+                    </div>
+                    <v-icon right="right">keyboard_arrow_down</v-icon>
+                </v-btn>
+            </template>
             <v-list>
-                <v-list-tile
+                <v-list-item
                     v-for="item in avatarActions"
                     :key="item.title"
                     @click="redirectTo(item.path)"
                     v-az-auth="item.authorities"
                 >
-                    <v-list-tile-action>
+                    <v-list-item-action>
                         <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
-                    </v-list-tile-action>
-                    <v-list-tile-content>
-                        <v-list-tile-title v-text="item.title"></v-list-tile-title>
-                    </v-list-tile-content>
-                </v-list-tile>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title v-text="item.title"></v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
 
-                <v-list-tile @click="logout()" class="az-avatar__logout">
-                    <v-list-tile-action>
+                <v-list-item @click="logout()" class="az-avatar__logout">
+                    <v-list-item-action>
                         <v-icon>exit_to_app</v-icon>
-                    </v-list-tile-action>
-                    <v-list-tile-content>
-                        <v-list-tile-title>Sair</v-list-tile-title>
-                    </v-list-tile-content>
-                </v-list-tile>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>Sair</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
             </v-list>
         </v-menu>
         <v-avatar v-if="userName" class="az-avatar__picture" size="32px">
@@ -77,51 +79,75 @@ export default {
 </script>
 <style lang="stylus">
 .az-avatar
-    position: unset
-    top: 0
-    right: 20px
-    display: block
-    font-size: 14px
+    position unset
+    top 0
+    right 20px
+    display block
+    font-size 14px
     align-items center
+
     &__logout
-        border-top: 1px solid #ccc
+        border-top 1px solid #ccc
+
     &__username
-        margin-right: 10px
+        margin-right 10px
         text-align end
+
         .infos
             display block
             margin-right 5px
+
             .plan
                 font-size 10px
-                opacity 0.7
+                opacity .7
+
             .domain
-                opacity 0.7
+                opacity .7
                 line-height 12px
                 font-size 12px
+
     &__picture
-        margin-right: 0
+        margin-right 0
+
     .v-btn
-        text-transform: none
+        text-transform none
+
         .v-icon--right
-            margin-left: 0
+            margin-left 0
+
         &__content
-            font-weight: normal
-            font-size: 14px
+            font-weight normal
+            font-size 14px
+
             i
-                color: #777777
+                color #777777
+
     .v-list
-        padding: 0
-        &__tile
-            color: #7f7f7f
-            height: 38px
+        padding 0
+
+        &-item:not(.v-list-item--active):not(.v-list-item--disabled)
+            color #7f7f7f !important
+
+        &-item
+            color #7f7f7f !important
+            height 38px
+            min-height 38px
+
             &__title
-                font-size: 14px
+                font-size 14px
+
             &__action
-                min-width: unset
-                padding-right: 10px
+                min-width unset
+                padding-right 10px
+                margin-right 0 !important
+
                 .material-icons
-                    font-size: 13px
-@media (max-width: 720px)
+                    font-size 13px
+
+            .v-list-item__content
+                padding 5px 0
+
+@media (max-width 720px)
     .az-avatar
-        display: none !important
+        display none !important
 </style>
