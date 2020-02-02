@@ -5,16 +5,13 @@
   "main": "src/index.js",
   "private": false,
   "scripts": {
-    "deploy": "npm publish",
+    "deploy": "npm version patch -m 'patch upgrade' && git push && git push --tags && npm publish",
     "lint": "vue-cli-service lint",
     "test": "jest"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/azinformatica/loki.git"
-  },
-  "publishConfig": {
-    "registry": "http://registry.nexus.azi.srv.br/repository/npm-private/"
   },
   "author": "Charles Viegas",
   "license": "MIT",
