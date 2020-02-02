@@ -1,11 +1,11 @@
 {
   "name": "@jeferson.urbieta/loki",
-  "version": "2.0.0",
+  "version": "2.0.0-BETA.2",
   "description": "Biblioteca de componentes visuais compartilhados construidos usando vuejs.",
   "main": "src/index.js",
   "private": false,
   "scripts": {
-    "deploy": "npm version patch -m 'patch upgrade' && git push && git push --tags && npm publish",
+    "deploy": "npm publish",
     "lint": "vue-cli-service lint",
     "test": "jest"
   },
@@ -70,9 +70,7 @@
     "env": {
       "node": true
     },
-    "plugins": [
-      "jest"
-    ],
+    "plugins": ["jest"],
     "extends": [
       "plugin:vue/essential",
       "plugin:jest/recommended",

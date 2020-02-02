@@ -139,13 +139,5 @@ const filters = {
     azTitleCase
 }
 
-const utils = {
-    AzCurrency,
-    AzSearchUrlBuilder,
-    AzSoundex,
-    buildMenu,
-    hasPermissions
-}
-
 export default lokiPlugin
-export { lokiPlugin, filters, utils }
+export { lokiPlugin, filters, AzCurrency, AzSearchUrlBuilder, AzSoundex, buildMenu, hasPermissions }

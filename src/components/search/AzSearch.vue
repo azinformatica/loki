@@ -2,7 +2,7 @@
     <div class="az-search">
         <div class="simple-search">
             <div class="input-search" :style="inputSearchStyle">
-                <v-tooltip top v-for="(val, key) in filter" :key="val.value" v-if="val.value">
+                <v-tooltip top v-for="(val, key) in filledFilters" :key="val.value">
                     <template v-slot:activator="{ on }">
                         <v-chip close @click:close="removeFilter(key)" v-on="on" small>
                             <strong>{{ val.label }}:</strong>&nbsp;<span>{{
@@ -93,7 +93,12 @@ export default {
             return 'width: ' + size + 'px'
         },
         filledFilters() {
-            this.filter.fo
+            return Object.keys(this.filter)
+                .filter(key => this.filter[key].value)
+                .reduce((obj, key) => {
+                    obj[key] = this.filter[key]
+                    return obj
+                }, {})
         }
     },
     mounted() {

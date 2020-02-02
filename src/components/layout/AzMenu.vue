@@ -25,17 +25,11 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-list-group v-else v-model="menu.expanded" no-action class="menu-item">
-                    <template v-slot:activator="{ on }">
-                        <v-list-item active-class="active-menu" v-on="on">
-                            <v-list-item-action>
-                                <v-icon>{{ menu.icon }}</v-icon>
-                            </v-list-item-action>
-
-                            <v-list-item-content>
-                                <v-list-item-title>{{ menu.name }}</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
+                <v-list-group v-else v-model="menu.expanded" no-action :prepend-icon="menu.icon" class="menu-item">
+                    <template v-slot:activator>
+                        <v-list-item-content>
+                            <v-list-item-title>{{ menu.name }}</v-list-item-title>
+                        </v-list-item-content>
                     </template>
 
                     <div class="az-submenu" v-if="!asideClosed">
@@ -298,6 +292,19 @@ export default {
 
                 .v-icon
                     font-size 18px
+
+        &-group
+            &__header
+                padding 0
+                &__prepend-icon
+                    min-width unset
+                    padding-right 15px
+                    padding-left 8px
+                    margin-right 0 !important
+                    background-color transparent !important
+
+                    .v-icon
+                        font-size 18px
 
 @media (min-width 720px)
     .mobile
