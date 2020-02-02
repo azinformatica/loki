@@ -1,4 +1,4 @@
-name: Main CI
+name: Check Lint and Test
 
 on: [push, pull_request]
 
