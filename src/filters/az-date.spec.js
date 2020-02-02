@@ -7,12 +7,12 @@ describe('azDate', () => {
     })
 
     it('Deve retornar data formatada com formato default', () => {
-        const resultado = azDate('2018-01-01')
+        const resultado = azDate('2018-01-01 12:00:00')
         expect(resultado).toEqual('01/01/2018')
     })
 
     it('Deve retornar data formatada com formatado passado por parâmetro', () => {
-        const resultado = azDate('2018-01-01', 'YYYY/MM/DD')
+        const resultado = azDate('2018-01-01 12:00:00', 'YYYY/MM/DD')
         expect(resultado).toEqual('2018/01/01')
     })
 })
