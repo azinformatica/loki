@@ -26,7 +26,7 @@ jobs:
       - run: npm run lint
 
   publish:
-    needs: test
+    needs: [test, lint]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
