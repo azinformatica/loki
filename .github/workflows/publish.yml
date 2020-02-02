@@ -15,7 +15,17 @@ jobs:
       - run: npm install
       - run: npm test
 
-  publish-npm:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: npm install
+      - run: npm run lint
+
+  publish:
     needs: test
     runs-on: ubuntu-latest
     steps:
