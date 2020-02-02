@@ -32,9 +32,8 @@
                     </v-list-tile>
                     <div class="az-submenu">
                         <v-list-tile
-                            v-if="!asideClosed"
-                            :to="submenu.path"
                             v-for="submenu in menu.children"
+                            :to="submenu.path"
                             :key="submenu.name"
                             @click="redirectTo(submenu.path)"
                             :class="submenuStyle(submenu)"
