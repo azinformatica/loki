@@ -1,6 +1,6 @@
 # Loki [![npm version](https://badge.fury.io/js/%40azinformatica%2Floki.svg)](https://badge.fury.io/js/%40azinformatica%2Floki)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 Vue UI Components built with Vuetify framework
 
@@ -61,6 +61,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/leandroduprat"><img src="https://avatars1.githubusercontent.com/u/39559287?v=4" width="100px;" alt=""/><br /><sub><b>Leandro Duprat</b></sub></a><br /><a href="https://github.com/@azinformatica/@azinformatica/loki/issues?q=author%3Aleandroduprat" title="Bug reports">🐛</a> <a href="https://github.com/@azinformatica/@azinformatica/loki/commits?author=leandroduprat" title="Code">💻</a></td>
+    <td align="center"><a href="https://www.linkedin.com/in/carlos-henrique-costa-silva/"><img src="https://avatars3.githubusercontent.com/u/25915025?v=4" width="100px;" alt=""/><br /><sub><b>Carlos Henrique</b></sub></a><br /><a href="https://github.com/@azinformatica/@azinformatica/loki/issues?q=author%3Acaarloshenrique" title="Bug reports">🐛</a> <a href="https://github.com/@azinformatica/@azinformatica/loki/commits?author=caarloshenrique" title="Code">💻</a></td>
   </tr>
 </table>
 

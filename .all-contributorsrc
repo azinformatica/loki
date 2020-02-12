@@ -120,6 +120,16 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "caarloshenrique",
+      "name": "Carlos Henrique",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/25915025?v=4",
+      "profile": "https://www.linkedin.com/in/carlos-henrique-costa-silva/",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
