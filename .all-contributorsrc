@@ -55,6 +55,22 @@
         "ideas",
         "test"
       ]
+    },
+    {
+      "login": "heliokanno",
+      "name": "Helio Makoto Kanno",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/4403948?v=4",
+      "profile": "https://github.com/heliokanno",
+      "contributions": [
+        "question",
+        "bug",
+        "code",
+        "design",
+        "ideas",
+        "infra",
+        "maintenance",
+        "review"
+      ]
     }
   ],
   "contributorsPerLine": 7
