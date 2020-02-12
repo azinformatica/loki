@@ -1,6 +1,6 @@
 # Loki [![npm version](https://badge.fury.io/js/%40azinformatica%2Floki.svg)](https://badge.fury.io/js/%40azinformatica%2Floki)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-11-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 Vue UI Components built with Vuetify framework
 
@@ -64,6 +64,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://www.linkedin.com/in/carlos-henrique-costa-silva/"><img src="https://avatars3.githubusercontent.com/u/25915025?v=4" width="100px;" alt=""/><br /><sub><b>Carlos Henrique</b></sub></a><br /><a href="https://github.com/@azinformatica/@azinformatica/loki/issues?q=author%3Acaarloshenrique" title="Bug reports">🐛</a> <a href="https://github.com/@azinformatica/@azinformatica/loki/commits?author=caarloshenrique" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/Gaboso"><img src="https://avatars1.githubusercontent.com/u/12553474?v=4" width="100px;" alt=""/><br /><sub><b>Gabriel de Carvalho</b></sub></a><br /><a href="https://github.com/@azinformatica/@azinformatica/loki/issues?q=author%3AGaboso" title="Bug reports">🐛</a> <a href="https://github.com/@azinformatica/@azinformatica/loki/commits?author=Gaboso" title="Code">💻</a></td>
     <td align="center"><a href="http://matheuslm10.github.io"><img src="https://avatars3.githubusercontent.com/u/17602947?v=4" width="100px;" alt=""/><br /><sub><b>Matheuslm10</b></sub></a><br /><a href="https://github.com/@azinformatica/@azinformatica/loki/issues?q=author%3AMatheuslm10" title="Bug reports">🐛</a> <a href="https://github.com/@azinformatica/@azinformatica/loki/commits?author=Matheuslm10" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/thszk"><img src="https://avatars1.githubusercontent.com/u/31439064?v=4" width="100px;" alt=""/><br /><sub><b>Thiago Suzuqui</b></sub></a><br /><a href="https://github.com/@azinformatica/@azinformatica/loki/issues?q=author%3Athszk" title="Bug reports">🐛</a> <a href="https://github.com/@azinformatica/@azinformatica/loki/commits?author=thszk" title="Code">💻</a> <a href="https://github.com/@azinformatica/@azinformatica/loki/commits?author=thszk" title="Tests">⚠️</a></td>
   </tr>
 </table>
 
