@@ -42,6 +42,19 @@
         "review",
         "test"
       ]
+    },
+    {
+      "login": "JefersonUrbieta",
+      "name": "Jeferson Urbieta",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/12651715?v=4",
+      "profile": "http://jefersonurbieta.com.br",
+      "contributions": [
+        "bug",
+        "code",
+        "doc",
+        "ideas",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7
