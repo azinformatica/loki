@@ -1,0 +1,167 @@
+{
+  "projectName": "@azinformatica/loki",
+  "projectOwner": "@azinformatica",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "none",
+  "contributors": [
+    {
+      "login": "thalita12",
+      "name": "Thalita Oliveira",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/12161520?v=4",
+      "profile": "https://github.com/thalita12",
+      "contributions": [
+        "question",
+        "bug",
+        "code",
+        "design",
+        "doc",
+        "ideas",
+        "maintenance",
+        "projectManagement",
+        "review",
+        "test"
+      ]
+    },
+    {
+      "login": "hengling",
+      "name": "Adolfo M. Hengling",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/4369590?v=4",
+      "profile": "https://github.com/hengling",
+      "contributions": [
+        "question",
+        "bug",
+        "code",
+        "design",
+        "ideas",
+        "review",
+        "test"
+      ]
+    },
+    {
+      "login": "JefersonUrbieta",
+      "name": "Jeferson Urbieta",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/12651715?v=4",
+      "profile": "http://jefersonurbieta.com.br",
+      "contributions": [
+        "bug",
+        "code",
+        "doc",
+        "ideas",
+        "test"
+      ]
+    },
+    {
+      "login": "heliokanno",
+      "name": "Helio Makoto Kanno",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/4403948?v=4",
+      "profile": "https://github.com/heliokanno",
+      "contributions": [
+        "question",
+        "bug",
+        "code",
+        "design",
+        "ideas",
+        "infra",
+        "maintenance",
+        "review"
+      ]
+    },
+    {
+      "login": "charlesviegas",
+      "name": "Charles Viegas",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1191771?v=4",
+      "profile": "https://github.com/charlesviegas",
+      "contributions": [
+        "question",
+        "code",
+        "design",
+        "ideas",
+        "maintenance",
+        "projectManagement",
+        "review",
+        "talk"
+      ]
+    },
+    {
+      "login": "morelli690",
+      "name": "cesar-morelli",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/17299358?v=4",
+      "profile": "https://github.com/morelli690",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "mrevandro",
+      "name": "Evandro Oliveira da Silva",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/10819826?v=4",
+      "profile": "https://github.com/mrevandro",
+      "contributions": [
+        "bug",
+        "code",
+        "design",
+        "ideas",
+        "test"
+      ]
+    },
+    {
+      "login": "leandroduprat",
+      "name": "Leandro Duprat",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/39559287?v=4",
+      "profile": "https://github.com/leandroduprat",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "caarloshenrique",
+      "name": "Carlos Henrique",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/25915025?v=4",
+      "profile": "https://www.linkedin.com/in/carlos-henrique-costa-silva/",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "Gaboso",
+      "name": "Gabriel de Carvalho",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/12553474?v=4",
+      "profile": "https://github.com/Gaboso",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "Matheuslm10",
+      "name": "Matheuslm10",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/17602947?v=4",
+      "profile": "http://matheuslm10.github.io",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "thszk",
+      "name": "Thiago Suzuqui",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/31439064?v=4",
+      "profile": "https://github.com/thszk",
+      "contributions": [
+        "bug",
+        "code",
+        "test"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}
