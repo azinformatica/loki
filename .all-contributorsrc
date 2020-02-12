@@ -110,6 +110,16 @@
         "ideas",
         "test"
       ]
+    },
+    {
+      "login": "leandroduprat",
+      "name": "Leandro Duprat",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/39559287?v=4",
+      "profile": "https://github.com/leandroduprat",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
