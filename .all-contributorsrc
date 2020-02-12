@@ -130,6 +130,16 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "Gaboso",
+      "name": "Gabriel de Carvalho",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/12553474?v=4",
+      "profile": "https://github.com/Gaboso",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
