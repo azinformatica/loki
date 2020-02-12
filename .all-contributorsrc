@@ -71,6 +71,22 @@
         "maintenance",
         "review"
       ]
+    },
+    {
+      "login": "charlesviegas",
+      "name": "Charles Viegas",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1191771?v=4",
+      "profile": "https://github.com/charlesviegas",
+      "contributions": [
+        "question",
+        "code",
+        "design",
+        "ideas",
+        "maintenance",
+        "projectManagement",
+        "review",
+        "talk"
+      ]
     }
   ],
   "contributorsPerLine": 7
