@@ -97,6 +97,19 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "mrevandro",
+      "name": "Evandro Oliveira da Silva",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/10819826?v=4",
+      "profile": "https://github.com/mrevandro",
+      "contributions": [
+        "bug",
+        "code",
+        "design",
+        "ideas",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7
