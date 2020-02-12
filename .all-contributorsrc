@@ -87,6 +87,16 @@
         "review",
         "talk"
       ]
+    },
+    {
+      "login": "morelli690",
+      "name": "cesar-morelli",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/17299358?v=4",
+      "profile": "https://github.com/morelli690",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
