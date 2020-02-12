@@ -27,6 +27,21 @@
         "review",
         "test"
       ]
+    },
+    {
+      "login": "hengling",
+      "name": "Adolfo M. Hengling",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/4369590?v=4",
+      "profile": "https://github.com/hengling",
+      "contributions": [
+        "question",
+        "bug",
+        "code",
+        "design",
+        "ideas",
+        "review",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7
