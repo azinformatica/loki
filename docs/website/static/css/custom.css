@@ -14,11 +14,13 @@
 }
 
 .headerTitleWithLogo {
-    color: red;
+    display: none;
 }
 
-.slidingNav {
-    margin-top: 4px;
+.fixedHeaderContainer header img {
+    margin-right: 0;
+    width: 70px;
+    height: auto;
 }
 
 .navigationSlider .slidingNav ul li a {
@@ -27,15 +29,15 @@
 }
 
 .navigationSlider .slidingNav ul li a:hover, .navigationSlider .slidingNav ul li a:active, .navigationSlider .slidingNav ul li a:focus {
-    color: green;
-    border-bottom: 4px solid green;
+    color: #12492f;
+    border-bottom: 4px solid #12492f;
     transition: .2s;
     background-color: transparent;
 }
 
 .navigationSlider .slidingNav ul li.siteNavItemActive a, .navigationSlider .slidingNav ul li.siteNavGroupActive a {
-    color: green;
-    border-bottom: 4px solid green;
+    color: #12492f;
+    border-bottom: 4px solid #12492f;
     transition: .2s;
     background-color: transparent;
 }
@@ -54,6 +56,26 @@
     padding: 100px 0;
 }
 
+.homeContainer .homeWrapper {
+    padding: 0;
+}
+
+.homeContainer .homeWrapper .projectLogo {
+    display: block;
+    padding: 0;
+    position: inherit;
+}
+
+.homeContainer .homeWrapper .projectLogo img {
+    height: auto;
+    max-height: inherit;
+    width: 200px;
+}
+
+.projectTitle {
+    margin: -60px 0 .3rem;
+}
+
 .productShowcaseSection {
     margin: 100px auto 60px;
 }
@@ -67,7 +89,11 @@
 }
 
 .nav-footer {
-    background-color: #12492F;
+    background-color: #12492f;
+}
+
+.nav-footer .sitemap .nav-home {
+    display: none;
 }
 
 @media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
