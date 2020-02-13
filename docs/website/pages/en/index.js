@@ -100,8 +100,8 @@ class Index extends React.Component {
                             'The illustrations you see on this page are from unDraw.',
                         image: `${baseUrl}img/undraw_code_review.svg`,
                         imageAlign: 'left',
-                        title: 'Why use it?',
-                    },
+                        title: 'Why was he created?'
+                    }
                 ]}
             </Block>
         );
@@ -114,8 +114,8 @@ class Index extends React.Component {
                             'This is another description of how this project is useful',
                         image: `${baseUrl}img/undraw_note_list.svg`,
                         imageAlign: 'right',
-                        title: 'Description',
-                    },
+                        title: 'Why use it?'
+                    }
                 ]}
             </Block>
         );
