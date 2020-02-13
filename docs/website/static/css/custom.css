@@ -10,7 +10,7 @@
 .fixedHeaderContainer {
     background: #fff;
     color: #555;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, .1);
+    border-bottom: 1px solid #e0e0e0;
 }
 
 .headerTitleWithLogo {
@@ -72,6 +72,10 @@
     width: 200px;
 }
 
+.homeSplashFade {
+    z-index: 1;
+}
+
 .projectTitle {
     margin: -60px 0 .3rem;
 }
@@ -90,10 +94,25 @@
 
 .nav-footer {
     background-color: #12492f;
+    padding: 3em 0;
 }
 
-.nav-footer .sitemap .nav-home {
-    display: none;
+.mainContainer {
+    padding: 0;
+}
+
+.mainContainer::before {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 10%;
+    background: #f9f9fc;
+    -webkit-transform: skewY(-3deg);
+    transform: skewY(-3deg);
+    z-index: -1;
+    top: 16%;
+    left: 0;
 }
 
 @media only screen and (min-device-width: 360px) and (max-device-width: 736px) {

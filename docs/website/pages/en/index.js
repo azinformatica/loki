@@ -95,9 +95,7 @@ class Index extends React.Component {
                 {[
                     {
                         content:
-                            'To make your landing page more attractive, use illustrations! Check out ' +
-                            '[**unDraw**](https://undraw.co/) which provides you with customizable illustrations which are free to use. ' +
-                            'The illustrations you see on this page are from unDraw.',
+                            'To make your landing page more attractive, use illustrations! Check out [**unDraw**](https://undraw.co/) which provides you with customizable illustrations which are free to use.  The illustrations you see on this page are from unDraw.',
                         image: `${baseUrl}img/undraw_code_review.svg`,
                         imageAlign: 'left',
                         title: 'Why was he created?'
@@ -152,7 +150,7 @@ class Index extends React.Component {
             return (
                 <div className="productShowcaseSection">
                     <h2>Who is Using This?</h2>
-                    <p>This project is used by all these companies</p>
+                    <p>This project is used by all these users</p>
                     <div className="logos">{showcase}</div>
                     {/*<div className="more-users">*/}
                     {/*  <a className="button" href={pageUrl('users.html')}>*/}
