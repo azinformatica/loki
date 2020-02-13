@@ -18,11 +18,19 @@ const users = [
     infoLink: 'https://www.facebook.com',
     pinned: true,
   },
+  {
+    caption: 'User2',
+    // You will need to prepend the image path with your baseUrl
+    // if it is not '/', like: '/test-site/img/image.jpg'.
+    image: '/img/undraw_open_source.svg',
+    infoLink: 'https://www.facebook.com',
+    pinned: true,
+  },
 ];
 
 const siteConfig = {
-  title: 'Test Site', // Title for your website.
-  tagline: 'A website for testing',
+  title: 'Loki', // Title for your website.
+  tagline: 'Vue UI Components built with Vuetify framework',
   url: 'https://your-docusaurus-test-site.com', // Your website URL
   baseUrl: '/', // Base URL for your project */
   // For github.io type URLs, you would set the url and baseUrl like:
@@ -30,8 +38,8 @@ const siteConfig = {
   //   baseUrl: '/test-site/',
 
   // Used for publishing and more
-  projectName: 'test-site',
-  organizationName: 'facebook',
+  projectName: '@azinformatica/loki',
+  organizationName: '@azinformatica',
   // For top-level user or org sites, the organization is still the same.
   // e.g., for the https://JoelMarcey.github.io site, it would be set like...
   //   organizationName: 'JoelMarcey'
@@ -49,13 +57,12 @@ const siteConfig = {
 
   /* path to images for header/footer */
   headerIcon: 'img/favicon.ico',
-  footerIcon: 'img/favicon.ico',
   favicon: 'img/favicon.ico',
 
   /* Colors for website */
   colors: {
-    primaryColor: '#9634ab',
-    secondaryColor: '#692477',
+    primaryColor: '#12492F',
+    secondaryColor: '#269465',
   },
 
   /* Custom fonts for website */
@@ -73,7 +80,7 @@ const siteConfig = {
   */
 
   // This copyright info is used in /core/Footer.js and blog RSS/Atom feeds.
-  copyright: `Copyright © ${new Date().getFullYear()} Your Name or Your Company Name`,
+  copyright: `${new Date().getFullYear()} - I'm Loki ;)`,
 
   highlight: {
     // Highlight.js theme to use for syntax highlighting in code blocks.

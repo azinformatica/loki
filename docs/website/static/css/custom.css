@@ -4,8 +4,71 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
- 
+
 /* your custom css */
+
+.fixedHeaderContainer {
+    background: #fff;
+    color: #555;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .1);
+}
+
+.headerTitleWithLogo {
+    color: red;
+}
+
+.slidingNav {
+    margin-top: 4px;
+}
+
+.navigationSlider .slidingNav ul li a {
+    color: #555;
+    border-bottom: 4px solid #fff;
+}
+
+.navigationSlider .slidingNav ul li a:hover, .navigationSlider .slidingNav ul li a:active, .navigationSlider .slidingNav ul li a:focus {
+    color: green;
+    border-bottom: 4px solid green;
+    transition: .2s;
+    background-color: transparent;
+}
+
+.navigationSlider .slidingNav ul li.siteNavItemActive a, .navigationSlider .slidingNav ul li.siteNavGroupActive a {
+    color: green;
+    border-bottom: 4px solid green;
+    transition: .2s;
+    background-color: transparent;
+}
+
+.lightBackground {
+    background-color: #f9f9fc;
+}
+
+.button {
+    border-radius: 6px;
+    box-shadow: 0 3px 6px rgba(39, 174, 96, .2);
+    text-transform: capitalize;
+}
+
+.homeContainer {
+    padding: 100px 0;
+}
+
+.productShowcaseSection {
+    margin: 100px auto 60px;
+}
+
+.productShowcaseSection h2 {
+    margin-bottom: 0;
+}
+
+.productShowcaseSection .logos {
+    padding: 20px 0 0;
+}
+
+.nav-footer {
+    background-color: #12492F;
+}
 
 @media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
 }
