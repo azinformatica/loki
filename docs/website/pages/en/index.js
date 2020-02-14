@@ -94,8 +94,7 @@ class Index extends React.Component {
             <Block id="try">
                 {[
                     {
-                        content:
-                            'To make your landing page more attractive, use illustrations! Check out [**unDraw**](https://undraw.co/) which provides you with customizable illustrations which are free to use.  The illustrations you see on this page are from unDraw.',
+                        content: 'Loki was created to be able to reuse the layouts of the company\'s systems. It would be a faster way to develop and maintain a standard of components and layout. In this case, the source code was made available on GitHub so that everyone could use it and contribute to improving its components.',
                         image: `${baseUrl}img/undraw_code_review.svg`,
                         imageAlign: 'left',
                         title: 'Why was he created?'
@@ -105,11 +104,10 @@ class Index extends React.Component {
         );
 
         const Description = () => (
-            <Block background="light">
+            <Block id="description" background="light">
                 {[
                     {
-                        content:
-                            'This is another description of how this project is useful',
+                        content: 'It has components with customization ready and leaving your templates modern and elegant. In addition to having several ready-made filters and wildcard components that every project will use. He already uses Vuetify, in addition to having two types of templates, which are "Default" and "Gmail".',
                         image: `${baseUrl}img/undraw_note_list.svg`,
                         imageAlign: 'right',
                         title: 'Why use it?'
@@ -119,11 +117,10 @@ class Index extends React.Component {
         );
 
         const LearnHow = () => (
-            <Block background="light">
+            <Block id="learn" background="light">
                 {[
                     {
-                        content:
-                            'Each new Docusaurus project has **randomly-generated** theme colors.',
+                        content: 'Loki is not a god / giant in Norse mythology. Or god of trickery and mischief. Not a being connected to magic, and who can take different forms. Much less Thor\'s brother. It is a component library using the Vuetify framework, which is maintained by AZ Informática. Fully open source.',
                         image: `${baseUrl}img/undraw_youtube_tutorial.svg`,
                         imageAlign: 'right',
                         title: 'What is Loki?'
