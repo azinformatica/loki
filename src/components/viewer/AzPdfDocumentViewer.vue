@@ -94,7 +94,7 @@ export default {
             return document.getElementById('documentContainer')
         },
         async handleScroll(e) {
-            this.visiblePageNum = Math.round(e.target.scrollTop / this.pageHeight) + 1
+            this.visiblePageNum = Math.floor(e.target.scrollTop / this.pageHeight) + 1
             this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, this.visiblePageNum)
             if (this.renderedPages.indexOf(this.visiblePageNum) === -1) {
                 this.okToRender = true
