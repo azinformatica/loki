@@ -1,17 +1,26 @@
-# Loki 
+# Loki 🎩
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![npm version](https://badge.fury.io/js/%40azinformatica%2Floki.svg)](https://badge.fury.io/js/%40azinformatica%2Floki) [![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
-Vue UI Components built with Vuetify framework
+Vue UI Components built with Vuetify framework.
 
-## Installing
+## Installing 🛠️
 * Download the project using "`git clone`" command (or download the zip file and extract the project if you don't have git installed on your machine)
 * Access the project folder (usually loki)
 * Install dependencies via npm (`npm install`)
 * That's all! 
 
-## How to use
+## Documentation 📖
+To check out the docs, visit [https://azinformatica.github.io/loki](https://azinformatica.github.io/loki/).
 
+## Issues 🐛
+Whenever you find an issue, please let us know immediately at [Issues](https://github.com/azinformatica/loki/issues).
+
+## Changlog 📋
+Detailed changes for each version are documented in the [release notes](https://github.com/azinformatica/loki/releases) and on the [blog](https://azinformatica.github.io/loki/blog/).
+
+## How to use ⚡
 Usage example of az-confirm component:
 ````
 <v-flex xs12 sm3 d-flex>
@@ -43,7 +52,6 @@ Events:
 You can use our UI Libray in your projects, improve it and propose modifications to us.
 
 ## Contributors ✨
-
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
@@ -74,6 +82,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
 
-## LICENSE
-
+## LICENSE 🤝
 [MIT](LICENSE)
+
+Copyright (c) 2018-present Loki
