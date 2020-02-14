@@ -1,4 +1,4 @@
-# Loki 🔮
+# Loki 🎩
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![npm version](https://badge.fury.io/js/%40azinformatica%2Floki.svg)](https://badge.fury.io/js/%40azinformatica%2Floki) [![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors-)
@@ -91,7 +91,5 @@ This project follows the [all-contributors](https://github.com/all-contributors/
 ## LICENSE 🤝
 
 [MIT](LICENSE)
-
----
 
 Copyright (c) 2018-present Loki
