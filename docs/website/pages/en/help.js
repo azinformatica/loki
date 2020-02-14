@@ -24,22 +24,22 @@ function Help(props) {
       content: `Learn more using the [documentation on this site.](${docUrl(
         'doc1.html',
       )})`,
-      title: 'Browse Docs',
+      title: 'Browse Docs'
     },
     {
-      content: 'Ask questions about the documentation and project',
-      title: 'Join the community',
+      content: 'Ask questions about the documentation and project.',
+      title: 'Join the community'
     },
     {
-      content: "Find out what's new with this project",
-      title: 'Stay up to date',
-    },
+      content: 'Find out what\'s new with this project.',
+      title: 'Stay up to date'
+    }
   ];
 
   return (
     <div className="docMainWrapper wrapper">
       <Container className="mainContainer documentContainer postContainer">
-        <div className="post">
+        <div className="post mb-3">
           <header className="postHeader">
             <h1>Need help?</h1>
           </header>

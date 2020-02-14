@@ -4,8 +4,150 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
- 
+
 /* your custom css */
+
+.fixedHeaderContainer {
+    background: #fff;
+    color: #555;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.headerTitleWithLogo {
+    display: none;
+}
+
+.fixedHeaderContainer header img {
+    margin-right: 0;
+    width: 70px;
+    height: auto;
+}
+
+.navigationSlider .slidingNav ul li a {
+    color: #555;
+    border-bottom: 4px solid #fff;
+}
+
+.navigationSlider .slidingNav ul li a:hover, .navigationSlider .slidingNav ul li a:active, .navigationSlider .slidingNav ul li a:focus {
+    color: #5A54ff;
+    border-bottom: 4px solid #5A54ff;
+    transition: .2s;
+    background-color: transparent;
+}
+
+.navigationSlider .slidingNav ul li.siteNavItemActive a, .navigationSlider .slidingNav ul li.siteNavGroupActive a {
+    color: #5A54ff;
+    border-bottom: 4px solid #5A54ff;
+    transition: .2s;
+    background-color: transparent;
+}
+
+.lightBackground {
+    background-color: #f9f9fc;
+}
+
+.button {
+    border-radius: 6px;
+    box-shadow: 0 3px 6px rgba(39, 174, 96, .2);
+    text-transform: capitalize;
+    color: #5a54ff;
+    border: 1px solid #5a54ff;
+}
+
+.button:hover {
+    background-color: #5a54ff;
+    color: #fff;
+}
+
+.homeContainer {
+    padding: 100px 0 150px;
+}
+
+.homeContainer .homeWrapper {
+    padding: 0;
+}
+
+.homeContainer .homeWrapper .projectLogo {
+    display: block;
+    padding: 0;
+    position: inherit;
+}
+
+.homeContainer .homeWrapper .projectLogo img {
+    height: auto;
+    max-height: inherit;
+    width: 200px;
+}
+
+.homeSplashFade {
+    z-index: 1;
+}
+
+.projectTitle {
+    margin: -60px 0 .3rem;
+}
+
+.projectTitle small {
+    color: #4b369d;
+}
+
+.productShowcaseSection {
+    margin: 100px auto 60px;
+}
+
+.productShowcaseSection h2 {
+    margin-bottom: 0;
+    color: #4b369d;
+}
+
+.productShowcaseSection .logos {
+    padding: 20px 0 0;
+}
+
+.nav-footer {
+    background-color: #12492f;
+    padding: 3em 0;
+}
+
+.mainContainer {
+    padding: 0;
+}
+
+.posts, .docsContainer, .lonePost .post {
+    margin-top: 40px;
+}
+
+.mb-3, .docs-prevnext {
+    margin-bottom: 3em;
+}
+
+.blog-recent {
+    margin-bottom: 6em;
+}
+
+.blogSocialSection {
+    display: none;
+}
+
+#try .blockContent, #try .blockContent h2 {
+    text-align: right;
+}
+
+#description .blockContent, #learn .blockContent {
+    text-align: left;
+}
+
+#try .blockContent h2, #learn .blockContent h2, #description .blockContent h2 {
+    color: #5A54ff;
+}
+
+.container .wrapper .imageAlignSide p {
+    margin-bottom: 20px;
+}
+
+.gridBlock .twoByGridBlock img, .gridBlock .threeByGridBlock img, .gridBlock .fourByGridBlock img {
+    max-width: 70%;
+}
 
 @media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
 }
