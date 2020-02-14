@@ -6,7 +6,7 @@ import { createLocalVue, shallowMount } from '@vue/test-utils'
 const localVue = createLocalVue()
 Vue.use(Vuetify)
 
-describe.skip('AzPdfDocumentViewerPage.spec.js', () => {
+describe('AzPdfDocumentViewerPage.spec.js', () => {
     let wrapper, pageNum, pageSize
 
     beforeEach(() => {
@@ -14,7 +14,8 @@ describe.skip('AzPdfDocumentViewerPage.spec.js', () => {
         pageSize = { height: 100, width: 100 }
         wrapper = shallowMount(AzPdfDocumentViewerPage, {
             localVue,
-            propsData: { pageNum, pageSize }
+            propsData: { pageNum, pageSize },
+            attachToDocument: true
         })
     })
 
@@ -73,6 +74,11 @@ describe.skip('AzPdfDocumentViewerPage.spec.js', () => {
 
     describe('Watchers', () => {
         it('Should emit an event with pageNum and canvasContext', () => {
+            wrapper = shallowMount(AzPdfDocumentViewerPage, {
+                localVue,
+                propsData: { pageNum, pageSize }
+            })
+
             let newPageSize = { height: 200, width: 200 }
 
             let canvas = document.createElement('canvas')
@@ -95,7 +101,7 @@ describe.skip('AzPdfDocumentViewerPage.spec.js', () => {
 
             wrapper.vm.$options.watch.pageSize.call(wrapper.vm, newPageSize)
             expect(wrapper.emitted('resize')).toBeTruthy()
-            expect(wrapper.emitted('resize')[0][0]).toEqual({ pageNum, canvasContext: newPageSize })
+            expect(wrapper.emitted('resize')[1][0]).toEqual({ pageNum, canvasContext: newPageSize })
         })
     })
 })
