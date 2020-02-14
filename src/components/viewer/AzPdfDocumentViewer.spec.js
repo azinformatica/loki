@@ -5,7 +5,7 @@ import AzPdfDocumentViewer from './AzPdfDocumentViewer'
 import AzPdfDocumentViewerToolbar from './AzPdfDocumentViewerToolbar'
 import AzPdfDocumentViewerPage from './AzPdfDocumentViewerPage'
 import { actionTypes } from '../../../src/store'
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils'
+import { createLocalVue, shallowMount } from '@vue/test-utils'
 
 const localVue = createLocalVue()
 Vue.use(Vuetify)
