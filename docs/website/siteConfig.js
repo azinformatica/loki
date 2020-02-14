@@ -12,26 +12,20 @@
 const users = [
   {
     caption: 'Az Informática',
-    // You will need to prepend the image path with your baseUrl
-    // if it is not '/', like: '/test-site/img/image.jpg'.
-    image: '/img/undraw_open_source.svg',
-    infoLink: 'https://www.facebook.com',
+    image: '/img/logo-az.png',
+    infoLink: 'https://www.azi.com.br',
     pinned: true
   },
   {
     caption: 'Oberon Coding',
-    // You will need to prepend the image path with your baseUrl
-    // if it is not '/', like: '/test-site/img/image.jpg'.
-    image: '/img/undraw_open_source.svg',
-    infoLink: 'https://www.facebook.com',
+    image: '/img/logo-oberon-coding.svg',
+    infoLink: 'https://www.google.com',
     pinned: true
   },
   {
     caption: 'Faciles',
-    // You will need to prepend the image path with your baseUrl
-    // if it is not '/', like: '/test-site/img/image.jpg'.
-    image: '/img/undraw_open_source.svg',
-    infoLink: 'https://www.facebook.com',
+    image: '/img/logo-faciles.svg',
+    infoLink: 'https://faciles.com.br',
     pinned: true
   }
 ];

@@ -94,8 +94,8 @@ class Index extends React.Component {
             <Block id="try">
                 {[
                     {
-                        content: 'Loki was created to be able to reuse the layouts of the company\'s systems. It would be a faster way to develop and maintain a standard of components and layout. In this case, the source code was made available on GitHub so that everyone could use it and contribute to improving its components.',
-                        image: `${baseUrl}img/undraw_code_review.svg`,
+                        content: 'Loki was created to be able to reuse the layouts of the company\'s systems. It would be a faster way to develop and maintain a standard of components and layout. In this case, the source code was made available on GitHub so that everyone could use it and contribute to improving it.',
+                        image: `${baseUrl}img/site-under-construction.png`,
                         imageAlign: 'left',
                         title: 'Why was he created?'
                     }
@@ -107,8 +107,8 @@ class Index extends React.Component {
             <Block id="description" background="light">
                 {[
                     {
-                        content: 'It has components with customization ready and leaving your templates modern and elegant. In addition to having several ready-made filters and wildcard components that every project will use. He already uses Vuetify, in addition to having two types of templates, which are "Default" and "Gmail".',
-                        image: `${baseUrl}img/undraw_note_list.svg`,
+                        content: 'It has components with customization ready and leaving your templates modern and elegant. In addition to having several ready-made filters and wildcard components that every project will use. He already uses Vuetify, in addition to having two types of templates: "Default" and "Gmail".',
+                        image: `${baseUrl}img/working-at-desk.png`,
                         imageAlign: 'right',
                         title: 'Why use it?'
                     }
@@ -120,8 +120,8 @@ class Index extends React.Component {
             <Block id="learn" background="light">
                 {[
                     {
-                        content: 'Loki is not a god / giant in Norse mythology. Or god of trickery and mischief. Not a being connected to magic, and who can take different forms. Much less Thor\'s brother. It is a component library using the Vuetify framework, which is maintained by AZ Informática. Fully open source.',
-                        image: `${baseUrl}img/undraw_youtube_tutorial.svg`,
+                        content: 'Loki is not a god / giant in Norse mythology. Or god of trickery and mischief. Not a being connected to magic, and who can take different forms. Much less Thor\'s brother. It is a component library using the Vuetify framework, which is maintained by AZ Informática.',
+                        image: `${baseUrl}img/creative-design.png`,
                         imageAlign: 'right',
                         title: 'What is Loki?'
                     }
@@ -137,7 +137,7 @@ class Index extends React.Component {
             const showcase = siteConfig.users
                 .filter(user => user.pinned)
                 .map(user => (
-                    <a href={user.infoLink} key={user.infoLink}>
+                    <a href={user.infoLink} key={user.infoLink} target="_blank">
                         <img src={user.image} alt={user.caption} title={user.caption} />
                     </a>
                 ));
