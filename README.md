@@ -11,21 +11,16 @@ Vue UI Components built with Vuetify framework.
 * Install dependencies via npm (`npm install`)
 * That's all! 
 
-
 ## Documentation 📖
-
 To check out the docs, visit [https://azinformatica.github.io/loki](https://azinformatica.github.io/loki/).
 
 ## Issues 🐛
-
 Whenever you find an issue, please let us know immediately at [Issues](https://github.com/azinformatica/loki/issues).
 
 ## Changlog 📋
-
 Detailed changes for each version are documented in the [release notes](https://github.com/azinformatica/loki/releases) and on the [blog](https://azinformatica.github.io/loki/blog/).
 
 ## How to use ⚡
-
 Usage example of az-confirm component:
 ````
 <v-flex xs12 sm3 d-flex>
@@ -57,7 +52,6 @@ Events:
 You can use our UI Libray in your projects, improve it and propose modifications to us.
 
 ## Contributors ✨
-
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
@@ -89,7 +83,6 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
 
 ## LICENSE 🤝
-
 [MIT](LICENSE)
 
 Copyright (c) 2018-present Loki
