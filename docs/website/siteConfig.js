@@ -12,19 +12,19 @@
 const users = [
   {
     caption: 'Az Informática',
-    image: '/img/logo-az.png',
+    image: '/loki/img/logo-az.png',
     infoLink: 'https://www.azi.com.br',
     pinned: true
   },
   {
     caption: 'Oberon Coding',
-    image: '/img/logo-oberon-coding.svg',
+    image: '/loki/img/logo-oberon-coding.svg',
     infoLink: 'https://www.google.com',
     pinned: true
   },
   {
     caption: 'Faciles',
-    image: '/img/logo-faciles.svg',
+    image: '/loki/img/logo-faciles.svg',
     infoLink: 'https://faciles.com.br',
     pinned: true
   }
@@ -43,7 +43,7 @@ const siteConfig = {
     {doc: 'doc1', label: 'Docs'},
     {page: 'help', label: 'Help'},
     {blog: true, label: 'Blog'},
-    { search: true, label: 'Search' }
+    {search: true, label: 'Search'}
   ],
 
   algolia: {
@@ -61,7 +61,7 @@ const siteConfig = {
   /* Colors for website */
   colors: {
     primaryColor: '#12492f',
-    secondaryColor: '#208556',
+    secondaryColor: '#27b085'
   },
 
   /* Custom fonts for website */
@@ -83,7 +83,7 @@ const siteConfig = {
 
   highlight: {
     // Highlight.js theme to use for syntax highlighting in code blocks.
-    theme: 'default',
+    theme: 'default'
   },
 
   // Add custom scripts here that would be placed in <script> tags.
