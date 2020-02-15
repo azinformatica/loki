@@ -5,11 +5,15 @@ authorURL: https://github.com/thalita12
 authorImageURL: "http://1.gravatar.com/avatar/c75de29c500eefb0743196d660ded435"
 ---
 
-## After a long time Loki updated the version of Vuetify!
+### After a long time Loki updated the version of Vuetify!
 
-That's right you read, Loki is updated with version 2.2.x of Vuetify! Therefore, a version 2.0.1 was released yesterday (01/02), with library version updates, features and bug / issue fixes.
+That's right you read, Loki is updated with version 2.2.x of Vuetify! Therefore, a version 2.0.1 was released yesterday (01/02), with library version updates, features and bug/issue fixes.
 
 <!--truncate-->
+
+## Important questions
+
+These are some important questions and answers.
 
 ### Does this mean that I need to migrate my project version to Vuetify 2.2.x to update Loki?
 
@@ -29,7 +33,7 @@ The "Patrimônio Intangíveis" project, on the other hand, uses Loki's version 2
 
 ### With these updates do I need to add the "pdfjs-dist" dependency to my project?
 
-Yes, you do. No way has yet been found to correct this problem. So just add the dependency that will be all right;)
+Yes, you do. No way has yet been found to correct this problem. So just add the dependency that will be all right ;)
 
 ### Does Loki have a pipeline?
 
@@ -37,21 +41,21 @@ Yes, it has a pipeline on GitHub that performs lint and unit tests. So, no commi
 
 ### Loki has two branches: Stable and Master?
 
-Yes, in these two branches are the versions of Vuetify. The "stable" branch contains version 1.0.x of Loki, and there is version 1.5.x of Vuetify. The "master" branch, on the other hand, contains version 2.0.x of Loki, and there is version 2.2.x of Vuetify.
+Yes, in these two branches are the versions of Vuetify. The **"stable"** branch contains version 1.0.x of Loki, and there is version 1.5.x of Vuetify. The **"master"** branch, on the other hand, contains version 2.0.x of Loki, and there is version 2.2.x of Vuetify.
 
 Please be careful when requesting a pull request and changing branches!
 
 ### Care for loki release
 
-Any changes from 0.4.15, should be released exclusively in version 1.0.x and branch "stable".
+Any changes from 0.4.15, should be released exclusively in version 1.0.x and branch **"stable"**.
 
-Changes to the new version of Vuetify, is in the tag from 2.0.x and in the "master" branch.
+Changes to the new version of Vuetify, is in the tag from 2.0.x and in the **"master"** branch.
 
 When there is a pull request, already request the version change in package.json to the developer.
 
-It is no longer necessary to do a local Loki release, just create a new tag, which GitHub will automatically publish to NPM. The settings are in the root folder ".github / workflows".
+It is no longer necessary to do a local Loki release, just create a new tag, which GitHub will automatically publish to NPM. The settings are in the root folder **".github/workflows"**.
 
-There are still tests failing that have a skip test. We will correct all the tests, I promise;)
+There are still tests failing that have a skip test. *We will correct all the tests, I promise ;)*
 
 You can commit without unit testing, but as we have great developers in the community, we know it won't happen that often. (It will be?)
 
@@ -63,10 +67,10 @@ It does not have documentation yet, but we are solving this and will inform you 
 
 ### What's new?!
 
-- New PDF viewing feature, with the component "az-pdf-document-viewer";
-- Correction of the component of "az-money";
-- Issue correction: "Potential security vulnerability in webpack-dev-server # 89";
+- New PDF viewing feature, with the component **"az-pdf-document-viewer"**;
+- Correction of the component of **"az-money"**;
+- Issue correction: **"Potential security vulnerability in webpack-dev-server # 89"**;
 - Updating the organization of unit tests, which are now close to the components to be tested;
 - Eslint configuration;
-- Update / Correction of unit tests;
-- Addition of the "MIT" license 0 //
+- Update/Correction of unit tests;
+- Addition of the **"MIT"** license 🙌

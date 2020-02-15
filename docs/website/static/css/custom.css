@@ -83,10 +83,6 @@
     z-index: 1;
 }
 
-.projectTitle {
-    margin: -60px 0 .3rem;
-}
-
 .projectTitle small {
     color: #777;
 }

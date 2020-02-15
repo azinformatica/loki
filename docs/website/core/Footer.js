@@ -58,10 +58,10 @@ class Footer extends React.Component {
             <div>
               <h5>More</h5>
               <a href={`${this.props.config.baseUrl}blog`}>Blog</a>
-              <a href="https://github.com/">GitHub</a>
+              <a href="https://github.com/azinformatica/loki" target="_blank">GitHub</a>
               <a
                   className="github-button"
-                  href={this.props.config.repoUrl}
+                  href="https://github.com/azinformatica/loki"
                   data-icon="octicon-star"
                   data-count-href="/facebook/docusaurus/stargazers"
                   data-show-count="true"
@@ -69,28 +69,6 @@ class Footer extends React.Component {
                   aria-label="Star this project on GitHub">
                 Star
               </a>
-              {this.props.config.twitterUsername && (
-                  <div className="social">
-                    <a
-                        href={`https://twitter.com/${this.props.config.twitterUsername}`}
-                        className="twitter-follow-button">
-                      Follow @{this.props.config.twitterUsername}
-                    </a>
-                  </div>
-              )}
-              {this.props.config.facebookAppId && (
-                  <div className="social">
-                    <div
-                        className="fb-like"
-                        data-href={this.props.config.url}
-                        data-colorscheme="dark"
-                        data-layout="standard"
-                        data-share="true"
-                        data-width="225"
-                        data-show-faces="false"
-                    />
-                  </div>
-              )}
             </div>
           </section>
 
