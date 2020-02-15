@@ -21,8 +21,7 @@ jobs:
       - name: Deploy
         cache:
           yarn: true
-          script:
-            - git config --global user.name "${GH_NAME}"
-            - git config --global user.email "${GH_EMAIL}"
-            - echo "machine github.com login ${GH_NAME} password ${GH_TOKEN}" > ~/.netrc
-            - cd docs/website && yarn install && GIT_USER="${GH_NAME}" yarn run publish-gh-pages
+      -   run: git config --global user.name "${GH_NAME}"
+      -   run: git config --global user.email "${GH_EMAIL}"
+      -   run: echo "machine github.com login ${GH_NAME} password ${GH_TOKEN}" > ~/.netrc
+      -   run: cd docs/website && yarn install && GIT_USER="${GH_NAME}" yarn run publish-gh-pages
