@@ -1,0 +1,19 @@
+name: Deploy GH pages
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Build
+        run: cd docs/website && npm install && npm run build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v2.5.0
+      - run: cd docs/website && GIT_USER=thalita12 \ CURRENT_BRANCH=master \ npm run publish-gh-pages
