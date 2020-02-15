@@ -4,9 +4,7 @@ on: [push, pull_request]
 
 jobs:
   deploy-website:
-    docker:
-      - image: circleci/node:8.11.1
-
+    runs-on: ubuntu-latest
     steps:
       - checkout
       - run:
