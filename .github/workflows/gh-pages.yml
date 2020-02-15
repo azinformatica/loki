@@ -1,25 +1,28 @@
-name: Deploy GH pages
-
-on:
-  push:
+aliases:
+  - &filter-only-master
     branches:
-      - master
+      only:
+        - master
 
-  pull_request:
-    branches:
-      - master
-
+version: 2
 jobs:
-  build-deploy:
-    runs-on: ubuntu-latest
+  deploy-website:
+    docker:
+      - image: circleci/node:8.11.1
+
     steps:
-      - uses: actions/checkout@master
+      - checkout
+      - run:
+          name: Deploying to GitHub Pages
+          command: |
+            git config --global user.email "${GH_EMAIL}"
+            git config --global user.name "${GH_NAME}"
+            echo "machine github.com login ${GH_NAME} password ${GH_TOKEN}" > ~/.netrc
+            cd docs/website && npm install && GIT_USER=${GH_NAME} npm run publish-gh-pages
 
-      - name: Build
-      - run: cd docs/website && npm install && npm run build
-
-      - name: Deploy
-      - run: git config --global user.name "${GH_NAME}"
-      - run: git config --global user.email "${GH_EMAIL}"
-      - run: echo "machine github.com login ${GH_NAME} password ${GH_TOKEN}" > ~/.netrc
-      - run: cd docs/website && npm install && GIT_USER="${GH_NAME}" npm run publish-gh-pages
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - deploy-website:
+         filters: *filter-only-master
