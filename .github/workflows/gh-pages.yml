@@ -1,15 +1,21 @@
 name: Deploying to GitHub Pages
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
 
 jobs:
-  deploy-website:
+  build-deploy:
     runs-on: ubuntu-latest
     steps:
-      - checkout
-      - run:
-          command: |
-            git config --global user.email "${GH_EMAIL}"
-            git config --global user.name "${GH_NAME}"
-            echo "machine github.com login ${GH_NAME} password ${GH_TOKEN}" > ~/.netrc
-            cd docs/website && npm install && GIT_USER=${GH_NAME} npm run publish-gh-pages
+      - uses: actions/checkout@master
+
+      - name: Build
+        run: cd docs/website && npm install && npm run build
+
+      - name: Deploy
+      - run: git config --global user.email "${GH_EMAIL}"
+      - run: git config --global user.name "${GH_NAME}"
+      - run: echo "machine github.com login ${GH_NAME} password ${GH_TOKEN}" > ~/.netrc
+      - run: cd docs/website && npm install && GIT_USER=${GH_NAME} npm run publish-gh-pages
