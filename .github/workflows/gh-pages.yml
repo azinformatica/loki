@@ -5,6 +5,10 @@ on:
     branches:
       - master
 
+  pull_request:
+    branches:
+      - master
+
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
@@ -15,5 +19,10 @@ jobs:
         run: cd docs/website && npm install && npm run build
 
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@v2.5.0
-      - run: cd docs/website && GIT_USER=thalita12 \ CURRENT_BRANCH=master \ npm run publish-gh-pages
+        cache:
+          yarn: true
+          script:
+            - git config --global user.name "${GH_NAME}"
+            - git config --global user.email "${GH_EMAIL}"
+            - echo "machine github.com login ${GH_NAME} password ${GH_TOKEN}" > ~/.netrc
+            - cd docs/website && yarn install && GIT_USER="${GH_NAME}" yarn run publish-gh-pages
