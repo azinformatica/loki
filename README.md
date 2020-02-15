@@ -1,5 +1,5 @@
 <p align="left">
-  <a href="https://azinformatica.github.io/loki" target="_blank">
+  <a href="https://azinformatica.github.io/loki">
     <img alt="Loki Logo" width="100" src="https://azinformatica.github.io/loki/img/logo-loki.png">
   </a>
 </p>
