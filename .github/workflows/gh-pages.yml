@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@master
 
       - name: Build
-        run: cd docs/website && npm install && npm run build
+      - run: cd docs/website && npm install && npm run build
 
       - name: Deploy
       - uses: actions/checkout@v2
