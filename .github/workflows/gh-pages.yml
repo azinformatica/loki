@@ -14,4 +14,4 @@ jobs:
       - run: git config --global user.email "${GH_EMAIL}"
       - run: git config --global user.name "${GH_NAME}"
       - run: echo "machine github.com login ${GH_NAME} password ${GH_TOKEN}" > ~/.netrc
-      - run: cd docs/website && GIT_USER=${GH_NAME} && CURRENT_BRANCH=master && npm run publish-gh-pages
+      - run: cd docs/website && set GIT_USER=${GH_NAME} && set CURRENT_BRANCH=master && npm run publish-gh-pages
