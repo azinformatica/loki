@@ -10,11 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-
-      - name: Build
-        run: cd docs/website && npm install && npm run build
-
-      - name: Deploy
+      - run: cd docs/website && npm install && npm run build
       - run: git config --global user.email "${GH_EMAIL}"
       - run: git config --global user.name "${GH_NAME}"
       - run: echo "machine github.com login ${GH_NAME} password ${GH_TOKEN}" > ~/.netrc
