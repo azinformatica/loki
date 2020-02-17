@@ -5,7 +5,7 @@ import AzPdfDocumentViewer from './AzPdfDocumentViewer'
 import AzPdfDocumentViewerToolbar from './AzPdfDocumentViewerToolbar'
 import AzPdfDocumentViewerPage from './AzPdfDocumentViewerPage'
 import { actionTypes } from '../../../src/store'
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils'
+import { createLocalVue, shallowMount } from '@vue/test-utils'
 
 const localVue = createLocalVue()
 Vue.use(Vuetify)
@@ -85,13 +85,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             expect(documentContainer.is('div')).toBeTruthy()
         })
 
-        it.skip('Should have a AzPdfDocumentViewerPage component with the same pages amount of the pdf', () => {
-            wrapper = mount(AzPdfDocumentViewer, {
-                localVue,
-                store,
-                propsData: { src }
-            })
-
+        it('Should have a AzPdfDocumentViewerPage component with the same pages amount of the pdf', () => {
             let pages = wrapper.findAll(AzPdfDocumentViewerPage)
             expect(pages.exists()).toBeTruthy()
             expect(pages).toHaveLength(3)
@@ -99,9 +93,12 @@ describe('AzPdfDocumentViewer.spec.js', () => {
     })
 
     describe('Vue Lifecycle', () => {
-        it.skip('Should load the document and update pages size in the created method', () => {
+        it('Should load the document and update pages size in the mounted method', async () => {
+            await wrapper.vm.$nextTick()
+
+            expect(actions[actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM].mock.calls[0][1]).toEqual(1)
             expect(actions[actionTypes.DOCUMENT.FETCH_DOCUMENT].mock.calls[0][1]).toEqual(src)
-            expect(actions[actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER]).toBeCalled()
+            expect(actions[actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES]).toHaveBeenCalled()
         })
 
         it('Should have a mounted method', () => {
