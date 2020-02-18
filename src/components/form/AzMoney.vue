@@ -50,7 +50,7 @@ export default {
         },
         showClearButton: {
             type: Boolean,
-            default: true
+            default: false
         },
         maxLength: {
             type: Number,
