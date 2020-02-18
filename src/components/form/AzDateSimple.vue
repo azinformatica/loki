@@ -144,6 +144,7 @@ export default {
     watch: {
         value(val) {
             this.updateDateTimeByModel(val)
+            this.updateValue(val)
         }
     },
     methods: {
@@ -371,6 +372,22 @@ export default {
                     input.setSelectionRange(0, 5)
                 }
             })
+        },
+        updateValue(val) {
+            if (val) {
+                const dateTime = this.getDateTimeWithSystemTimezone(val)
+                const splitDateTime = dateTime.split('T')
+
+                this.date = splitDateTime[0]
+                this.dateFormatted = this.formatDate(this.date)
+                this.time = splitDateTime[1].substring(0, 5)
+                this.timeFormatted = this.time.replace(':', '')
+
+                const dateTimeWithTimezone = this.buildDateTimeWithTimezone(this.date, this.time)
+                const dateTimeTimezoneZero = this.getDateTimeZeroTimezone(dateTimeWithTimezone)
+
+                this.$emit('input', dateTimeTimezoneZero)
+            }
         }
     }
 }
