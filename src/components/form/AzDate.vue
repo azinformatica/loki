@@ -158,10 +158,10 @@ export default {
         getFormattedDate(day, month, year) {
             const getFnDateFormat = {
                 'DD/MM/YYYY': function() {
-                    return `${day}${month}${year}`
+                    return `${day}/${month}/${year}`
                 },
                 'MM/DD/YYYY': function() {
-                    return `${month}${day}${year}`
+                    return `${month}/${day}/${year}`
                 }
             }
 
@@ -189,19 +189,20 @@ export default {
             this.date = `${dateObj.year}-${dateObj.month}-${dateObj.day}`
         },
         getDayMonthYearFromDateString(date) {
+            const dateFormated = date.replace(new RegExp('/', 'g'), '');
             const getFnDateFormat = {
                 'DD/MM/YYYY': function() {
                     return {
-                        day: date.substring(0, 2),
-                        month: date.substring(2, 4),
-                        year: date.substring(4, 8)
+                        day: dateFormated.substring(0, 2),
+                        month: dateFormated.substring(2, 4),
+                        year: dateFormated.substring(4, 8)
                     }
                 },
                 'MM/DD/YYYY': function() {
                     return {
-                        day: date.substring(2, 4),
-                        month: date.substring(0, 2),
-                        year: date.substring(4, 8)
+                        day: dateFormated.substring(2, 4),
+                        month: dateFormated.substring(0, 2),
+                        year: dateFormated.substring(4, 8)
                     }
                 }
             }
