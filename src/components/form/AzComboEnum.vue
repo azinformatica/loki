@@ -9,7 +9,7 @@
         :name="name"
         :error-messages="errors.collect(`${name}`)"
         :disabled="disabled"
-    ></v-select>
+    />
 </template>
 
 <script>
@@ -43,6 +43,10 @@ export default {
         disabled: {
             type: Boolean,
             default: false
+        },
+        insertNullItem:{
+            type: Boolean,
+            default: true
         }
     },
     inject: ['$validator'],
@@ -67,8 +71,11 @@ export default {
                 }
                 novoArray = _.sortBy(novoArray, 'text')
             }
+            if(this.insertNullItem){
+                return _.union([{ text: 'Selecione', value: null }], novoArray)
+            }
 
-            return _.union([{ text: 'Selecione', value: null }], novoArray)
+            return  novoArray
         }
     }
 }
