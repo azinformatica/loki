@@ -4,7 +4,7 @@
         <title>Loki Blog</title>
         <link>https://azinformatica.github.io/loki/blog</link>
         <description>The best place to stay up-to-date with the latest Loki news and events.</description>
-        <lastBuildDate>Mon, 03 Feb 2020 06:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 18 Feb 2020 06:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <image>
@@ -13,6 +13,34 @@
             <link>https://azinformatica.github.io/loki/blog</link>
         </image>
         <copyright>2020 - I'm Loki ;)</copyright>
+        <item>
+            <title><![CDATA[Version 2.0.2 Release]]></title>
+            <link>https://azinformatica.github.io/loki/blog/2020/02/18/version-2.0.2-release.html</link>
+            <guid>https://azinformatica.github.io/loki/blog/2020/02/18/version-2.0.2-release.html</guid>
+            <pubDate>Tue, 18 Feb 2020 06:00:00 GMT</pubDate>
+            <description><![CDATA[<ul> <li>AzComboEnum change to insert or remove the select;</li> <li>Correction in az-date that had a problem with manual filling and change in az-money so that by default it does not have the clear field button.</li> </ul> ]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Version 1.0.3 Release]]></title>
+            <link>https://azinformatica.github.io/loki/blog/2020/02/18/version-1.0.3-release.html</link>
+            <guid>https://azinformatica.github.io/loki/blog/2020/02/18/version-1.0.3-release.html</guid>
+            <pubDate>Tue, 18 Feb 2020 06:00:00 GMT</pubDate>
+            <description><![CDATA[<ul> <li>Updating the az-date-simple component to display the date/time;</li> <li>Update of package.json version;</li> <li>Update of readme.md;</li> <li>Added the .all-contributorsrc file.</li> </ul> ]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Version 1.0.2 Release]]></title>
+            <link>https://azinformatica.github.io/loki/blog/2020/02/18/version-1.0.2-release.html</link>
+            <guid>https://azinformatica.github.io/loki/blog/2020/02/18/version-1.0.2-release.html</guid>
+            <pubDate>Tue, 18 Feb 2020 06:00:00 GMT</pubDate>
+            <description><![CDATA[<ul> <li>Update of the stable version;</li> <li>Correction in the pagination of the az-pdf-document-viewer component;</li> <li>Correction of tests of the main component;</li> <li>Correction of tests of the page component.</li> </ul> ]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Version 1.0.1 Release]]></title>
+            <link>https://azinformatica.github.io/loki/blog/2020/02/18/version-1.0.1-release.html</link>
+            <guid>https://azinformatica.github.io/loki/blog/2020/02/18/version-1.0.1-release.html</guid>
+            <pubDate>Tue, 18 Feb 2020 06:00:00 GMT</pubDate>
+            <description><![CDATA[<ul> <li>Correction in the pagination of the az-pdf-document-viewer component;</li> <li>Correction of tests of the main component;</li> <li>Correction of tests of the page component.</li> </ul> ]]></description>
+        </item>
         <item>
             <title><![CDATA[Loki Version Update]]></title>
             <link>https://azinformatica.github.io/loki/blog/2020/02/03/loki-version-update.html</link>
