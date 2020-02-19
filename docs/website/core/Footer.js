@@ -27,7 +27,7 @@ class Footer extends React.Component {
           <section className="sitemap">
             <div>
               <h5>Docs</h5>
-              <a href={this.docUrl('getting-started/quickStart.html')}>
+              <a href={this.docUrl('getting-started/introduction.html')}>
                 Getting Started
               </a>
               <a href={this.docUrl('components/actions/azBackButton.html')}>

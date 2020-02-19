@@ -40,6 +40,7 @@
     border-bottom: 4px solid #12492f;
     transition: .2s;
     background-color: transparent;
+    font-weight: bold;
 }
 
 .lightBackground {
