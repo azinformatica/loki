@@ -1,6 +1,6 @@
 ---
 id: quickStart
-title: Getting Started
+title: Quick Start
 ---
 
 Check the [documentation](https://docusaurus.io) for how to use Docusaurus.
