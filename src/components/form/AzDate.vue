@@ -151,7 +151,9 @@ export default {
     },
     watch: {
         value(val) {
-            this.updateDateTimeByModel(val)
+            if(val) {
+                this.updateDateTimeByModel(val)
+            }
         }
     },
     methods: {
