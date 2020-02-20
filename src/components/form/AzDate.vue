@@ -33,8 +33,10 @@
                 mask="date"
                 :placeholder="dateFormat"
                 :disabled="isDisabled"
+                :color="dateInvalid ? 'error' : ''"
                 append-icon="event"
                 @click:append="openMenuDate"
+                @keyup="validateDate"
                 @blur="
                     validateAndParseDate(dateFormatted)
                     updateModelDate(date)
@@ -131,6 +133,7 @@ export default {
         return {
             date: null,
             dateFormatted: null,
+            dateInvalid: false,
             time: null,
             timeFormatted: null,
             dialogDate: false,
@@ -189,6 +192,12 @@ export default {
             const dateObj = this.getDayMonthYearFromDateString(date)
 
             this.date = `${dateObj.year}-${dateObj.month}-${dateObj.day}`
+        },
+        validateDate() {
+            this.dateInvalid = false
+            if (this.dateFormatted && !this.dateStringIsValid(this.dateFormatted)) {
+                this.dateInvalid = true
+            }
         },
         getDayMonthYearFromDateString(date) {
             const dateFormated = date.replace(new RegExp('/', 'g'), '');
@@ -270,6 +279,7 @@ export default {
             this.dateFormatted = ''
         },
         updateModelDate(value) {
+            this.dateInvalid = false
             if (this.time && value) {
                 const dateTimeWithTimezone = this.buildDateTimeWithTimezone(value, this.time)
                 const dateTimeTimezoneZero = this.getDateTimeZeroTimezone(dateTimeWithTimezone)
