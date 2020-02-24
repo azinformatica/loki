@@ -309,6 +309,9 @@ export default {
                 .v-icon
                     font-size 18px
 
+                i
+                    color rgba(255, 255, 255, .8) !important
+
             &:not(.v-list-item--active):not(.v-list-item--disabled)
                 color rgba(255, 255, 255, .8) !important
 
