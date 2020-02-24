@@ -87,6 +87,7 @@ export default {
         if (to.meta && to.meta.page) {
             state.page.title = to.meta.page.title
             state.page.subtitle = to.meta.page.subtitle
+            state.autoSave.show = to.meta.page.showAutoSave
         }
     },
 
@@ -136,5 +137,33 @@ export default {
         } else {
             state.document.renderedPages = []
         }
+    },
+
+    [mutationTypes.AUTO_SAVING.DISABLE_AUTO_SAVING](state) {
+        Vue.set(state.autoSave, 'saving', false)
+        Vue.set(state.autoSave, 'dateLastSaved', new Date())
+    },
+
+    [mutationTypes.AUTO_SAVING.ENABLE_AUTO_SAVING](state) {
+        Vue.set(state.autoSave, 'saving', true)
+        Vue.set(state.autoSave, 'dateLastSaved', null)
+    },
+
+    [mutationTypes.AUTO_SAVING.RESET_AUTO_SAVE](state) {
+        Vue.set(state.autoSave, 'saving', false)
+        Vue.set(state.autoSave, 'dateLastSaved', null)
+    },
+
+    [mutationTypes.AUTO_SAVING.SET_SAVING_MESSAGE](state, message) {
+        state.autoSave.autoSavedDescription = message
+    },
+
+    [mutationTypes.AUTO_SAVING.SET_AUTO_SAVED_MESSAGE](state, message) {
+        state.autoSave.autoSavedMessage = message
+    },
+
+    [mutationTypes.AUTO_SAVING.SET_AUTO_SAVED_DESCRIPTION](state, message) {
+        state.autoSave.autoSavedMessage = message
     }
+
 }
