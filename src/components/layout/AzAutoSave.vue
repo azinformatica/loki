@@ -50,8 +50,8 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-    .auto-save
-        color #7c9934
-        margin-right 1rem
-        font-size 12px
+.auto-save
+    color #7c9934
+    margin-right 1rem
+    font-size 12px
 </style>

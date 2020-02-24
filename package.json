@@ -1,6 +1,6 @@
 {
   "name": "@azinformatica/loki",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "Biblioteca de componentes visuais compartilhados construidos usando vuejs.",
   "main": "src/index.js",
   "private": false,
@@ -24,6 +24,7 @@
     "axios": "^0.19.2",
     "imagesloaded": "^4.1.4",
     "lodash": "^4.17.15",
+    "moment": "^2.24.0",
     "moment-timezone": "^0.5.27",
     "pdfjs-dist": "^2.2.228",
     "sass": "^1.24.4",

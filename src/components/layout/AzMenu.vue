@@ -7,8 +7,7 @@
                     v-if="!menu.children"
                     :to="menu.path"
                     @click="redirectTo(menu.path)"
-                    class="menu-item"
-                >
+                    class="menu-item">
                     <v-list-item-action>
                         <v-tooltip right color="dark-grey" v-if="asideClosed">
                             <template v-slot:activator="{ on }">
@@ -164,23 +163,28 @@ export default {
     .v-list-item__action i
         color #fff !important
 
+    &::after
+        content ''
+        position absolute
+        border-top 8px solid transparent
+        border-bottom 8px solid transparent
+        border-right 10px solid #eee
+        left 95%
+
+.v-navigation-drawer--mini-variant .active-menu::after
+    left 83%
+    opacity 1
+
+.v-navigation-drawer--is-mobile .active-menu::after
+    opacity 0
+    border none
+
 .menu-avatar-mobile .item
     border-top 1px solid rgba(255, 255, 255, .1)
-    border-bottom 1px solid rgba(0, 0, 0, .2);
-
-.az-menu
-    height 100%
-    overflow-y auto
-    overflow-x hidden
+    border-bottom 1px solid rgba(0, 0, 0, .2)
 
 .v-list__group__items--no-action .v-list-item
     padding-left 0
-
-.az-menu::-webkit-scrollbar
-    width 6px
-
-.az-menu::-webkit-scrollbar-thumb
-    background rgba(255, 255, 255, .5)
 
 .az-submenu
     background-color rgba(0, 0, 0, .1)
@@ -215,6 +219,15 @@ export default {
 
 .az-menu
     font-size 13px
+    height 100%
+    overflow-y auto
+    overflow-x hidden
+
+    &::-webkit-scrollbar
+        width 6px
+
+    &::-webkit-scrollbar-thumb
+        background rgba(255, 255, 255, .5)
 
     .icon
         color rgba(255, 255, 255, .5)
@@ -280,6 +293,9 @@ export default {
                 .v-list-item__action i
                     color #fff !important
 
+                &:not(.v-list-item--active):not(.v-list-item--disabled)
+                    color #fff !important
+
             &__title
                 font-size 14px
 
@@ -292,6 +308,9 @@ export default {
 
                 .v-icon
                     font-size 18px
+
+            &:not(.v-list-item--active):not(.v-list-item--disabled)
+                color rgba(255, 255, 255, .8) !important
 
         &-group
             &__header
