@@ -8,6 +8,10 @@
                         <div class="plan" v-if="plan">{{ plan }}</div>
                         <div class="domain" v-if="userDomain">{{ userDomain }}</div>
                     </div>
+                    <v-avatar v-if="userName" class="az-avatar__picture" size="32px">
+                        <v-icon medium v-if="!userPhoto" :color="color">account_circle</v-icon>
+                        <img v-if="userPhoto" :src="userPhoto" alt="Foto do usuário" />
+                    </v-avatar>
                     <v-icon right="right">keyboard_arrow_down</v-icon>
                 </v-btn>
             </template>
@@ -16,8 +20,7 @@
                     v-for="item in avatarActions"
                     :key="item.title"
                     @click="redirectTo(item.path)"
-                    v-az-auth="item.authorities"
-                >
+                    v-az-auth="item.authorities">
                     <v-list-item-action>
                         <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
                     </v-list-item-action>
@@ -36,12 +39,9 @@
                 </v-list-item>
             </v-list>
         </v-menu>
-        <v-avatar v-if="userName" class="az-avatar__picture" size="32px">
-            <v-icon medium v-if="!userPhoto" :color="color">account_circle</v-icon>
-            <img v-if="userPhoto" :src="userPhoto" alt="Foto do usuário" />
-        </v-avatar>
     </v-toolbar-items>
 </template>
+
 <script>
 export default {
     props: {
@@ -77,6 +77,7 @@ export default {
     }
 }
 </script>
+
 <style lang="stylus">
 .az-avatar
     position unset
@@ -107,7 +108,7 @@ export default {
                 font-size 12px
 
     &__picture
-        margin-right 0
+        margin-right 3px
 
     .v-btn
         text-transform none
