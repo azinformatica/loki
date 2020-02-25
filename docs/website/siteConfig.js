@@ -41,8 +41,7 @@ const siteConfig = {
     {doc: 'getting-started/quickStart', label: 'Docs'},
     {page: 'help', label: 'Help'},
     {blog: true, label: 'Blog'},
-    {languages: true},
-    {search: true, label: 'Search'}
+    {search: true, label: 'Search'},
   ],
   translationRecruitingLink: 'https://crowdin.com/project/azinformatica-loki',
   algolia: {
