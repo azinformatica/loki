@@ -48,7 +48,9 @@ describe('AzPdfDocumentViewer', () => {
         [actionTypes.DOCUMENT.DECREASE_SCALE]: jest.fn(),
         [actionTypes.DOCUMENT.INCREASE_SCALE]: jest.fn(),
         [actionTypes.DOCUMENT.RESTORE_SCALE]: jest.fn(),
-        [actionTypes.DOCUMENT.RENDER_PAGE]: jest.fn()
+        [actionTypes.DOCUMENT.RENDER_PAGE]: jest.fn(),
+        [actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES]: jest.fn(),
+        [actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES]: jest.fn()
     }
 
     documentContainer = document.createElement('div')
