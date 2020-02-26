@@ -1,12 +1,12 @@
 import azElapsedTime from './az-elapsed-time'
 
 describe('azElapsedTime', () => {
-    it('Deve retornar string vazia', () => {
+    it('Must return empty string', () => {
         const resultado = azElapsedTime()
         expect(resultado).toEqual('')
     })
 
-    it('Deve retornar o tempo em segundos', () => {
+    it('Time should return in seconds', () => {
         const resultado = azElapsedTime(new Date())
         expect(resultado).toEqual('0 seg.')
     })
