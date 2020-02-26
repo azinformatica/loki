@@ -3,6 +3,7 @@ import { shallowMount, mount, createLocalVue } from '@vue/test-utils'
 import Vuetify from 'vuetify'
 import Vue from 'vue'
 import Vuex from 'vuex'
+import {mutationTypes} from '../../store'
 
 const localVue = createLocalVue()
 Vue.use(Vuetify)
@@ -17,6 +18,9 @@ describe('AzSearch.spec.js', () => {
                 loki: {
                     asideClosed: true
                 }
+            },
+            mutations: {
+                [mutationTypes.SET_ASIDE]: jest.fn()
             }
         })
 

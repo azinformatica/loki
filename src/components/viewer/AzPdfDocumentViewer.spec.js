@@ -29,7 +29,8 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 current: 1.0,
                 default: 1.0,
                 max: 3.0
-            }
+            },
+            renderedPages: []
         }
     }
 
@@ -49,7 +50,8 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         [actionTypes.DOCUMENT.INCREASE_SCALE]: jest.fn(),
         [actionTypes.DOCUMENT.RESTORE_SCALE]: jest.fn(),
         [actionTypes.DOCUMENT.RENDER_PAGE]: jest.fn(),
-        [actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES]: jest.fn()
+        [actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES]: jest.fn(),
+        [actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES]: jest.fn()
     }
 
     documentContainer = document.createElement('div')
@@ -199,8 +201,8 @@ describe('AzPdfDocumentViewer.spec.js', () => {
     })
 
     describe('Pagination handling methods', () => {
-        it('Should exist a scroll handler method', () => {
-            expect(typeof wrapper.vm.handleScroll).toBe('function')
+        it('Should exist a scroll handler method', async () => {
+            await expect(typeof wrapper.vm.handleScroll).toBe('function')
         })
 
         it('Should execute a vuex action triggered by the scroll handler', () => {
@@ -210,8 +212,11 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 }
             }
             wrapper.vm.handleScroll(e)
-            expect(actions[actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM]).toHaveBeenCalled()
-            expect(actions[actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM].mock.calls[0][1]).toBe(1)
+
+            wrapper.vm.$nextTick(() => {
+                expect(actions[actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM]).toHaveBeenCalled()
+                expect(actions[actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM].mock.calls[0][1]).toBe(1)
+            })
         })
     })
 })
