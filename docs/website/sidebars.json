@@ -23,7 +23,15 @@
     ],
     "Filters": [
       "filters/azClipText",
-      "filters/azConcat"
+      "filters/azConcat",
+      "filters/azCpfCnpj",
+      "filters/azCurrency",
+      "filters/azDate",
+      "filters/azElapsedTime",
+      "filters/azEnum",
+      "filters/azNumber",
+      "filters/azPhone",
+      "filters/azTitleCase"
     ],
     "Utils": [
       "utils/azCurrency"

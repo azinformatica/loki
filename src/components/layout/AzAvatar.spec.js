@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import { createLocalVue, mount } from '@vue/test-utils'
 import Vuetify from 'vuetify'
 import Vue from 'vue'
+import {mutationTypes} from '../../store'
 
 const localVue = createLocalVue()
 Vue.use(Vuetify)
@@ -25,6 +26,9 @@ describe('AzAvatar', () => {
                         3: { title: 'More...', icon: 'more', path: '/more' }
                     }
                 }
+            },
+            mutations: {
+                [mutationTypes.SET_ASIDE]: jest.fn()
             }
         })
 
