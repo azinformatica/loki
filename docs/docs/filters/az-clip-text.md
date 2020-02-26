@@ -26,7 +26,7 @@ export default {
 ```
 
 Resultado
-![Resultado az-clip-text](../../img/examples/example-az-clip-text.jpeg)
+![Resultado az-clip-text](../loki/img/examples/example-az-clip-text.jpeg)
 
 ## API
 
@@ -57,4 +57,4 @@ export default {
 ```
 
 Resultado
-![Resultado 2 az-clip-text](../../img/examples/example-az-clip-text-2.jpeg)
+![Resultado 2 az-clip-text](../loki/img/examples/example-az-clip-text-2.jpeg)
