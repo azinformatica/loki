@@ -2,12 +2,48 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://azinformatica.github.io/loki/blog</id>
     <title>Loki Blog</title>
-    <updated>2020-02-18T06:00:00.000Z</updated>
+    <updated>2020-02-24T06:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://azinformatica.github.io/loki/blog"/>
     <subtitle>The best place to stay up-to-date with the latest Loki news and events.</subtitle>
     <logo>https://azinformatica.github.io/loki/img/logo.svg</logo>
     <rights>2020 - I'm Loki ;)</rights>
+    <entry>
+        <title type="html"><![CDATA[Version 2.0.5 Release]]></title>
+        <id>https://azinformatica.github.io/loki/blog/2020/02/24/version-2.0.5-release.html</id>
+        <link href="https://azinformatica.github.io/loki/blog/2020/02/24/version-2.0.5-release.html"/>
+        <updated>2020-02-24T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[<ul> <li>Component addition for auto save information;</li> <li>Adjust the avatar component to display the clickable avatar;</li> <li>Adjust in the menu component to present a different effect in the selected menu.</li> </ul> ]]></summary>
+        <author>
+            <name>Thalita Oliveira</name>
+            <email/>
+            <uri>https://github.com/thalita12</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Version 2.0.4 Release]]></title>
+        <id>https://azinformatica.github.io/loki/blog/2020/02/20/version-2.0.4-release.html</id>
+        <link href="https://azinformatica.github.io/loki/blog/2020/02/20/version-2.0.4-release.html"/>
+        <updated>2020-02-20T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[<ul> <li>Change to az-date to display the date field with the error color while the user is filling in an invalid date.</li> </ul> ]]></summary>
+        <author>
+            <name>Thalita Oliveira</name>
+            <email/>
+            <uri>https://github.com/thalita12</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Version 2.0.3 Release]]></title>
+        <id>https://azinformatica.github.io/loki/blog/2020/02/19/version-2.0.3-release.html</id>
+        <link href="https://azinformatica.github.io/loki/blog/2020/02/19/version-2.0.3-release.html"/>
+        <updated>2020-02-19T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[<ul> <li>Az-date correction that was sending an input event when loading the component, thus activating vee-validate validation;</li> <li>Az-money component changed to display validation message with vee-validate.</li> </ul> ]]></summary>
+        <author>
+            <name>Thalita Oliveira</name>
+            <email/>
+            <uri>https://github.com/thalita12</uri>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Version 2.0.2 Release]]></title>
         <id>https://azinformatica.github.io/loki/blog/2020/02/18/version-2.0.2-release.html</id>

@@ -4,7 +4,7 @@
         <title>Loki Blog</title>
         <link>https://azinformatica.github.io/loki/blog</link>
         <description>The best place to stay up-to-date with the latest Loki news and events.</description>
-        <lastBuildDate>Tue, 18 Feb 2020 06:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 24 Feb 2020 06:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <image>
@@ -13,6 +13,27 @@
             <link>https://azinformatica.github.io/loki/blog</link>
         </image>
         <copyright>2020 - I'm Loki ;)</copyright>
+        <item>
+            <title><![CDATA[Version 2.0.5 Release]]></title>
+            <link>https://azinformatica.github.io/loki/blog/2020/02/24/version-2.0.5-release.html</link>
+            <guid>https://azinformatica.github.io/loki/blog/2020/02/24/version-2.0.5-release.html</guid>
+            <pubDate>Mon, 24 Feb 2020 06:00:00 GMT</pubDate>
+            <description><![CDATA[<ul> <li>Component addition for auto save information;</li> <li>Adjust the avatar component to display the clickable avatar;</li> <li>Adjust in the menu component to present a different effect in the selected menu.</li> </ul> ]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Version 2.0.4 Release]]></title>
+            <link>https://azinformatica.github.io/loki/blog/2020/02/20/version-2.0.4-release.html</link>
+            <guid>https://azinformatica.github.io/loki/blog/2020/02/20/version-2.0.4-release.html</guid>
+            <pubDate>Thu, 20 Feb 2020 06:00:00 GMT</pubDate>
+            <description><![CDATA[<ul> <li>Change to az-date to display the date field with the error color while the user is filling in an invalid date.</li> </ul> ]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Version 2.0.3 Release]]></title>
+            <link>https://azinformatica.github.io/loki/blog/2020/02/19/version-2.0.3-release.html</link>
+            <guid>https://azinformatica.github.io/loki/blog/2020/02/19/version-2.0.3-release.html</guid>
+            <pubDate>Wed, 19 Feb 2020 06:00:00 GMT</pubDate>
+            <description><![CDATA[<ul> <li>Az-date correction that was sending an input event when loading the component, thus activating vee-validate validation;</li> <li>Az-money component changed to display validation message with vee-validate.</li> </ul> ]]></description>
+        </item>
         <item>
             <title><![CDATA[Version 2.0.2 Release]]></title>
             <link>https://azinformatica.github.io/loki/blog/2020/02/18/version-2.0.2-release.html</link>
