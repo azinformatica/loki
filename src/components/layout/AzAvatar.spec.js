@@ -17,7 +17,8 @@ describe('AzAvatar.spec.js', () => {
                 loki: {
                     user: {
                         photo: 'picture.jpg',
-                        name: 'Andrew Stuart Tanenbaum'
+                        name: 'Andrew Stuart Tanenbaum',
+                        authorities: []
                     },
                     avatarActions: {
                         1: { title: 'Profile', icon: 'star', path: '/profile' },
