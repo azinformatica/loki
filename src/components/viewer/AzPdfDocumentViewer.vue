@@ -39,7 +39,7 @@ export default {
         },
         height: {
             type: String,
-            default: '100hv'
+            default: '100vh'
         }
     },
     data: () => ({
