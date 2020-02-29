@@ -89,8 +89,8 @@ export default {
     [actionTypes.DOCUMENT.CLEAR_RENDER_CONTEXT](context) {
         context.commit(mutationTypes.DOCUMENT.SET_PAGES, [])
         context.commit(mutationTypes.DOCUMENT.SET_RENDERED_PAGES, 'clear')
-        context.commit(mutationTypes.DOCUMENT.SET_TOTAL_PAGE_NUM, 1)
-        context.commit(mutationTypes.DOCUMENT.SET_CURRENT_PAGE_NUM, 1)
+        context.commit(mutationTypes.DOCUMENT.SET_TOTAL_PAGE_NUM, '-')
+        context.commit(mutationTypes.DOCUMENT.SET_CURRENT_PAGE_NUM, '-')
         context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, 1.5)
         context.commit(mutationTypes.DOCUMENT.SET_PAGE_CONTAINER, { height: 0, width: 0 })
     },

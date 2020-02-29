@@ -130,6 +130,7 @@ export default {
         async resolveEventResize(payload) {
             this.pagesCanvasContext[payload.pageNum] = payload
             if (payload.pageNum === this.visiblePageNum) {
+                this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, this.visiblePageNum)
                 await this.$store.dispatch(
                     actionTypes.DOCUMENT.RENDER_PAGE,
                     this.pagesCanvasContext[this.visiblePageNum]
