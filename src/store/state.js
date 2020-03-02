@@ -58,8 +58,8 @@ export default {
         },
         pages: [],
         paginator: {
-            currentPageNum: 0,
-            totalPageNum: 0
+            currentPageNum: '-',
+            totalPageNum: '-'
         },
         renderedPages: [],
         scale: {

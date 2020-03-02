@@ -1,70 +1,70 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuex from 'vuex'
+import 'pdfjs-dist/build/pdf'
 import AzPdfDocumentViewer from './AzPdfDocumentViewer'
 import AzPdfDocumentViewerToolbar from './AzPdfDocumentViewerToolbar'
 import AzPdfDocumentViewerPage from './AzPdfDocumentViewerPage'
 import { actionTypes } from '../../../src/store'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 
+jest.mock('pdfjs-dist/build/pdf')
 const localVue = createLocalVue()
 Vue.use(Vuetify)
 Vue.use(Vuex)
 
 describe('AzPdfDocumentViewer.spec.js', () => {
-    let src, wrapper, store, state, getters, actions, documentContainer
-
-    state = {
-        document: {
-            pageContainer: {
-                height: 1,
-                width: 1
-            },
-            pages: [{ pageIndex: 0 }, { pageIndex: 1 }, { pageIndex: 2 }],
-            paginator: {
-                currentPageNum: 1,
-                totalPageNum: 1
-            },
-            scale: {
-                current: 1.0,
-                default: 1.0,
-                max: 3.0
-            },
-            renderedPages: []
-        }
-    }
-
-    getters = {
-        currentPageNum: jest.fn().mockReturnValue(1),
-        pageContainer: jest.fn().mockReturnValue({ height: 1, width: 1 }),
-        pages: jest.fn().mockReturnValue(state.document.pages),
-        scale: jest.fn().mockReturnValue(1),
-        totalPageNum: jest.fn().mockReturnValue(3)
-    }
-
-    actions = {
-        [actionTypes.DOCUMENT.FETCH_DOCUMENT]: jest.fn(),
-        [actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER]: jest.fn(),
-        [actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM]: jest.fn(),
-        [actionTypes.DOCUMENT.DECREASE_SCALE]: jest.fn(),
-        [actionTypes.DOCUMENT.INCREASE_SCALE]: jest.fn(),
-        [actionTypes.DOCUMENT.RESTORE_SCALE]: jest.fn(),
-        [actionTypes.DOCUMENT.RENDER_PAGE]: jest.fn(),
-        [actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES]: jest.fn(),
-        [actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES]: jest.fn()
-    }
-
-    documentContainer = document.createElement('div')
-    documentContainer.setAttribute('id', 'documentContainer')
+    let src, wrapper, store, state, getters, actions
 
     beforeEach(() => {
+        state = {
+            document: {
+                pageContainer: {
+                    height: 1,
+                    width: 1
+                },
+                pages: [{ pageIndex: 0 }, { pageIndex: 1 }, { pageIndex: 2 }],
+                paginator: {
+                    currentPageNum: 1,
+                    totalPageNum: 1
+                },
+                scale: {
+                    current: 1.0,
+                    default: 1.0,
+                    max: 3.0
+                },
+                renderedPages: []
+            }
+        }
+
+        getters = {
+            currentPageNum: jest.fn().mockReturnValue(1),
+            pageContainer: jest.fn().mockReturnValue({ height: 1, width: 1 }),
+            pages: jest.fn().mockReturnValue(state.document.pages),
+            scale: jest.fn().mockReturnValue(1),
+            totalPageNum: jest.fn().mockReturnValue(3)
+        }
+
+        actions = {
+            [actionTypes.DOCUMENT.FETCH_DOCUMENT]: jest.fn(),
+            [actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER]: jest.fn(),
+            [actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM]: jest.fn(),
+            [actionTypes.DOCUMENT.DECREASE_SCALE]: jest.fn(),
+            [actionTypes.DOCUMENT.INCREASE_SCALE]: jest.fn(),
+            [actionTypes.DOCUMENT.RESTORE_SCALE]: jest.fn(),
+            [actionTypes.DOCUMENT.RENDER_PAGE]: jest.fn(),
+            [actionTypes.DOCUMENT.CLEAR_RENDER_CONTEXT]: jest.fn(),
+            [actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES]: jest.fn(),
+            [actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES]: jest.fn()
+        }
+
         store = new Vuex.Store({ state, getters, actions })
         src = 'document/url'
-        document.body.appendChild(documentContainer)
         wrapper = shallowMount(AzPdfDocumentViewer, {
             localVue,
             store,
-            propsData: { src }
+            propsData: { src },
+            attachToDocument: true
         })
     })
 
@@ -95,12 +95,11 @@ describe('AzPdfDocumentViewer.spec.js', () => {
     })
 
     describe('Vue Lifecycle', () => {
-        it('Should load the document and update pages size in the mounted method', async () => {
+        it('Should clear render context and load the document the mounted method', async () => {
             await wrapper.vm.$nextTick()
 
-            expect(actions[actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM].mock.calls[0][1]).toEqual(1)
+            expect(actions[actionTypes.DOCUMENT.CLEAR_RENDER_CONTEXT]).toHaveBeenCalled()
             expect(actions[actionTypes.DOCUMENT.FETCH_DOCUMENT].mock.calls[0][1]).toEqual(src)
-            expect(actions[actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES]).toHaveBeenCalled()
         })
 
         it('Should have a mounted method', () => {
@@ -215,7 +214,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
 
             wrapper.vm.$nextTick(() => {
                 expect(actions[actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM]).toHaveBeenCalled()
-                expect(actions[actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM].mock.calls[0][1]).toBe(1)
+                expect(actions[actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM].mock.calls[0][1]).toBe(11)
             })
         })
     })

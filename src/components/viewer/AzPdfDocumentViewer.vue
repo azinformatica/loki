@@ -21,7 +21,7 @@
 <script>
 import AzPdfDocumentViewerToolbar from './AzPdfDocumentViewerToolbar'
 import AzPdfDocumentViewerPage from './AzPdfDocumentViewerPage'
-import { actionTypes } from '../../store'
+import { actionTypes, mutationTypes } from '../../store'
 export default {
     components: {
         AzPdfDocumentViewerToolbar,
@@ -39,7 +39,7 @@ export default {
         },
         height: {
             type: String,
-            default: '100hv'
+            default: '100vh'
         }
     },
     data: () => ({
@@ -48,6 +48,9 @@ export default {
         visiblePageNum: 1
     }),
     computed: {
+        computedSrc() {
+            return this.src
+        },
         currentPage() {
             return this.$store.getters.currentPageNum
         },
@@ -73,9 +76,6 @@ export default {
         },
         totalPages() {
             return this.$store.getters.totalPageNum
-        },
-        updateSrc() {
-            return this.src
         }
     },
     async mounted() {
@@ -84,10 +84,17 @@ export default {
     },
     methods: {
         async updatePdfRendering() {
-            if (this.updateSrc) {
-                this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, this.visiblePageNum)
-                this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES)
-                await this.$store.dispatch(actionTypes.DOCUMENT.FETCH_DOCUMENT, this.updateSrc)
+            try {
+                this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDER_CONTEXT)
+                await this.$store.dispatch(actionTypes.DOCUMENT.FETCH_DOCUMENT, this.computedSrc)
+            } catch (error) {
+                if (this.computedSrc.length !== 0) {
+                    this.$store.commit(mutationTypes.SHOW_ALERT, {
+                        message: 'URL do documento inválida.',
+                        type: 'error'
+                    })
+                    throw new Error('URL do documento inválida.')
+                }
             }
         },
         getDocumentContainer() {
@@ -96,7 +103,7 @@ export default {
         async handleScroll(e) {
             this.visiblePageNum = Math.floor(e.target.scrollTop / this.pageHeight) + 1
             this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, this.visiblePageNum)
-            if (this.renderedPages.indexOf(this.visiblePageNum) === -1) {
+            if (!isNaN(this.visiblePageNum) && this.renderedPages.indexOf(this.visiblePageNum) === -1) {
                 this.okToRender = true
                 this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES, this.visiblePageNum)
             }
@@ -123,6 +130,7 @@ export default {
         async resolveEventResize(payload) {
             this.pagesCanvasContext[payload.pageNum] = payload
             if (payload.pageNum === this.visiblePageNum) {
+                this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, this.visiblePageNum)
                 await this.$store.dispatch(
                     actionTypes.DOCUMENT.RENDER_PAGE,
                     this.pagesCanvasContext[this.visiblePageNum]
@@ -132,7 +140,7 @@ export default {
         }
     },
     watch: {
-        async updateSrc() {
+        async computedSrc() {
             await this.updatePdfRendering()
         }
     }
