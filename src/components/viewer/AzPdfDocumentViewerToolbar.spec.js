@@ -6,7 +6,7 @@ import { createLocalVue, mount } from '@vue/test-utils'
 const localVue = createLocalVue()
 Vue.use(Vuetify)
 
-describe('AzPdfDocumentViewerToolbar.vue', () => {
+describe('AzPdfDocumentViewerToolbar.spec.js', () => {
     let currentPage, totalPages, wrapper
 
     beforeEach(() => {
@@ -14,8 +14,8 @@ describe('AzPdfDocumentViewerToolbar.vue', () => {
         totalPages = 3
         wrapper = mount(AzPdfDocumentViewerToolbar, {
             localVue,
-            vuetify: new Vuetify({}),
-            propsData: { currentPage, totalPages }
+            propsData: { currentPage, totalPages },
+            vuetify: new Vuetify()
         })
     })
 
@@ -57,8 +57,8 @@ describe('AzPdfDocumentViewerToolbar.vue', () => {
         expect(wrapper.find('[data-test="resetZoom"]')).toBeTruthy()
     })
 
-    it.skip('Should emit an event on click at resetZoom button', () => {
-        let resetZoomBtn = wrapper.find('[data-test="esetZoom"]')
+    it('Should emit an event on click at resetZoom button', () => {
+        let resetZoomBtn = wrapper.find('[data-test="resetZoom"]')
         resetZoomBtn.trigger('click')
         expect(wrapper.emitted().resetZoom).toBeTruthy()
     })
