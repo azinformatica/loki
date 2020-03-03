@@ -131,12 +131,10 @@ export default {
             default: false
         },
         minDate:{
-            type: String,
-            default: ''
+            type: String
         },
         maxDate:{
-            type: String,
-            default: ''
+            type: String
         }
     },
     inject: ['$validator'],
@@ -194,7 +192,7 @@ export default {
             this.dateFormatted = this.formatDate(this.date)
         },
         validateAndParseDate(date) {
-            if (!date || !this.dateStringIsValid(date)  || this.dateMaxIsAllowed(date) || this.dateMaxIsAllowed(date)) {
+            if (!date || !this.dateStringIsValid(date)  || this.dateMaxIsAllowed(date) || this.dateMinIsAllowed(date)) {
                 this.date = null
                 this.dateFormatted = ''
                 return
@@ -404,10 +402,32 @@ export default {
             })
         },
         dateMinIsAllowed(date){
-            return (this.moment(date).format('YYYY-MM-DDTHH:mm:ssZZ') < this.minDate)
+            if(this.minDate){
+                const dateObj = this.getDayMonthYearFromDateString(date)
+                const minDateObj = this.getDayMonthYearFromDateString(this.moment(this.minDate).format('DD/MM/YYYY'))
+                if (dateObj.year < minDateObj.year){
+                    return true
+                }else if(dateObj.month < minDateObj.month){
+                    return true
+                }else if (dateObj.day < minDateObj.day && dateObj.month === minDateObj.month){
+                    return  true
+                }
+            }
+            return false
         },
         dateMaxIsAllowed(date){
-            return (this.moment(date).format('YYYY-MM-DDTHH:mm:ssZZ') > this.maxDate)
+            if(this.maxDate){
+                const dateObj = this.getDayMonthYearFromDateString(date)
+                const maxDateObj = this.getDayMonthYearFromDateString(this.moment(this.maxDate).format('DD/MM/YYYY'))
+                if (dateObj.year > maxDateObj.year){
+                    return true
+                }else if(dateObj.month > maxDateObj.month){
+                    return true
+                }else if (dateObj.day > maxDateObj.day && dateObj.month === maxDateObj.month){
+                    return  true
+                }
+            }
+            return false
         }
     }
 }
