@@ -25,7 +25,7 @@ export default {
 ```
 
 Resultado
-![Resultado az-concat](../../img/examples/example-az-concat.jpeg)
+![Resultado az-concat](/loki/img/examples/example-az-concat.jpeg)
 
 ## API
 
@@ -43,4 +43,4 @@ HTML
 ```
 
 Resultado
-![Resultado 2 az-concat](../../img/examples/example-az-concat-2.jpeg)
+![Resultado 2 az-concat](/loki/img/examples/example-az-concat-2.jpeg)

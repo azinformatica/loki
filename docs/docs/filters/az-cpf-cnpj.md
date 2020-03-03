@@ -27,7 +27,7 @@ export default {
 ```
 
 Resultado
-![Resultado az-cnpj-cpf](../../img/examples/example-az-cnpj-cpf.jpeg)
+![Resultado az-cnpj-cpf](/loki/img/examples/example-az-cnpj-cpf.jpeg)
 
 ## API
 

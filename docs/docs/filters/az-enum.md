@@ -31,7 +31,7 @@ export default {
 ```
 
 Resultado
-![Resultado az-enum](../../img/examples/example-az-enum.jpeg)
+![Resultado az-enum](/lokiimg/examples/example-az-enum.jpeg)
 
 ## API
 

@@ -25,7 +25,7 @@ export default {
 ```
 
 Resultado
-![Resultado az-currency](../../img/examples/example-az-currency.jpeg)
+![Resultado az-currency](/loki/img/examples/example-az-currency.jpeg)
 
 ## API
 
@@ -43,4 +43,4 @@ HTML
 ```
 
 Resultado
-![Resultado 2 az-currency](../../img/examples/example-az-currency-2.jpeg)
+![Resultado 2 az-currency](/loki/img/examples/example-az-currency-2.jpeg)

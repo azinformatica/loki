@@ -25,7 +25,7 @@ export default {
 ```
 
 Resultado
-![Resultado az-date](../../img/examples/example-az-date.jpeg)
+![Resultado az-date](/loki/img/examples/example-az-date.jpeg)
 
 ## API
 
@@ -43,4 +43,4 @@ HTML
 ```
 
 Resultado
-![Resultado 2 az-date](../../img/examples/example-az-date-2.jpeg)
+![Resultado 2 az-date](/loki/img/examples/example-az-date-2.jpeg)
