@@ -6,7 +6,7 @@
             @zoomIn="resolveEventZoomIn"
             @resetZoom="resolveEventResetZoom"
         />
-        <div id="documentContainer" class="az-pdf-document-viewer__container">
+        <div id="documentContainer" class="az-pdf-document-viewer__container" :style="{ height: height }">
             <az-pdf-document-viewer-page
                 v-for="page in pages"
                 :key="page.pageIndex + 1"
@@ -21,7 +21,7 @@
 <script>
 import AzPdfDocumentViewerToolbar from './AzPdfDocumentViewerToolbar'
 import AzPdfDocumentViewerPage from './AzPdfDocumentViewerPage'
-import { actionTypes } from '../../store'
+import { actionTypes, mutationTypes } from '../../store'
 export default {
     components: {
         AzPdfDocumentViewerToolbar,
@@ -36,6 +36,10 @@ export default {
         cssClass: {
             type: String,
             default: ''
+        },
+        height: {
+            type: String,
+            default: '100vh'
         }
     },
     data: () => ({
@@ -44,6 +48,9 @@ export default {
         visiblePageNum: 1
     }),
     computed: {
+        computedSrc() {
+            return this.src
+        },
         currentPage() {
             return this.$store.getters.currentPageNum
         },
@@ -71,22 +78,32 @@ export default {
             return this.$store.getters.totalPageNum
         }
     },
-    async created() {
-        this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, this.visiblePageNum)
-        this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES)
-        await this.$store.dispatch(actionTypes.DOCUMENT.FETCH_DOCUMENT, this.$props.src)
-    },
-    mounted() {
-        this.getDocumentContainer().addEventListener('scroll', this.handleScroll)
+    async mounted() {
+        await this.getDocumentContainer().addEventListener('scroll', this.handleScroll)
+        await this.updatePdfRendering()
     },
     methods: {
+        async updatePdfRendering() {
+            try {
+                this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDER_CONTEXT)
+                await this.$store.dispatch(actionTypes.DOCUMENT.FETCH_DOCUMENT, this.computedSrc)
+            } catch (error) {
+                if (this.computedSrc.length !== 0) {
+                    this.$store.commit(mutationTypes.SHOW_ALERT, {
+                        message: 'URL do documento inválida.',
+                        type: 'error'
+                    })
+                    throw new Error('URL do documento inválida.')
+                }
+            }
+        },
         getDocumentContainer() {
             return document.getElementById('documentContainer')
         },
         async handleScroll(e) {
-            this.visiblePageNum = Math.round(e.target.scrollTop / this.pageHeight) + 1
+            this.visiblePageNum = Math.floor(e.target.scrollTop / this.pageHeight) + 1
             this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, this.visiblePageNum)
-            if (this.renderedPages.indexOf(this.visiblePageNum) === -1) {
+            if (!isNaN(this.visiblePageNum) && this.renderedPages.indexOf(this.visiblePageNum) === -1) {
                 this.okToRender = true
                 this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES, this.visiblePageNum)
             }
@@ -113,9 +130,18 @@ export default {
         async resolveEventResize(payload) {
             this.pagesCanvasContext[payload.pageNum] = payload
             if (payload.pageNum === this.visiblePageNum) {
-                this.$store.dispatch(actionTypes.DOCUMENT.RENDER_PAGE, this.pagesCanvasContext[this.visiblePageNum])
+                this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, this.visiblePageNum)
+                await this.$store.dispatch(
+                    actionTypes.DOCUMENT.RENDER_PAGE,
+                    this.pagesCanvasContext[this.visiblePageNum]
+                )
                 this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES, payload.pageNum)
             }
+        }
+    },
+    watch: {
+        async computedSrc() {
+            await this.updatePdfRendering()
         }
     }
 }
@@ -126,6 +152,7 @@ export default {
     position relative
     width 100%
     background-color #f8f9fa
+
     &__container
         height 100vh
         overflow scroll
