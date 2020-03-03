@@ -97,6 +97,10 @@ export default {
                 return ['DD/MM/YYYY', 'MM/DD/YYYY'].indexOf(value) !== -1
             }
         },
+        limparData:{
+            type: Boolean,
+            default: false
+        },
         dateTime: {
             type: Boolean,
             default: false
@@ -152,6 +156,11 @@ export default {
     watch: {
         value(val) {
             this.updateDateTimeByModel(val)
+        },
+        limparData(val){
+            if(val){
+                this.dateFormatted = null
+            }
         }
     },
     methods: {
