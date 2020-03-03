@@ -25,7 +25,7 @@ export default {
 ```
 
 Resultado
-![Resultado az-number](../../img/examples/example-az-number.jpeg)
+![Resultado az-number](/loki/img/examples/example-az-number.jpeg)
 
 ## API
 

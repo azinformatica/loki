@@ -25,7 +25,7 @@ export default {
 ```
 
 Resultado
-![Resultado az-elapsed-time](../../img/examples/example-az-elapsed-time.jpeg)
+![Resultado az-elapsed-time](/loki/img/examples/example-az-elapsed-time.jpeg)
 
 ## API
 

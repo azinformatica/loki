@@ -17,4 +17,4 @@ HTML
 ```
 
 Resultado
-![Resultado az-clip-text](../loki/img/examples/example-az-clip-text.jpeg)
+![Resultado az-clip-text](/loki/img/examples/example-az-clip-text.jpeg)

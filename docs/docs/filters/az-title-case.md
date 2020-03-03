@@ -25,7 +25,7 @@ export default {
 ```
 
 Resultado
-![Resultado az-title-case](../../img/examples/example-az-title-case.jpeg)
+![Resultado az-title-case](/loki/img/examples/example-az-title-case.jpeg)
 
 ## API
 
