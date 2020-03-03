@@ -42,9 +42,10 @@
                 @keyup="validateDate"
                 @blur="
                     validateAndParseDate(dateFormatted)
-                    updateModelDate(date)
-                "
-            >
+                    updateModelDate(date)">
+                <template v-slot:label if="this.$slots['label-date']">
+                    <slot name="label-date" />
+                </template>
             </v-text-field>
         </div>
         <div v-if="dateTime" style="margin-left: 10px; width: 40%">
