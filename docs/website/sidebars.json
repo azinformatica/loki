@@ -1,10 +1,46 @@
 {
   "docs": {
-    "Docusaurus": ["doc1"],
-    "First Category": ["doc2"],
-    "Second Category": ["doc3"]
-  },
-  "docs-other": {
-    "First Category": ["doc4", "doc5"]
+    "Getting Started": [
+      "getting-started/introduction",
+      "getting-started/quickStart"
+    ],
+    "Components": [
+      {
+        "type": "subcategory",
+        "label": "Actions",
+        "ids": [
+          "components/actions/azBackButton",
+          "components/actions/azCallToAction"
+        ]
+      },
+      {
+        "type": "subcategory",
+        "label": "File",
+        "ids": [
+          "components/file/azFileUpload"
+        ]
+      }
+    ],
+    "Filters": [
+      "filters/azClipText",
+      "filters/azConcat",
+      "filters/azCpfCnpj",
+      "filters/azCurrency",
+      "filters/azDate",
+      "filters/azElapsedTime",
+      "filters/azEnum",
+      "filters/azNumber",
+      "filters/azPhone",
+      "filters/azTitleCase"
+    ],
+    "Utils": [
+      "utils/azCurrency"
+    ],
+    "Directives": [
+      "directives/auth"
+    ],
+    "Store": [
+      "store/actions"
+    ]
   }
 }

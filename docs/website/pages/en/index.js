@@ -9,13 +9,14 @@ const React = require('react');
 
 const CompLibrary = require('../../core/CompLibrary.js');
 
-const MarkdownBlock = CompLibrary.MarkdownBlock; /* Used to read markdown */
 const Container = CompLibrary.Container;
 const GridBlock = CompLibrary.GridBlock;
 
+const translate = require('../../server/translate.js').translate;
+
 class HomeSplash extends React.Component {
     render() {
-        const {siteConfig, language = ''} = this.props;
+        const {siteConfig, language = 'en'} = this.props;
         const {baseUrl, docsUrl} = siteConfig;
         const docsPart = `${docsUrl ? `${docsUrl}/` : ''}`;
         const langPart = `${language ? `${language}/` : ''}`;
@@ -64,7 +65,7 @@ class HomeSplash extends React.Component {
                     <Logo img_src={`${baseUrl}img/logo-loki.png`} />
                     <ProjectTitle tagline={siteConfig.tagline} />
                     <PromoSection>
-                        <Button href={docUrl('doc1.html')}>Get Started</Button>
+                        <Button href={docUrl('getting-started/quickStart.html')}>Get Started</Button>
                     </PromoSection>
                 </div>
             </SplashContainer>
@@ -74,7 +75,7 @@ class HomeSplash extends React.Component {
 
 class Index extends React.Component {
     render() {
-        const {config: siteConfig, language = ''} = this.props;
+        const {config: siteConfig, language = 'en'} = this.props;
         const {baseUrl} = siteConfig;
 
         const Block = props => (
@@ -94,10 +95,10 @@ class Index extends React.Component {
             <Block id="try">
                 {[
                     {
-                        content: 'Loki was created to be able to reuse the layouts of the company\'s systems. It would be a faster way to develop and maintain a standard of components and layout. In this case, the source code was made available on GitHub so that everyone could use it and contribute to improving it.',
+                        content: '<translate>Loki was created to be able to reuse the layouts of the company\'s systems. It would be a faster way to develop and maintain a standard of components and layout. In this case, the source code was made available on GitHub so that everyone could use it and contribute to improving it.</translate>',
                         image: `${baseUrl}img/site-under-construction.png`,
                         imageAlign: 'left',
-                        title: 'Why was he created?'
+                        title: '<translate>Why was he created?</translate>'
                     }
                 ]}
             </Block>
@@ -107,10 +108,10 @@ class Index extends React.Component {
             <Block id="description" background="light">
                 {[
                     {
-                        content: 'It has components with customization ready and leaving your templates modern and elegant. In addition to having several ready-made filters and wildcard components that every project will use. He already uses Vuetify, in addition to having two types of templates: "Default" and "Gmail".',
+                        content: '<translate>It has components with customization ready and leaving your templates modern and elegant. In addition to having several ready-made filters and wildcard components that every project will use. He already uses Vuetify, in addition to having two types of templates: "Default" and "Gmail".</translate>',
                         image: `${baseUrl}img/working-at-desk.png`,
                         imageAlign: 'right',
-                        title: 'Why use it?'
+                        title: '<translate>Why use it?</translate>'
                     }
                 ]}
             </Block>
@@ -120,10 +121,10 @@ class Index extends React.Component {
             <Block id="learn" background="light">
                 {[
                     {
-                        content: 'Loki is not a god / giant in Norse mythology. Or god of trickery and mischief. Not a being connected to magic, and who can take different forms. Much less Thor\'s brother. It is a component library using the Vuetify framework, which is maintained by AZ Informática.',
+                        content: '<translate>Loki is not a god / giant in Norse mythology. Or god of trickery and mischief. Not a being connected to magic, and who can take different forms. Much less Thor\'s brother. It is a component library using the Vuetify framework, which is maintained by AZ Informática.</translate>',
                         image: `${baseUrl}img/creative-design.png`,
                         imageAlign: 'right',
-                        title: 'What is Loki?'
+                        title: '<translate>What is Loki?</translate>'
                     }
                 ]}
             </Block>
@@ -142,18 +143,11 @@ class Index extends React.Component {
                     </a>
                 ));
 
-            const pageUrl = page => baseUrl + (language ? `${language}/` : '') + page;
-
             return (
                 <div className="productShowcaseSection">
                     <h2>Who is Using This?</h2>
                     <p>This project is used by all these users</p>
                     <div className="logos">{showcase}</div>
-                    {/*<div className="more-users">*/}
-                    {/*  <a className="button" href={pageUrl('users.html')}>*/}
-                    {/*    More {siteConfig.title} Users*/}
-                    {/*  </a>*/}
-                    {/*</div>*/}
                 </div>
             );
         };

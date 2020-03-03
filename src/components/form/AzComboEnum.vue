@@ -75,7 +75,7 @@ export default {
                 return _.union([{ text: 'Selecione', value: null }], novoArray)
             }
 
-            return  novoArray
+            return novoArray
         }
     }
 }

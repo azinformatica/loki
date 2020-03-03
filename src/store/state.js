@@ -26,6 +26,13 @@ export default {
         1: { title: 'Profile', icon: 'person', path: '/profile' },
         2: { title: 'Settings', icon: 'settings', path: '/settings' }
     },
+    autoSave: {
+        show: false,
+        saving: false,
+        savingMessage: '<i class="fas fa-redo fa-spin mr-1"></i> Salvando...',
+        autoSavedMessage: '<i class="fas fa-check mr-1"></i> Salvo Automaticamente',
+        autoSavedDescription: 'Salvo ${date} atrás'
+    },
     menuActions: [],
     alert: {},
 
@@ -58,8 +65,8 @@ export default {
         },
         pages: [],
         paginator: {
-            currentPageNum: 1,
-            totalPageNum: 1
+            currentPageNum: '-',
+            totalPageNum: '-'
         },
         renderedPages: [],
         scale: {

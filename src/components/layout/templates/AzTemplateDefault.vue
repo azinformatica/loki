@@ -21,11 +21,13 @@
 
             <az-title />
 
-            <v-spacer></v-spacer>
+            <v-spacer />
 
             <div v-if="showMainHeader" class="action">
                 <slot name="main-header" />
             </div>
+
+            <az-auto-save v-if="$store.state.loki.autoSave.show" />
 
             <az-notification
                 v-if="showNotification"
@@ -60,13 +62,14 @@
 
 <script>
 import AzAlert from '../AzAlert'
+import AzAutoSave from '../AzAutoSave'
 import AzFileProgress from '../../file/AzFileProgress'
 import AzLoading from '../AzLoading'
 import AzNotification from '../AzNotification'
 import mutationTypes from '../../../store/mutation-types'
 
 export default {
-    components: { AzLoading, AzAlert, AzFileProgress, AzNotification },
+    components: { AzAlert, AzAutoSave, AzFileProgress, AzLoading, AzNotification },
     props: {
         showMainAction: {
             type: Boolean,

@@ -3,12 +3,11 @@
         <v-list subheader>
             <div v-for="menu in menuActions" :key="menu.name">
                 <v-list-item
-                    active-class="active-menu"
-                    v-if="!menu.children"
-                    :to="menu.path"
-                    @click="redirectTo(menu.path)"
-                    class="menu-item"
-                >
+                        active-class="active-menu"
+                        v-if="!menu.children"
+                        :to="menu.path"
+                        @click="redirectTo(menu.path)"
+                        class="menu-item">
                     <v-list-item-action>
                         <v-tooltip right color="dark-grey" v-if="asideClosed">
                             <template v-slot:activator="{ on }">
@@ -34,12 +33,11 @@
 
                     <div class="az-submenu" v-if="!asideClosed">
                         <v-list-item
-                            v-for="submenu in menu.children"
-                            :to="submenu.path"
-                            :key="submenu.name"
-                            @click="redirectTo(submenu.path)"
-                            :class="submenuStyle(submenu)"
-                        >
+                                v-for="submenu in menu.children"
+                                :to="submenu.path"
+                                :key="submenu.name"
+                                @click="redirectTo(submenu.path)"
+                                :class="submenuStyle(submenu)">
                             <v-list-item-action>
                                 <v-icon>{{ submenu.icon }}</v-icon>
                             </v-list-item-action>
@@ -55,12 +53,11 @@
             <div class="mobile">
                 <v-list class="menu-avatar-mobile">
                     <v-list-item
-                        v-for="item in avatarActions"
-                        :key="item.title"
-                        @click="redirectTo(item.path)"
-                        class="item"
-                        v-az-auth="item.authorities"
-                    >
+                            v-for="item in avatarActions"
+                            :key="item.title"
+                            @click="redirectTo(item.path)"
+                            class="item"
+                            v-az-auth="item.authorities">
                         <v-list-item-action>
                             <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
                         </v-list-item-action>
@@ -164,29 +161,31 @@ export default {
     .v-list-item__action i
         color #fff !important
 
+    &::after
+        content ''
+        position absolute
+        border-top 8px solid transparent
+        border-bottom 8px solid transparent
+        border-right 10px solid #eee
+        left 95%
+
+.v-navigation-drawer--mini-variant .active-menu::after
+    left 83%
+    opacity 1
+
+.v-navigation-drawer--is-mobile .active-menu::after
+    opacity 0
+    border none
+
 .menu-avatar-mobile .item
     border-top 1px solid rgba(255, 255, 255, .1)
-    border-bottom 1px solid rgba(0, 0, 0, .2);
-
-.az-menu
-    height 100%
-    overflow-y auto
-    overflow-x hidden
+    border-bottom 1px solid rgba(0, 0, 0, .2)
 
 .v-list__group__items--no-action .v-list-item
     padding-left 0
 
-.az-menu::-webkit-scrollbar
-    width 6px
-
-.az-menu::-webkit-scrollbar-thumb
-    background rgba(255, 255, 255, .5)
-
 .az-submenu
     background-color rgba(0, 0, 0, .1)
-
-    .v-list-item
-        padding-left 0 !important
 
     &-item
         padding-top 3px
@@ -213,8 +212,24 @@ export default {
             .v-list-item__action i
                 color #fff !important
 
+    .v-list
+        &-item
+            padding-left 0 !important
+
+            &__title
+                font-size 12px !important
+
 .az-menu
     font-size 13px
+    height 100%
+    overflow-y auto
+    overflow-x hidden
+
+    &::-webkit-scrollbar
+        width 6px
+
+    &::-webkit-scrollbar-thumb
+        background rgba(255, 255, 255, .5)
 
     .icon
         color rgba(255, 255, 255, .5)
@@ -237,7 +252,7 @@ export default {
             .v-list-item__action i
                 color #fff !important
 
-        &__group
+        &-group
             border-bottom 1px solid rgba(255, 255, 255, .2)
 
             &--active::before
@@ -254,8 +269,12 @@ export default {
                 &__prepend-icon
                     padding-right 10px !important
 
+                    .v-icon
+                        color rgba(255, 255, 255, .8)
+
                 &__append-icon
                     padding 0 5px 0 0
+                    min-width 20px !important
 
                 &:hover
                     background-color var(--v-primary-darken1) !important
@@ -267,7 +286,7 @@ export default {
 
         &-item
             height 44px
-            padding 0 10px
+            padding 0
             color rgba(255, 255, 255, .8)
             transition unset !important
             margin-right 0 !important
@@ -280,31 +299,40 @@ export default {
                 .v-list-item__action i
                     color #fff !important
 
+                &:not(.v-list-item--active):not(.v-list-item--disabled)
+                    color #fff !important
+
             &__title
                 font-size 14px
 
             &__action
-                min-width unset
-                padding-right 15px
-                padding-left 8px
+                min-width 40px
+                padding-right 0
                 margin-right 0 !important
                 background-color transparent !important
+                justify-content center
 
                 .v-icon
-                    font-size 18px
+                    font-size 16px
 
-        &-group
-            &__header
-                padding 0
-                &__prepend-icon
-                    min-width unset
-                    padding-right 15px
-                    padding-left 8px
-                    margin-right 0 !important
-                    background-color transparent !important
+                i
+                    color rgba(255, 255, 255, .8) !important
 
-                    .v-icon
-                        font-size 18px
+            &:not(.v-list-item--active):not(.v-list-item--disabled)
+                color rgba(255, 255, 255, .8) !important
+
+        &-group__header
+            padding 0
+
+            &__prepend-icon
+                min-width 40px
+                padding-right 0
+                margin-right 0 !important
+                background-color transparent !important
+                justify-content center
+
+                .v-icon
+                    font-size 16px
 
 @media (min-width 720px)
     .mobile

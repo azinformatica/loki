@@ -11,6 +11,7 @@
         :showClearButton="showClearButton"
         class="clear-button"
         :prepend-inner-icon="showClearButtonIf"
+        :error-messages="errors.collect(`${name}`)"
         @click:prepend-inner="cleanValue"
         @blur="updateValue($event.target.value, 'blur')"
         @keydown="validatorNegative($event)"
@@ -50,7 +51,7 @@ export default {
         },
         showClearButton: {
             type: Boolean,
-            default: true
+            default: false
         },
         maxLength: {
             type: Number,
@@ -73,6 +74,7 @@ export default {
             default: ''
         }
     },
+    inject: ['$validator'],
     data() {
         return {
             moneyConfig: {
@@ -115,6 +117,8 @@ export default {
                 this.$emit(event, valueFormatedSimple)
                 this.clickedField = false
             }
+
+            this.validateRequired(value)
         },
         validatorNegative($event) {
             if ($event.key === '-' && !this.negative) {
@@ -128,6 +132,24 @@ export default {
         checkKey($event) {
             if ($event.key !== 'Tab') {
                 this.clickedField = true
+            }
+        },
+        validateRequired(value) {
+            if(this.required) {
+                this.clearErrorValidate()
+                if (!value) {
+                    this.errors.add({
+                        field: this.name,
+                        msg: `O campo ${this.name} é obrigatório`
+                    })
+                }
+            }
+        },
+        clearErrorValidate() {
+            for(var index = 0; index < this.$validator.errors.items.length; index++){
+                if (this.$validator.errors.items[index].field === this.name) {
+                    this.$validator.errors.items.splice(index, 1);
+                }
             }
         }
     }
