@@ -21,6 +21,8 @@
                         pickDateEvent()
                         updateModelDate($event)
                     "
+                    :min="minDate"
+                    :max="maxDate"
                     class="az-date"
                 />
             </v-dialog>
@@ -33,7 +35,8 @@
                 mask="date"
                 :placeholder="dateFormat"
                 :disabled="isDisabled"
-                :color="dateInvalid ? 'error' : ''"
+                :min-date="minDate"
+                :max-date="maxDate"
                 append-icon="event"
                 @click:append="openMenuDate"
                 @keyup="validateDate"
@@ -126,6 +129,14 @@ export default {
         isDisabled: {
             type: Boolean,
             default: false
+        },
+        minDate:{
+            type: String,
+            default: ''
+        },
+        maxDate:{
+            type: String,
+            default: ''
         }
     },
     inject: ['$validator'],
@@ -183,7 +194,7 @@ export default {
             this.dateFormatted = this.formatDate(this.date)
         },
         validateAndParseDate(date) {
-            if (!date || !this.dateStringIsValid(date)) {
+            if (!date || !this.dateStringIsValid(date)  || this.dateMaxIsAllowed(date) || this.dateMaxIsAllowed(date)) {
                 this.date = null
                 this.dateFormatted = ''
                 return
@@ -391,6 +402,12 @@ export default {
                     input.setSelectionRange(0, 5)
                 }
             })
+        },
+        dateMinIsAllowed(date){
+            return (this.moment(date).format('YYYY-MM-DDTHH:mm:ssZZ') < this.minDate)
+        },
+        dateMaxIsAllowed(date){
+            return (this.moment(date).format('YYYY-MM-DDTHH:mm:ssZZ') > this.maxDate)
         }
     }
 }
