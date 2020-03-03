@@ -111,10 +111,13 @@ export default {}
     .az-text
         margin-bottom 8px
 
-        label
+        label, legend
             color #777 !important
             font-weight bold
             font-size 13px
+
+        legend
+            width 100%
 
         p
             color #888 !important
@@ -126,6 +129,8 @@ export default {}
             font-weight bold
             font-size 13px
             overflow unset
+            pointer-events auto
+            top 0
 
         input:-webkit-autofill
             background-color white !important
@@ -191,6 +196,18 @@ export default {}
         font-weight bold
         margin 10px 0
         border-bottom 1px solid #ccc
+
+    .v-input--selection-controls
+        margin-top 0 !important
+        padding-top 0 !important
+
+        legend
+            margin-bottom 10px
+
+    .v-radio
+        label
+            font-weight normal !important
+            top 0 !important
 
 .az-actions-form
     padding 0 20px 20px

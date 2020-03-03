@@ -16,8 +16,11 @@
         @blur="updateValue($event.target.value, 'blur')"
         @keydown="validatorNegative($event)"
         @keyup.enter="updateValue($event.target.value, 'keyupEnter')"
-        @keyup="checkKey($event)"
-    />
+        @keyup="checkKey($event)">
+        <template v-slot:label if="this.$slots['label']">
+            <slot name="label" />
+        </template>
+    </v-text-field>
 </template>
 
 <script>
