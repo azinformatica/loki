@@ -21,6 +21,8 @@
                         pickDateEvent()
                         updateModelDate($event)
                     "
+                    :min="minDate"
+                    :max="maxDate"
                     class="az-date"
                 />
             </v-dialog>
@@ -33,7 +35,8 @@
                 mask="date"
                 :placeholder="dateFormat"
                 :disabled="isDisabled"
-                :color="dateInvalid ? 'error' : ''"
+                :min-date="minDate"
+                :max-date="maxDate"
                 append-icon="event"
                 @click:append="openMenuDate"
                 @keyup="validateDate"
@@ -127,6 +130,12 @@ export default {
         isDisabled: {
             type: Boolean,
             default: false
+        },
+        minDate:{
+            type: String
+        },
+        maxDate:{
+            type: String
         }
     },
     inject: ['$validator'],
@@ -184,7 +193,7 @@ export default {
             this.dateFormatted = this.formatDate(this.date)
         },
         validateAndParseDate(date) {
-            if (!date || !this.dateStringIsValid(date)) {
+            if (!date || !this.dateStringIsValid(date)  || this.dateMaxIsAllowed(date) || this.dateMinIsAllowed(date)) {
                 this.date = null
                 this.dateFormatted = ''
                 return
@@ -392,6 +401,34 @@ export default {
                     input.setSelectionRange(0, 5)
                 }
             })
+        },
+        dateMinIsAllowed(date){
+            if(this.minDate){
+                const dateObj = this.getDayMonthYearFromDateString(date)
+                const minDateObj = this.getDayMonthYearFromDateString(this.moment(this.minDate).format('DD/MM/YYYY'))
+                if (dateObj.year < minDateObj.year){
+                    return true
+                }else if(dateObj.month < minDateObj.month){
+                    return true
+                }else if (dateObj.day < minDateObj.day && dateObj.month === minDateObj.month){
+                    return  true
+                }
+            }
+            return false
+        },
+        dateMaxIsAllowed(date){
+            if(this.maxDate){
+                const dateObj = this.getDayMonthYearFromDateString(date)
+                const maxDateObj = this.getDayMonthYearFromDateString(this.moment(this.maxDate).format('DD/MM/YYYY'))
+                if (dateObj.year > maxDateObj.year){
+                    return true
+                }else if(dateObj.month > maxDateObj.month){
+                    return true
+                }else if (dateObj.day > maxDateObj.day && dateObj.month === maxDateObj.month){
+                    return  true
+                }
+            }
+            return false
         }
     }
 }
