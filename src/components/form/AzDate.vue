@@ -11,16 +11,12 @@
                 offset-y
                 max-width="290px"
                 min-width="290px"
-                v-if="!isDisabled"
-            >
+                v-if="!isDisabled">
                 <v-date-picker
                     v-model="date"
                     :value="value"
                     :locale="currentLanguage"
-                    @input="
-                        pickDateEvent()
-                        updateModelDate($event)
-                    "
+                    @input="pickDateEvent(), updateModelDate($event)"
                     :min="minDate"
                     :max="maxDate"
                     class="az-date"
@@ -32,7 +28,7 @@
                 :error-messages="errors.collect(`${nameDate}`)"
                 v-model="dateFormatted"
                 :label="label"
-                mask="date"
+                v-mask="'##/##/####'"
                 :placeholder="dateFormat"
                 :disabled="isDisabled"
                 :min-date="minDate"
@@ -40,9 +36,7 @@
                 append-icon="event"
                 @click:append="openMenuDate"
                 @keyup="validateDate"
-                @blur="
-                    validateAndParseDate(dateFormatted)
-                    updateModelDate(date)">
+                @blur="validateAndParseDate(dateFormatted), updateModelDate(date)">
                 <template v-slot:label if="this.$slots['label-date']">
                     <slot name="label-date" />
                 </template>
@@ -59,16 +53,12 @@
                 offset-y
                 max-width="290px"
                 min-width="290px"
-                v-if="!isDisabled"
-            >
+                v-if="!isDisabled">
                 <v-time-picker
                     v-if="dialogTime"
                     v-model="time"
                     :locale="currentLanguage"
-                    @change="
-                        changeTimeEvent()
-                        updateModelTime($event)
-                    "
+                    @change="changeTimeEvent(), updateModelTime($event)"
                     format="24hr"
                     class="az-date"
                 />
@@ -84,11 +74,8 @@
                 append-icon="access_time"
                 @click:append="openMenuTime"
                 @focus="selectContentInputHour"
-                @blur="
-                    validateTimeEvent()
-                    updateModelTime(time)
-                "
-            ></v-text-field>
+                @blur="validateTimeEvent(), updateModelTime(time)"
+            />
         </div>
     </div>
 </template>
@@ -102,6 +89,10 @@ export default {
             validator: function(value) {
                 return ['DD/MM/YYYY', 'MM/DD/YYYY'].indexOf(value) !== -1
             }
+        },
+        dateMask: {
+            type: String,
+            default: '##/##/####'
         },
         limparData:{
             type: Boolean,
@@ -167,12 +158,16 @@ export default {
         }
     },
     watch: {
-        value(val) {
-            this.updateDateTimeByModel(val)
+        value: {
+            handler(n, o) {
+                this.updateDateTimeByModel(n)
+                this.updateValue(n)
+            },
+            immediate: true
         },
         limparData(val){
             if(val) {
-                 this.dateFormatted = null
+                this.dateFormatted = null
             }
         }
     },
@@ -386,8 +381,9 @@ export default {
                 .format(this.reverseDateFormat + 'THH:mm:ss.SSSZZ')
         },
         getDateTimeZeroTimezone(dateTime) {
+            const offset = this.getOffsetFromCurrentDateTime(dateTime)
             return this.moment(dateTime)
-                .utcOffset('+0000')
+                .utcOffset(offset)
                 .format(this.reverseDateFormat + 'THH:mm:ss.SSSZZ')
         },
         buildDateTimeWithTimezone(date, time) {
@@ -408,6 +404,19 @@ export default {
                     input.setSelectionRange(0, 5)
                 }
             })
+        },
+        updateValue(val) {
+            if (val) {
+                const dateTime = this.getDateTimeWithSystemTimezone(val)
+                const splitDateTime = dateTime.split('T')
+                this.date = splitDateTime[0]
+                this.dateFormatted = this.formatDate(this.date)
+                this.time = splitDateTime[1].substring(0, 5)
+                this.timeFormatted = this.time.replace(':', '')
+                const dateTimeWithTimezone = this.buildDateTimeWithTimezone(this.date, this.time)
+                const dateTimeTimezoneZero = this.getDateTimeZeroTimezone(dateTimeWithTimezone)
+                this.$emit('input', dateTimeTimezoneZero)
+            }
         },
         dateMinIsAllowed(date){
             if(this.minDate){

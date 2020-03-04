@@ -118,6 +118,7 @@ export default {
             const valueFormatedSimple = accounting.unformat(valueNumber, ',')
             if (valueFormatedSimple !== this.value && this.clickedField) {
                 this.$emit(event, valueFormatedSimple)
+                this.$emit('input', valueFormatedSimple)
                 this.clickedField = false
             }
 
