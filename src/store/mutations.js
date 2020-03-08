@@ -165,5 +165,4 @@ export default {
     [mutationTypes.AUTO_SAVING.SET_AUTO_SAVED_DESCRIPTION](state, message) {
         state.autoSave.autoSavedMessage = message
     }
-
 }

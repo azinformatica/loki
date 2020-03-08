@@ -11,7 +11,8 @@
                 offset-y
                 max-width="290px"
                 min-width="290px"
-                v-if="!isDisabled">
+                v-if="!isDisabled"
+            >
                 <v-date-picker
                     v-model="date"
                     :value="value"
@@ -36,9 +37,19 @@
                 append-icon="event"
                 @click:append="openMenuDate"
                 @keyup="validateDate"
-                @blur="validateAndParseDate(dateFormatted), updateModelDate(date)">
-                <template v-slot:label if="this.$slots['label-date']">
+                @blur="validateAndParseDate(dateFormatted), updateModelDate(date)"
+            >
+                <template v-slot:label v-if="this.$slots['label-date']">
                     <slot name="label-date" />
+                </template>
+                <template v-slot:append-outer v-if="this.$slots['append-outer']">
+                    <slot name="append-outer" />
+                </template>
+                <template v-slot:append v-if="this.$slots['append']">
+                    <v-btn icon @click="openMenuDate">
+                        <v-icon small>event</v-icon>
+                    </v-btn>
+                    <slot name="append" />
                 </template>
             </v-text-field>
         </div>
@@ -53,7 +64,8 @@
                 offset-y
                 max-width="290px"
                 min-width="290px"
-                v-if="!isDisabled">
+                v-if="!isDisabled"
+            >
                 <v-time-picker
                     v-if="dialogTime"
                     v-model="time"
@@ -94,7 +106,7 @@ export default {
             type: String,
             default: '##/##/####'
         },
-        limparData:{
+        limparData: {
             type: Boolean,
             default: false
         },
@@ -126,10 +138,10 @@ export default {
             type: Boolean,
             default: false
         },
-        minDate:{
+        minDate: {
             type: String
         },
-        maxDate:{
+        maxDate: {
             type: String
         }
     },
@@ -159,14 +171,14 @@ export default {
     },
     watch: {
         value: {
-            handler(n, o) {
-                this.updateDateTimeByModel(n)
-                this.updateValue(n)
+            handler(val) {
+                this.updateDateTimeByModel(val)
+                this.updateValue(val)
             },
             immediate: true
         },
-        limparData(val){
-            if(val) {
+        limparData(val) {
+            if (val) {
                 this.dateFormatted = null
             }
         }
@@ -195,7 +207,7 @@ export default {
             this.dateFormatted = this.formatDate(this.date)
         },
         validateAndParseDate(date) {
-            if (!date || !this.dateStringIsValid(date)  || this.dateMaxIsAllowed(date) || this.dateMinIsAllowed(date)) {
+            if (!date || !this.dateStringIsValid(date) || this.dateMaxIsAllowed(date) || this.dateMinIsAllowed(date)) {
                 this.date = null
                 this.dateFormatted = ''
                 return
@@ -212,7 +224,7 @@ export default {
             }
         },
         getDayMonthYearFromDateString(date) {
-            const dateFormated = date.replace(new RegExp('/', 'g'), '');
+            const dateFormated = date.replace(new RegExp('/', 'g'), '')
             const getFnDateFormat = {
                 'DD/MM/YYYY': function() {
                     return {
@@ -418,30 +430,30 @@ export default {
                 this.$emit('input', dateTimeTimezoneZero)
             }
         },
-        dateMinIsAllowed(date){
-            if(this.minDate){
+        dateMinIsAllowed(date) {
+            if (this.minDate) {
                 const dateObj = this.getDayMonthYearFromDateString(date)
                 const minDateObj = this.getDayMonthYearFromDateString(this.moment(this.minDate).format('DD/MM/YYYY'))
-                if (dateObj.year < minDateObj.year){
+                if (dateObj.year < minDateObj.year) {
                     return true
-                }else if(dateObj.month < minDateObj.month){
+                } else if (dateObj.month < minDateObj.month) {
                     return true
-                }else if (dateObj.day < minDateObj.day && dateObj.month === minDateObj.month){
-                    return  true
+                } else if (dateObj.day < minDateObj.day && dateObj.month === minDateObj.month) {
+                    return true
                 }
             }
             return false
         },
-        dateMaxIsAllowed(date){
-            if(this.maxDate){
+        dateMaxIsAllowed(date) {
+            if (this.maxDate) {
                 const dateObj = this.getDayMonthYearFromDateString(date)
                 const maxDateObj = this.getDayMonthYearFromDateString(this.moment(this.maxDate).format('DD/MM/YYYY'))
-                if (dateObj.year > maxDateObj.year){
+                if (dateObj.year > maxDateObj.year) {
                     return true
-                }else if(dateObj.month > maxDateObj.month){
+                } else if (dateObj.month > maxDateObj.month) {
                     return true
-                }else if (dateObj.day > maxDateObj.day && dateObj.month === maxDateObj.month){
-                    return  true
+                } else if (dateObj.day > maxDateObj.day && dateObj.month === maxDateObj.month) {
+                    return true
                 }
             }
             return false

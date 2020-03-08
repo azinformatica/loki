@@ -5,7 +5,7 @@
                 <span v-on="on" v-html="message"></span>
             </template>
 
-            <span>{{description}}</span>
+            <span>{{ description }}</span>
         </v-tooltip>
     </div>
 </template>

@@ -209,6 +209,10 @@ export default {}
             font-weight normal !important
             top 0 !important
 
+    .v-file-input__text
+        font-size 13px
+        color #888 !important
+
 .az-actions-form
     padding 0 20px 20px
     margin-top 20px

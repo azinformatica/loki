@@ -8,7 +8,8 @@
         v-validate="{ required: isRequired }"
         :name="name"
         :error-messages="errors.collect(`${name}`)"
-        :disabled="disabled">
+        :disabled="disabled"
+    >
         <template v-slot:label if="this.$slots['label']">
             <slot name="label" />
         </template>
@@ -47,7 +48,7 @@ export default {
             type: Boolean,
             default: false
         },
-        insertNullItem:{
+        insertNullItem: {
             type: Boolean,
             default: true
         }
@@ -74,7 +75,7 @@ export default {
                 }
                 novoArray = _.sortBy(novoArray, 'text')
             }
-            if(this.insertNullItem){
+            if (this.insertNullItem) {
                 return _.union([{ text: 'Selecione', value: null }], novoArray)
             }
 
