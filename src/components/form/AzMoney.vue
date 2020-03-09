@@ -81,6 +81,10 @@ export default {
         suffix: {
             type: String,
             default: ''
+        },
+        requeridMessage: {
+            type: String,
+            default: 'O campo {name} é obrigatório'
         }
     },
     inject: ['$validator'],
@@ -160,7 +164,7 @@ export default {
                 if (!value) {
                     this.errors.add({
                         field: this.name,
-                        msg: `O campo ${this.name} é obrigatório`
+                        msg: this.requeridMessage.replace('{name}', this.name)
                     })
                 }
             }
