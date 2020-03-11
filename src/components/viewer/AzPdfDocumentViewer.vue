@@ -111,7 +111,7 @@ export default {
                 this.loading = false
                 if (this.computedSrc.length !== 0) {
                     this.$store.commit(mutationTypes.SHOW_ALERT, {
-                        message: 'URL do documento inválida..',
+                        message: 'URL do documento inválida.',
                         type: 'error'
                     })
                     throw new Error('URL do documento inválida.')
