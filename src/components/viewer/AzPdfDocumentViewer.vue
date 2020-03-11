@@ -1,13 +1,13 @@
 <template>
     <div class="az-pdf-document-viewer" justify-center :class="style">
         <v-progress-linear
-                v-if="loading && progressBar"
+                v-show="loading && progressBar"
                 v-model="progress"
                 :active="show"
                 :indeterminate="query"
                 :query="true"
         />
-        <div v-else>
+        <div v-show="!loading">
             <az-pdf-document-viewer-toolbar
                     v-bind="{ currentPage, totalPages }"
                     @zoomOut="resolveEventZoomOut"
