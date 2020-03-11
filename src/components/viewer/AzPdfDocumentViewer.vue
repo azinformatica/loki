@@ -1,26 +1,26 @@
 <template>
     <div class="az-pdf-document-viewer" justify-center :class="style">
         <v-progress-linear
-                v-show="loading && progressBar"
-                v-model="progress"
-                :active="show"
-                :indeterminate="query"
-                :query="true"
+            v-show="loading && progressBar"
+            v-model="progress"
+            :active="show"
+            :indeterminate="query"
+            :query="true"
         />
         <div v-show="!loading">
             <az-pdf-document-viewer-toolbar
-                    v-bind="{ currentPage, totalPages }"
-                    @zoomOut="resolveEventZoomOut"
-                    @zoomIn="resolveEventZoomIn"
-                    @resetZoom="resolveEventResetZoom"
+                v-bind="{ currentPage, totalPages }"
+                @zoomOut="resolveEventZoomOut"
+                @zoomIn="resolveEventZoomIn"
+                @resetZoom="resolveEventResetZoom"
             />
             <div id="documentContainer" class="az-pdf-document-viewer__container" :style="{ height: height }">
                 <az-pdf-document-viewer-page
-                        v-for="page in pages"
-                        :key="page.pageIndex + 1"
-                        :pageNum="page.pageIndex + 1"
-                        :pageSize="pageSize"
-                        @resize="resolveEventResize"
+                    v-for="page in pages"
+                    :key="page.pageIndex + 1"
+                    :pageNum="page.pageIndex + 1"
+                    :pageSize="pageSize"
+                    @resize="resolveEventResize"
                 />
             </div>
         </div>
@@ -159,7 +159,7 @@ export default {
                 this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES, payload.pageNum)
             }
         },
-        queryAndIndeterminate () {
+        queryAndIndeterminate() {
             this.query = true
             this.show = true
             this.progress = 0
@@ -183,7 +183,7 @@ export default {
             await this.updatePdfRendering()
         }
     },
-    beforeDestroy () {
+    beforeDestroy() {
         clearInterval(this.interval)
     }
 }
