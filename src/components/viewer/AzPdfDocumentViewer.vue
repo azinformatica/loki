@@ -1,5 +1,5 @@
 <template>
-    <div class="az-pdf-document-viewer" justify-center :class="style">
+    <v-flex xs12 class="az-pdf-document-viewer" justify-center :class="style">
         <v-progress-linear
             v-show="loading && progressBar"
             v-model="progress"
@@ -24,7 +24,7 @@
                 />
             </div>
         </div>
-    </div>
+    </v-flex>
 </template>
 
 <script>
