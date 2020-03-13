@@ -3,7 +3,7 @@ import { shallowMount, mount, createLocalVue } from '@vue/test-utils'
 import Vuetify from 'vuetify'
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {mutationTypes} from '../../store'
+import { mutationTypes } from '../../store'
 
 const localVue = createLocalVue()
 Vue.use(Vuetify)

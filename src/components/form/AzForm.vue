@@ -90,6 +90,7 @@ export default {}
 
         .v-select
             font-size 13px
+            max-width 60px
 
         .v-select__selection--comma
             font-size 13px
@@ -208,6 +209,10 @@ export default {}
         label
             font-weight normal !important
             top 0 !important
+
+    .v-file-input__text
+        font-size 13px
+        color #888 !important
 
 .az-actions-form
     padding 0 20px 20px

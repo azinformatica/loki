@@ -15,10 +15,16 @@
         @click:prepend-inner="cleanValue"
         @blur="updateValue($event.target.value, 'blur')"
         @keydown="validatorNegative($event)"
-        @keyup.enter="updateValue($event.target.value, 'keyupEnter')"
-        @keyup="checkKey($event)">
+        @keyup="checkKey($event)"
+    >
         <template v-slot:label if="this.$slots['label']">
             <slot name="label" />
+        </template>
+        <template v-slot:append-outer v-if="this.$slots['append-outer']">
+            <slot name="append-outer" />
+        </template>
+        <template v-slot:append v-if="this.$slots['append']">
+            <slot name="append" />
         </template>
     </v-text-field>
 </template>
@@ -75,6 +81,10 @@ export default {
         suffix: {
             type: String,
             default: ''
+        },
+        requeridMessage: {
+            type: String,
+            default: 'O campo {name} é obrigatório'
         }
     },
     inject: ['$validator'],
@@ -116,7 +126,11 @@ export default {
                 valueNumber = valueNumber.replace(this.suffix, '')
             }
             const valueFormatedSimple = accounting.unformat(valueNumber, ',')
-            if (valueFormatedSimple !== this.value && this.clickedField) {
+            if (
+                (valueFormatedSimple !== this.value || event === 'keyupEnter' || event === 'keyupEsc') &&
+                this.clickedField
+            ) {
+                this.$emit('input', valueFormatedSimple)
                 this.$emit(event, valueFormatedSimple)
                 this.clickedField = false
             }
@@ -136,22 +150,29 @@ export default {
             if ($event.key !== 'Tab') {
                 this.clickedField = true
             }
+            if ($event.key === 'Enter') {
+                this.updateValue($event.target.value, 'keyupEnter')
+            } else if ($event.key === 'Escape') {
+                this.updateValue($event.target.value, 'keyupEsc')
+            } else {
+                this.updateValue($event.target.value, 'keyup')
+            }
         },
         validateRequired(value) {
-            if(this.required) {
+            if (this.required) {
                 this.clearErrorValidate()
                 if (!value) {
                     this.errors.add({
                         field: this.name,
-                        msg: `O campo ${this.name} é obrigatório`
+                        msg: this.requeridMessage.replace('{name}', this.name)
                     })
                 }
             }
         },
         clearErrorValidate() {
-            for(var index = 0; index < this.$validator.errors.items.length; index++){
+            for (var index = 0; index < this.$validator.errors.items.length; index++) {
                 if (this.$validator.errors.items[index].field === this.name) {
-                    this.$validator.errors.items.splice(index, 1);
+                    this.$validator.errors.items.splice(index, 1)
                 }
             }
         }

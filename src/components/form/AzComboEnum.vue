@@ -12,6 +12,12 @@
         <template v-slot:label if="this.$slots['label']">
             <slot name="label" />
         </template>
+        <template v-slot:append-outer v-if="this.$slots['append-outer']">
+            <slot name="append-outer" />
+        </template>
+        <template v-slot:append v-if="this.$slots['append']">
+            <slot name="append" />
+        </template>
     </v-select>
 </template>
 
@@ -47,7 +53,7 @@ export default {
             type: Boolean,
             default: false
         },
-        insertNullItem:{
+        insertNullItem: {
             type: Boolean,
             default: true
         }
@@ -74,7 +80,7 @@ export default {
                 }
                 novoArray = _.sortBy(novoArray, 'text')
             }
-            if(this.insertNullItem){
+            if (this.insertNullItem) {
                 return _.union([{ text: 'Selecione', value: null }], novoArray)
             }
 

@@ -3,11 +3,12 @@
         <v-list subheader>
             <div v-for="menu in menuActions" :key="menu.name">
                 <v-list-item
-                        active-class="active-menu"
-                        v-if="!menu.children"
-                        :to="menu.path"
-                        @click="redirectTo(menu.path)"
-                        class="menu-item">
+                    active-class="active-menu"
+                    v-if="!menu.children"
+                    :to="menu.path"
+                    @click="redirectTo(menu.path)"
+                    class="menu-item"
+                >
                     <v-list-item-action>
                         <v-tooltip right color="dark-grey" v-if="asideClosed">
                             <template v-slot:activator="{ on }">
@@ -33,11 +34,12 @@
 
                     <div class="az-submenu" v-if="!asideClosed">
                         <v-list-item
-                                v-for="submenu in menu.children"
-                                :to="submenu.path"
-                                :key="submenu.name"
-                                @click="redirectTo(submenu.path)"
-                                :class="submenuStyle(submenu)">
+                            v-for="submenu in menu.children"
+                            :to="submenu.path"
+                            :key="submenu.name"
+                            @click="redirectTo(submenu.path)"
+                            :class="submenuStyle(submenu)"
+                        >
                             <v-list-item-action>
                                 <v-icon>{{ submenu.icon }}</v-icon>
                             </v-list-item-action>
@@ -53,11 +55,12 @@
             <div class="mobile">
                 <v-list class="menu-avatar-mobile">
                     <v-list-item
-                            v-for="item in avatarActions"
-                            :key="item.title"
-                            @click="redirectTo(item.path)"
-                            class="item"
-                            v-az-auth="item.authorities">
+                        v-for="item in avatarActions"
+                        :key="item.title"
+                        @click="redirectTo(item.path)"
+                        class="item"
+                        v-az-auth="item.authorities"
+                    >
                         <v-list-item-action>
                             <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
                         </v-list-item-action>
@@ -266,11 +269,8 @@ export default {
             &__header
                 height 44px
 
-                &__prepend-icon
-                    padding-right 10px !important
-
-                    .v-icon
-                        color rgba(255, 255, 255, .8)
+                &__prepend-icon .v-icon
+                    color rgba(255, 255, 255, .8)
 
                 &__append-icon
                     padding 0 5px 0 0

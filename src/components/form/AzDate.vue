@@ -11,20 +11,15 @@
                 offset-y
                 max-width="290px"
                 min-width="290px"
-                v-if="!isDisabled"
-            >
+                v-if="!isDisabled">
                 <v-date-picker
                     v-model="date"
                     :value="value"
                     :locale="currentLanguage"
-                    @input="
-                        pickDateEvent()
-                        updateModelDate($event)
-                    "
+                    @input="pickDateEvent(), updateModelDate($event)"
                     :min="minDate"
                     :max="maxDate"
-                    class="az-date"
-                />
+                    class="az-date"/>
             </v-dialog>
             <v-text-field
                 v-validate="{ required: isRequired }"
@@ -32,19 +27,26 @@
                 :error-messages="errors.collect(`${nameDate}`)"
                 v-model="dateFormatted"
                 :label="label"
-                mask="date"
-                :placeholder="dateFormat"
+                v-mask="'##/##/####'"
+                :placeholder="placeholderDate"
                 :disabled="isDisabled"
                 :min-date="minDate"
                 :max-date="maxDate"
                 append-icon="event"
                 @click:append="openMenuDate"
-                @keyup="validateDate"
-                @blur="
-                    validateAndParseDate(dateFormatted)
-                    updateModelDate(date)">
-                <template v-slot:label if="this.$slots['label-date']">
+                @keyup="validateAndParseDate(dateFormatted, false)"
+                @blur="validateAndParseDate(dateFormatted, true)">
+                <template v-slot:label v-if="this.$slots['label-date']">
                     <slot name="label-date" />
+                </template>
+                <template v-slot:append-outer v-if="this.$slots['append-outer']">
+                    <slot name="append-outer" />
+                </template>
+                <template v-slot:append v-if="this.$slots['append']">
+                    <v-btn icon @click="openMenuDate">
+                        <v-icon small>event</v-icon>
+                    </v-btn>
+                    <slot name="append" />
                 </template>
             </v-text-field>
         </div>
@@ -59,19 +61,14 @@
                 offset-y
                 max-width="290px"
                 min-width="290px"
-                v-if="!isDisabled"
-            >
+                v-if="!isDisabled">
                 <v-time-picker
                     v-if="dialogTime"
                     v-model="time"
                     :locale="currentLanguage"
-                    @change="
-                        changeTimeEvent()
-                        updateModelTime($event)
-                    "
+                    @change="changeTimeEvent(), updateModelTime($event)"
                     format="24hr"
-                    class="az-date"
-                />
+                    class="az-date"/>
             </v-dialog>
             <v-text-field
                 v-validate="{ required: isRequired }"
@@ -80,15 +77,11 @@
                 :disabled="isDisabled"
                 v-model="timeFormatted"
                 mask="time"
-                placeholder="HH:mm"
+                :placeholder="placeholderHour"
                 append-icon="access_time"
                 @click:append="openMenuTime"
                 @focus="selectContentInputHour"
-                @blur="
-                    validateTimeEvent()
-                    updateModelTime(time)
-                "
-            ></v-text-field>
+                @blur="validateTimeEvent(), updateModelTime(time)"/>
         </div>
     </div>
 </template>
@@ -103,7 +96,11 @@ export default {
                 return ['DD/MM/YYYY', 'MM/DD/YYYY'].indexOf(value) !== -1
             }
         },
-        limparData:{
+        dateMask: {
+            type: String,
+            default: '##/##/####'
+        },
+        limparData: {
             type: Boolean,
             default: false
         },
@@ -127,18 +124,26 @@ export default {
             type: String,
             default: ''
         },
+        placeholderDate: {
+            type: String,
+            default: 'DD/MM/YYYY'
+        },
         nameHour: {
             type: String,
             default: ''
+        },
+        placeholderHour: {
+            type: String,
+            default: 'HH:mm'
         },
         isDisabled: {
             type: Boolean,
             default: false
         },
-        minDate:{
+        minDate: {
             type: String
         },
-        maxDate:{
+        maxDate: {
             type: String
         }
     },
@@ -167,12 +172,16 @@ export default {
         }
     },
     watch: {
-        value(val) {
-            this.updateDateTimeByModel(val)
+        value: {
+            handler(val) {
+                this.updateDateTimeByModel(val)
+                this.updateValue(val)
+            },
+            immediate: true
         },
-        limparData(val){
-            if(val) {
-                 this.dateFormatted = null
+        limparData(val) {
+            if (val) {
+                this.dateFormatted = null
             }
         }
     },
@@ -199,25 +208,22 @@ export default {
             this.dialogDate = false
             this.dateFormatted = this.formatDate(this.date)
         },
-        validateAndParseDate(date) {
-            if (!date || !this.dateStringIsValid(date)  || this.dateMaxIsAllowed(date) || this.dateMinIsAllowed(date)) {
-                this.date = null
-                this.dateFormatted = ''
+        validateAndParseDate(date, clearInvalid) {
+            if (!date || !this.dateStringIsValid(date) || this.dateMaxIsAllowed(date) || this.dateMinIsAllowed(date)) {
+                if(clearInvalid) {
+                    this.date = null
+                    this.dateFormatted = ''
+                }
                 return
             }
 
             const dateObj = this.getDayMonthYearFromDateString(date)
 
             this.date = `${dateObj.year}-${dateObj.month}-${dateObj.day}`
-        },
-        validateDate() {
-            this.dateInvalid = false
-            if (this.dateFormatted && !this.dateStringIsValid(this.dateFormatted)) {
-                this.dateInvalid = true
-            }
+            this.updateModelDate(this.date)
         },
         getDayMonthYearFromDateString(date) {
-            const dateFormated = date.replace(new RegExp('/', 'g'), '');
+            const dateFormated = date.replace(new RegExp('/', 'g'), '')
             const getFnDateFormat = {
                 'DD/MM/YYYY': function() {
                     return {
@@ -386,8 +392,9 @@ export default {
                 .format(this.reverseDateFormat + 'THH:mm:ss.SSSZZ')
         },
         getDateTimeZeroTimezone(dateTime) {
+            const offset = this.getOffsetFromCurrentDateTime(dateTime)
             return this.moment(dateTime)
-                .utcOffset('+0000')
+                .utcOffset(offset)
                 .format(this.reverseDateFormat + 'THH:mm:ss.SSSZZ')
         },
         buildDateTimeWithTimezone(date, time) {
@@ -409,31 +416,34 @@ export default {
                 }
             })
         },
-        dateMinIsAllowed(date){
-            if(this.minDate){
+        updateValue(val) {
+            if (val) {
+                const dateTime = this.getDateTimeWithSystemTimezone(val)
+                const splitDateTime = dateTime.split('T')
+                this.date = splitDateTime[0]
+                this.dateFormatted = this.formatDate(this.date)
+                this.time = splitDateTime[1].substring(0, 5)
+                this.timeFormatted = this.time.replace(':', '')
+                const dateTimeWithTimezone = this.buildDateTimeWithTimezone(this.date, this.time)
+                const dateTimeTimezoneZero = this.getDateTimeZeroTimezone(dateTimeWithTimezone)
+                this.$emit('input', dateTimeTimezoneZero)
+            }
+        },
+        dateMinIsAllowed(date) {
+            if (this.minDate) {
                 const dateObj = this.getDayMonthYearFromDateString(date)
                 const minDateObj = this.getDayMonthYearFromDateString(this.moment(this.minDate).format('DD/MM/YYYY'))
-                if (dateObj.year < minDateObj.year){
-                    return true
-                }else if(dateObj.month < minDateObj.month){
-                    return true
-                }else if (dateObj.day < minDateObj.day && dateObj.month === minDateObj.month){
-                    return  true
-                }
+                return this.moment(`${dateObj.year}-${dateObj.month}-${dateObj.day}`)
+                    .isBefore(`${minDateObj.year}-${minDateObj.month}-${minDateObj.day}`)
             }
             return false
         },
-        dateMaxIsAllowed(date){
-            if(this.maxDate){
+        dateMaxIsAllowed(date) {
+            if (this.maxDate) {
                 const dateObj = this.getDayMonthYearFromDateString(date)
                 const maxDateObj = this.getDayMonthYearFromDateString(this.moment(this.maxDate).format('DD/MM/YYYY'))
-                if (dateObj.year > maxDateObj.year){
-                    return true
-                }else if(dateObj.month > maxDateObj.month){
-                    return true
-                }else if (dateObj.day > maxDateObj.day && dateObj.month === maxDateObj.month){
-                    return  true
-                }
+                return this.moment(`${dateObj.year}-${dateObj.month}-${dateObj.day}`)
+                    .isAfter(`${maxDateObj.year}-${maxDateObj.month}-${maxDateObj.day}`)
             }
             return false
         }
