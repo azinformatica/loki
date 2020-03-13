@@ -90,6 +90,7 @@ export default {}
 
         .v-select
             font-size 13px
+            max-width 60px
 
         .v-select__selection--comma
             font-size 13px

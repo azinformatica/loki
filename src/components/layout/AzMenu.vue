@@ -269,11 +269,8 @@ export default {
             &__header
                 height 44px
 
-                &__prepend-icon
-                    padding-right 10px !important
-
-                    .v-icon
-                        color rgba(255, 255, 255, .8)
+                &__prepend-icon .v-icon
+                    color rgba(255, 255, 255, .8)
 
                 &__append-icon
                     padding 0 5px 0 0

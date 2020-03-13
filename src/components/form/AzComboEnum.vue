@@ -8,10 +8,15 @@
         v-validate="{ required: isRequired }"
         :name="name"
         :error-messages="errors.collect(`${name}`)"
-        :disabled="disabled"
-    >
+        :disabled="disabled">
         <template v-slot:label if="this.$slots['label']">
             <slot name="label" />
+        </template>
+        <template v-slot:append-outer v-if="this.$slots['append-outer']">
+            <slot name="append-outer" />
+        </template>
+        <template v-slot:append v-if="this.$slots['append']">
+            <slot name="append" />
         </template>
     </v-select>
 </template>

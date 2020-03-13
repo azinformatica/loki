@@ -169,6 +169,7 @@ export default {
                 width 100%
                 outline none
                 color #777777
+                font-size 14px
 
         ::placeholder
             color #cccccc !important
