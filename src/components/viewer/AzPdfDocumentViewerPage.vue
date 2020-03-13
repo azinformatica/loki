@@ -1,9 +1,7 @@
 <template>
-    <v-layout justify-center align-center>
-        <div :id="'page' + pageNum" :height="pageSize.height" :width="pageSize.width" class="az-pdf-page">
-            <canvas :height="pageSize.height" :width="pageSize.width" />
-        </div>
-    </v-layout>
+    <div :id="'page' + pageNum" :height="pageSize.height" :width="pageSize.width" class="az-pdf-page">
+        <canvas :height="pageSize.height" :width="pageSize.width" />
+    </div>
 </template>
 
 <script>
@@ -37,6 +35,7 @@ export default {
 <style lang="stylus" scoped>
 .az-pdf-page
     margin-bottom 15px
+    text-align center
 
     canvas
         -webkit-box-shadow 0 3px 6px -1px rgba(0, 0, 0, .2)
