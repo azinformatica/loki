@@ -99,7 +99,10 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             await wrapper.vm.$nextTick()
 
             expect(actions[actionTypes.DOCUMENT.CLEAR_RENDER_CONTEXT]).toHaveBeenCalled()
-            expect(actions[actionTypes.DOCUMENT.FETCH_DOCUMENT].mock.calls[0][1]).toEqual(src)
+            expect(actions[actionTypes.DOCUMENT.FETCH_DOCUMENT].mock.calls[0][1]).toEqual({
+                src: 'document/url',
+                httpHeader: {}
+            })
         })
 
         it('Should have a mounted method', () => {

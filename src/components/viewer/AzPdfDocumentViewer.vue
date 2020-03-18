@@ -49,6 +49,10 @@ export default {
             type: String,
             default: '100vh'
         },
+        httpHeader: {
+            type: Object,
+            default: () => new Object()
+        },
         progressBar: {
             type: Boolean,
             default: false
@@ -105,7 +109,10 @@ export default {
             try {
                 this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDER_CONTEXT)
                 this.loading = true
-                await this.$store.dispatch(actionTypes.DOCUMENT.FETCH_DOCUMENT, this.computedSrc)
+                await this.$store.dispatch(actionTypes.DOCUMENT.FETCH_DOCUMENT, {
+                    src: this.computedSrc,
+                    httpHeader: this.httpHeader
+                })
                 this.loading = false
             } catch (error) {
                 this.loading = false
