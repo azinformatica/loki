@@ -130,17 +130,15 @@ export default {
         },
         async handleScroll(e) {
             this.visiblePageNum = Math.floor(e.target.scrollTop / this.pageHeight) + 1
-            this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, this.visiblePageNum)
-            if (!isNaN(this.visiblePageNum) && this.renderedPages.indexOf(this.visiblePageNum) === -1) {
-                this.okToRender = true
-                this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES, this.visiblePageNum)
+            if (this.validatePageChange()) {
+                this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, this.visiblePageNum)
             }
-            if (this.okToRender) {
-                this.okToRender = false
+            if (this.validatePageNotRendered()) {
                 await this.$store.dispatch(
                     actionTypes.DOCUMENT.RENDER_PAGE,
                     this.pagesCanvasContext[this.visiblePageNum]
                 )
+                this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES, this.visiblePageNum)
             }
         },
         resolveEventZoomOut() {
@@ -183,6 +181,12 @@ export default {
                     this.progress += 25
                 }, 1000)
             }, 2500)
+        },
+        validatePageChange() {
+            return this.visiblePageNum !== this.currentPage && this.visiblePageNum <= this.totalPages
+        },
+        validatePageNotRendered() {
+            return !isNaN(this.visiblePageNum) && this.renderedPages.indexOf(this.visiblePageNum) === -1
         }
     },
     watch: {
