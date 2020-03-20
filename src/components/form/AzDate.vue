@@ -66,7 +66,7 @@
                     v-if="dialogTime"
                     v-model="time"
                     :locale="currentLanguage"
-                    @change="updateModelTime($event)"
+                    @change="changeTimeEvent(), updateModelTime($event)"
                     format="24hr"
                     class="az-date"/>
             </v-dialog>
