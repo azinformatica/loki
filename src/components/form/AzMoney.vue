@@ -116,6 +116,11 @@ export default {
             return this.value !== null && this.showClearButton ? 'fas fa-times-circle' : ''
         }
     },
+    updated:function(){
+        if(!this.required){
+            this.clearErrorValidate()
+        }
+    },
     methods: {
         updateValue(value, event) {
             let valueNumber = value
