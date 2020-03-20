@@ -116,7 +116,7 @@ export default {
             return this.value !== null && this.showClearButton ? 'fas fa-times-circle' : ''
         }
     },
-    updated:function(){
+    updated(){
         if(!this.required){
             this.clearErrorValidate()
         }
