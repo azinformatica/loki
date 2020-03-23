@@ -34,8 +34,8 @@
                 :max-date="maxDate"
                 append-icon="event"
                 @click:append="openMenuDate"
-                @keyup="validateAndParseDate(dateFormatted, false)"
-                @blur="validateAndParseDate(dateFormatted, true)">
+                @keyup="validateAndParseDate(dateFormatted)"
+                @blur="validateAndParseDate(dateFormatted)">
                 <template v-slot:label v-if="this.$slots['label-date']">
                     <slot name="label-date" />
                 </template>
@@ -208,11 +208,12 @@ export default {
             this.dialogDate = false
             this.dateFormatted = this.formatDate(this.date)
         },
-        validateAndParseDate(date, clearInvalid) {
+        validateAndParseDate(date) {
             if (!date || !this.dateStringIsValid(date) || this.dateMaxIsAllowed(date) || this.dateMinIsAllowed(date)) {
-                if(clearInvalid) {
+                if(date.length == 0) {
                     this.date = null
                     this.dateFormatted = ''
+                    this.$emit('input', null)
                 }
                 return
             }
