@@ -117,11 +117,11 @@ export default {
             } catch (error) {
                 this.loading = false
                 if (this.computedSrc.length !== 0) {
-                    this.$store.commit(mutationTypes.SHOW_ALERT, {
-                        message: 'URL do documento inválida.',
-                        type: 'error'
-                    })
-                    throw new Error('URL do documento inválida.')
+                    if (error.message === 'Invalid PDF structure') {
+                        throw new Error('URL do documento inválida.')
+                    } else if (error.status === 401) {
+                        throw new Error('Não autorizado, verifique seu token de acesso.')
+                    }
                 }
             }
         },
