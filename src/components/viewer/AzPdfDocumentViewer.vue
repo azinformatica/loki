@@ -30,7 +30,7 @@
 <script>
 import AzPdfDocumentViewerToolbar from './AzPdfDocumentViewerToolbar'
 import AzPdfDocumentViewerPage from './AzPdfDocumentViewerPage'
-import { actionTypes, mutationTypes } from '../../store'
+import { actionTypes } from '../../store'
 export default {
     components: {
         AzPdfDocumentViewerToolbar,

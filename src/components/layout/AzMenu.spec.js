@@ -1,6 +1,6 @@
 import AzMenu from './AzMenu'
 import Vuex from 'vuex'
-import { shallowMount, createLocalVue } from '@vue/test-utils'
+import { shallowMount, createLocalVue, mount } from '@vue/test-utils'
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import Vue from 'vue'
