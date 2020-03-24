@@ -151,7 +151,7 @@ export default {
         border-top 8px solid transparent
         border-bottom 8px solid transparent
         border-right 10px solid #eee
-        left 95%
+        right 0
 
     .v-list__tile__title
         color #fff
