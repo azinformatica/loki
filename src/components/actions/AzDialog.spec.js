@@ -1,5 +1,5 @@
 import AzDialog from './AzDialog'
-import { createLocalVue, mount } from '@vue/test-utils'
+import { createLocalVue, shallowMount } from '@vue/test-utils'
 import Vuetify from 'vuetify'
 import Vue from 'vue'
 
@@ -13,7 +13,7 @@ describe('AzDialog.spec.js', () => {
         const slots = {
             default: '<div>Sample Text</div>'
         }
-        wrapper = mount(AzDialog, { localVue, slots })
+        wrapper = shallowMount(AzDialog, { localVue, slots })
     })
 
     it('Slot is being rendered', () => {
@@ -25,7 +25,8 @@ describe('AzDialog.spec.js', () => {
     })
 
     it('Events are being emmited', () => {
-        wrapper.find('button').trigger('click.native')
+        const btn = wrapper.find('[data-test="button"]')
+        btn.vm.$emit('click')
         expect(wrapper.emitted().ok).toBeTruthy()
     })
 })

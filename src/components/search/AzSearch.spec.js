@@ -1,5 +1,5 @@
 import AzSearch from './AzSearch'
-import { shallowMount, mount, createLocalVue } from '@vue/test-utils'
+import { shallowMount, createLocalVue } from '@vue/test-utils'
 import Vuetify from 'vuetify'
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -58,8 +58,7 @@ describe('AzSearch.spec.js', () => {
     })
 
     it('Search Button emits event', () => {
-        // Full mount to render vuetify components correctly
-        let wrapperFull = mount(AzSearch, {
+        wrapper = shallowMount(AzSearch, {
             localVue,
             store,
             propsData: {
@@ -68,8 +67,9 @@ describe('AzSearch.spec.js', () => {
             }
         })
 
-        jest.spyOn(wrapperFull.vm, 'advancedSearch')
-        wrapperFull.find('.ad-search').trigger('click.native')
-        expect(wrapperFull.vm.advancedSearch).toBeCalled()
+        jest.spyOn(wrapper.vm, 'advancedSearch')
+        const btn = wrapper.find('.ad-search')
+        btn.vm.$emit('click')
+        expect(wrapper.vm.advancedSearch).toBeCalled()
     })
 })

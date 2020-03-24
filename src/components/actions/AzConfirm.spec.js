@@ -1,5 +1,5 @@
 import AzConfirm from './AzConfirm'
-import { createLocalVue, mount } from '@vue/test-utils'
+import { createLocalVue, shallowMount } from '@vue/test-utils'
 import Vuetify from 'vuetify'
 import Vue from 'vue'
 
@@ -14,7 +14,7 @@ describe('AzConfirm.spec.js', () => {
             labelConfirm: 'Confirm',
             labelDecline: 'Decline'
         }
-        wrapper = mount(AzConfirm, { localVue, propsData })
+        wrapper = shallowMount(AzConfirm, { localVue, propsData })
     })
 
     it('Labels are properly rendered', () => {
@@ -27,16 +27,12 @@ describe('AzConfirm.spec.js', () => {
     })
 
     it('Events are being emmited', () => {
-        wrapper
-            .findAll('button')
-            .at(0)
-            .trigger('click.native')
+        const btnDecline = wrapper.find('#btnDecline')
+        btnDecline.vm.$emit('click')
         expect(wrapper.emitted().onDecline).toBeTruthy()
 
-        wrapper
-            .findAll('button')
-            .at(1)
-            .trigger('click.native')
+        const btnConfirm = wrapper.find('#btnConfirm')
+        btnConfirm.vm.$emit('click')
         expect(wrapper.emitted().onConfirm).toBeTruthy()
     })
 })
