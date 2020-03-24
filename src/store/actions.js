@@ -57,14 +57,14 @@ export default {
 
     [actionTypes.DOCUMENT.INCREASE_SCALE](context) {
         if (context.state.document.scale.current < context.state.document.scale.max) {
-            context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.current + 0.5)
+            context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.current + 0.25)
             context.dispatch(actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER)
         }
     },
 
     [actionTypes.DOCUMENT.DECREASE_SCALE](context) {
-        if (context.state.document.scale.current > context.state.document.scale.default) {
-            context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.current - 0.5)
+        if (context.state.document.scale.current > context.state.document.scale.min) {
+            context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.current - 0.25)
             context.dispatch(actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER)
         }
     },

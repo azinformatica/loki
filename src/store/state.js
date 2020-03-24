@@ -63,9 +63,10 @@ export default {
         },
         renderedPages: [],
         scale: {
-            current: 1.5,
+            current: 1.0,
             default: 1.0,
-            max: 3.0
+            max: 4.0,
+            min: 0.75
         }
     }
 }
