@@ -85,7 +85,7 @@ export default {
             type: String,
             default: 'O campo {name} é obrigatório'
         },
-        validateRequerid: {
+        validationField: {
             type: Number
         }
     },
@@ -119,7 +119,7 @@ export default {
         }
     },
     watch: {
-        validateRequerid() {
+        validationField() {
             this.validateRequired(this.value)
         }
     },
