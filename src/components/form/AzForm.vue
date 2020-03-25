@@ -43,21 +43,22 @@ export default {}
         padding 10px
         height 35px
 
+    &.az-table-list-access
+        .v-data-table__mobile-row:last-child
+            border-top 2px dotted #ccc
+
+            .v-data-table__mobile-row__header
+                display none
+
+            .v-data-table__mobile-row__cell
+                text-align center
+                width 100%
+
     .v-data-table__mobile-table-row
         display block
 
         .v-data-table__mobile-row
             min-height auto
-
-            &:last-child
-                border-top 2px dotted #ccc
-
-                .v-data-table__mobile-row__header
-                    display none
-
-                .v-data-table__mobile-row__cell
-                    text-align center
-                    width 100%
 
 .az-pagination
     display flex
