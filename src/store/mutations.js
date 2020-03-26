@@ -140,8 +140,10 @@ export default {
     },
 
     [mutationTypes.AUTO_SAVING.DISABLE_AUTO_SAVING](state) {
-        Vue.set(state.autoSave, 'saving', false)
-        Vue.set(state.autoSave, 'dateLastSaved', new Date())
+        setTimeout(function () {
+            Vue.set(state.autoSave, 'saving', false)
+            Vue.set(state.autoSave, 'dateLastSaved', new Date())
+        }, 500)
     },
 
     [mutationTypes.AUTO_SAVING.ENABLE_AUTO_SAVING](state) {
