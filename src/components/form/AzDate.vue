@@ -447,9 +447,6 @@ export default {
                 this.dateFormatted = this.formatDate(this.date)
                 this.time = splitDateTime[1].substring(0, 5)
                 this.timeFormatted = this.time.replace(':', '')
-                // const dateTimeWithTimezone = this.buildDateTimeWithTimezone(this.date, this.time)
-                // const dateTimeTimezoneZero = this.getDateTimeZeroTimezone(dateTimeWithTimezone)
-                // this.$emit('input', dateTimeTimezoneZero)
             }
         },
         dateMinIsAllowed(date) {
