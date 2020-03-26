@@ -1,6 +1,6 @@
 {
-  "name": "@thszk/loki",
-  "version": "1.0.8",
+  "name": "@azinformatica/loki",
+  "version": "1.0.6",
   "description": "Biblioteca de componentes visuais compartilhados construidos usando vuejs.",
   "main": "src/index.js",
   "private": false,
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/thszk/loki.git"
+    "url": "https://github.com/azinformatica/loki.git"
   },
   "author": "Charles Viegas",
   "license": "MIT",
