@@ -8,7 +8,8 @@
                     v-if="!menu.children"
                     :to="menu.path"
                     @click="redirectTo(menu.path)"
-                    class="menu-item">
+                    class="menu-item"
+                >
                     <v-list-tile-action>
                         <v-tooltip right color="dark-grey" v-if="asideClosed">
                             <v-icon slot="activator">{{ menu.icon }}</v-icon>
@@ -35,7 +36,8 @@
                             :to="submenu.path"
                             :key="submenu.name"
                             @click="redirectTo(submenu.path)"
-                            :class="submenuStyle(submenu)">
+                            :class="submenuStyle(submenu)"
+                        >
                             <v-list-tile-action>
                                 <v-icon>{{ submenu.icon }}</v-icon>
                             </v-list-tile-action>
@@ -53,12 +55,13 @@
                         :key="item.title"
                         @click="redirectTo(item.path)"
                         class="item"
-                        v-az-auth="item.authorities">
+                        v-az-auth="item.authorities"
+                    >
                         <v-list-tile-action>
                             <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
                         </v-list-tile-action>
                         <v-list-tile-content>
-                            <v-list-tile-title v-text="item.title"/>
+                            <v-list-tile-title v-text="item.title" />
                         </v-list-tile-content>
                     </v-list-tile>
                     <v-list-tile @click="logout()" class="item">
@@ -151,7 +154,7 @@ export default {
         border-top 8px solid transparent
         border-bottom 8px solid transparent
         border-right 10px solid #eee
-        left 95%
+        right 0
 
     .v-list__tile__title
         color #fff

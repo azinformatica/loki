@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import AzPdfDocumentViewerToolbar from './AzPdfDocumentViewerToolbar'
-import { createLocalVue, mount } from '@vue/test-utils'
+import { createLocalVue, shallowMount } from '@vue/test-utils'
 
 const localVue = createLocalVue()
 Vue.use(Vuetify)
@@ -12,7 +12,7 @@ describe('AzPdfDocumentViewerToolbar.spec.js', () => {
     beforeEach(() => {
         currentPage = 1
         totalPages = 3
-        wrapper = mount(AzPdfDocumentViewerToolbar, {
+        wrapper = shallowMount(AzPdfDocumentViewerToolbar, {
             localVue,
             propsData: { currentPage, totalPages }
         })
@@ -37,7 +37,7 @@ describe('AzPdfDocumentViewerToolbar.spec.js', () => {
 
     it('Should emit an event on click at zoomOut button', () => {
         let zoomOutBtn = wrapper.find('[data-test="zoomOut"]')
-        zoomOutBtn.trigger('click')
+        zoomOutBtn.vm.$emit('click')
         expect(wrapper.emitted().zoomOut).toBeTruthy()
     })
 
@@ -48,7 +48,7 @@ describe('AzPdfDocumentViewerToolbar.spec.js', () => {
 
     it('Shoud emit an event on click at zoomIn button', () => {
         let zoomInBtn = wrapper.find('[data-test="zoomIn"]')
-        zoomInBtn.trigger('click')
+        zoomInBtn.vm.$emit('click')
         expect(wrapper.emitted().zoomIn).toBeTruthy()
     })
 
@@ -58,7 +58,7 @@ describe('AzPdfDocumentViewerToolbar.spec.js', () => {
 
     it('Should emit an event on click at resetZoom button', () => {
         let resetZoomBtn = wrapper.find('[data-test="resetZoom"]')
-        resetZoomBtn.trigger('click')
+        resetZoomBtn.vm.$emit('click')
         expect(wrapper.emitted().resetZoom).toBeTruthy()
     })
 })

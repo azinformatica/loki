@@ -35,11 +35,11 @@ export default {
         }
     },
 
-    async [actionTypes.DOCUMENT.FETCH_DOCUMENT](context, src) {
-        let pdf = await pdfjs.fetchDocument(src)
+    async [actionTypes.DOCUMENT.FETCH_DOCUMENT](context, { src, httpHeader }) {
+        let pdf = await pdfjs.fetchDocument(src, httpHeader)
         context.commit(mutationTypes.DOCUMENT.SET_TOTAL_PAGE_NUM, pdf.numPages)
         context.commit(mutationTypes.DOCUMENT.SET_PAGES, await pdfjs.getPages(pdf))
-        context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, 1.5)
+        context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.default)
         context.dispatch(actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER)
     },
 
@@ -57,14 +57,14 @@ export default {
 
     [actionTypes.DOCUMENT.INCREASE_SCALE](context) {
         if (context.state.document.scale.current < context.state.document.scale.max) {
-            context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.current + 0.5)
+            context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.current + 0.25)
             context.dispatch(actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER)
         }
     },
 
     [actionTypes.DOCUMENT.DECREASE_SCALE](context) {
-        if (context.state.document.scale.current > context.state.document.scale.default) {
-            context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.current - 0.5)
+        if (context.state.document.scale.current > context.state.document.scale.min) {
+            context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.current - 0.25)
             context.dispatch(actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER)
         }
     },
@@ -91,7 +91,7 @@ export default {
         context.commit(mutationTypes.DOCUMENT.SET_RENDERED_PAGES, 'clear')
         context.commit(mutationTypes.DOCUMENT.SET_TOTAL_PAGE_NUM, '-')
         context.commit(mutationTypes.DOCUMENT.SET_CURRENT_PAGE_NUM, '-')
-        context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, 1.5)
+        context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.default)
         context.commit(mutationTypes.DOCUMENT.SET_PAGE_CONTAINER, { height: 0, width: 0 })
     },
 

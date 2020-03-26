@@ -2,8 +2,12 @@ import pdfjs from 'pdfjs-dist/build/pdf'
 pdfjs.GlobalWorkerOptions.workerSrc = 'pdfjs-dist/buid/pdf.worker'
 
 class AzPdfJsLib {
-    async fetchDocument(src) {
-        return await pdfjs.getDocument(src).promise
+    async fetchDocument(src, httpHeader) {
+        return await pdfjs.getDocument({
+            url: src,
+            httpHeaders: httpHeader,
+            withCredentials: true
+        }).promise
     }
 
     async getPages(pdf) {

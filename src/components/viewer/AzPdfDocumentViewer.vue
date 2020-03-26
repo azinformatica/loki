@@ -30,7 +30,7 @@
 <script>
 import AzPdfDocumentViewerToolbar from './AzPdfDocumentViewerToolbar'
 import AzPdfDocumentViewerPage from './AzPdfDocumentViewerPage'
-import { actionTypes, mutationTypes } from '../../store'
+import { actionTypes } from '../../store'
 export default {
     components: {
         AzPdfDocumentViewerToolbar,
@@ -48,6 +48,10 @@ export default {
         height: {
             type: String,
             default: '100vh'
+        },
+        httpHeader: {
+            type: Object,
+            default: () => new Object()
         },
         progressBar: {
             type: Boolean,
@@ -105,16 +109,19 @@ export default {
             try {
                 this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDER_CONTEXT)
                 this.loading = true
-                await this.$store.dispatch(actionTypes.DOCUMENT.FETCH_DOCUMENT, this.computedSrc)
+                await this.$store.dispatch(actionTypes.DOCUMENT.FETCH_DOCUMENT, {
+                    src: this.computedSrc,
+                    httpHeader: this.httpHeader
+                })
                 this.loading = false
             } catch (error) {
                 this.loading = false
                 if (this.computedSrc.length !== 0) {
-                    this.$store.commit(mutationTypes.SHOW_ALERT, {
-                        message: 'URL do documento inválida.',
-                        type: 'error'
-                    })
-                    throw new Error('URL do documento inválida.')
+                    if (error.message === 'Invalid PDF structure') {
+                        throw new Error('URL do documento inválida.')
+                    } else if (error.status === 401) {
+                        throw new Error('Não autorizado, verifique seu token de acesso.')
+                    }
                 }
             }
         },
@@ -123,17 +130,15 @@ export default {
         },
         async handleScroll(e) {
             this.visiblePageNum = Math.floor(e.target.scrollTop / this.pageHeight) + 1
-            this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, this.visiblePageNum)
-            if (!isNaN(this.visiblePageNum) && this.renderedPages.indexOf(this.visiblePageNum) === -1) {
-                this.okToRender = true
-                this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES, this.visiblePageNum)
+            if (this.validatePageChange()) {
+                this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, this.visiblePageNum)
             }
-            if (this.okToRender) {
-                this.okToRender = false
+            if (this.validatePageNotRendered()) {
                 await this.$store.dispatch(
                     actionTypes.DOCUMENT.RENDER_PAGE,
                     this.pagesCanvasContext[this.visiblePageNum]
                 )
+                this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES, this.visiblePageNum)
             }
         },
         resolveEventZoomOut() {
@@ -176,6 +181,12 @@ export default {
                     this.progress += 25
                 }, 1000)
             }, 2500)
+        },
+        validatePageChange() {
+            return this.visiblePageNum !== this.currentPage && this.visiblePageNum <= this.totalPages
+        },
+        validatePageNotRendered() {
+            return !isNaN(this.visiblePageNum) && this.renderedPages.indexOf(this.visiblePageNum) === -1
         }
     },
     watch: {
