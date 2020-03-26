@@ -33,6 +33,7 @@
                 :min-date="minDate"
                 :max-date="maxDate"
                 append-icon="event"
+                class="az-date-date-input"
                 @click:append="openMenuDate"
                 @keyup="validateAndParseDate(dateFormatted)">
                 <template v-slot:label v-if="this.$slots['label-date']">
@@ -78,6 +79,7 @@
                 mask="time"
                 :placeholder="placeholderHour"
                 append-icon="access_time"
+                class="az-date-time-input"
                 @click:append="openMenuTime"
                 @focus="selectContentInputHour"
                 @blur="validateTimeEvent(), updateModelTime(time)"/>
@@ -207,6 +209,9 @@ export default {
                 this.dateFormatted = null
             }
         }
+    },
+    mounted() {
+        this.alterTabIndexFromAppendButtons()
     },
     methods: {
         getFormattedDate(day, month, year) {
@@ -466,6 +471,16 @@ export default {
                     .isAfter(`${maxDateObj.year}-${maxDateObj.month}-${maxDateObj.day}`)
             }
             return false
+        },
+        alterTabIndexFromAppendButtons() {
+            const bottonsDate = document.querySelectorAll('.az-date-date-input .v-input__append-inner .v-icon')
+            bottonsDate.forEach(btn => {
+                btn.tabIndex = '-1'
+            })
+            const bottonsTime = document.querySelectorAll('.az-date-time-input .v-input__append-inner .v-icon')
+            bottonsTime.forEach(btn => {
+                btn.tabIndex = '-1'
+            })
         }
     }
 }
