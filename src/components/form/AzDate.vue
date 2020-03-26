@@ -176,7 +176,7 @@ export default {
                 validationDate.required = true
             }
 
-            if(this.dateFormatted.length === 10) {
+            if(this.dateFormatted && this.dateFormatted.length === 10) {
                 validationDate.date_format = this.dateFormat === 'DD/MM/YYYY' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'
 
                 if(this.maxDate) {
@@ -232,7 +232,7 @@ export default {
         },
         validateAndParseDate(date) {
             if (!date || !this.dateStringIsValid(date) || this.dateMaxIsAllowed(date) || this.dateMinIsAllowed(date)) {
-                if(date.length == 0) {
+                if(date && date.length === 0) {
                     this.date = null
                     this.dateFormatted = ''
                     this.$emit('input', null)
