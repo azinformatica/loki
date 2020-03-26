@@ -16,13 +16,13 @@
                     v-model="date"
                     :value="value"
                     :locale="currentLanguage"
-                    @input="updateModelDate($event)"
+                    @input="updateModelDate($event), pickDateEvent()"
                     :min="minDate"
                     :max="maxDate"
                     class="az-date"/>
             </v-dialog>
             <v-text-field
-                v-validate="{ required: isRequired }"
+                v-validate="validateDate"
                 :name="nameDate"
                 :error-messages="errors.collect(`${nameDate}`)"
                 v-model="dateFormatted"
@@ -34,8 +34,7 @@
                 :max-date="maxDate"
                 append-icon="event"
                 @click:append="openMenuDate"
-                @keyup="validateAndParseDate(dateFormatted)"
-                @blur="validateAndParseDate(dateFormatted)">
+                @keyup="validateAndParseDate(dateFormatted)">
                 <template v-slot:label v-if="this.$slots['label-date']">
                     <slot name="label-date" />
                 </template>
@@ -169,6 +168,30 @@ export default {
         },
         currentLanguage() {
             return this.$vuetify.lang.current
+        },
+        validateDate() {
+            const validationDate = {}
+
+            if(this.isRequired) {
+                validationDate.required = true
+            }
+
+            if(this.dateFormatted.length === 10) {
+                validationDate.date_format = this.dateFormat === 'DD/MM/YYYY' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'
+
+                if(this.maxDate) {
+                    validationDate.before = this.moment(this.maxDate)
+                        .add(1, 'days')
+                        .format(this.dateFormat)
+                }
+
+                if(this.minDate) {
+                    validationDate.after = this.moment(this.minDate)
+                        .add(1, 'days')
+                        .format(this.dateFormat)
+                }
+            }
+            return validationDate
         }
     },
     watch: {
@@ -206,7 +229,6 @@ export default {
         },
         pickDateEvent() {
             this.dialogDate = false
-            this.dateFormatted = this.formatDate(this.date)
         },
         validateAndParseDate(date) {
             if (!date || !this.dateStringIsValid(date) || this.dateMaxIsAllowed(date) || this.dateMinIsAllowed(date)) {
@@ -425,9 +447,6 @@ export default {
                 this.dateFormatted = this.formatDate(this.date)
                 this.time = splitDateTime[1].substring(0, 5)
                 this.timeFormatted = this.time.replace(':', '')
-                const dateTimeWithTimezone = this.buildDateTimeWithTimezone(this.date, this.time)
-                const dateTimeTimezoneZero = this.getDateTimeZeroTimezone(dateTimeWithTimezone)
-                this.$emit('input', dateTimeTimezoneZero)
             }
         },
         dateMinIsAllowed(date) {
