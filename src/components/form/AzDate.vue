@@ -187,7 +187,7 @@ export default {
 
                 if(this.minDate) {
                     validationDate.after = this.moment(this.minDate)
-                        .add(1, 'days')
+                        .subtract(1, 'days')
                         .format(this.dateFormat)
                 }
             }
