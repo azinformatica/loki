@@ -10,9 +10,6 @@ export default {
         pageNum: { type: Number, required: true },
         pageSize: { type: Object, required: true }
     },
-    mounted() {
-        this.emitEventWithContext('resize')
-    },
     methods: {
         emitEventWithContext(event) {
             this.$emit(event, {
@@ -26,7 +23,7 @@ export default {
     },
     watch: {
         pageSize() {
-            this.emitEventWithContext('resize')
+            if (this.pageSize.width > 0 && this.pageSize.height > 0) this.emitEventWithContext('resize')
         }
     }
 }
