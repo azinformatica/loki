@@ -53,7 +53,7 @@ export default {
         context.commit(mutationTypes.DOCUMENT.SET_PAGE_CONTAINER, pageContainer)
     },
 
-    ['calculateScale'](context, containerWidth) {
+    [actionTypes.DOCUMENT.CALCULATE_SCALE](context, containerWidth) {
         if (containerWidth) {
             let originalPageContainer = pdfjs.getPageContainer(
                 context.state.document.pages[0],

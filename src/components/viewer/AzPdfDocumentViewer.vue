@@ -180,9 +180,9 @@ export default {
         },
         setPageContainer() {
             if (this.documentContainerWidth <= 700) {
-                this.$store.dispatch('calculateScale', this.documentContainerWidth)
+                this.$store.dispatch(actionTypes.DOCUMENT.CALCULATE_SCALE, this.documentContainerWidth)
             } else {
-                this.$store.dispatch('calculateScale')
+                this.$store.dispatch(actionTypes.DOCUMENT.CALCULATE_SCALE)
             }
             this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER)
         },
