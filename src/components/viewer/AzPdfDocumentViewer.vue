@@ -14,8 +14,9 @@
                 @zoomIn="resolveEventZoomIn"
                 @resetZoom="resolveEventResetZoom"
             />
-            <div id="documentContainer" class="az-pdf-document-viewer__container" :style="{ height: height }">
+            <div :id="`${id}-documentContainer`" class="az-pdf-document-viewer__container" :style="{ height: height }">
                 <az-pdf-document-viewer-page
+                    :id="id"
                     v-for="page in pages"
                     :key="page.pageIndex + 1"
                     :pageNum="page.pageIndex + 1"
@@ -37,6 +38,10 @@ export default {
         AzPdfDocumentViewerPage
     },
     props: {
+        id: {
+            type: String,
+            default: ''
+        },
         src: {
             type: String,
             default: ''
@@ -191,7 +196,7 @@ export default {
             await this.$store.dispatch(actionTypes.DOCUMENT.RENDER_PAGE, this.pagesCanvasContext[pageNum])
         },
         getDocumentContainer() {
-            return document.getElementById('documentContainer')
+            return document.getElementById(`${this.id}-documentContainer`)
         },
         needRenderNextPage() {
             return (
