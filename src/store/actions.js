@@ -39,8 +39,6 @@ export default {
         let pdf = await pdfjs.fetchDocument(src, httpHeader)
         context.commit(mutationTypes.DOCUMENT.SET_TOTAL_PAGE_NUM, pdf.numPages)
         context.commit(mutationTypes.DOCUMENT.SET_PAGES, await pdfjs.getPages(pdf))
-        context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.default)
-        // context.dispatch(actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER)
     },
 
     [actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM](context, currentPageNum) {
@@ -64,9 +62,7 @@ export default {
             let scale = containerWidth / originalPageContainer.width
             context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, scale)
         } else {
-            if (context.state.document.scale.current !== context.state.document.scale.default) {
-                context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.default)
-            }
+            context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.default)
         }
     },
 

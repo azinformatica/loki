@@ -10,20 +10,15 @@ export default {
         pageNum: { type: Number, required: true },
         pageSize: { type: Object, required: true }
     },
+    mounted() {
+        this.$emit('mounted', {
+            pageNum: this.$props.pageNum,
+            canvasContext: this.getCanvasContext()
+        })
+    },
     methods: {
-        emitEventWithContext(event) {
-            this.$emit(event, {
-                pageNum: this.$props.pageNum,
-                canvasContext: this.getCanvasContext()
-            })
-        },
         getCanvasContext() {
             return document.getElementById(`page${this.$props.pageNum}`).firstChild.getContext('2d')
-        }
-    },
-    watch: {
-        pageSize() {
-            if (this.pageSize.width > 0 && this.pageSize.height > 0) this.emitEventWithContext('resize')
         }
     }
 }

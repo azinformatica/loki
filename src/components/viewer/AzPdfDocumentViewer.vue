@@ -20,7 +20,7 @@
                     :key="page.pageIndex + 1"
                     :pageNum="page.pageIndex + 1"
                     :pageSize="pageSize"
-                    @resize="resolveEventResize"
+                    @mounted="saveCanvasContext"
                 />
             </div>
         </div>
@@ -59,6 +59,7 @@ export default {
         }
     },
     data: () => ({
+        documentContainerWidth: 0,
         pagesCanvasContext: {},
         visiblePageNum: 1,
         progress: 0,
@@ -98,15 +99,14 @@ export default {
             return this.$store.getters.totalPageNum
         }
     },
-    async mounted() {
+    mounted() {
         this.queryAndIndeterminate()
-        await this.getDocumentContainer().addEventListener('scroll', this.handleScroll)
-        await this.updatePdfRendering()
+        this.getDocumentContainer().addEventListener('scroll', this.handleScroll)
     },
     methods: {
         async updatePdfRendering() {
             try {
-                if (this.computedSrc.length !== 0) {
+                if (this.validatenNotEmptySrc()) {
                     this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDER_CONTEXT)
                     this.loading = true
                     await this.$store.dispatch(actionTypes.DOCUMENT.FETCH_DOCUMENT, {
@@ -114,14 +114,13 @@ export default {
                         httpHeader: this.httpHeader
                     })
                     this.loading = false
-                    if (this.getDocumentContainerWidth() <= 700) {
-                        this.$store.dispatch('calculateScale', this.getDocumentContainerWidth())
-                    }
-                    this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER)
+                    this.setPageContainer()
+                    this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, 1)
+                    await this.renderPage(1)
                 }
             } catch (error) {
                 this.loading = false
-                if (this.computedSrc.length !== 0) {
+                if (this.validatenNotEmptySrc()) {
                     if (error.message === 'Invalid PDF structure') {
                         throw new Error('URL do documento inválida.')
                     } else if (error.status === 401) {
@@ -133,18 +132,10 @@ export default {
         async handleScroll(e) {
             this.visiblePageNum = e.target.scrollTop / this.pageHeight + 1
             if (this.needRenderNextPage()) {
-                this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES, this.currentPage + 1)
-                await this.$store.dispatch(
-                    actionTypes.DOCUMENT.RENDER_PAGE,
-                    this.pagesCanvasContext[this.currentPage + 1]
-                )
+                await this.renderPage(this.currentPage + 1)
             }
             if (this.needRenderPreviousPage()) {
-                this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES, this.currentPage - 1)
-                await this.$store.dispatch(
-                    actionTypes.DOCUMENT.RENDER_PAGE,
-                    this.pagesCanvasContext[this.currentPage - 1]
-                )
+                await this.renderPage(this.currentPage - 1)
             }
             this.visiblePageNum = Math.floor(this.visiblePageNum)
             if (this.validatePageChange()) {
@@ -154,27 +145,20 @@ export default {
         resolveEventZoomOut() {
             this.$store.dispatch(actionTypes.DOCUMENT.DECREASE_SCALE)
             this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES)
+            this.renderPage(this.visiblePageNum)
         },
         resolveEventZoomIn() {
             this.$store.dispatch(actionTypes.DOCUMENT.INCREASE_SCALE)
             this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES)
+            this.renderPage(this.visiblePageNum)
         },
         resolveEventResetZoom() {
             this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES)
-            if (this.getDocumentContainerWidth() <= 700) {
-                this.$store.dispatch('calculateScale', this.getDocumentContainerWidth())
-            } else {
-                this.$store.dispatch('calculateScale')
-            }
-            this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER)
+            this.setPageContainer()
+            this.renderPage(this.visiblePageNum)
         },
-        async resolveEventResize(payload) {
+        async saveCanvasContext(payload) {
             this.pagesCanvasContext[payload.pageNum] = payload
-            if (payload.pageNum === this.visiblePageNum) {
-                this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, payload.pageNum)
-                await this.$store.dispatch(actionTypes.DOCUMENT.RENDER_PAGE, this.pagesCanvasContext[payload.pageNum])
-                this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES, payload.pageNum)
-            }
         },
         queryAndIndeterminate() {
             this.query = true
@@ -194,11 +178,20 @@ export default {
                 }, 1000)
             }, 2500)
         },
+        setPageContainer() {
+            if (this.documentContainerWidth <= 700) {
+                this.$store.dispatch('calculateScale', this.documentContainerWidth)
+            } else {
+                this.$store.dispatch('calculateScale')
+            }
+            this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER)
+        },
+        async renderPage(pageNum) {
+            this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES, pageNum)
+            await this.$store.dispatch(actionTypes.DOCUMENT.RENDER_PAGE, this.pagesCanvasContext[pageNum])
+        },
         getDocumentContainer() {
             return document.getElementById('documentContainer')
-        },
-        getDocumentContainerWidth() {
-            return this.getDocumentContainer().clientWidth
         },
         needRenderNextPage() {
             return (
@@ -228,10 +221,14 @@ export default {
         },
         validatePageChange() {
             return this.visiblePageNum !== this.currentPage && this.visiblePageNum <= this.totalPages
+        },
+        validatenNotEmptySrc() {
+            return this.computedSrc.length > 0
         }
     },
     watch: {
         async computedSrc() {
+            this.documentContainerWidth = this.getDocumentContainer().clientWidth
             await this.updatePdfRendering()
         }
     },
