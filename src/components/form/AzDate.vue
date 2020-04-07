@@ -237,7 +237,7 @@ export default {
         },
         validateAndParseDate(date) {
             if (!date || !this.dateStringIsValid(date) || this.dateMaxIsAllowed(date) || this.dateMinIsAllowed(date)) {
-                if(date.length === 0) {
+                if(date === null || date.length === 0) {
                     this.date = null
                     this.dateFormatted = ''
                     this.$emit('input', null)
