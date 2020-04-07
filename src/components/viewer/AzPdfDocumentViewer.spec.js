@@ -16,7 +16,7 @@ Vue.use(Vuex)
 describe('AzPdfDocumentViewer.spec.js', () => {
     let src, wrapper, store, state, getters, actions
 
-    beforeEach(() => {
+    beforeEach(async () => {
         state = {
             document: {
                 pageContainer: {
@@ -55,7 +55,8 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             [actionTypes.DOCUMENT.RENDER_PAGE]: jest.fn(),
             [actionTypes.DOCUMENT.CLEAR_RENDER_CONTEXT]: jest.fn(),
             [actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES]: jest.fn(),
-            [actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES]: jest.fn()
+            [actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES]: jest.fn(),
+            [actionTypes.DOCUMENT.CALCULATE_SCALE]: jest.fn()
         }
 
         store = new Vuex.Store({ state, getters, actions })
@@ -66,6 +67,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             propsData: { src },
             attachToDocument: true
         })
+        await wrapper.vm.$nextTick()
     })
 
     describe('Rendered components and props', () => {
@@ -83,7 +85,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         })
 
         it('Should have a documentContainer div', () => {
-            let documentContainer = wrapper.find('#documentContainer')
+            let documentContainer = wrapper.find('#-documentContainer')
             expect(documentContainer.is('div')).toBeTruthy()
         })
 
@@ -95,29 +97,17 @@ describe('AzPdfDocumentViewer.spec.js', () => {
     })
 
     describe('Vue Lifecycle', () => {
-        it('Should clear render context and load the document the mounted method', async () => {
+        it('Should clear render context and load the document on the watch method', async () => {
+            wrapper.vm.$options.watch.computedSrc.call(wrapper.vm, 'document/url')
             await wrapper.vm.$nextTick()
 
-            expect(actions[actionTypes.DOCUMENT.CLEAR_RENDER_CONTEXT]).toHaveBeenCalled()
+            expect(actions[actionTypes.DOCUMENT.CLEAR_RENDER_CONTEXT]).toHaveBeenCalledTimes(1)
             expect(actions[actionTypes.DOCUMENT.FETCH_DOCUMENT].mock.calls[0][1]).toEqual({
                 src: 'document/url',
                 httpHeader: {}
             })
-        })
-
-        it('Should have a mounted method', () => {
-            expect(typeof AzPdfDocumentViewer.mounted).toBe('function')
-        })
-
-        it('Should execute the mounted method', () => {
-            let mountedMock = jest.fn()
-            shallowMount(AzPdfDocumentViewer, {
-                localVue,
-                store,
-                propsData: { src },
-                mounted: mountedMock
-            })
-            expect(mountedMock).toBeCalled()
+            expect(actions[actionTypes.DOCUMENT.CALCULATE_SCALE]).toHaveBeenCalledTimes(1)
+            expect(actions[actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER]).toHaveBeenCalledTimes(1)
         })
     })
 
@@ -183,22 +173,24 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             })
             wrapper.find('button').trigger('click')
 
-            expect(actions[actionTypes.DOCUMENT.RESTORE_SCALE].mock.calls).toHaveLength(1)
+            expect(actions[actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES]).toHaveBeenCalledTimes(1)
         })
 
-        it('Should execute the resolveEventResize method', () => {
+        it('Should execute the saveCanvasContext method', () => {
             wrapper = shallowMount(AzPdfDocumentViewer, {
                 localVue,
                 store,
                 propsData: { src },
                 stubs: {
                     AzPdfDocumentViewerPage:
-                        '<button @click=\'$emit("resize",{ pageNum: 1, canvasContext: {} })\'></button>'
+                        '<button @click=\'$emit("mounted",{ pageNum: 1, canvasContext: {} })\'></button>'
                 }
             })
             wrapper.find('button').trigger('click')
 
-            expect(actions[actionTypes.DOCUMENT.RENDER_PAGE].mock.calls).toHaveLength(1)
+            expect(wrapper.vm.pagesCanvasContext).toEqual({
+                '1': { pageNum: 1, canvasContext: {} }
+            })
         })
     })
 
@@ -207,17 +199,62 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             await expect(typeof wrapper.vm.handleScroll).toBe('function')
         })
 
-        it('Should execute a vuex action triggered by the scroll handler', () => {
+        it('Should update current page number', async () => {
             let e = {
                 target: {
-                    scrollTop: 10
+                    scrollTop: 2
                 }
             }
-            wrapper.vm.handleScroll(e)
+            wrapper.vm.needRenderNextPage = jest.fn().mockReturnValue(false)
+            wrapper.vm.needRenderPreviousPage = jest.fn().mockReturnValue(false)
+            wrapper.vm.validatePageChange = jest.fn().mockReturnValue(true)
+            await wrapper.vm.handleScroll(e)
+            await wrapper.vm.$nextTick()
 
-            wrapper.vm.$nextTick(() => {
-                expect(actions[actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM]).toHaveBeenCalled()
-                expect(actions[actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM].mock.calls[0][1]).toBe(11)
+            expect(actions[actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM].mock.calls[0][1]).toBe(3)
+        })
+
+        it('Should render next page', async () => {
+            let e = {
+                target: {
+                    scrollTop: 2
+                }
+            }
+            wrapper.vm.needRenderNextPage = jest.fn().mockReturnValue(true)
+            wrapper.vm.needRenderPreviousPage = jest.fn().mockReturnValue(false)
+            wrapper.vm.validatePageChange = jest.fn().mockReturnValue(false)
+            wrapper.vm.pagesCanvasContext = {
+                '2': { pageNum: 2, canvasContext: {} }
+            }
+            await wrapper.vm.handleScroll(e)
+            await wrapper.vm.$nextTick()
+
+            expect(actions[actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES].mock.calls[0][1]).toBe(2)
+            expect(actions[actionTypes.DOCUMENT.RENDER_PAGE].mock.calls[0][1]).toEqual({
+                pageNum: 2,
+                canvasContext: {}
+            })
+        })
+
+        it('Should render previous page', async () => {
+            let e = {
+                target: {
+                    scrollTop: 2
+                }
+            }
+            wrapper.vm.needRenderNextPage = jest.fn().mockReturnValue(false)
+            wrapper.vm.needRenderPreviousPage = jest.fn().mockReturnValue(true)
+            wrapper.vm.validatePageChange = jest.fn().mockReturnValue(false)
+            wrapper.vm.pagesCanvasContext = {
+                '0': { pageNum: 0, canvasContext: {} }
+            }
+            await wrapper.vm.handleScroll(e)
+            await wrapper.vm.$nextTick()
+
+            expect(actions[actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES].mock.calls[0][1]).toBe(0)
+            expect(actions[actionTypes.DOCUMENT.RENDER_PAGE].mock.calls[0][1]).toEqual({
+                pageNum: 0,
+                canvasContext: {}
             })
         })
     })
