@@ -106,7 +106,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 src: 'document/url',
                 httpHeader: {}
             })
-            expect(actions[actionTypes.DOCUMENT.CALCULATE_SCALE]).toHaveBeenCalledTimes(1)
+            expect(actions[actionTypes.DOCUMENT.CALCULATE_SCALE]).toBeCalled()
             expect(actions[actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER]).toHaveBeenCalledTimes(1)
         })
     })
