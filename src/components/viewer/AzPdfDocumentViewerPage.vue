@@ -1,5 +1,5 @@
 <template>
-    <div :id="'page' + pageNum" :height="pageSize.height" :width="pageSize.width" class="az-pdf-page">
+    <div :id="`${id}-page-${pageNum}`" :height="pageSize.height" :width="pageSize.width" class="az-pdf-page">
         <canvas :height="pageSize.height" :width="pageSize.width" />
     </div>
 </template>
@@ -7,26 +7,19 @@
 <script>
 export default {
     props: {
+        id: { type: String, default: '' },
         pageNum: { type: Number, required: true },
         pageSize: { type: Object, required: true }
     },
     mounted() {
-        this.emitEventWithContext('resize')
+        this.$emit('mounted', {
+            pageNum: this.pageNum,
+            canvasContext: this.getCanvasContext()
+        })
     },
     methods: {
-        emitEventWithContext(event) {
-            this.$emit(event, {
-                pageNum: this.$props.pageNum,
-                canvasContext: this.getCanvasContext()
-            })
-        },
         getCanvasContext() {
-            return document.getElementById(`page${this.$props.pageNum}`).firstChild.getContext('2d')
-        }
-    },
-    watch: {
-        pageSize() {
-            this.emitEventWithContext('resize')
+            return document.getElementById(`${this.id}-page-${this.pageNum}`).firstChild.getContext('2d')
         }
     }
 }

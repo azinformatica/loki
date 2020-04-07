@@ -39,8 +39,6 @@ export default {
         let pdf = await pdfjs.fetchDocument(src, httpHeader)
         context.commit(mutationTypes.DOCUMENT.SET_TOTAL_PAGE_NUM, pdf.numPages)
         context.commit(mutationTypes.DOCUMENT.SET_PAGES, await pdfjs.getPages(pdf))
-        context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.default)
-        context.dispatch(actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER)
     },
 
     [actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM](context, currentPageNum) {
@@ -55,6 +53,19 @@ export default {
         context.commit(mutationTypes.DOCUMENT.SET_PAGE_CONTAINER, pageContainer)
     },
 
+    [actionTypes.DOCUMENT.CALCULATE_SCALE](context, containerWidth) {
+        if (containerWidth) {
+            let originalPageContainer = pdfjs.getPageContainer(
+                context.state.document.pages[0],
+                context.state.document.scale.default
+            )
+            let scale = containerWidth / originalPageContainer.width
+            context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, scale)
+        } else {
+            context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.default)
+        }
+    },
+
     [actionTypes.DOCUMENT.INCREASE_SCALE](context) {
         if (context.state.document.scale.current < context.state.document.scale.max) {
             context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.current + 0.25)
@@ -65,13 +76,6 @@ export default {
     [actionTypes.DOCUMENT.DECREASE_SCALE](context) {
         if (context.state.document.scale.current > context.state.document.scale.min) {
             context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.current - 0.25)
-            context.dispatch(actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER)
-        }
-    },
-
-    [actionTypes.DOCUMENT.RESTORE_SCALE](context) {
-        if (context.state.document.scale.current != context.state.document.scale.default) {
-            context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.default)
             context.dispatch(actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER)
         }
     },

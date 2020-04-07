@@ -1,5 +1,6 @@
 export default {
     DOCUMENT: {
+        CALCULATE_SCALE: 'calculateScale',
         CLEAR_RENDER_CONTEXT: 'clearRenderContex',
         CLEAR_RENDERED_PAGES: 'clearRenderedPages',
         DECREASE_SCALE: 'decreaseScale',

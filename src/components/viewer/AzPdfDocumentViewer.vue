@@ -14,13 +14,14 @@
                 @zoomIn="resolveEventZoomIn"
                 @resetZoom="resolveEventResetZoom"
             />
-            <div id="documentContainer" class="az-pdf-document-viewer__container" :style="{ height: height }">
+            <div :id="`${id}-documentContainer`" class="az-pdf-document-viewer__container" :style="{ height: height }">
                 <az-pdf-document-viewer-page
+                    :id="id"
                     v-for="page in pages"
                     :key="page.pageIndex + 1"
                     :pageNum="page.pageIndex + 1"
                     :pageSize="pageSize"
-                    @resize="resolveEventResize"
+                    @mounted="saveCanvasContext"
                 />
             </div>
         </div>
@@ -37,6 +38,10 @@ export default {
         AzPdfDocumentViewerPage
     },
     props: {
+        id: {
+            type: String,
+            default: ''
+        },
         src: {
             type: String,
             default: ''
@@ -59,7 +64,7 @@ export default {
         }
     },
     data: () => ({
-        okToRender: false,
+        documentContainerWidth: 0,
         pagesCanvasContext: {},
         visiblePageNum: 1,
         progress: 0,
@@ -99,24 +104,28 @@ export default {
             return this.$store.getters.totalPageNum
         }
     },
-    async mounted() {
+    mounted() {
         this.queryAndIndeterminate()
-        await this.getDocumentContainer().addEventListener('scroll', this.handleScroll)
-        await this.updatePdfRendering()
+        this.getDocumentContainer().addEventListener('scroll', this.handleScroll)
     },
     methods: {
         async updatePdfRendering() {
             try {
-                this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDER_CONTEXT)
-                this.loading = true
-                await this.$store.dispatch(actionTypes.DOCUMENT.FETCH_DOCUMENT, {
-                    src: this.computedSrc,
-                    httpHeader: this.httpHeader
-                })
-                this.loading = false
+                if (this.validatenNotEmptySrc()) {
+                    this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDER_CONTEXT)
+                    this.loading = true
+                    await this.$store.dispatch(actionTypes.DOCUMENT.FETCH_DOCUMENT, {
+                        src: this.computedSrc,
+                        httpHeader: this.httpHeader
+                    })
+                    this.loading = false
+                    this.setPageContainer()
+                    this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, 1)
+                    await this.renderPage(1)
+                }
             } catch (error) {
                 this.loading = false
-                if (this.computedSrc.length !== 0) {
+                if (this.validatenNotEmptySrc()) {
                     if (error.message === 'Invalid PDF structure') {
                         throw new Error('URL do documento inválida.')
                     } else if (error.status === 401) {
@@ -125,44 +134,36 @@ export default {
                 }
             }
         },
-        getDocumentContainer() {
-            return document.getElementById('documentContainer')
-        },
         async handleScroll(e) {
-            this.visiblePageNum = Math.floor(e.target.scrollTop / this.pageHeight) + 1
+            this.visiblePageNum = e.target.scrollTop / this.pageHeight + 1
+            if (this.needRenderNextPage()) {
+                await this.renderPage(this.currentPage + 1)
+            }
+            if (this.needRenderPreviousPage()) {
+                await this.renderPage(this.currentPage - 1)
+            }
+            this.visiblePageNum = Math.floor(this.visiblePageNum)
             if (this.validatePageChange()) {
                 this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, this.visiblePageNum)
-            }
-            if (this.validatePageNotRendered()) {
-                await this.$store.dispatch(
-                    actionTypes.DOCUMENT.RENDER_PAGE,
-                    this.pagesCanvasContext[this.visiblePageNum]
-                )
-                this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES, this.visiblePageNum)
             }
         },
         resolveEventZoomOut() {
             this.$store.dispatch(actionTypes.DOCUMENT.DECREASE_SCALE)
             this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES)
+            this.renderPage(this.visiblePageNum)
         },
         resolveEventZoomIn() {
             this.$store.dispatch(actionTypes.DOCUMENT.INCREASE_SCALE)
             this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES)
+            this.renderPage(this.visiblePageNum)
         },
         resolveEventResetZoom() {
-            this.$store.dispatch(actionTypes.DOCUMENT.RESTORE_SCALE)
             this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES)
+            this.setPageContainer()
+            this.renderPage(this.visiblePageNum)
         },
-        async resolveEventResize(payload) {
+        async saveCanvasContext(payload) {
             this.pagesCanvasContext[payload.pageNum] = payload
-            if (payload.pageNum === this.visiblePageNum) {
-                this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, this.visiblePageNum)
-                await this.$store.dispatch(
-                    actionTypes.DOCUMENT.RENDER_PAGE,
-                    this.pagesCanvasContext[this.visiblePageNum]
-                )
-                this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES, payload.pageNum)
-            }
         },
         queryAndIndeterminate() {
             this.query = true
@@ -182,15 +183,57 @@ export default {
                 }, 1000)
             }, 2500)
         },
+        setPageContainer() {
+            if (this.documentContainerWidth <= 700) {
+                this.$store.dispatch(actionTypes.DOCUMENT.CALCULATE_SCALE, this.documentContainerWidth)
+            } else {
+                this.$store.dispatch(actionTypes.DOCUMENT.CALCULATE_SCALE)
+            }
+            this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER)
+        },
+        async renderPage(pageNum) {
+            this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES, pageNum)
+            await this.$store.dispatch(actionTypes.DOCUMENT.RENDER_PAGE, this.pagesCanvasContext[pageNum])
+        },
+        getDocumentContainer() {
+            return document.getElementById(`${this.id}-documentContainer`)
+        },
+        needRenderNextPage() {
+            return (
+                this.visiblePageNum > this.currentPage + 0.2 &&
+                this.validateHasNextPage() &&
+                this.validateNextPageNotRendered()
+            )
+        },
+        validateHasNextPage() {
+            return this.currentPage < this.totalPages
+        },
+        validateNextPageNotRendered() {
+            return this.renderedPages.indexOf(this.currentPage + 1) === -1
+        },
+        needRenderPreviousPage() {
+            return (
+                this.visiblePageNum < this.currentPage + 0.8 &&
+                this.validateHasPreviousPage() &&
+                this.validatePreviousPageNotRendered()
+            )
+        },
+        validateHasPreviousPage() {
+            return this.currentPage - 1 >= 1
+        },
+        validatePreviousPageNotRendered() {
+            return this.renderedPages.indexOf(this.currentPage - 1) === -1
+        },
         validatePageChange() {
             return this.visiblePageNum !== this.currentPage && this.visiblePageNum <= this.totalPages
         },
-        validatePageNotRendered() {
-            return !isNaN(this.visiblePageNum) && this.renderedPages.indexOf(this.visiblePageNum) === -1
+        validatenNotEmptySrc() {
+            return this.computedSrc.length > 0
         }
     },
     watch: {
         async computedSrc() {
+            this.documentContainerWidth = this.getDocumentContainer().clientWidth
             await this.updatePdfRendering()
         }
     },
