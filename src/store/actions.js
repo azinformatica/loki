@@ -101,5 +101,38 @@ export default {
 
     [actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES](context) {
         context.commit(mutationTypes.DOCUMENT.SET_RENDERED_PAGES, 'clear')
+    },
+
+    async [actionTypes.SIGNATURE.DIGITAL.START](context, { certificadoConteudo, documentoId }) {
+        let url = ''
+
+        if (context.state.flowbee.apiToken) {
+            url = `${context.state.flowbee.apiUrl}/public/documentos/${documentoId}/assinaturas/digitais/iniciar`
+        } else {
+            url = `${context.state.flowbee.apiUrl}/documentos/${documentoId}/assinaturas/digitais/iniciar`
+        }
+
+        const { data } = await axios.post(url, certificadoConteudo, {
+            headers: { 'Content-Type': 'text/plain', ...context.state.flowbee.apiToken }
+        })
+
+        return data
+    },
+
+    async [actionTypes.SIGNATURE.DIGITAL.FINISH](context, { documentoId, assinatura, assinaturaTemporariaId }) {
+        let url = ''
+
+        if (context.state.flowbee.apiToken) {
+            url = `${context.state.flowbee.apiUrl}/public/documentos/${documentoId}/assinaturas/digitais/finalizar`
+        } else {
+            url = `${context.state.flowbee.apiUrl}/documentos/${documentoId}/assinaturas/digitais/finalizar`
+        }
+
+        const { data } = await axios.post(url, {
+            assinatura: assinatura,
+            assinaturaTemporariaId: assinaturaTemporariaId
+        })
+
+        return data
     }
 }

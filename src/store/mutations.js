@@ -136,5 +136,13 @@ export default {
         } else {
             state.document.renderedPages = []
         }
+    },
+
+    [mutationTypes.FLOWBEE.SET_API_URL](state, url) {
+        state.flowbee.apiUrl = url
+    },
+
+    [mutationTypes.FLOWBEE.SET_API_TOKEN](state, token) {
+        state.flowbee.apiToken = token
     }
 }

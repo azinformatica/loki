@@ -37,5 +37,9 @@ export default {
         SET_TOTAL_PAGE_NUM: 'SET_TOTAL_PAGE_NUM',
         SET_CURRENT_SCALE: 'SET_CURRENT_SCALE',
         SET_RENDERED_PAGES: 'SET_RENDERED_PAGES'
+    },
+    FLOWBEE: {
+        SET_API_URL: 'SET_API_URL',
+        SET_API_TOKEN: 'SET_API_TOKEN'
     }
 }

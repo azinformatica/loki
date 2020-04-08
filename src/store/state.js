@@ -68,5 +68,9 @@ export default {
             max: 4.0,
             min: 0.75
         }
+    },
+    flowbee: {
+        apiUrl: '',
+        apiToken: null
     }
 }
