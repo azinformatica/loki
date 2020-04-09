@@ -104,16 +104,19 @@ export default {
     },
 
     async [actionTypes.SIGNATURE.DIGITAL.START](context, { certificadoConteudo, documentoId }) {
-        let url = ''
+        let url = null
+        let headers = null
 
-        if (context.state.flowbee.apiToken) {
-            url = `${context.state.flowbee.apiUrl}/public/documentos/${documentoId}/assinaturas/digitais/iniciar`
+        if (context.state.flowbee.accessToken) {
+            url = `/flowbee/api/public/documentos/${documentoId}/assinaturas/digitais/iniciar`
+            headers = { 'Content-Type': 'text/plain', ...context.state.flowbee.accessToken }
         } else {
-            url = `${context.state.flowbee.apiUrl}/documentos/${documentoId}/assinaturas/digitais/iniciar`
+            url = `/flowbee/api/documentos/${documentoId}/assinaturas/digitais/iniciar`
+            headers = { 'Content-Type': 'text/plain' }
         }
 
         const { data } = await axios.post(url, certificadoConteudo, {
-            headers: { 'Content-Type': 'text/plain', ...context.state.flowbee.apiToken }
+            headers: headers
         })
 
         return data
@@ -122,10 +125,10 @@ export default {
     async [actionTypes.SIGNATURE.DIGITAL.FINISH](context, { documentoId, assinatura, assinaturaTemporariaId }) {
         let url = ''
 
-        if (context.state.flowbee.apiToken) {
-            url = `${context.state.flowbee.apiUrl}/public/documentos/${documentoId}/assinaturas/digitais/finalizar`
+        if (context.state.flowbee.accessToken) {
+            url = `/flowbee/api/public/documentos/${documentoId}/assinaturas/digitais/finalizar`
         } else {
-            url = `${context.state.flowbee.apiUrl}/documentos/${documentoId}/assinaturas/digitais/finalizar`
+            url = `/flowbee/api/documentos/${documentoId}/assinaturas/digitais/finalizar`
         }
 
         const { data } = await axios.post(url, {

@@ -11,11 +11,11 @@ export default {
         UPDATE_CURRENT_PAGE_NUM: 'updateCurrentPageNum',
         UPDATE_PAGE_CONTAINER: 'updatePageContainer',
         UPDATE_RENDERED_PAGES: 'updateRenderedPages',
-        SIGNATURE: {
-            DIGITAL: {
-                START: 'startDigitalSignature',
-                FINISH: 'finishDigitalSignature'
-            }
+    },
+    SIGNATURE: {
+        DIGITAL: {
+            START: 'startDigitalSignature',
+            FINISH: 'finishDigitalSignature'
         }
     }
 }

@@ -1,16 +1,13 @@
 import LacunaWebPki from 'web-pki'
 import { actionTypes } from '../store'
 
-// eslint-disable-next-line max-len
-const _license = 'AkAAY29tZXJjaWFsLmNsbS5lZmNhei5jb20uYnIsaG9tLmNsbS5lZmNhei5jb20uYnIsd3d3LmVmY2F6LmNvbS5icm4AYXBwLWNsbS5lZmNhei5jb20uYnIsYXBwLXNpZ24uZWZjYXouY29tLmJyLGlwNDoxMC4wLjAuMC84LGlwNDoxMjcuMC4wLjAvOCxpcDQ6MTcyLjE2LjAuMC8xMixpcDQ6MTkyLjE2OC4wLjAvMTYDAFBybwAAAAGt1zPH8daw9s2OYnuTo4eipGD/zJr438EiNx0emQvnSkqfLwaK2Kfeyi+dRzf32wiuBrfx4UNg9vZd71H5PMg9ZafgkRrIcVVcgBXJfUdlMWIKMGqcdt/4/0H+uoBdV0SwqX3fiFsV0m3/Lh47YWBwkvX35hWM4gq6se/8c+CiDFA7Qp312F1RIoCtvmggovdIjHx6mMMUvt3SA8fC2os+NTRH/QzN7b5G1YNz2Z4rXi8J6MQQsapiIDo+qXjIRN0rCZZd5++23t8Uq/oGrIjZXtK/3BGRNArIUWpJ1NFqovXgO9d0R3a3g2UYUOpCxpfuzDYD4JbnaUmSIeo9GAjz'
-
 export default class AzDigitalSignature {
     constructor({pki, store}) {
         this.store = store
         if (pki) {
             this.pki = pki
         } else {
-            this.pki = new LacunaWebPki(_license)
+            this.pki = new LacunaWebPki(this.store.flowbee.license)
         }
     }
 
@@ -36,6 +33,7 @@ export default class AzDigitalSignature {
         })
     }
 
+    //todo: melhorar esse método
     async finalizarAssinaturaDigital(certificadoThumbprint, documentoId) {
         const certificadoConteudo = await this._lerChavePublicaCertificado(certificadoThumbprint)
 

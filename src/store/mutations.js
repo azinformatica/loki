@@ -138,11 +138,11 @@ export default {
         }
     },
 
-    [mutationTypes.FLOWBEE.SET_API_URL](state, url) {
-        state.flowbee.apiUrl = url
+    [mutationTypes.FLOWBEE.SET_LACUNA_LICENSE](state, url) {
+        state.flowbee.license = url
     },
 
-    [mutationTypes.FLOWBEE.SET_API_TOKEN](state, token) {
-        state.flowbee.apiToken = token
+    [mutationTypes.FLOWBEE.SET_ACCESS_TOKEN](state, token) {
+        state.flowbee.accessToken = token
     }
 }

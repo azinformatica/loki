@@ -39,7 +39,7 @@ export default {
         SET_RENDERED_PAGES: 'SET_RENDERED_PAGES'
     },
     FLOWBEE: {
-        SET_API_URL: 'SET_API_URL',
-        SET_API_TOKEN: 'SET_API_TOKEN'
+        SET_LACUNA_LICENSE: 'SET_LACUNA_LICENSE',
+        SET_ACCESS_TOKEN: 'SET_ACCESS_TOKEN'
     }
 }

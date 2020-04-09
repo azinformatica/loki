@@ -70,7 +70,7 @@ export default {
         }
     },
     flowbee: {
-        apiUrl: '',
-        apiToken: null
+        accessToken: null,
+        license: null
     }
 }
