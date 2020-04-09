@@ -25,9 +25,9 @@ export default class AzDigitalSignature {
         return new Promise((resolve, reject) => {
             this.pki
                 .listCertificates()
-                .success(certificados => {
-                    const certificadosFormatados = this._formatarApresentacaoCertificados(certificados)
-                    resolve(certificadosFormatados)
+                .success(certificates => {
+                    const formatedCertificates = this._formatCertificatesTitles(certificates)
+                    resolve(formatedCertificates)
                 })
                 .error(error => reject(error))
         })
@@ -93,7 +93,7 @@ export default class AzDigitalSignature {
         })
     }
 
-    _formatarApresentacaoCertificados(certificados) {
+    _formatCertificatesTitles(certificados) {
         certificados.forEach(certificado => {
             if (new Date() > certificado.validityEnd) {
                 certificado.prettyName = `[EXPIRADO] ${certificado.subjectName} (emitido por ${certificado.issuerName})`
