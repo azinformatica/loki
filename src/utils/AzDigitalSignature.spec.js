@@ -1,4 +1,4 @@
-import AssinaturaDigitalLacuna from './AssinaturaDigitalLacuna'
+import AssinaturaDigitalLacuna from './AzDigitalSignature'
 
 describe('AssinaturaDigitalLacuna', () => {
     let pkiMock, assinatura
@@ -10,7 +10,7 @@ describe('AssinaturaDigitalLacuna', () => {
             }
         }
         assinatura = new AssinaturaDigitalLacuna(pkiMock)
-        const resposta = await assinatura.iniciar()
+        const resposta = await assinatura.loadWebPki()
 
         expect(resposta).toBeTruthy()
     })
@@ -22,7 +22,7 @@ describe('AssinaturaDigitalLacuna', () => {
             }
         }
         assinatura = new AssinaturaDigitalLacuna(pkiMock)
-        const resposta = await assinatura.iniciar()
+        const resposta = await assinatura.loadWebPki()
 
         expect(resposta).toBeFalsy()
     })
@@ -35,7 +35,7 @@ describe('AssinaturaDigitalLacuna', () => {
         }
         assinatura = new AssinaturaDigitalLacuna(pkiMock)
 
-        await expect(assinatura.iniciar()).rejects.toEqual('erro ao iniciar')
+        await expect(assinatura.loadWebPki()).rejects.toEqual('erro ao iniciar')
     })
 
     it('Deve listar os certificados corretamente', async () => {
@@ -66,7 +66,7 @@ describe('AssinaturaDigitalLacuna', () => {
             }
         }
         assinatura = new AssinaturaDigitalLacuna(pkiMock)
-        const certificados = await assinatura.listarCertificados()
+        const certificados = await assinatura.listCertificates()
 
         expect(certificados[0].thumbprint).toEqual(listaCertificados[0].thumbprint)
         expect(certificados[0].subjectName).toEqual(listaCertificados[0].subjectName)
@@ -89,7 +89,7 @@ describe('AssinaturaDigitalLacuna', () => {
             }
         }
         assinatura = new AssinaturaDigitalLacuna(pkiMock)
-        const chave = await assinatura.lerChavePublicaCertificado(123)
+        const chave = await assinatura._readCertificate(123)
 
         expect(chave).toEqual('chave publica do certificado 123')
     })
@@ -108,7 +108,7 @@ describe('AssinaturaDigitalLacuna', () => {
             }
         }
         assinatura = new AssinaturaDigitalLacuna(pkiMock)
-        const hash = await assinatura.assinar({ thumbprint: '1', hash: 'hash backend do lacuna', algoritmo: 'algum' })
+        const hash = await assinatura._assinar({ thumbprint: '1', hash: 'hash backend do lacuna', algoritmo: 'algum' })
 
         expect(hash).toEqual('hash de assinatura')
     })
@@ -118,7 +118,7 @@ describe('AssinaturaDigitalLacuna', () => {
             redirectToInstallPage: jest.fn()
         }
         assinatura = new AssinaturaDigitalLacuna(pkiMock)
-        assinatura.redirecionarParaInstalacaoWebPki()
+        assinatura.redirectToInstallWebPki()
 
         expect(pkiMock.redirectToInstallPage).toHaveBeenCalledTimes(1)
     })
