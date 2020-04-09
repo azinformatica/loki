@@ -7,11 +7,11 @@ export default class AzDigitalSignature {
         if (pki) {
             this.pki = pki
         } else {
-            this.pki = new LacunaWebPki(this.store.flowbee.license)
+            this.pki = new LacunaWebPki(this.store.state.loki.flowbee.license)
         }
     }
 
-    async iniciar() {
+    async loadWebPki() { // iniciar
         return new Promise((resolve, reject) => {
             this.pki.init({
                 ready: () => resolve(true),
@@ -21,7 +21,7 @@ export default class AzDigitalSignature {
         })
     }
 
-    async listarCertificados() {
+    async listCertificates() { //listarCertificados
         return new Promise((resolve, reject) => {
             this.pki
                 .listCertificates()
@@ -33,33 +33,45 @@ export default class AzDigitalSignature {
         })
     }
 
-    //todo: melhorar esse método
-    async finalizarAssinaturaDigital(certificadoThumbprint, documentoId) {
-        const certificadoConteudo = await this._lerChavePublicaCertificado(certificadoThumbprint)
+    async sign(certificateThumbPrint, documentId) { // finalizarAssinaturaDigital
 
-        const assinatura = await this.store.dispatch(actionTypes.ASSINATURA.DIGITAL.INICIAR, {
-            certificadoConteudo: certificadoConteudo,
-            documentoId: documentoId
-        })
+        const certificateContent = await this._readCertificate(certificateThumbPrint)
 
-        const hashAssinatura = await this._assinar({
-            thumbprint: certificadoThumbprint,
-            hash: assinatura.hashParaAssinar,
-            algoritmo: assinatura.algoritmoHash
-        })
+        const paramsToSign = await this._preprareDocumentToSign(certificateContent, documentId);
 
-        await this.store.dispatch(actionTypes.ASSINATURA.DIGITAL.FINALIZAR, {
-            documentoId: documentoId,
-            assinatura: hashAssinatura,
-            assinaturaTemporariaId: assinatura.assinaturaTemporariaId
-        })
+        const signHash = await this._pkiSign(certificateThumbPrint, paramsToSign);
+
+        await this._finishSign(documentId, signHash, paramsToSign);
     }
 
-    redirecionarParaInstalacaoWebPki() {
+    redirectToInstallWebPki() { //redirecionarParaInstalacaoWebPki
         this.pki.redirectToInstallPage()
     }
 
-    async _lerChavePublicaCertificado(thumbprint) {
+    async _finishSign(documentId, signHash, paramsToSign) {
+        await this.store.dispatch(actionTypes.SIGNATURE.DIGITAL.FINISH, {
+            documentId: documentId,
+            signHash: signHash,
+            temporarySubscription: paramsToSign.assinaturaTemporariaId
+        })
+    }
+
+    async _pkiSign(certificateThumbPrint, paramsToSign) {
+        return this._assinar({
+            thumbprint: certificateThumbPrint,
+            hash: paramsToSign.hashParaAssinar,
+            algoritmo: paramsToSign.algoritmoHash
+        })
+    }
+
+    async _preprareDocumentToSign(certificateContent, documentId) {
+        return this.store.dispatch(actionTypes.SIGNATURE.DIGITAL.START, {
+            certificadoConteudo: certificateContent,
+            documentId: documentId
+        })
+    }
+
+    async _readCertificate(thumbprint) {
         return new Promise((resolve, reject) => {
             this.pki
                 .readCertificate(thumbprint)
