@@ -104,32 +104,23 @@ export default {
     },
 
     async [actionTypes.SIGNATURE.DIGITAL.START](context, { certificadoConteudo, documentId }) {
-        let url = null
-        let headers = null
 
-        if (context.state.flowbee.accessToken) {
-            url = `/flowbee/api/public/documentos/${documentId}/assinaturas/digitais/iniciar`
-            headers = { 'Content-Type': 'text/plain', ...context.state.flowbee.accessToken }
-        } else {
-            url = `/flowbee/api/documentos/${documentId}/assinaturas/digitais/iniciar`
-            headers = { 'Content-Type': 'text/plain' }
-        }
+        const flowbeeAccessParams = getFlowbeeAccessParams(context.state.flowbee.accessToken)
+
+        const url = `${flowbeeAccessParams.url}/${documentId}/assinaturas/digitais/iniciar`
 
         const { data } = await axios.post(url, certificadoConteudo, {
-            headers: headers
+            headers: flowbeeAccessParams.headers
         })
 
         return data
     },
 
     async [actionTypes.SIGNATURE.DIGITAL.FINISH](context, { documentId, signHash, temporarySubscription }) {
-        let url = ''
 
-        if (context.state.flowbee.accessToken) {
-            url = `/flowbee/api/public/documentos/${documentId}/assinaturas/digitais/finalizar`
-        } else {
-            url = `/flowbee/api/documentos/${documentId}/assinaturas/digitais/finalizar`
-        }
+        const flowbeeAccessParams = getFlowbeeAccessParams(context.state.flowbee.accessToken)
+
+        const url = `${flowbeeAccessParams.url}/${documentId}/assinaturas/digitais/finalizar`
 
         const { data } = await axios.post(url, {
             assinatura: signHash,
@@ -137,5 +128,18 @@ export default {
         })
 
         return data
+    }
+}
+
+function getFlowbeeAccessParams(accessToken) {
+
+    if (accessToken) return {
+        url: '/flowbee/api/public/documentos',
+        headers: { 'Content-Type': 'text/plain', accessToken }
+    }
+
+    return {
+        url: '/flowbee/api/documentos',
+        headers: { 'Content-Type': 'text/plain' }
     }
 }
