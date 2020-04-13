@@ -1,8 +1,24 @@
 import LacunaWebPki from 'web-pki'
 import { actionTypes } from '../store'
 
+/**
+ * @module AzDigitalSignature
+ * @description The methods must be called in the following order: constructor, loadWebPki,
+ * listCertificates, sign.
+ *
+ * @method constructor requires a Vuex Store instance
+ * @method loadWebPki return true if web-pki is installed. If returned false call redirectToInstallWebPki
+ * @method listCertificates return list of available certificates in web-pki chrome
+ * @method sign sign the document
+ */
 export default class AzDigitalSignature {
-    constructor({pki, store}) {
+    /**
+     * Create a new instance of AzDigitalSignature
+     * @constructor
+     * @param Object.pki: Object pki is required only for tests.
+     * @param Object.store: Vuex Store.
+     */
+    constructor({ pki, store }) {
         this.store = store
         if (pki) {
             this.pki = pki
@@ -11,7 +27,12 @@ export default class AzDigitalSignature {
         }
     }
 
-    async loadWebPki() { // iniciar
+    /**
+     * Start web-pki and return true if installed or return false case not installed.
+     * If false call redirectToInstallWebPki
+     * @return {void}
+     */
+    async loadWebPki() {
         return new Promise((resolve, reject) => {
             this.pki.init({
                 ready: () => resolve(true),
@@ -21,7 +42,11 @@ export default class AzDigitalSignature {
         })
     }
 
-    async listCertificates() { //listarCertificados
+    /**
+     * List all available certificates in your chrome plugin.
+     * @return Array
+     */
+    async listCertificates() {
         return new Promise((resolve, reject) => {
             this.pki
                 .listCertificates()
@@ -33,18 +58,31 @@ export default class AzDigitalSignature {
         })
     }
 
-    async sign(certificateThumbPrint, documentId) { // finalizarAssinaturaDigital
-
+    /**
+     * Sign document
+     * @param {String} certificateThumbPrint
+     * @param {String} documentId
+     * @return {void}
+     */
+    async sign(certificateThumbPrint, documentId) {
         const certificateContent = await this._readCertificate(certificateThumbPrint)
 
-        const paramsToSign = await this._preprareDocumentToSign(certificateContent, documentId);
+        const paramsToSign = await this._preprareDocumentToSign(certificateContent, documentId)
 
-        const signHash = await this._pkiSign(certificateThumbPrint, paramsToSign);
+        const signHash = this._sign({
+            thumbprint: certificateThumbPrint,
+            hash: paramsToSign.hashParaAssinar,
+            algoritmo: paramsToSign.algoritmoHash
+        })
 
-        await this._finishSign(documentId, signHash, paramsToSign);
+        await this._finishSign(documentId, signHash, paramsToSign)
     }
 
-    redirectToInstallWebPki() { //redirecionarParaInstalacaoWebPki
+    /**
+     * Redirect to web-pki installation page
+     * @return {void}
+     */
+    redirectToInstallWebPki() {
         this.pki.redirectToInstallPage()
     }
 
@@ -53,14 +91,6 @@ export default class AzDigitalSignature {
             documentId: documentId,
             signHash: signHash,
             temporarySubscription: paramsToSign.assinaturaTemporariaId
-        })
-    }
-
-    async _pkiSign(certificateThumbPrint, paramsToSign) {
-        return this._assinar({
-            thumbprint: certificateThumbPrint,
-            hash: paramsToSign.hashParaAssinar,
-            algoritmo: paramsToSign.algoritmoHash
         })
     }
 
@@ -80,7 +110,7 @@ export default class AzDigitalSignature {
         })
     }
 
-    async _assinar({ thumbprint, hash, algoritmo }) {
+    async _sign({ thumbprint, hash, algoritmo }) {
         return new Promise((resolve, reject) => {
             this.pki
                 .signHash({
