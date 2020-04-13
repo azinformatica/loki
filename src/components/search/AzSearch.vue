@@ -14,11 +14,10 @@
                 </v-tooltip>
 
                 <input
-                    class="input-text"
-                    v-model="searchText"
-                    :placeholder="simpleSearchPlaceholder"
-                    @keyup.enter="simpleSearch()"
-                />
+                        class="input-text"
+                        v-model="searchText"
+                        :placeholder="simpleSearchPlaceholder"
+                        @keyup.enter="simpleSearch()"/>
             </div>
 
             <v-btn class="icon-search" fab dark small depressed color="primary" @click="simpleSearch()">
@@ -27,23 +26,22 @@
         </div>
 
         <v-btn
-            class="btn-advanced-search"
-            depressed
-            color="grey darken-1"
-            @click="toggle()"
-            v-if="hasAdvancedSearchItems"
-        >
+                class="btn-advanced-search"
+                depressed
+                color="grey darken-1"
+                @click="toggle()"
+                v-if="hasAdvancedSearchItems">
             <v-icon small>chevron_left</v-icon>Filtros
         </v-btn>
 
         <v-navigation-drawer
-            absolute
-            right
-            width="340"
-            v-model="isClosedAdvancedSearch"
-            mini-variant-width="0"
-            floating
-            class="advanced-search-bar"
+                absolute
+                right
+                width="340"
+                v-model="isClosedAdvancedSearch"
+                mini-variant-width="0"
+                floating
+                class="advanced-search-bar"
         >
             <v-toolbar flat class="title" color="primary">
                 <v-btn class="btn-close" icon small @click.prevent="toggle()">
@@ -89,7 +87,7 @@ export default {
     },
     computed: {
         inputSearchStyle() {
-            let size = Object.keys(this.filter).length * 180 + this.searchTextSize
+            let size = Object.keys(this.filter).length * 100 + this.searchTextSize
             return 'width: ' + size + 'px'
         },
         filledFilters() {
@@ -293,14 +291,13 @@ export default {
         margin-right 0 !important
 
     .search
-        position absolute
         right unset !important
         top 15px
         display -webkit-box
         display -ms-flexbox
         display flex
         width 100%
-        padding 0 20px
+        padding 0 20px 0 5px
 
     .az-search
         width 100%

@@ -16,13 +16,13 @@
                     v-model="date"
                     :value="value"
                     :locale="currentLanguage"
-                    @input="updateModelDate($event)"
+                    @input="updateModelDate($event), pickDateEvent()"
                     :min="minDate"
                     :max="maxDate"
                     class="az-date"/>
             </v-dialog>
             <v-text-field
-                v-validate="{ required: isRequired }"
+                v-validate="validateDate"
                 :name="nameDate"
                 :error-messages="errors.collect(`${nameDate}`)"
                 v-model="dateFormatted"
@@ -33,9 +33,9 @@
                 :min-date="minDate"
                 :max-date="maxDate"
                 append-icon="event"
+                class="az-date-date-input"
                 @click:append="openMenuDate"
-                @keyup="validateAndParseDate(dateFormatted, false)"
-                @blur="validateAndParseDate(dateFormatted, true)">
+                @keyup="validateAndParseDate(dateFormatted)">
                 <template v-slot:label v-if="this.$slots['label-date']">
                     <slot name="label-date" />
                 </template>
@@ -79,6 +79,7 @@
                 mask="time"
                 :placeholder="placeholderHour"
                 append-icon="access_time"
+                class="az-date-time-input"
                 @click:append="openMenuTime"
                 @focus="selectContentInputHour"
                 @blur="validateTimeEvent(), updateModelTime(time)"/>
@@ -169,6 +170,30 @@ export default {
         },
         currentLanguage() {
             return this.$vuetify.lang.current
+        },
+        validateDate() {
+            const validationDate = {}
+
+            if(this.isRequired) {
+                validationDate.required = true
+            }
+
+            if(this.dateFormatted && this.dateFormatted.length === 10) {
+                validationDate.date_format = this.dateFormat === 'DD/MM/YYYY' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'
+
+                if(this.maxDate) {
+                    validationDate.before = this.moment(this.maxDate)
+                        .add(1, 'days')
+                        .format(this.dateFormat)
+                }
+
+                if(this.minDate) {
+                    validationDate.after = this.moment(this.minDate)
+                        .subtract(1, 'days')
+                        .format(this.dateFormat)
+                }
+            }
+            return validationDate
         }
     },
     watch: {
@@ -184,6 +209,9 @@ export default {
                 this.dateFormatted = null
             }
         }
+    },
+    mounted() {
+        this.alterTabIndexFromAppendButtons()
     },
     methods: {
         getFormattedDate(day, month, year) {
@@ -206,13 +234,13 @@ export default {
         },
         pickDateEvent() {
             this.dialogDate = false
-            this.dateFormatted = this.formatDate(this.date)
         },
-        validateAndParseDate(date, clearInvalid) {
+        validateAndParseDate(date) {
             if (!date || !this.dateStringIsValid(date) || this.dateMaxIsAllowed(date) || this.dateMinIsAllowed(date)) {
-                if(clearInvalid) {
+                if(date === null || date.length === 0) {
                     this.date = null
                     this.dateFormatted = ''
+                    this.$emit('input', null)
                 }
                 return
             }
@@ -424,9 +452,6 @@ export default {
                 this.dateFormatted = this.formatDate(this.date)
                 this.time = splitDateTime[1].substring(0, 5)
                 this.timeFormatted = this.time.replace(':', '')
-                const dateTimeWithTimezone = this.buildDateTimeWithTimezone(this.date, this.time)
-                const dateTimeTimezoneZero = this.getDateTimeZeroTimezone(dateTimeWithTimezone)
-                this.$emit('input', dateTimeTimezoneZero)
             }
         },
         dateMinIsAllowed(date) {
@@ -446,6 +471,16 @@ export default {
                     .isAfter(`${maxDateObj.year}-${maxDateObj.month}-${maxDateObj.day}`)
             }
             return false
+        },
+        alterTabIndexFromAppendButtons() {
+            const bottonsDate = document.querySelectorAll('.az-date-date-input .v-input__append-inner .v-icon')
+            bottonsDate.forEach(btn => {
+                btn.tabIndex = '-1'
+            })
+            const bottonsTime = document.querySelectorAll('.az-date-time-input .v-input__append-inner .v-icon')
+            bottonsTime.forEach(btn => {
+                btn.tabIndex = '-1'
+            })
         }
     }
 }

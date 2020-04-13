@@ -43,6 +43,23 @@ export default {}
         padding 10px
         height 35px
 
+    &.az-table-list-access
+        .v-data-table__mobile-row:last-child
+            border-top 2px dotted #ccc
+
+            .v-data-table__mobile-row__header
+                display none
+
+            .v-data-table__mobile-row__cell
+                text-align center
+                width 100%
+
+    .v-data-table__mobile-table-row
+        display block
+
+        .v-data-table__mobile-row
+            min-height auto
+
 .az-pagination
     display flex
     justify-content space-between
@@ -296,6 +313,9 @@ export default {}
 
         td
             height unset !important
+            border none
+            position relative
+            padding-left 50%
 
             &:before
                 position relative
@@ -305,17 +325,8 @@ export default {}
                 font-weight bold
                 color #3a6861
 
-        td
-            border none
-            position relative
-            padding-left 50%
-
-        table, thead, tbody, th, td
-            display block !important
-
         tr
             border 1px solid #ddd
-            display block !important
 
             &:nth-child(even)
                 background-color #eee !important
@@ -328,4 +339,5 @@ export default {}
                 position absolute
                 top -9999px
                 left -9999px
+
 </style>
