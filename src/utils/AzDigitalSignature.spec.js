@@ -108,7 +108,7 @@ describe('AzDigitalSignature', () => {
             }
         }
         assinatura = new AzDigitalSignature({ pki: pkiMock })
-        const hash = await assinatura._assinar({ thumbprint: '1', hash: 'hash backend do lacuna', algoritmo: 'algum' })
+        const hash = await assinatura._sign({ thumbprint: '1', hash: 'hash backend do lacuna', algoritmo: 'algum' })
 
         expect(hash).toEqual('hash de assinatura')
     })
