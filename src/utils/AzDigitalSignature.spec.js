@@ -1,6 +1,6 @@
-import AssinaturaDigitalLacuna from './AzDigitalSignature'
+import AzDigitalSignature from './AzDigitalSignature'
 
-describe('AssinaturaDigitalLacuna', () => {
+describe('AzDigitalSignature', () => {
     let pkiMock, assinatura
 
     it('Deve retornar true ao executar o método init - ready', async () => {
@@ -9,7 +9,7 @@ describe('AssinaturaDigitalLacuna', () => {
                 return ready()
             }
         }
-        assinatura = new AssinaturaDigitalLacuna(pkiMock)
+        assinatura = new AzDigitalSignature({ pki: pkiMock })
         const resposta = await assinatura.loadWebPki()
 
         expect(resposta).toBeTruthy()
@@ -21,7 +21,7 @@ describe('AssinaturaDigitalLacuna', () => {
                 return notInstalled()
             }
         }
-        assinatura = new AssinaturaDigitalLacuna(pkiMock)
+        assinatura = new AzDigitalSignature({ pki: pkiMock })
         const resposta = await assinatura.loadWebPki()
 
         expect(resposta).toBeFalsy()
@@ -33,7 +33,7 @@ describe('AssinaturaDigitalLacuna', () => {
                 return defaultError('erro ao iniciar')
             }
         }
-        assinatura = new AssinaturaDigitalLacuna(pkiMock)
+        assinatura = new AzDigitalSignature({ pki: pkiMock })
 
         await expect(assinatura.loadWebPki()).rejects.toEqual('erro ao iniciar')
     })
@@ -65,7 +65,7 @@ describe('AssinaturaDigitalLacuna', () => {
                 }
             }
         }
-        assinatura = new AssinaturaDigitalLacuna(pkiMock)
+        assinatura = new AzDigitalSignature({ pki: pkiMock })
         const certificados = await assinatura.listCertificates()
 
         expect(certificados[0].thumbprint).toEqual(listaCertificados[0].thumbprint)
@@ -88,7 +88,7 @@ describe('AssinaturaDigitalLacuna', () => {
                 }
             }
         }
-        assinatura = new AssinaturaDigitalLacuna(pkiMock)
+        assinatura = new AzDigitalSignature({ pki: pkiMock })
         const chave = await assinatura._readCertificate(123)
 
         expect(chave).toEqual('chave publica do certificado 123')
@@ -107,7 +107,7 @@ describe('AssinaturaDigitalLacuna', () => {
                 }
             }
         }
-        assinatura = new AssinaturaDigitalLacuna(pkiMock)
+        assinatura = new AzDigitalSignature({ pki: pkiMock })
         const hash = await assinatura._assinar({ thumbprint: '1', hash: 'hash backend do lacuna', algoritmo: 'algum' })
 
         expect(hash).toEqual('hash de assinatura')
@@ -117,7 +117,7 @@ describe('AssinaturaDigitalLacuna', () => {
         pkiMock = {
             redirectToInstallPage: jest.fn()
         }
-        assinatura = new AssinaturaDigitalLacuna(pkiMock)
+        assinatura = new AzDigitalSignature({ pki: pkiMock })
         assinatura.redirectToInstallWebPki()
 
         expect(pkiMock.redirectToInstallPage).toHaveBeenCalledTimes(1)
