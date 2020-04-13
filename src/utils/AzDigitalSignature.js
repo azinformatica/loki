@@ -69,7 +69,7 @@ export default class AzDigitalSignature {
 
         const paramsToSign = await this._preprareDocumentToSign(certificateContent, documentId)
 
-        const signHash = this._sign({
+        const signHash = await this._sign({
             thumbprint: certificateThumbPrint,
             hash: paramsToSign.hashParaAssinar,
             algoritmo: paramsToSign.algoritmoHash
