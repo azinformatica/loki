@@ -55,6 +55,7 @@ import AzSearchUrlBuilder from './utils/AzSearchUrlBuilder'
 import AzSoundex from './utils/AzSoundex'
 import buildMenu from './utils/az-menu'
 import hasPermissions from './utils/az-auth'
+import AzDigitalSignature from './utils/AzDigitalSignature'
 
 Vue.use(accounting)
 Vue.use(money, {
@@ -145,4 +146,4 @@ const filters = {
     azTitleCase
 }
 
-export { lokiPlugin, filters, AzCurrency, AzSearchUrlBuilder, AzSoundex, buildMenu, hasPermissions }
+export { lokiPlugin, filters, AzCurrency, AzSearchUrlBuilder, AzSoundex, buildMenu, hasPermissions, AzDigitalSignature }

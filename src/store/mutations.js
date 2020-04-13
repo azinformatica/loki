@@ -136,5 +136,13 @@ export default {
         } else {
             state.document.renderedPages = []
         }
+    },
+
+    [mutationTypes.FLOWBEE.SET_LACUNA_LICENSE](state, url) {
+        state.flowbee.license = url
+    },
+
+    [mutationTypes.FLOWBEE.SET_ACCESS_TOKEN](state, token) {
+        state.flowbee.accessToken = token
     }
 }
