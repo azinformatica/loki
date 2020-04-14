@@ -1,7 +1,7 @@
 <template>
     <v-snackbar v-model="show" :color="color" right top>
         <span :style="style">{{ text }}</span>
-         <a v-if="desfazer" @click="desfazerAcao" :style="styleDesfazer">Desfazer</a>
+         <a v-if="hasButtom" @click="undoAction" :style="styleButtom">{{mensageButtom}}</a>
         <v-btn dark text @click="show = false">
             <v-icon small :color="iconColor">close</v-icon>
         </v-btn>
@@ -17,18 +17,17 @@ export default {
             text: '',
             color: '',
             show: false,
-            desfazer:false,
+            hasButtom:false,
             style:"",
-            styleDesfazer:""
+            styleButtom:"",
+            mensageButtom:""
         }
     },
     methods:{
-       async desfazerAcao(){
-            console.log('Desfeito')
+       async undoAction(){
             const rollback  = true
             await this.$store.commit(mutationTypes.ROLLBACK_ACTION,rollback)
             this.show = false
-            console.log(this.$store.state.loki)
         },
     },
     created: function() {
@@ -39,11 +38,12 @@ export default {
                 if (alert.message !== '') {
                     this.show = true
                     this.text = alert.message
-                    this.desfazer=alert.desfazer
+                    this.hasButtom=alert.hasButtom
                     this.color = alert.type
                     this.style = alert.style
-                    this.styleDesfazer = alert.styleDesfazer
-                    this.iconColor = alert.iconColor
+                    this.styleButtom = alert.styleButtom
+                    this.iconColor = alert.iconColor,
+                    this.mensageButtom = alert.mensageButtom
                 }
             }
         )
