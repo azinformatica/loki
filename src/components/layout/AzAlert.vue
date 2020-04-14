@@ -1,9 +1,9 @@
 <template>
-    <v-snackbar v-model="show" :color="color" right top>
-        <span :style="style">{{ text }}</span>
-         <a v-if="hasButtom" @click="undoAction" :style="styleButtom">{{mensageButtom}}</a>
-        <v-btn dark text @click="show = false">
-            <v-icon small :color="iconColor">close</v-icon>
+    <v-snackbar v-model='show' :color='color' right top :timeout='timeout'>
+        <span :style='style'>{{ text }}</span>
+         <a v-if="hasButtom" @click='undoAction' :style='styleButtom'>{{mensageButtom}}</a>
+        <v-btn dark text @click='show = false'>
+            <v-icon small :color='iconColor'>close</v-icon>
         </v-btn>
     </v-snackbar>
 </template>
@@ -14,13 +14,14 @@ export default {
     name: 'AzAlert',
     data() {
         return {
-            text: '',
-            color: '',
-            show: false,
+            text:'',
+            color:'',
+            show:false,
             hasButtom:false,
-            style:"",
-            styleButtom:"",
-            mensageButtom:""
+            style:'',
+            styleButtom:'',
+            mensageButtom:'',
+            timeout:6000
         }
     },
     methods:{
@@ -28,7 +29,7 @@ export default {
             const rollback  = true
             await this.$store.commit(mutationTypes.ROLLBACK_ACTION,rollback)
             this.show = false
-        },
+        }
     },
     created: function() {
         this.$store.watch(
@@ -44,6 +45,7 @@ export default {
                     this.styleButtom = alert.styleButtom
                     this.iconColor = alert.iconColor,
                     this.mensageButtom = alert.mensageButtom
+                    this.timeout = alert.timeOut
                 }
             }
         )

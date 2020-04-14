@@ -91,8 +91,8 @@ export default {
         }
     },
 
-    [mutationTypes.SHOW_ALERT](state, { message, type , hasButtom, style ,  styleButtom , iconColor, mensageButtom}) {
-        state.alert = { message, type , hasButtom, style , styleButtom, iconColor , mensageButtom}
+    [mutationTypes.SHOW_ALERT](state, { message, type , hasButtom, style ,  styleButtom , iconColor, mensageButtom,timeOut}) {
+        state.alert = { message, type , hasButtom, style , styleButtom, iconColor , mensageButtom,timeOut}
     },
     [mutationTypes.ROLLBACK_ACTION](state,rollback){
         state.rollback = rollback
