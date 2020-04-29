@@ -104,42 +104,44 @@ export default {
     },
 
     async [actionTypes.SIGNATURE.DIGITAL.START](context, { certificadoConteudo, documentId }) {
-
         const flowbeeAccessParams = getFlowbeeAccessParams(context.state.flowbee.accessToken)
-
         const url = `${flowbeeAccessParams.url}/${documentId}/assinaturas/digitais/iniciar`
+        const headers = {
+            'Content-Type': 'text/plain',
+            ...flowbeeAccessParams.headers
+        }
 
-        const { data } = await axios.post(url, certificadoConteudo, {
-            headers: flowbeeAccessParams.headers
-        })
+        const { data } = await axios.post(url, certificadoConteudo, { headers })
 
         return data
     },
 
     async [actionTypes.SIGNATURE.DIGITAL.FINISH](context, { documentId, signHash, temporarySubscription }) {
-
         const flowbeeAccessParams = getFlowbeeAccessParams(context.state.flowbee.accessToken)
-
         const url = `${flowbeeAccessParams.url}/${documentId}/assinaturas/digitais/finalizar`
-
-        const { data } = await axios.post(url, {
+        const headers = {
+            ...flowbeeAccessParams.headers
+        }
+        const requestData = {
             assinatura: signHash,
             assinaturaTemporariaId: temporarySubscription
-        })
+        }
+
+        const { data } = await axios.post(url, requestData, { headers })
 
         return data
     }
 }
 
 function getFlowbeeAccessParams(accessToken) {
-
-    if (accessToken) return {
-        url: '/flowbee/api/public/documentos',
-        headers: { 'Content-Type': 'text/plain', accessToken }
-    }
-
-    return {
-        url: '/flowbee/api/documentos',
-        headers: { 'Content-Type': 'text/plain' }
+    if (accessToken) {
+        return {
+            url: '/flowbee/api/public/documentos',
+            headers: { ...accessToken }
+        }
+    } else {
+        return {
+            url: '/flowbee/api/documentos'
+        }
     }
 }
