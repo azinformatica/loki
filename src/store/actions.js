@@ -116,7 +116,7 @@ export default {
         return data
     },
 
-    async [actionTypes.SIGNATURE.DIGITAL.FINISH](context, { documentId, signHash, temporarySubscription }) {
+    async [actionTypes.SIGNATURE.DIGITAL.FINISH](context, { documentId, signHash, temporarySubscription, rubricBase64 }) {
         const flowbeeAccessParams = getFlowbeeAccessParams(context.state.flowbee.accessToken)
         const url = `${flowbeeAccessParams.url}/${documentId}/assinaturas/digitais/finalizar`
         const headers = {
@@ -124,7 +124,8 @@ export default {
         }
         const requestData = {
             assinatura: signHash,
-            assinaturaTemporariaId: temporarySubscription
+            assinaturaTemporariaId: temporarySubscription,
+            rubricaBase64: rubricBase64
         }
 
         const { data } = await axios.post(url, requestData, { headers })

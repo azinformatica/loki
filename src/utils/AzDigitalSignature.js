@@ -62,9 +62,10 @@ export default class AzDigitalSignature {
      * Sign document
      * @param {String} certificateThumbPrint
      * @param {String} documentId
+     * @param {String} rubricBase64 (optional)
      * @return {void}
      */
-    async sign(certificateThumbPrint, documentId) {
+    async sign(certificateThumbPrint, documentId, rubricBase64 = null) {
         const certificateContent = await this._readCertificate(certificateThumbPrint)
 
         const paramsToSign = await this._preprareDocumentToSign(certificateContent, documentId)
@@ -75,7 +76,7 @@ export default class AzDigitalSignature {
             algoritmo: paramsToSign.algoritmoHash
         })
 
-        await this._finishSign(documentId, signHash, paramsToSign)
+        await this._finishSign(documentId, signHash, paramsToSign, rubricBase64)
     }
 
     /**
@@ -86,11 +87,12 @@ export default class AzDigitalSignature {
         this.pki.redirectToInstallPage()
     }
 
-    async _finishSign(documentId, signHash, paramsToSign) {
+    async _finishSign(documentId, signHash, paramsToSign, rubricBase64) {
         await this.store.dispatch(actionTypes.SIGNATURE.DIGITAL.FINISH, {
             documentId: documentId,
             signHash: signHash,
-            temporarySubscription: paramsToSign.assinaturaTemporariaId
+            temporarySubscription: paramsToSign.assinaturaTemporariaId,
+            rubricBase64
         })
     }
 
