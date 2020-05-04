@@ -255,5 +255,13 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 canvasContext: {}
             })
         })
+
+        it('Should scroll to first page', async () => {
+            wrapper.vm.getDocumentContainer().scrollTop = 14
+            expect(wrapper.vm.getDocumentContainer().scrollTop).toBe(14)
+
+            wrapper.vm.scrollToFirstPage()
+            expect(wrapper.vm.getDocumentContainer().scrollTop).toBe(0)
+        })
     })
 })
