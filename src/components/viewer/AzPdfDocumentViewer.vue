@@ -147,6 +147,9 @@ export default {
                 this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, this.visiblePageNum)
             }
         },
+        scrollToFirstPage() {
+            this.getDocumentContainer().scrollTop = 0
+        },
         resolveEventZoomOut() {
             this.$store.dispatch(actionTypes.DOCUMENT.DECREASE_SCALE)
             this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES)
@@ -235,6 +238,7 @@ export default {
         async computedSrc() {
             this.documentContainerWidth = this.getDocumentContainer().clientWidth
             await this.updatePdfRendering()
+            this.scrollToFirstPage()
         }
     },
     beforeDestroy() {
