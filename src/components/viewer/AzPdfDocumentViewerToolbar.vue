@@ -10,6 +10,9 @@
         <v-btn @click="zoomIn" icon data-test="zoomIn" :disabled="disableButtons">
             <v-icon>zoom_in</v-icon>
         </v-btn>
+        <v-btn v-show="downloadButton" @click="download" icon data-test="download" :disabled="disableButtons">
+            <v-icon size="20">fas fa-download</v-icon>
+        </v-btn>
         <div class="az-pdf-toolbar__page-viewer">{{ currentPage }} / {{ totalPages }}</div>
         <v-spacer />
     </v-toolbar>
@@ -22,6 +25,9 @@ export default {
             required: true
         },
         totalPages: {
+            required: true
+        },
+        downloadButton: {
             required: true
         }
     },
@@ -39,6 +45,9 @@ export default {
         },
         resetZoom() {
             this.$emit('resetZoom')
+        },
+        download() {
+            this.$emit('download')
         }
     }
 }

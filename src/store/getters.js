@@ -2,6 +2,9 @@ export default {
     currentPageNum: state => {
         return state.document.paginator.currentPageNum
     },
+    filename: state => {
+        return state.document.filename
+    },
     pageContainer: state => {
         return {
             height: state.document.pageContainer.height,

@@ -9,10 +9,11 @@
         />
         <div v-show="!loading">
             <az-pdf-document-viewer-toolbar
-                v-bind="{ currentPage, totalPages }"
+                v-bind="{ currentPage, totalPages, downloadButton }"
                 @zoomOut="resolveEventZoomOut"
                 @zoomIn="resolveEventZoomIn"
                 @resetZoom="resolveEventResetZoom"
+                @download="createDownloadLink"
             />
             <div :id="`${id}-documentContainer`" class="az-pdf-document-viewer__container" :style="{ height: height }">
                 <az-pdf-document-viewer-page
@@ -59,6 +60,10 @@ export default {
             default: () => new Object()
         },
         progressBar: {
+            type: Boolean,
+            default: false
+        },
+        downloadButton: {
             type: Boolean,
             default: false
         }
@@ -164,6 +169,9 @@ export default {
             this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES)
             this.setPageContainer()
             this.renderPage(this.visiblePageNum)
+        },
+        createDownloadLink() {
+            this.$store.dispatch(actionTypes.DOCUMENT.DOWNLOAD, { src: this.src, filename: this.filename } )
         },
         async saveCanvasContext(payload) {
             this.pagesCanvasContext[payload.pageNum] = payload
