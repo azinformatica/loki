@@ -7,14 +7,15 @@ const localVue = createLocalVue()
 Vue.use(Vuetify)
 
 describe('AzPdfDocumentViewerToolbar.spec.js', () => {
-    let currentPage, totalPages, wrapper
+    let currentPage, totalPages, downloadButton, wrapper
 
     beforeEach(() => {
         currentPage = 1
         totalPages = 3
+        downloadButton = true
         wrapper = shallowMount(AzPdfDocumentViewerToolbar, {
             localVue,
-            propsData: { currentPage, totalPages }
+            propsData: { currentPage, totalPages, downloadButton }
         })
     })
 
@@ -60,5 +61,15 @@ describe('AzPdfDocumentViewerToolbar.spec.js', () => {
         let resetZoomBtn = wrapper.find('[data-test="resetZoom"]')
         resetZoomBtn.vm.$emit('click')
         expect(wrapper.emitted().resetZoom).toBeTruthy()
+    })
+
+    it('Should have a download button', () => {
+        expect(wrapper.find('[data-test="download"]')).toBeTruthy()
+    })
+
+    it('Should emit an event on click at resetZoom button', () => {
+        let downloadBtn = wrapper.find('[data-test="download"]')
+        downloadBtn.vm.$emit('click')
+        expect(wrapper.emitted().download).toBeTruthy()
     })
 })
