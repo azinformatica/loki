@@ -35,10 +35,31 @@ export default {
         }
     },
 
+    async [actionTypes.DOCUMENT.DOWNLOAD](context, { src, filename }) {
+        await axios.get(src, { responseType: 'blob' }).then(response => {
+            const url = window.URL.createObjectURL(new Blob([response.data]))
+            const tempLink = document.createElement('a')
+            tempLink.href = url
+            tempLink.setAttribute('download', filename)
+
+            if (typeof tempLink.download === 'undefined') {
+                tempLink.setAttribute('target', '_blank')
+            }
+
+            document.body.appendChild(tempLink)
+            tempLink.click()
+
+            setTimeout(function() {
+                document.body.removeChild(tempLink)
+            }, 0)
+        })
+    },
+
     async [actionTypes.DOCUMENT.FETCH_DOCUMENT](context, { src, httpHeader }) {
         let pdf = await pdfjs.fetchDocument(src, httpHeader)
         context.commit(mutationTypes.DOCUMENT.SET_TOTAL_PAGE_NUM, pdf.numPages)
         context.commit(mutationTypes.DOCUMENT.SET_PAGES, await pdfjs.getPages(pdf))
+        context.commit(mutationTypes.DOCUMENT.SET_FILENAME, await pdfjs.getFileName(pdf))
     },
 
     [actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM](context, currentPageNum) {
@@ -116,7 +137,10 @@ export default {
         return data
     },
 
-    async [actionTypes.SIGNATURE.DIGITAL.FINISH](context, { documentId, signHash, temporarySubscription, rubricBase64 }) {
+    async [actionTypes.SIGNATURE.DIGITAL.FINISH](
+        context,
+        { documentId, signHash, temporarySubscription, rubricBase64 }
+    ) {
         const flowbeeAccessParams = getFlowbeeAccessParams(context.state.flowbee.accessToken)
         const url = `${flowbeeAccessParams.url}/${documentId}/assinaturas/digitais/finalizar`
         const headers = {

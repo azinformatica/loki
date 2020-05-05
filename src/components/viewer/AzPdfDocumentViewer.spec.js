@@ -14,11 +14,12 @@ Vue.use(Vuetify)
 Vue.use(Vuex)
 
 describe('AzPdfDocumentViewer.spec.js', () => {
-    let src, wrapper, store, state, getters, actions
+    let src, downloadButton, wrapper, store, state, getters, actions
 
     beforeEach(async () => {
         state = {
             document: {
+                filename: 'NomeDoArquivo.pdf',
                 pageContainer: {
                     height: 1,
                     width: 1
@@ -39,6 +40,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
 
         getters = {
             currentPageNum: jest.fn().mockReturnValue(1),
+            filename: jest.fn().mockReturnValue(state.document.filename),
             pageContainer: jest.fn().mockReturnValue({ height: 1, width: 1 }),
             pages: jest.fn().mockReturnValue(state.document.pages),
             scale: jest.fn().mockReturnValue(1),
@@ -50,6 +52,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             [actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER]: jest.fn(),
             [actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM]: jest.fn(),
             [actionTypes.DOCUMENT.DECREASE_SCALE]: jest.fn(),
+            [actionTypes.DOCUMENT.DOWNLOAD]: jest.fn(),
             [actionTypes.DOCUMENT.INCREASE_SCALE]: jest.fn(),
             [actionTypes.DOCUMENT.RESTORE_SCALE]: jest.fn(),
             [actionTypes.DOCUMENT.RENDER_PAGE]: jest.fn(),
@@ -61,10 +64,11 @@ describe('AzPdfDocumentViewer.spec.js', () => {
 
         store = new Vuex.Store({ state, getters, actions })
         src = 'document/url'
+        downloadButton = true
         wrapper = shallowMount(AzPdfDocumentViewer, {
             localVue,
             store,
-            propsData: { src },
+            propsData: { src, downloadButton },
             attachToDocument: true
         })
         await wrapper.vm.$nextTick()
@@ -77,6 +81,10 @@ describe('AzPdfDocumentViewer.spec.js', () => {
 
         it('Should receive props src', () => {
             expect(wrapper.props().src).toBe(src)
+        })
+
+        it('Should receive props downloadButton', () => {
+            expect(wrapper.props().downloadButton).toBe(downloadButton)
         })
 
         it('Should have a AzPdfDocumentViewerToolbar component', () => {
@@ -112,6 +120,10 @@ describe('AzPdfDocumentViewer.spec.js', () => {
     describe('Vuex state access', () => {
         it('Should access currentPageNum', () => {
             expect(wrapper.vm.currentPage).toBe(store.getters.currentPageNum)
+        })
+
+        it('Should access filename', () => {
+            expect(wrapper.vm.filename).toBe(store.getters.filename)
         })
 
         it('Should access pageContainer.height', () => {
@@ -189,6 +201,22 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             expect(wrapper.vm.pagesCanvasContext).toEqual({
                 '1': { pageNum: 1, canvasContext: {} }
             })
+        })
+    })
+
+    describe('Download action', () => {
+        it('Should execute the download action', () => {
+            wrapper = shallowMount(AzPdfDocumentViewer, {
+                localVue,
+                store,
+                propsData: { src, downloadButton },
+                stubs: {
+                    AzPdfDocumentViewerToolbar: '<button @click=\'$emit("download")\' ></button>'
+                }
+            })
+            wrapper.find('button').trigger('click')
+
+            expect(actions[actionTypes.DOCUMENT.DOWNLOAD]).toHaveBeenCalled()
         })
     })
 

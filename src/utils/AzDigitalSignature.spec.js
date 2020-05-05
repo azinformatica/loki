@@ -59,9 +59,7 @@ describe('AzDigitalSignature', () => {
                     success(fn) {
                         fn(listaCertificados)
                     },
-                    error() {
-
-                    }
+                    error() {}
                 }
             }
         }
@@ -82,9 +80,7 @@ describe('AzDigitalSignature', () => {
                     success(fn) {
                         fn(`chave publica do certificado ${certificado}`)
                     },
-                    error() {
-
-                    }
+                    error() {}
                 }
             }
         }
@@ -101,9 +97,7 @@ describe('AzDigitalSignature', () => {
                     success(fn) {
                         fn('hash de assinatura')
                     },
-                    error() {
-
-                    }
+                    error() {}
                 }
             }
         }
