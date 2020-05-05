@@ -67,7 +67,7 @@ describe('AzPdfDocumentViewerToolbar.spec.js', () => {
         expect(wrapper.find('[data-test="download"]')).toBeTruthy()
     })
 
-    it('Should emit an event on click at resetZoom button', () => {
+    it('Should emit an event on click at download button', () => {
         let downloadBtn = wrapper.find('[data-test="download"]')
         downloadBtn.vm.$emit('click')
         expect(wrapper.emitted().download).toBeTruthy()

@@ -174,7 +174,7 @@ export default {
             this.renderPage(this.visiblePageNum)
         },
         createDownloadLink() {
-            this.$store.dispatch(actionTypes.DOCUMENT.DOWNLOAD, { src: this.src, filename: this.filename } )
+            this.$store.dispatch(actionTypes.DOCUMENT.DOWNLOAD, { src: this.src, filename: this.filename })
         },
         async saveCanvasContext(payload) {
             this.pagesCanvasContext[payload.pageNum] = payload

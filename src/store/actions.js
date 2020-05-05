@@ -36,7 +36,7 @@ export default {
     },
 
     async [actionTypes.DOCUMENT.DOWNLOAD](context, { src, filename }) {
-        await axios.get(src, { responseType: 'blob'}).then(response => {
+        await axios.get(src, { responseType: 'blob' }).then(response => {
             const url = window.URL.createObjectURL(new Blob([response.data]))
             const tempLink = document.createElement('a')
             tempLink.href = url
@@ -137,7 +137,10 @@ export default {
         return data
     },
 
-    async [actionTypes.SIGNATURE.DIGITAL.FINISH](context, { documentId, signHash, temporarySubscription, rubricBase64 }) {
+    async [actionTypes.SIGNATURE.DIGITAL.FINISH](
+        context,
+        { documentId, signHash, temporarySubscription, rubricBase64 }
+    ) {
         const flowbeeAccessParams = getFlowbeeAccessParams(context.state.flowbee.accessToken)
         const url = `${flowbeeAccessParams.url}/${documentId}/assinaturas/digitais/finalizar`
         const headers = {

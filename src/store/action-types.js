@@ -11,7 +11,7 @@ export default {
         RESTORE_SCALE: 'restoreScale',
         UPDATE_CURRENT_PAGE_NUM: 'updateCurrentPageNum',
         UPDATE_PAGE_CONTAINER: 'updatePageContainer',
-        UPDATE_RENDERED_PAGES: 'updateRenderedPages',
+        UPDATE_RENDERED_PAGES: 'updateRenderedPages'
     },
     SIGNATURE: {
         DIGITAL: {
