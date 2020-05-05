@@ -24,6 +24,10 @@ class AzPdfJsLib {
         let viewport = page.getViewport({ scale })
         await page.render({ canvasContext, viewport }).promise
     }
+
+    async getFileName(pdf) {
+        return pdf._transport._fullReader._filename || 'download.pdf'
+    }
 }
 
 export default new AzPdfJsLib()

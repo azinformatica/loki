@@ -85,6 +85,9 @@ export default {
         currentPage() {
             return this.$store.getters.currentPageNum
         },
+        filename() {
+            return this.$store.getters.filename
+        },
         pageHeight() {
             return this.$store.getters.pageContainer.height
         },
