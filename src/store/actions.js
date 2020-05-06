@@ -40,6 +40,7 @@ export default {
             const url = window.URL.createObjectURL(new Blob([response.data]))
             const tempLink = document.createElement('a')
             tempLink.href = url
+            tempLink.setAttribute('type', 'hidden')
             tempLink.setAttribute('download', filename)
 
             if (typeof tempLink.download === 'undefined') {

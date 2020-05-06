@@ -242,7 +242,7 @@ export default {
             return this.visiblePageNum !== this.currentPage && this.visiblePageNum <= this.totalPages
         },
         validatenNotEmptySrc() {
-            return this.computedSrc.length > 0
+            return this.computedSrc
         }
     },
     watch: {

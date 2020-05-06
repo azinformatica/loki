@@ -70,6 +70,7 @@ export default {
             min: 0.75
         }
     },
+
     flowbee: {
         accessToken: null,
         license: null
