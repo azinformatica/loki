@@ -37,6 +37,7 @@ import AzCallToAction from './components/actions/AzCallToAction'
 import AzDialog from './components/actions/AzDialog'
 
 import azAuth from './directives/auth'
+import azAuthDomain from './directives/authDomain'
 
 import azClipText from './filters/az-clip-text'
 import azConcat from './filters/az-concat'
@@ -54,6 +55,7 @@ import AzSearchUrlBuilder from './utils/AzSearchUrlBuilder'
 import AzSoundex from './utils/AzSoundex'
 import buildMenu from './utils/azBuildMenu'
 import hasPermissions from './utils/AzHasPermissions'
+import hasDomainPermissions from './utils/AzHasDomainPermissions'
 
 Vue.use(accounting)
 Vue.use(money, {
@@ -109,6 +111,7 @@ const lokiPlugin = {
         Vue.component('az-dialog', AzDialog)
 
         Vue.directive('az-auth', azAuth)
+        Vue.directive('az-auth-domain', azAuthDomain)
 
         Vue.filter('azClipText', azClipText)
         Vue.filter('azConcat', azConcat)
@@ -142,4 +145,4 @@ const filters = {
 }
 
 export default lokiPlugin
-export { lokiPlugin, filters, AzCurrency, AzSearchUrlBuilder, AzSoundex, buildMenu, hasPermissions }
+export { lokiPlugin, filters, AzCurrency, AzSearchUrlBuilder, AzSoundex, buildMenu, hasPermissions, hasDomainPermissions }
