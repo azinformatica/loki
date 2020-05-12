@@ -9,7 +9,7 @@ export default {
     props: {
         id: { type: String, default: '' },
         pageNum: { type: Number, required: true },
-        pageSize: { type: Object, required: true }
+        pageSize: { type: Object, default: () => ({ width: 0, height: 0 }) }
     },
     mounted() {
         this.$emit('mounted', {

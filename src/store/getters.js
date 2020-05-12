@@ -6,10 +6,7 @@ export default {
         return state.document.filename
     },
     pageContainer: state => {
-        return {
-            height: state.document.pageContainer.height,
-            width: state.document.pageContainer.width
-        }
+        return state.document.pageContainer
     },
     pages: state => {
         return state.document.pages

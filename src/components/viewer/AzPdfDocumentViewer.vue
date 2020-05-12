@@ -21,7 +21,7 @@
                     v-for="page in pages"
                     :key="page.pageIndex + 1"
                     :pageNum="page.pageIndex + 1"
-                    :pageSize="pageSize"
+                    :pageSize="pageSize[page.pageIndex]"
                     @mounted="saveCanvasContext"
                 />
             </div>
@@ -89,9 +89,6 @@ export default {
         filename() {
             return this.$store.getters.filename
         },
-        pageHeight() {
-            return this.$store.getters.pageContainer.height
-        },
         pages() {
             return this.$store.getters.pages
         },
@@ -128,6 +125,8 @@ export default {
                     })
                     this.loading = false
                     this.setPageContainer()
+                    this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, 1)
+                    this.renderPage(1)
                 }
             } catch (error) {
                 this.loading = false
