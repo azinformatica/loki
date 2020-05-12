@@ -64,6 +64,8 @@
   "peerDependencies": {
     "axios": "0.19.x",
     "moment-timezone": "0.5.x",
+    "pdfjs-dist": "^2.2.228",
+    "scrollmonitor": "^1.2.4",
     "web-pki": "^2.14.1"
   },
   "eslintConfig": {
