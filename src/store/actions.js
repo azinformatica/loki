@@ -68,11 +68,12 @@ export default {
     },
 
     [actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER](context) {
-        let pageContainer = pdfjs.getPageContainer(
-            context.state.document.pages[0],
-            context.state.document.scale.current
-        )
-        context.commit(mutationTypes.DOCUMENT.SET_PAGE_CONTAINER, pageContainer)
+        let containerList = []
+        context.state.document.pages.forEach(page => {
+            let pageContainer = pdfjs.getPageContainer(page, context.state.document.scale.current)
+            containerList.push(pageContainer)
+        })
+        context.commit(mutationTypes.DOCUMENT.SET_PAGE_CONTAINER, containerList)
     },
 
     [actionTypes.DOCUMENT.CALCULATE_SCALE](context, containerWidth) {
@@ -118,7 +119,7 @@ export default {
         context.commit(mutationTypes.DOCUMENT.SET_TOTAL_PAGE_NUM, '-')
         context.commit(mutationTypes.DOCUMENT.SET_CURRENT_PAGE_NUM, '-')
         context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.default)
-        context.commit(mutationTypes.DOCUMENT.SET_PAGE_CONTAINER, { height: 0, width: 0 })
+        context.commit(mutationTypes.DOCUMENT.SET_PAGE_CONTAINER, [])
     },
 
     [actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES](context) {

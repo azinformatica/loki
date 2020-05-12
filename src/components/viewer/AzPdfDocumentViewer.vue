@@ -21,7 +21,7 @@
                     v-for="page in pages"
                     :key="page.pageIndex + 1"
                     :pageNum="page.pageIndex + 1"
-                    :pageSize="pageSize"
+                    :pageSize="pageSize[page.pageIndex]"
                     @mounted="saveCanvasContext"
                 />
             </div>
@@ -33,6 +33,7 @@
 import AzPdfDocumentViewerToolbar from './AzPdfDocumentViewerToolbar'
 import AzPdfDocumentViewerPage from './AzPdfDocumentViewerPage'
 import { actionTypes } from '../../store'
+import scrollMonitor from 'scrollmonitor'
 export default {
     components: {
         AzPdfDocumentViewerToolbar,
@@ -71,7 +72,7 @@ export default {
     data: () => ({
         documentContainerWidth: 0,
         pagesCanvasContext: {},
-        visiblePageNum: 1,
+        pageWatcher: [],
         progress: 0,
         query: false,
         show: true,
@@ -87,9 +88,6 @@ export default {
         },
         filename() {
             return this.$store.getters.filename
-        },
-        pageHeight() {
-            return this.$store.getters.pageContainer.height
         },
         pages() {
             return this.$store.getters.pages
@@ -114,7 +112,6 @@ export default {
     },
     mounted() {
         this.queryAndIndeterminate()
-        this.getDocumentContainer().addEventListener('scroll', this.handleScroll)
     },
     methods: {
         async updatePdfRendering() {
@@ -129,7 +126,7 @@ export default {
                     this.loading = false
                     this.setPageContainer()
                     this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, 1)
-                    await this.renderPage(1)
+                    this.renderPage(1)
                 }
             } catch (error) {
                 this.loading = false
@@ -142,17 +139,26 @@ export default {
                 }
             }
         },
-        async handleScroll(e) {
-            this.visiblePageNum = e.target.scrollTop / this.pageHeight + 1
-            if (this.needRenderNextPage()) {
-                await this.renderPage(this.currentPage + 1)
-            }
-            if (this.needRenderPreviousPage()) {
-                await this.renderPage(this.currentPage - 1)
-            }
-            this.visiblePageNum = Math.floor(this.visiblePageNum)
-            if (this.validatePageChange()) {
-                this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, this.visiblePageNum)
+        handleScroll() {
+            const containerMonitor = scrollMonitor.createContainer(this.getDocumentContainer())
+            for (let page of this.pages) {
+                this.pageWatcher[page.pageIndex] = containerMonitor.create(this.getDocumentPage(page.pageIndex + 1))
+                this.pageWatcher[page.pageIndex].fullyEnterViewport(() => {
+                    if (this.validatePageChange(page.pageIndex + 1)) {
+                        this.$store.dispatch(actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM, page.pageIndex + 1)
+                    }
+                })
+                this.pageWatcher[page.pageIndex].enterViewport(async () => {
+                    if (this.needRenderCurrentPage()) {
+                        await this.renderPage(this.currentPage)
+                    }
+                    if (this.needRenderNextPage()) {
+                        await this.renderPage(this.currentPage + 1)
+                    }
+                    if (this.needRenderPreviousPage()) {
+                        await this.renderPage(this.currentPage - 1)
+                    }
+                })
             }
         },
         scrollToFirstPage() {
@@ -161,17 +167,17 @@ export default {
         resolveEventZoomOut() {
             this.$store.dispatch(actionTypes.DOCUMENT.DECREASE_SCALE)
             this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES)
-            this.renderPage(this.visiblePageNum)
+            this.renderPage(this.currentPage)
         },
         resolveEventZoomIn() {
             this.$store.dispatch(actionTypes.DOCUMENT.INCREASE_SCALE)
             this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES)
-            this.renderPage(this.visiblePageNum)
+            this.renderPage(this.currentPage)
         },
         resolveEventResetZoom() {
             this.$store.dispatch(actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES)
             this.setPageContainer()
-            this.renderPage(this.visiblePageNum)
+            this.renderPage(this.currentPage)
         },
         createDownloadLink() {
             this.$store.dispatch(actionTypes.DOCUMENT.DOWNLOAD, { src: this.src, filename: this.filename })
@@ -212,12 +218,14 @@ export default {
         getDocumentContainer() {
             return document.getElementById(`${this.id}-documentContainer`)
         },
+        getDocumentPage(pageNum) {
+            return document.getElementById(`${this.id}-page-${pageNum}`)
+        },
+        needRenderCurrentPage() {
+            return this.renderedPages.indexOf(this.currentPage) === -1
+        },
         needRenderNextPage() {
-            return (
-                this.visiblePageNum > this.currentPage + 0.2 &&
-                this.validateHasNextPage() &&
-                this.validateNextPageNotRendered()
-            )
+            return this.validateHasNextPage() && this.validateNextPageNotRendered()
         },
         validateHasNextPage() {
             return this.currentPage < this.totalPages
@@ -226,11 +234,7 @@ export default {
             return this.renderedPages.indexOf(this.currentPage + 1) === -1
         },
         needRenderPreviousPage() {
-            return (
-                this.visiblePageNum < this.currentPage + 0.8 &&
-                this.validateHasPreviousPage() &&
-                this.validatePreviousPageNotRendered()
-            )
+            return this.validateHasPreviousPage() && this.validatePreviousPageNotRendered()
         },
         validateHasPreviousPage() {
             return this.currentPage - 1 >= 1
@@ -238,8 +242,8 @@ export default {
         validatePreviousPageNotRendered() {
             return this.renderedPages.indexOf(this.currentPage - 1) === -1
         },
-        validatePageChange() {
-            return this.visiblePageNum !== this.currentPage && this.visiblePageNum <= this.totalPages
+        validatePageChange(currentPage) {
+            return currentPage !== this.currentPage && currentPage <= this.totalPages
         },
         validatenNotEmptySrc() {
             return this.computedSrc
@@ -249,11 +253,15 @@ export default {
         async computedSrc() {
             this.documentContainerWidth = this.getDocumentContainer().clientWidth
             await this.updatePdfRendering()
+            this.handleScroll()
             this.scrollToFirstPage()
         }
     },
     beforeDestroy() {
         clearInterval(this.interval)
+        this.pageWatcher.forEach(watcher => {
+            watcher.destroy()
+        })
     }
 }
 </script>

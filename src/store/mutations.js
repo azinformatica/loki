@@ -121,9 +121,8 @@ export default {
         state.document.filename = filename
     },
 
-    [mutationTypes.DOCUMENT.SET_PAGE_CONTAINER](state, { height, width }) {
-        state.document.pageContainer.height = height
-        state.document.pageContainer.width = width
+    [mutationTypes.DOCUMENT.SET_PAGE_CONTAINER](state, containerList) {
+        state.document.pageContainer = containerList
     },
 
     [mutationTypes.DOCUMENT.SET_PAGES](state, pages) {

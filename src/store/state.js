@@ -53,10 +53,7 @@ export default {
 
     document: {
         filename: '',
-        pageContainer: {
-            height: 0,
-            width: 0
-        },
+        pageContainer: [],
         pages: [],
         paginator: {
             currentPageNum: '-',
