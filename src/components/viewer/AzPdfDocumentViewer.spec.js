@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuex from 'vuex'
 import 'pdfjs-dist/build/pdf'
+import 'scrollmonitor'
 import AzPdfDocumentViewer from './AzPdfDocumentViewer'
 import AzPdfDocumentViewerToolbar from './AzPdfDocumentViewerToolbar'
 import AzPdfDocumentViewerPage from './AzPdfDocumentViewerPage'
@@ -9,6 +10,14 @@ import { actionTypes } from '../../../src/store'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 
 jest.mock('pdfjs-dist/build/pdf')
+jest.mock('scrollmonitor', () => ({
+    createContainer: jest.fn().mockReturnValue({
+        create: jest.fn().mockReturnValue({
+            enterViewport: jest.fn(cb => cb()),
+            fullyEnterViewport: jest.fn(cb => cb())
+        })
+    })
+}))
 const localVue = createLocalVue()
 Vue.use(Vuetify)
 Vue.use(Vuex)
@@ -20,10 +29,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         state = {
             document: {
                 filename: 'NomeDoArquivo.pdf',
-                pageContainer: {
-                    height: 1,
-                    width: 1
-                },
+                pageContainer: [],
                 pages: [{ pageIndex: 0 }, { pageIndex: 1 }, { pageIndex: 2 }],
                 paginator: {
                     currentPageNum: 1,
@@ -41,8 +47,9 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         getters = {
             currentPageNum: jest.fn().mockReturnValue(1),
             filename: jest.fn().mockReturnValue(state.document.filename),
-            pageContainer: jest.fn().mockReturnValue({ height: 1, width: 1 }),
+            pageContainer: jest.fn().mockReturnValue(state.document.pageContainer),
             pages: jest.fn().mockReturnValue(state.document.pages),
+            renderedPages: jest.fn().mockReturnValue(state.document.renderedPages),
             scale: jest.fn().mockReturnValue(1),
             totalPageNum: jest.fn().mockReturnValue(3)
         }
@@ -58,7 +65,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             [actionTypes.DOCUMENT.RENDER_PAGE]: jest.fn(),
             [actionTypes.DOCUMENT.CLEAR_RENDER_CONTEXT]: jest.fn(),
             [actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES]: jest.fn(),
-            [actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES]: jest.fn(),
+            [actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES]: jest.fn(page => state.document.renderedPages.push(page)),
             [actionTypes.DOCUMENT.CALCULATE_SCALE]: jest.fn()
         }
 
@@ -124,10 +131,6 @@ describe('AzPdfDocumentViewer.spec.js', () => {
 
         it('Should access filename', () => {
             expect(wrapper.vm.filename).toBe(store.getters.filename)
-        })
-
-        it('Should access pageContainer.height', () => {
-            expect(wrapper.vm.pageHeight).toBe(store.getters.pageContainer.height)
         })
 
         it('Should access pages', () => {
@@ -226,33 +229,23 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         })
 
         it('Should update current page number', async () => {
-            let e = {
-                target: {
-                    scrollTop: 2
-                }
-            }
             wrapper.vm.needRenderNextPage = jest.fn().mockReturnValue(false)
             wrapper.vm.needRenderPreviousPage = jest.fn().mockReturnValue(false)
-            wrapper.vm.validatePageChange = jest.fn().mockReturnValue(true)
-            await wrapper.vm.handleScroll(e)
+            wrapper.vm.validatePageChange = jest.fn(visiblePageNum => visiblePageNum === 2)
+            await wrapper.vm.handleScroll()
             await wrapper.vm.$nextTick()
 
-            expect(actions[actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM].mock.calls[0][1]).toBe(3)
+            expect(actions[actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM].mock.calls[0][1]).toBe(2)
         })
 
         it('Should render next page', async () => {
-            let e = {
-                target: {
-                    scrollTop: 2
-                }
-            }
-            wrapper.vm.needRenderNextPage = jest.fn().mockReturnValue(true)
+            wrapper.vm.needRenderCurrentPage = jest.fn().mockReturnValue(false)
             wrapper.vm.needRenderPreviousPage = jest.fn().mockReturnValue(false)
             wrapper.vm.validatePageChange = jest.fn().mockReturnValue(false)
             wrapper.vm.pagesCanvasContext = {
                 '2': { pageNum: 2, canvasContext: {} }
             }
-            await wrapper.vm.handleScroll(e)
+            await wrapper.vm.handleScroll()
             await wrapper.vm.$nextTick()
 
             expect(actions[actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES].mock.calls[0][1]).toBe(2)
@@ -263,23 +256,25 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         })
 
         it('Should render previous page', async () => {
-            let e = {
-                target: {
-                    scrollTop: 2
-                }
-            }
+            getters.currentPageNum = jest.fn().mockReturnValue(2)
+            wrapper = shallowMount(AzPdfDocumentViewer, {
+                localVue,
+                store: new Vuex.Store({ state, getters, actions }),
+                propsData: { src, downloadButton },
+                attachToDocument: true
+            })
+            wrapper.vm.needRenderCurrentPage = jest.fn().mockReturnValue(false)
             wrapper.vm.needRenderNextPage = jest.fn().mockReturnValue(false)
-            wrapper.vm.needRenderPreviousPage = jest.fn().mockReturnValue(true)
             wrapper.vm.validatePageChange = jest.fn().mockReturnValue(false)
             wrapper.vm.pagesCanvasContext = {
-                '0': { pageNum: 0, canvasContext: {} }
+                '1': { pageNum: 1, canvasContext: {} }
             }
-            await wrapper.vm.handleScroll(e)
+            await wrapper.vm.handleScroll()
             await wrapper.vm.$nextTick()
 
-            expect(actions[actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES].mock.calls[0][1]).toBe(0)
+            expect(actions[actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES].mock.calls[0][1]).toBe(1)
             expect(actions[actionTypes.DOCUMENT.RENDER_PAGE].mock.calls[0][1]).toEqual({
-                pageNum: 0,
+                pageNum: 1,
                 canvasContext: {}
             })
         })
