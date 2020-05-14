@@ -5,22 +5,25 @@
             @zoomIn="zoomIn"
             @zoomOut="zoomOut"
             @resetZoom="resetZoom"
-            v-show="!progressBar"
+            v-show="!loadingPlaceHolder"
         />
-        <div id="az-pdf-viewer" class="Viewer" :style="{ height: height }" v-show="!progressBar">
+        <div id="az-pdf-viewer" class="Viewer" :style="{ height: height }" v-show="!loadingPlaceHolder">
             <div class="pdfViewer"></div>
         </div>
+        <LoadingPlaceHolder :loading="loadingPlaceHolder" />
     </div>
 </template>
 
 <script>
 import Toolbar from './Toolbar'
+import LoadingPlaceHolder from './LoadingPlaceHolder'
 import PDFJSLib from 'pdfjs-dist/build/pdf'
 import { PDFJS as PDFJSViewer } from 'pdfjs-dist/web/pdf_viewer.js'
 import 'pdfjs-dist/web/pdf_viewer.css'
 export default {
     components: {
-        Toolbar
+        Toolbar,
+        LoadingPlaceHolder
     },
     props: {
         id: {
@@ -53,6 +56,7 @@ export default {
         }
     },
     data: () => ({
+        loadingPlaceHolder: false,
         pagination: {
             current: null,
             total: null
@@ -72,10 +76,12 @@ export default {
     },
     methods: {
         start() {
+            this.loadingPlaceHolder = this.progressBar
             this.getPdfContainer()
             this.createEventBus()
             this.createPdfViewer()
             this.renderDocument()
+            this.loadingPlaceHolder = false
         },
         getPdfContainer() {
             this.pdf.container = document.querySelector('#az-pdf-viewer')
