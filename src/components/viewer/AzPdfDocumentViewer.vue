@@ -124,7 +124,7 @@ export default {
         },
         height: {
             type: String,
-            default: 'calc(100vh - 64px)'
+            default: 'calc(100vh - 62px)'
         },
         httpHeader: {
             type: Object,
@@ -160,6 +160,8 @@ export default {
 
 <style lang="stylus">
 .az-pdf-container
+    background-color #e4e4e4
+
     .Viewer
         width 100%
         position relative

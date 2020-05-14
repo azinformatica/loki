@@ -32,7 +32,7 @@ export default {
 <style lang="stylus">
 .az-pdf-toolbar
     background-color #fff !important
-    margin-bottom 4px !important
+    margin-bottom 2px !important
 
     &__content, &__pagination
          color #777 !important
