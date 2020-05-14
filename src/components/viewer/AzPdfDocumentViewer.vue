@@ -104,8 +104,10 @@ export default {
             this.pdf.viewer.currentScale = this.scale.current
         },
         zoomOut() {
-            this.scale.current = this.scale.current / 1.1
-            this.pdf.viewer.currentScale = this.scale.current
+            if (this.scale.current > 0.2) {
+                this.scale.current = this.scale.current / 1.1
+                this.pdf.viewer.currentScale = this.scale.current
+            }
         },
         resetZoom() {
             this.pdf.viewer.currentScale = this.scale.default
