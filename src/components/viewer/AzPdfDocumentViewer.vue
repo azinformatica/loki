@@ -71,17 +71,30 @@ export default {
             })
         },
         renderDocument() {
-            const loadingTask = PDFJSLib.getDocument({
+            const renderTask = PDFJSLib.getDocument({
                 url: this.src,
                 httpHeaders: this.httpHeader,
                 withCredentials: true
             })
-            loadingTask.promise.then(pdf => {
-                this.pdf.viewer.setDocument(pdf)
-            })
+            renderTask.promise
+                .then(pdf => {
+                    this.pdf.viewer.setDocument(pdf)
+                })
+                .catch(error => {
+                    this.handlePdfError(error)
+                })
         },
         validateSmallScreen() {
             return this.pdf.container.clientWidth <= 700
+        },
+        handlePdfError(error) {
+            if (error.name === 'InvalidPDFException') {
+                throw new Error('URL do documento inválida.')
+            } else if (error.name === 'MissingPDFException') {
+                throw new Error(error.message.replace('Missing PDF', 'Documento não encontrado em'))
+            } else if (error.status === 401) {
+                throw new Error('Não autorizado, verifique seu token de acesso.')
+            }
         },
         zoomIn() {
             this.scale.current = this.scale.current * 1.1
