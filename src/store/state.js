@@ -51,23 +51,6 @@ export default {
         title: 'Notificações'
     },
 
-    document: {
-        filename: '',
-        pageContainer: [],
-        pages: [],
-        paginator: {
-            currentPageNum: '-',
-            totalPageNum: '-'
-        },
-        renderedPages: [],
-        scale: {
-            current: 1.0,
-            default: 1.0,
-            max: 4.0,
-            min: 0.75
-        }
-    },
-
     flowbee: {
         accessToken: null,
         license: null
