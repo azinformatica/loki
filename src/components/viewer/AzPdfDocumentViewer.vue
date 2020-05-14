@@ -67,6 +67,11 @@ export default {
             current: null
         }
     }),
+    computed: {
+        computedSrc() {
+            return this.src
+        }
+    },
     mounted() {
         this.start()
     },
@@ -83,8 +88,8 @@ export default {
         createEventBus() {
             const eventBus = new PDFJSViewer.EventBus()
             eventBus.on('pagesinit', e => {
-                this.currentPage = e.source.currentPageNumber
-                this.totalPages = e.source.pagesCount
+                this.pagination.current = e.source.currentPageNumber
+                this.pagination.total = e.source.pagesCount
                 if (this.validateSmallScreen()) {
                     this.pdf.viewer.currentScaleValue = 'page-width'
                 }
@@ -95,20 +100,20 @@ export default {
                 this.scale.current = e.scale
             })
             eventBus.on('pagechange', e => {
-                this.currentPage = e.pageNumber
+                this.pagination.current = e.pageNumber
             })
-            this.pdfEventBus = eventBus
+            this.pdf.eventBus = eventBus
         },
         createPdfViewer() {
             this.pdf.viewer = new PDFJSViewer.PDFViewer({
                 container: this.pdf.container,
-                eventBus: this.pdfEventBus
+                eventBus: this.pdf.eventBus
             })
         },
         renderDocument() {
             const loadingTask = PDFJSLib.getDocument({
                 url: this.src,
-                httpHeaders: this.httpHeaders,
+                httpHeaders: this.httpHeader,
                 withCredentials: true
             })
             loadingTask.promise.then(pdf => {
@@ -131,7 +136,7 @@ export default {
         }
     },
     watch: {
-        async computedSrc() {
+        computedSrc() {
             this.start()
         }
     }
