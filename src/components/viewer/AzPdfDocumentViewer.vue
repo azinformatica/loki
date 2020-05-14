@@ -25,54 +25,13 @@ export default {
         Toolbar,
         LoadingPlaceHolder
     },
-    props: {
-        id: {
-            type: String,
-            default: ''
-        },
-        src: {
-            type: String,
-            default: ''
-        },
-        cssClass: {
-            type: String,
-            default: ''
-        },
-        height: {
-            type: String,
-            default: 'calc(100vh - 64px)'
-        },
-        httpHeader: {
-            type: Object,
-            default: () => new Object()
-        },
-        progressBar: {
-            type: Boolean,
-            default: false
-        },
-        downloadButton: {
-            type: Boolean,
-            default: false
-        }
-    },
-    data: () => ({
-        loadingPlaceHolder: false,
-        pagination: {
-            current: null,
-            total: null
-        },
-        pdf: {
-            container: null,
-            eventBus: null,
-            viewer: null
-        },
-        scale: {
-            default: null,
-            current: null
-        }
-    }),
     mounted() {
         this.start()
+    },
+    watch: {
+        src() {
+            this.start()
+        }
     },
     methods: {
         start() {
@@ -136,11 +95,52 @@ export default {
             this.pdf.viewer.currentScale = this.scale.default
         }
     },
-    watch: {
-        src() {
-            this.start()
+    props: {
+        id: {
+            type: String,
+            default: ''
+        },
+        src: {
+            type: String,
+            default: ''
+        },
+        cssClass: {
+            type: String,
+            default: ''
+        },
+        height: {
+            type: String,
+            default: 'calc(100vh - 64px)'
+        },
+        httpHeader: {
+            type: Object,
+            default: () => new Object()
+        },
+        progressBar: {
+            type: Boolean,
+            default: false
+        },
+        downloadButton: {
+            type: Boolean,
+            default: false
         }
-    }
+    },
+    data: () => ({
+        loadingPlaceHolder: false,
+        pagination: {
+            current: null,
+            total: null
+        },
+        pdf: {
+            container: null,
+            eventBus: null,
+            viewer: null
+        },
+        scale: {
+            default: null,
+            current: null
+        }
+    })
 }
 </script>
 
