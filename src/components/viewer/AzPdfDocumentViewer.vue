@@ -52,6 +52,8 @@ export default {
                 this.pagination.total = e.source.pagesCount
                 if (this.validateSmallScreen()) {
                     this.pdf.viewer.currentScaleValue = 'page-width'
+                } else {
+                    this.pdf.viewer.currentScaleValue = 'page-fit'
                 }
                 this.scale.current = e.source.currentScale
                 this.scale.default = e.source.currentScale
