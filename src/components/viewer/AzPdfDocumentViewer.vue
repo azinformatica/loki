@@ -71,6 +71,7 @@ export default {
             })
         },
         renderDocument() {
+            if (!this.src) return
             const renderTask = PDFJSLib.getDocument({
                 url: this.src,
                 httpHeaders: this.httpHeader,
