@@ -15,7 +15,6 @@
 
 <script>
 import Toolbar from './Toolbar'
-import LoadingPlaceHolder from './LoadingPlaceHolder'
 import PDFJSLib from 'pdfjs-dist/build/pdf'
 import { PDFJS as PDFJSViewer } from 'pdfjs-dist/web/pdf_viewer.js'
 import 'pdfjs-dist/web/pdf_viewer.css'
