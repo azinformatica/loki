@@ -29,7 +29,7 @@ export default {
 }
 </script>
 
-<style scoped lang="stylus">
+<style lang="stylus">
 .az-pdf-toolbar
     background-color #fff !important
     margin-bottom 4px !important
