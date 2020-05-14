@@ -1,5 +1,5 @@
 <template>
-    <v-toolbar class="az-pdf-toolbar" flat height="60">
+    <v-toolbar class="az-pdf-toolbar" flat>
         <v-spacer />
         <v-btn class="az-pdf-toolbar__content" @click="$emit('zoomOut')" icon data-test="zoomOut">
             <v-icon>zoom_out</v-icon>
@@ -33,10 +33,14 @@ export default {
 .az-pdf-toolbar
     background-color #fff !important
     margin-bottom 2px !important
+    height 60px !important
 
     &__content, &__pagination
-         color #777 !important
+        color #777 !important
 
     &__pagination
         margin-left 10px
+
+    .v-toolbar__content
+        height 100% !important
 </style>
