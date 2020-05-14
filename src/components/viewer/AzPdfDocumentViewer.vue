@@ -67,11 +67,6 @@ export default {
             current: null
         }
     }),
-    computed: {
-        computedSrc() {
-            return this.src
-        }
-    },
     mounted() {
         this.start()
     },
@@ -136,7 +131,7 @@ export default {
         }
     },
     watch: {
-        computedSrc() {
+        src() {
             this.start()
         }
     }
