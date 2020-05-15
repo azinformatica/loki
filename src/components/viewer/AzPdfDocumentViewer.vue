@@ -50,24 +50,27 @@ export default {
         },
         createEventBus() {
             const eventBus = new PDFJSViewer.EventBus()
-            eventBus.on('pagesinit', e => {
-                this.pagination.current = e.source.currentPageNumber
-                this.pagination.total = e.source.pagesCount
-                if (this.validateSmallScreen()) {
-                    this.pdf.viewer.currentScaleValue = 'page-width'
-                } else {
-                    this.pdf.viewer.currentScaleValue = 'page-fit'
-                }
-                this.scale.current = e.source.currentScale
-                this.scale.default = e.source.currentScale
-            })
-            eventBus.on('scalechange', e => {
-                this.scale.current = e.scale
-            })
-            eventBus.on('pagechange', e => {
-                this.pagination.current = e.pageNumber
-            })
+            eventBus.on('pagesinit', this.pagesInitEventHandler)
+            eventBus.on('scalechange', this.scaleChangeEventHandler)
+            eventBus.on('pagechange', this.pageChangeEventHandler)
             this.pdf.eventBus = eventBus
+        },
+        pagesInitEventHandler(e) {
+            this.pagination.current = e.source.currentPageNumber
+            this.pagination.total = e.source.pagesCount
+            if (this.validateSmallScreen()) {
+                this.pdf.viewer.currentScaleValue = 'page-width'
+            } else {
+                this.pdf.viewer.currentScaleValue = 'page-fit'
+            }
+            this.scale.current = e.source.currentScale
+            this.scale.default = e.source.currentScale
+        },
+        scaleChangeEventHandler(e) {
+            this.scale.current = e.scale
+        },
+        pageChangeEventHandler(e) {
+            this.pagination.current = e.pageNumber
         },
         createPdfViewer() {
             this.pdf.viewer = new PDFJSViewer.PDFViewer({
