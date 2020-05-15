@@ -23,7 +23,7 @@
     "imagesloaded": "^4.1.4",
     "lodash": "^4.17.10",
     "moment-timezone": "^0.5.27",
-    "pdfjs-dist": "^2.2.228",
+    "pdfjs-dist": "^1.10.100",
     "scrollmonitor": "^1.2.4",
     "soundex": "^0.2.1",
     "string-mask": "^0.3.0",
@@ -41,7 +41,7 @@
     "@vue/test-utils": "^1.0.0-beta.29",
     "babel-core": "^6.26.0",
     "babel-eslint": "^10.0.3",
-    "babel-jest": "^23.0.0",
+    "babel-jest": "^24.0.0",
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.0",
     "babel-preset-stage-3": "^6.24.1",
@@ -52,6 +52,7 @@
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-vue": "^5.0.0",
     "file-loader": "^1.1.4",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^24.0.0",
     "jest-serializer-vue": "^2.0.2",
     "prettier": "^1.19.1",
@@ -65,7 +66,7 @@
   "peerDependencies": {
     "axios": "0.19.x",
     "moment-timezone": "0.5.x",
-    "pdfjs-dist": "^2.2.228",
+    "pdfjs-dist": "^1.10.100",
     "scrollmonitor": "^1.2.4",
     "web-pki": "^2.14.1"
   },
@@ -140,7 +141,8 @@
       ".*\\.(vue)$": "<rootDir>/node_modules/vue-jest"
     },
     "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/src/$1"
+      "^@/(.*)$": "<rootDir>/src/$1",
+      "\\.(css)$": "identity-obj-proxy"
     },
     "snapshotSerializers": [
       "<rootDir>/node_modules/jest-serializer-vue"
