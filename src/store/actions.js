@@ -35,19 +35,19 @@ export default {
     },
 
     async [actionTypes.DOCUMENT.DOWNLOAD](context, { src, httpHeader, filename }) {
-        const { data } = axios.get(src, {
+        const { data } = await axios.get(src, {
             responseType: 'blob',
             headers: httpHeader
         })
-        const url = window.URL.createObjectURL(new Blob([data]))
-        const tempLink = document.createElement('a')
-        tempLink.href = url
-        tempLink.setAttribute('type', 'hidden')
-        tempLink.setAttribute('download', filename)
+        const temporaryUrl = window.URL.createObjectURL(new Blob([data]))
+        const temporaryButton = document.createElement('a')
+        temporaryButton.href = temporaryUrl
+        temporaryButton.setAttribute('type', 'hidden')
+        temporaryButton.setAttribute('download', filename)
 
-        document.body.appendChild(tempLink)
-        tempLink.click()
-        document.body.removeChild(tempLink)
+        document.body.appendChild(temporaryButton)
+        temporaryButton.click()
+        document.body.removeChild(temporaryButton)
     },
 
     async [actionTypes.SIGNATURE.DIGITAL.START](context, { certificadoConteudo, documentId }) {
