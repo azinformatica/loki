@@ -77,12 +77,11 @@ export default {
         },
         renderDocument() {
             if (!this.src) return
-            const renderTask = PDFJSLib.getDocument({
+            PDFJSLib.getDocument({
                 url: this.src,
                 httpHeaders: this.httpHeader,
                 withCredentials: true
             })
-            renderTask.promise
                 .then(pdf => {
                     this.pdf.viewer.setDocument(pdf)
                 })
