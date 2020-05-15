@@ -102,13 +102,11 @@ export default {
             }
         },
         zoomIn() {
-            this.scale.current = this.scale.current * 1.1
-            this.pdf.viewer.currentScale = this.scale.current
+            this.pdf.viewer.currentScale = this.scale.current * 1.1
         },
         zoomOut() {
             if (this.scale.current > 0.2) {
-                this.scale.current = this.scale.current / 1.1
-                this.pdf.viewer.currentScale = this.scale.current
+                this.pdf.viewer.currentScale = this.scale.current / 1.1
             }
         },
         resetZoom() {
