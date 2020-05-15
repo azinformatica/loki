@@ -119,7 +119,7 @@ export default {
             this.$store.dispatch(actionTypes.DOCUMENT.DOWNLOAD, {
                 src: this.src,
                 httpHeader: this.httpHeader,
-                filename: this.pdf.viewer._transport._fullReader._filename || 'download.pdf'
+                filename: this.pdf.viewer.pdfDocument.transport._fullReader._filename || 'download.pdf'
             })
         }
     },
@@ -162,7 +162,6 @@ export default {
         pdf: {
             container: null,
             eventBus: null,
-            filename: null,
             viewer: null
         },
         scale: {
