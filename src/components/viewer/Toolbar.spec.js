@@ -51,7 +51,7 @@ describe('Toolbar.spec.js', () => {
         })
 
         it('Should have a zoomOut button', () => {
-            let zoomOutBtn = wrapper.find('data-test="resetZoom"')
+            let zoomOutBtn = wrapper.find('[data-test="resetZoom"]')
             expect(zoomOutBtn).toBeTruthy()
         })
 
