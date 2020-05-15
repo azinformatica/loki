@@ -2,208 +2,259 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuex from 'vuex'
 import 'pdfjs-dist/build/pdf'
-import 'scrollmonitor'
+import 'pdfjs-dist/web/pdf_viewer.js'
 import AzPdfDocumentViewer from './AzPdfDocumentViewer'
-import AzPdfDocumentViewerToolbar from './AzPdfDocumentViewerToolbar'
-import AzPdfDocumentViewerPage from './AzPdfDocumentViewerPage'
 import { actionTypes } from '../../../src/store'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 
-jest.mock('pdfjs-dist/build/pdf')
-jest.mock('scrollmonitor', () => ({
-    createContainer: jest.fn().mockReturnValue({
-        create: jest.fn().mockReturnValue({
-            enterViewport: jest.fn(cb => cb()),
-            fullyEnterViewport: jest.fn(cb => cb())
-        })
-    })
+jest.mock('pdfjs-dist/build/pdf', () => ({
+    getDocument: jest.fn(() => Promise.resolve(true))
 }))
+
+jest.mock('pdfjs-dist/web/pdf_viewer.js', () => ({
+    PDFJS: {
+        EventBus: jest.fn(() => ({
+            on: jest.fn().mockImplementation((e, cb) =>
+                cb({
+                    source: {
+                        currentPageNumber: 1,
+                        currentScale: 1,
+                        pagesCount: 10
+                    },
+                    scale: 1,
+                    pageNumber: 2
+                })
+            )
+        })),
+
+        PDFViewer: jest.fn(() => ({
+            setDocument: jest.fn()
+        }))
+    }
+}))
+
 const localVue = createLocalVue()
 Vue.use(Vuetify)
 Vue.use(Vuex)
 
 describe('AzPdfDocumentViewer.spec.js', () => {
-    let src, downloadButton, wrapper, store, state, getters, actions
+    let src, httpHeader, downloadButton, wrapper, store, actions
 
-    beforeEach(async () => {
-        state = {
-            document: {
-                filename: 'NomeDoArquivo.pdf',
-                pageContainer: [],
-                pages: [{ pageIndex: 0 }, { pageIndex: 1 }, { pageIndex: 2 }],
-                paginator: {
-                    currentPageNum: 1,
-                    totalPageNum: 1
-                },
-                scale: {
-                    current: 1.0,
-                    default: 1.0,
-                    max: 3.0
-                },
-                renderedPages: []
-            }
-        }
-
-        getters = {
-            currentPageNum: jest.fn().mockReturnValue(1),
-            filename: jest.fn().mockReturnValue(state.document.filename),
-            pageContainer: jest.fn().mockReturnValue(state.document.pageContainer),
-            pages: jest.fn().mockReturnValue(state.document.pages),
-            renderedPages: jest.fn().mockReturnValue(state.document.renderedPages),
-            scale: jest.fn().mockReturnValue(1),
-            totalPageNum: jest.fn().mockReturnValue(3)
-        }
-
+    beforeEach(() => {
         actions = {
-            [actionTypes.DOCUMENT.FETCH_DOCUMENT]: jest.fn(),
-            [actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER]: jest.fn(),
-            [actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM]: jest.fn(),
-            [actionTypes.DOCUMENT.DECREASE_SCALE]: jest.fn(),
-            [actionTypes.DOCUMENT.DOWNLOAD]: jest.fn(),
-            [actionTypes.DOCUMENT.INCREASE_SCALE]: jest.fn(),
-            [actionTypes.DOCUMENT.RESTORE_SCALE]: jest.fn(),
-            [actionTypes.DOCUMENT.RENDER_PAGE]: jest.fn(),
-            [actionTypes.DOCUMENT.CLEAR_RENDER_CONTEXT]: jest.fn(),
-            [actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES]: jest.fn(),
-            [actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES]: jest.fn(page => state.document.renderedPages.push(page)),
-            [actionTypes.DOCUMENT.CALCULATE_SCALE]: jest.fn()
+            [actionTypes.DOCUMENT.DOWNLOAD]: jest.fn()
         }
-
-        store = new Vuex.Store({ state, getters, actions })
+        store = new Vuex.Store({ actions })
         src = 'document/url'
+        httpHeader = { token: '123abcd456' }
         downloadButton = true
+
         wrapper = shallowMount(AzPdfDocumentViewer, {
             localVue,
             store,
-            propsData: { src, downloadButton },
-            attachToDocument: true
+            propsData: { src, httpHeader, downloadButton },
+            attachTo: document.body
         })
-        await wrapper.vm.$nextTick()
     })
 
-    describe('Rendered components and props', () => {
-        it('Should be a Vue instance', () => {
-            expect(wrapper.isVueInstance()).toBeTruthy()
+    describe('Props', () => {
+        it('Should receive props src', () => {
+            expect(wrapper.props().src).toEqual('document/url')
         })
 
-        it('Should receive props src', () => {
-            expect(wrapper.props().src).toBe(src)
+        it('Should receive props httpHeader', () => {
+            expect(wrapper.props().httpHeader).toEqual({ token: '123abcd456' })
+        })
+
+        it('Should have a default value to props httpHeader', () => {
+            wrapper = shallowMount(AzPdfDocumentViewer, {
+                localVue,
+                store,
+                propsData: { src, downloadButton },
+                attachTo: document.body
+            })
+            expect(wrapper.props().httpHeader).toEqual({})
         })
 
         it('Should receive props downloadButton', () => {
-            expect(wrapper.props().downloadButton).toBe(downloadButton)
-        })
-
-        it('Should have a AzPdfDocumentViewerToolbar component', () => {
-            let toolbar = wrapper.find(AzPdfDocumentViewerToolbar)
-            expect(toolbar.exists()).toBeTruthy()
-        })
-
-        it('Should have a documentContainer div', () => {
-            let documentContainer = wrapper.find('#-documentContainer')
-            expect(documentContainer.is('div')).toBeTruthy()
-        })
-
-        it('Should have a AzPdfDocumentViewerPage component with the same pages amount of the pdf', () => {
-            let pages = wrapper.findAll(AzPdfDocumentViewerPage)
-            expect(pages.exists()).toBeTruthy()
-            expect(pages).toHaveLength(3)
+            expect(wrapper.props().downloadButton).toBeTruthy()
         })
     })
 
     describe('Vue Lifecycle', () => {
-        it('Should clear render context and load the document on the watch method', async () => {
-            wrapper.vm.$options.watch.computedSrc.call(wrapper.vm, 'document/url')
+        it('Should run start function when src is updated', async () => {
+            wrapper.vm.start = jest.fn()
+            wrapper.vm.$options.watch.src.call(wrapper.vm, 'document/url/2')
             await wrapper.vm.$nextTick()
 
-            expect(actions[actionTypes.DOCUMENT.CLEAR_RENDER_CONTEXT]).toHaveBeenCalledTimes(1)
-            expect(actions[actionTypes.DOCUMENT.FETCH_DOCUMENT].mock.calls[0][1]).toEqual({
-                src: 'document/url',
-                httpHeader: {}
-            })
+            expect(wrapper.vm.start).toHaveBeenCalledTimes(1)
         })
     })
 
-    describe('Vuex state access', () => {
-        it('Should access currentPageNum', () => {
-            expect(wrapper.vm.currentPage).toBe(store.getters.currentPageNum)
+    describe('PDF Rendering', () => {
+        it('Should execute getPdfContainer', () => {
+            wrapper.vm.getPdfContainer()
+            const container = wrapper.vm.pdf.container
+
+            expect(container.getAttribute('class')).toEqual('Viewer')
+            expect(container.firstChild.getAttribute('class')).toEqual('pdfViewer')
         })
 
-        it('Should access filename', () => {
-            expect(wrapper.vm.filename).toBe(store.getters.filename)
+        it('Should execute createEventBus', () => {
+            wrapper.vm.pagesInitEventHandler = jest.fn()
+            wrapper.vm.scaleChangeEventHandler = jest.fn()
+            wrapper.vm.pageChangeEventHandler = jest.fn()
+            wrapper.vm.createEventBus()
+
+            expect(wrapper.vm.pagesInitEventHandler).toHaveBeenCalled()
+            expect(wrapper.vm.scaleChangeEventHandler).toHaveBeenCalled()
+            expect(wrapper.vm.pageChangeEventHandler).toHaveBeenCalled()
         })
 
-        it('Should access pages', () => {
-            expect(wrapper.vm.pages).toBe(store.getters.pages)
+        it('Should execute pagesInitEventHandler to "small screen"', () => {
+            wrapper.vm.validateSmallScreen = jest.fn().mockReturnValue(true)
+            wrapper.vm.pagesInitEventHandler({
+                source: {
+                    currentPageNumber: 1,
+                    currentScale: 1,
+                    pagesCount: 10
+                }
+            })
+
+            expect(wrapper.vm.pagination).toEqual({ current: 1, total: 10 })
+            expect(wrapper.vm.pdf.viewer.currentScaleValue).toEqual('page-width')
+            expect(wrapper.vm.scale).toEqual({ current: 1, default: 1 })
         })
 
-        it('Should access pageContainer', () => {
-            expect(wrapper.vm.pageSize).toBe(store.getters.pageContainer)
+        it('Should execute pagesInitEventHandler to "non small screen"', () => {
+            wrapper.vm.validateSmallScreen = jest.fn().mockReturnValue(false)
+            wrapper.vm.pagesInitEventHandler({
+                source: {
+                    currentPageNumber: 1,
+                    currentScale: 1,
+                    pagesCount: 10
+                }
+            })
+
+            expect(wrapper.vm.pagination).toEqual({ current: 1, total: 10 })
+            expect(wrapper.vm.pdf.viewer.currentScaleValue).toEqual('page-fit')
+            expect(wrapper.vm.scale).toEqual({ current: 1, default: 1 })
         })
 
-        it('Should access totalPageNum', () => {
-            expect(wrapper.vm.totalPages).toBe(store.getters.totalPageNum)
+        it('Should execute scaleChangeEventHandler', () => {
+            wrapper.vm.scaleChangeEventHandler({ scale: 10 })
+
+            expect(wrapper.vm.scale.current).toEqual(10)
+        })
+
+        it('Should execute pageChangeEventHandler', () => {
+            wrapper.vm.pageChangeEventHandler({ pageNumber: 100 })
+
+            expect(wrapper.vm.pagination.current).toEqual(100)
+        })
+
+        it('Should execute createPdfViewer', () => {
+            wrapper.vm.createPdfViewer()
+
+            expect(typeof wrapper.vm.pdf.viewer.setDocument).toEqual('function')
         })
     })
 
     describe('Zoom control methods', () => {
-        it('Should execute the resolveEventZoomIn method', () => {
+        it('Should execute the zoomIn method', () => {
             wrapper = shallowMount(AzPdfDocumentViewer, {
                 localVue,
                 store,
-                propsData: { src },
+                propsData: { src, httpHeader, downloadButton },
                 stubs: {
-                    AzPdfDocumentViewerToolbar: '<button @click=\'$emit("zoomIn")\' ></button>'
+                    Toolbar: '<button @click=\'$emit("zoomIn")\' ></button>'
+                }
+            })
+            wrapper.setData({
+                scale: {
+                    current: 1
+                },
+                pdf: {
+                    viewer: {
+                        currentScale: 1
+                    }
                 }
             })
             wrapper.find('button').trigger('click')
 
-            expect(actions[actionTypes.DOCUMENT.INCREASE_SCALE].mock.calls).toHaveLength(1)
+            expect(wrapper.vm.pdf.viewer.currentScale).toEqual(1.1)
         })
 
-        it('Should execute the resolveEventZoomOut method', () => {
+        it('Should execute the zoomOut method', () => {
             wrapper = shallowMount(AzPdfDocumentViewer, {
                 localVue,
                 store,
-                propsData: { src },
+                propsData: { src, httpHeader, downloadButton },
                 stubs: {
-                    AzPdfDocumentViewerToolbar: '<button @click=\'$emit("zoomOut")\' ></button>'
+                    Toolbar: '<button @click=\'$emit("zoomOut")\' ></button>'
+                }
+            })
+            wrapper.setData({
+                scale: {
+                    current: 1
+                },
+                pdf: {
+                    viewer: {
+                        currentScale: 1
+                    }
                 }
             })
             wrapper.find('button').trigger('click')
 
-            expect(actions[actionTypes.DOCUMENT.DECREASE_SCALE].mock.calls).toHaveLength(1)
+            expect(wrapper.vm.pdf.viewer.currentScale).toEqual(1 / 1.1)
         })
 
-        it('Should execute the resolveEventResetZoom method', () => {
+        it('Should block zoomOut when scale is too small', () => {
             wrapper = shallowMount(AzPdfDocumentViewer, {
                 localVue,
                 store,
-                propsData: { src },
+                propsData: { src, httpHeader, downloadButton },
                 stubs: {
-                    AzPdfDocumentViewerToolbar: '<button @click=\'$emit("resetZoom")\' ></button>'
+                    Toolbar: '<button @click=\'$emit("zoomOut")\' ></button>'
+                }
+            })
+            wrapper.setData({
+                scale: {
+                    current: 0.2
+                },
+                pdf: {
+                    viewer: {
+                        currentScale: 0.2
+                    }
                 }
             })
             wrapper.find('button').trigger('click')
 
-            expect(actions[actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES]).toHaveBeenCalledTimes(1)
+            expect(wrapper.vm.pdf.viewer.currentScale).toEqual(0.2)
         })
 
-        it('Should execute the saveCanvasContext method', () => {
+        it('Should execute resetZoom method', () => {
             wrapper = shallowMount(AzPdfDocumentViewer, {
                 localVue,
                 store,
-                propsData: { src },
+                propsData: { src, httpHeader, downloadButton },
                 stubs: {
-                    AzPdfDocumentViewerPage:
-                        '<button @click=\'$emit("mounted",{ pageNum: 1, canvasContext: {} })\'></button>'
+                    Toolbar: '<button @click=\'$emit("resetZoom")\' ></button>'
+                }
+            })
+            wrapper.setData({
+                scale: {
+                    default: 1
+                },
+                pdf: {
+                    viewer: {
+                        currentScale: 3
+                    }
                 }
             })
             wrapper.find('button').trigger('click')
 
-            expect(wrapper.vm.pagesCanvasContext).toEqual({
-                '1': { pageNum: 1, canvasContext: {} }
-            })
+            expect(wrapper.vm.pdf.viewer.currentScale).toEqual(1)
         })
     })
 
@@ -212,79 +263,31 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             wrapper = shallowMount(AzPdfDocumentViewer, {
                 localVue,
                 store,
-                propsData: { src, downloadButton },
+                propsData: { src, httpHeader, downloadButton },
                 stubs: {
-                    AzPdfDocumentViewerToolbar: '<button @click=\'$emit("download")\' ></button>'
+                    Toolbar: '<button @click=\'$emit("download")\' ></button>'
+                }
+            })
+            wrapper.setData({
+                pdf: {
+                    viewer: {
+                        pdfDocument: {
+                            transport: {
+                                _fullReader: {
+                                    _filename: null
+                                }
+                            }
+                        }
+                    }
                 }
             })
             wrapper.find('button').trigger('click')
 
-            expect(actions[actionTypes.DOCUMENT.DOWNLOAD]).toHaveBeenCalled()
-        })
-    })
-
-    describe('Pagination handling methods', () => {
-        it('Should exist a scroll handler method', async () => {
-            await expect(typeof wrapper.vm.handleScroll).toBe('function')
-        })
-
-        it('Should update current page number', async () => {
-            wrapper.vm.needRenderNextPage = jest.fn().mockReturnValue(false)
-            wrapper.vm.needRenderPreviousPage = jest.fn().mockReturnValue(false)
-            wrapper.vm.validatePageChange = jest.fn(visiblePageNum => visiblePageNum === 2)
-            await wrapper.vm.handleScroll()
-            await wrapper.vm.$nextTick()
-
-            expect(actions[actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM].mock.calls[0][1]).toBe(2)
-        })
-
-        it('Should render next page', async () => {
-            wrapper.vm.needRenderCurrentPage = jest.fn().mockReturnValue(false)
-            wrapper.vm.needRenderPreviousPage = jest.fn().mockReturnValue(false)
-            wrapper.vm.validatePageChange = jest.fn().mockReturnValue(false)
-            wrapper.vm.pagesCanvasContext = {
-                '2': { pageNum: 2, canvasContext: {} }
-            }
-            await wrapper.vm.handleScroll()
-            await wrapper.vm.$nextTick()
-
-            expect(actions[actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES].mock.calls[0][1]).toBe(2)
-            expect(actions[actionTypes.DOCUMENT.RENDER_PAGE].mock.calls[0][1]).toEqual({
-                pageNum: 2,
-                canvasContext: {}
+            expect(actions[actionTypes.DOCUMENT.DOWNLOAD].mock.calls[0][1]).toEqual({
+                src: 'document/url',
+                httpHeader: { token: '123abcd456' },
+                filename: 'download.pdf'
             })
-        })
-
-        it('Should render previous page', async () => {
-            getters.currentPageNum = jest.fn().mockReturnValue(2)
-            wrapper = shallowMount(AzPdfDocumentViewer, {
-                localVue,
-                store: new Vuex.Store({ state, getters, actions }),
-                propsData: { src, downloadButton },
-                attachToDocument: true
-            })
-            wrapper.vm.needRenderCurrentPage = jest.fn().mockReturnValue(false)
-            wrapper.vm.needRenderNextPage = jest.fn().mockReturnValue(false)
-            wrapper.vm.validatePageChange = jest.fn().mockReturnValue(false)
-            wrapper.vm.pagesCanvasContext = {
-                '1': { pageNum: 1, canvasContext: {} }
-            }
-            await wrapper.vm.handleScroll()
-            await wrapper.vm.$nextTick()
-
-            expect(actions[actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES].mock.calls[0][1]).toBe(1)
-            expect(actions[actionTypes.DOCUMENT.RENDER_PAGE].mock.calls[0][1]).toEqual({
-                pageNum: 1,
-                canvasContext: {}
-            })
-        })
-
-        it('Should scroll to first page', async () => {
-            wrapper.vm.getDocumentContainer().scrollTop = 14
-            expect(wrapper.vm.getDocumentContainer().scrollTop).toBe(14)
-
-            wrapper.vm.scrollToFirstPage()
-            expect(wrapper.vm.getDocumentContainer().scrollTop).toBe(0)
         })
     })
 })
