@@ -1,10 +1,12 @@
 <template>
     <div class="az-pdf-container">
         <Toolbar
+            :downloadButton="downloadButton"
             :pagination="pagination"
             @zoomIn="zoomIn"
             @zoomOut="zoomOut"
             @resetZoom="resetZoom"
+            @download="download"
             v-show="!loadingPlaceHolder"
         />
         <div id="az-pdf-viewer" class="Viewer" :style="{ height: height }" v-show="!loadingPlaceHolder">
@@ -20,6 +22,7 @@ import LoadingPlaceHolder from './LoadingPlaceHolder'
 import PDFJSLib from 'pdfjs-dist/build/pdf'
 import { PDFJS as PDFJSViewer } from 'pdfjs-dist/web/pdf_viewer.js'
 import 'pdfjs-dist/web/pdf_viewer.css'
+import { actionTypes } from '../../store'
 export default {
     components: {
         Toolbar,
@@ -111,6 +114,13 @@ export default {
         },
         resetZoom() {
             this.pdf.viewer.currentScale = this.scale.default
+        },
+        download() {
+            this.$store.dispatch(actionTypes.DOCUMENT.DOWNLOAD, {
+                src: this.src,
+                httpHeader: this.httpHeader,
+                filename: this.pdf.viewer._transport._fullReader._filename || 'download.pdf'
+            })
         }
     },
     props: {
@@ -152,6 +162,7 @@ export default {
         pdf: {
             container: null,
             eventBus: null,
+            filename: null,
             viewer: null
         },
         scale: {

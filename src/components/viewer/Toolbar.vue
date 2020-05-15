@@ -14,6 +14,15 @@
             {{ pagination.current }} / {{ pagination.total }}
         </div>
         <v-spacer />
+        <v-btn
+            class="az-pdf-toolbar__content"
+            @click="$emit('download')"
+            v-if="downloadButton"
+            icon
+            data-test="download"
+        >
+            <v-icon>get_app</v-icon>
+        </v-btn>
     </v-toolbar>
 </template>
 
@@ -21,6 +30,10 @@
 export default {
     name: 'Toolbar',
     props: {
+        downloadButton: {
+            type: Boolean,
+            default: false
+        },
         pagination: {
             type: Object,
             default: () => ({ current: '-', total: '-' })

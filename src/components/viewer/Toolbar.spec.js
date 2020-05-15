@@ -7,16 +7,20 @@ const localVue = createLocalVue()
 Vue.use(Vuetify)
 
 describe('Toolbar.spec.js', () => {
-    let pagination, wrapper
+    let downloadButton, pagination, wrapper
 
     beforeEach(() => {
+        downloadButton = true
         pagination = {
             current: 1,
             total: 3
         }
         wrapper = shallowMount(Toolbar, {
             localVue,
-            propsData: { pagination }
+            propsData: {
+                downloadButton,
+                pagination
+            }
         })
     })
 
@@ -28,6 +32,15 @@ describe('Toolbar.spec.js', () => {
         it('Should have a default value to pagination', () => {
             wrapper = shallowMount(Toolbar, { localVue })
             expect(wrapper.props().pagination).toEqual({ current: '-', total: '-' })
+        })
+
+        it('Should receive a downloadButton', () => {
+            expect(wrapper.props().pagination).toBeTruthy()
+        })
+
+        it('Should have a default value to downloadButton', () => {
+            wrapper = shallowMount(Toolbar, { localVue })
+            expect(wrapper.props().downloadButton).toBeFalsy()
         })
     })
 
