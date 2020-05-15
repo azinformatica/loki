@@ -159,7 +159,7 @@ export default {
         pdf: {
             container: null,
             eventBus: null,
-            viewer: null
+            viewer: {}
         },
         scale: {
             default: null,
