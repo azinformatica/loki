@@ -1,6 +1,6 @@
 {
   "name": "@azinformatica/loki",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "Biblioteca de componentes visuais compartilhados construidos usando vuejs.",
   "main": "src/index.js",
   "private": false,
@@ -52,7 +52,6 @@
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-vue": "^5.0.0",
     "file-loader": "^1.1.4",
-    "identity-obj-proxy": "^3.0.0",
     "jest": "^24.0.0",
     "jest-serializer-vue": "^2.0.2",
     "prettier": "^1.19.1",
@@ -141,8 +140,7 @@
       ".*\\.(vue)$": "<rootDir>/node_modules/vue-jest"
     },
     "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/src/$1",
-      "\\.(css)$": "identity-obj-proxy"
+      "^@/(.*)$": "<rootDir>/src/$1"
     },
     "snapshotSerializers": [
       "<rootDir>/node_modules/jest-serializer-vue"
