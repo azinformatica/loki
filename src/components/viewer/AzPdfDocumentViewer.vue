@@ -115,11 +115,7 @@ export default {
             this.pdf.viewer.currentScale = this.scale.default
         },
         download() {
-            this.$store.dispatch(actionTypes.DOCUMENT.DOWNLOAD, {
-                src: this.src,
-                httpHeader: this.httpHeader,
-                filename: this.pdf.viewer.pdfDocument.transport._fullReader._filename || 'download.pdf'
-            })
+            this.$emit('download')
         }
     },
     props: {

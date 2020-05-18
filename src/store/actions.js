@@ -34,22 +34,6 @@ export default {
         }
     },
 
-    async [actionTypes.DOCUMENT.DOWNLOAD](context, { src, httpHeader, filename }) {
-        const { data } = await axios.get(src, {
-            responseType: 'blob',
-            headers: httpHeader
-        })
-        const temporaryUrl = window.URL.createObjectURL(new Blob([data]))
-        const temporaryButton = document.createElement('a')
-        temporaryButton.href = temporaryUrl
-        temporaryButton.setAttribute('type', 'hidden')
-        temporaryButton.setAttribute('download', filename)
-
-        document.body.appendChild(temporaryButton)
-        temporaryButton.click()
-        document.body.removeChild(temporaryButton)
-    },
-
     async [actionTypes.SIGNATURE.DIGITAL.START](context, { certificadoConteudo, documentId }) {
         const flowbeeAccessParams = getFlowbeeAccessParams(context.state.flowbee.accessToken)
         const url = `${flowbeeAccessParams.url}/${documentId}/assinaturas/digitais/iniciar`
