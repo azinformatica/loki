@@ -171,7 +171,7 @@ export default {
 }
 </script>
 
-<style src="node_modules/pdfjs-dist/web/pdf_viewer.css" />
+<style src="pdfjs-dist/web/pdf_viewer.css" />
 
 <style lang="stylus">
 .az-pdf-container

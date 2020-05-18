@@ -1,5 +1,5 @@
 {
-  "name": "@azinformatica/loki",
+  "name": "@thszk/loki",
   "version": "1.0.15",
   "description": "Biblioteca de componentes visuais compartilhados construidos usando vuejs.",
   "main": "src/index.js",
