@@ -42,7 +42,6 @@ export default {
 }
 </script>
 
-
 <style lang="stylus">
 .az-pdf-toolbar
     background-color #fff !important
