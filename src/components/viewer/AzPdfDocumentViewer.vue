@@ -28,6 +28,10 @@ export default {
     },
     mounted() {
         this.start()
+        window.addEventListener('resize', this.updateScaleType)
+    },
+    destroyed() {
+        window.removeEventListener('resize', this.updateScaleType)
     },
     watch: {
         src() {
