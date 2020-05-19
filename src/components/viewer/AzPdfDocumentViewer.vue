@@ -138,10 +138,6 @@ export default {
         }
     },
     props: {
-        id: {
-            type: String,
-            default: ''
-        },
         src: {
             type: String,
             default: ''
