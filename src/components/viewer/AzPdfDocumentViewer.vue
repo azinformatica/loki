@@ -53,15 +53,9 @@ export default {
             this.pdf.eventBus = eventBus
         },
         pagesInitEventHandler(e) {
-            this.pagination.current = e.source.currentPageNumber
-            this.pagination.total = e.source.pagesCount
-            if (this.validateSmallScreen()) {
-                this.pdf.viewer.currentScaleValue = 'page-width'
-            } else {
-                this.pdf.viewer.currentScaleValue = 'page-fit'
-            }
-            this.scale.current = e.source.currentScale
-            this.scale.default = e.source.currentScale
+            this.setInitialPagination(e.source)
+            this.updateScaleType()
+            this.setInitialScale(e.source)
         },
         scaleChangeEventHandler(e) {
             this.scale.current = e.scale
@@ -91,7 +85,22 @@ export default {
                     this.handlePdfError(error)
                 })
         },
-        validateSmallScreen() {
+        setInitialPagination(pagination) {
+            this.pagination.current = pagination.currentPageNumber
+            this.pagination.total = pagination.pagesCount
+        },
+        updateScaleType() {
+            if (this.isSmallScreen()) {
+                this.pdf.viewer.currentScaleValue = 'page-width'
+            } else {
+                this.pdf.viewer.currentScaleValue = 'page-fit'
+            }
+        },
+        setInitialScale(scale) {
+            this.scale.current = scale.currentScale
+            this.scale.default = scale.currentScale
+        },
+        isSmallScreen() {
             return this.pdf.container.clientWidth <= 700
         },
         handlePdfError(error) {
