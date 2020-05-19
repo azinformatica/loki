@@ -4,7 +4,6 @@ import Vuex from 'vuex'
 import 'pdfjs-dist/build/pdf'
 import 'pdfjs-dist/web/pdf_viewer.js'
 import AzPdfDocumentViewer from './AzPdfDocumentViewer'
-import { actionTypes } from '../../../src/store'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 
 jest.mock('pdfjs-dist/build/pdf', () => ({
@@ -38,20 +37,15 @@ Vue.use(Vuetify)
 Vue.use(Vuex)
 
 describe('AzPdfDocumentViewer.spec.js', () => {
-    let src, httpHeader, downloadButton, wrapper, store, actions
+    let src, httpHeader, downloadButton, wrapper
 
     beforeEach(() => {
-        actions = {
-            [actionTypes.DOCUMENT.DOWNLOAD]: jest.fn()
-        }
-        store = new Vuex.Store({ actions })
         src = 'document/url'
         httpHeader = { token: '123abcd456' }
         downloadButton = true
 
         wrapper = shallowMount(AzPdfDocumentViewer, {
             localVue,
-            store,
             propsData: { src, httpHeader, downloadButton },
             attachTo: document.body
         })
@@ -69,7 +63,6 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         it('Should have a default value to props httpHeader', () => {
             wrapper = shallowMount(AzPdfDocumentViewer, {
                 localVue,
-                store,
                 propsData: { src, downloadButton },
                 attachTo: document.body
             })
@@ -164,7 +157,6 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         it('Should execute the zoomIn method', () => {
             wrapper = shallowMount(AzPdfDocumentViewer, {
                 localVue,
-                store,
                 propsData: { src, httpHeader, downloadButton },
                 stubs: {
                     Toolbar: '<button @click=\'$emit("zoomIn")\' ></button>'
@@ -188,7 +180,6 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         it('Should execute the zoomOut method', () => {
             wrapper = shallowMount(AzPdfDocumentViewer, {
                 localVue,
-                store,
                 propsData: { src, httpHeader, downloadButton },
                 stubs: {
                     Toolbar: '<button @click=\'$emit("zoomOut")\' ></button>'
@@ -212,7 +203,6 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         it('Should block zoomOut when scale is too small', () => {
             wrapper = shallowMount(AzPdfDocumentViewer, {
                 localVue,
-                store,
                 propsData: { src, httpHeader, downloadButton },
                 stubs: {
                     Toolbar: '<button @click=\'$emit("zoomOut")\' ></button>'
@@ -236,7 +226,6 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         it('Should execute resetZoom method', () => {
             wrapper = shallowMount(AzPdfDocumentViewer, {
                 localVue,
-                store,
                 propsData: { src, httpHeader, downloadButton },
                 stubs: {
                     Toolbar: '<button @click=\'$emit("resetZoom")\' ></button>'
@@ -262,32 +251,14 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         it('Should execute the download action', () => {
             wrapper = shallowMount(AzPdfDocumentViewer, {
                 localVue,
-                store,
                 propsData: { src, httpHeader, downloadButton },
                 stubs: {
                     Toolbar: '<button @click=\'$emit("download")\' ></button>'
                 }
             })
-            wrapper.setData({
-                pdf: {
-                    viewer: {
-                        pdfDocument: {
-                            transport: {
-                                _fullReader: {
-                                    _filename: null
-                                }
-                            }
-                        }
-                    }
-                }
-            })
             wrapper.find('button').trigger('click')
 
-            expect(actions[actionTypes.DOCUMENT.DOWNLOAD].mock.calls[0][1]).toEqual({
-                src: 'document/url',
-                httpHeader: { token: '123abcd456' },
-                filename: 'download.pdf'
-            })
+            expect(wrapper.emitted().download).toBeTruthy()
         })
     })
 })

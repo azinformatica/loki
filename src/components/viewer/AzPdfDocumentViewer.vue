@@ -21,7 +21,6 @@ import Toolbar from './Toolbar'
 import LoadingPlaceHolder from './LoadingPlaceHolder'
 import PDFJSLib from 'pdfjs-dist/build/pdf'
 import { PDFJS as PDFJSViewer } from 'pdfjs-dist/web/pdf_viewer.js'
-import { actionTypes } from '../../store'
 export default {
     components: {
         Toolbar,
@@ -115,11 +114,7 @@ export default {
             this.pdf.viewer.currentScale = this.scale.default
         },
         download() {
-            this.$store.dispatch(actionTypes.DOCUMENT.DOWNLOAD, {
-                src: this.src,
-                httpHeader: this.httpHeader,
-                filename: this.pdf.viewer.pdfDocument.transport._fullReader._filename || 'download.pdf'
-            })
+            this.$emit('download')
         }
     },
     props: {
@@ -171,7 +166,7 @@ export default {
 }
 </script>
 
-<style src="node_modules/pdfjs-dist/web/pdf_viewer.css" />
+<style src="pdfjs-dist/web/pdf_viewer.css" />
 
 <style lang="stylus">
 .az-pdf-container
