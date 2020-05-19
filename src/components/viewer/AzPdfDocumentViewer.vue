@@ -36,12 +36,11 @@ export default {
     },
     methods: {
         start() {
-            this.loadingPlaceHolder = this.progressBar
+            this.startLoadingPlaceHolderIfNecessary()
             this.getPdfContainer()
             this.createEventBus()
             this.createPdfViewer()
             this.renderDocument()
-            this.loadingPlaceHolder = false
         },
         getPdfContainer() {
             this.pdf.container = document.querySelector('#az-pdf-viewer')
@@ -85,8 +84,10 @@ export default {
             })
                 .then(pdf => {
                     this.pdf.viewer.setDocument(pdf)
+                    this.stopLoadingPlaceHolder()
                 })
                 .catch(error => {
+                    this.stopLoadingPlaceHolder()
                     this.handlePdfError(error)
                 })
         },
@@ -115,6 +116,12 @@ export default {
         },
         download() {
             this.$emit('download')
+        },
+        startLoadingPlaceHolderIfNecessary() {
+            this.loadingPlaceHolder = this.progressBar
+        },
+        stopLoadingPlaceHolder() {
+            this.loadingPlaceHolder = false
         }
     },
     props: {
