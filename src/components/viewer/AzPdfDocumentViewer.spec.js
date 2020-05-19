@@ -123,7 +123,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         })
 
         it('Should execute pagesInitEventHandler to "small screen"', () => {
-            wrapper.vm.validateSmallScreen = jest.fn().mockReturnValue(true)
+            wrapper.vm.isSmallScreen = jest.fn().mockReturnValue(true)
             wrapper.vm.pagesInitEventHandler({
                 source: {
                     currentPageNumber: 1,
@@ -138,7 +138,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         })
 
         it('Should execute pagesInitEventHandler to "non small screen"', () => {
-            wrapper.vm.validateSmallScreen = jest.fn().mockReturnValue(false)
+            wrapper.vm.isSmallScreen = jest.fn().mockReturnValue(false)
             wrapper.vm.pagesInitEventHandler({
                 source: {
                     currentPageNumber: 1,
