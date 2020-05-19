@@ -76,7 +76,7 @@ export default {
             })
         },
         renderDocument() {
-            if (!this.src) return
+            if (!this.src) return this.stopLoadingPlaceHolder()
             PDFJSLib.getDocument({
                 url: this.src,
                 httpHeaders: this.httpHeader,
