@@ -100,6 +100,30 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             expect(wrapper.vm.startLoadingPlaceHolderIfNecessary).toBeCalledTimes(1)
             expect(wrapper.vm.stopLoadingPlaceHolder).toBeCalledTimes(1)
         })
+
+        it('Should register resize event listener', async () => {
+            window.addEventListener = jest.fn()
+            wrapper = shallowMount(AzPdfDocumentViewer, {
+                localVue,
+                propsData: { src, httpHeader, downloadButton, progressBar },
+                attachTo: document.body
+            })
+            await wrapper.vm.$nextTick()
+
+            expect(window.addEventListener.mock.calls[0][0]).toEqual('resize')
+        })
+
+        it('Should remove resize event listener', async () => {
+            window.removeEventListener = jest.fn()
+            wrapper = shallowMount(AzPdfDocumentViewer, {
+                localVue,
+                propsData: { src, httpHeader, downloadButton, progressBar },
+                attachTo: document.body
+            })
+            wrapper.destroy()
+
+            expect(window.removeEventListener.mock.calls[0][0]).toEqual('resize')
+        })
     })
 
     describe('PDF Rendering', () => {
