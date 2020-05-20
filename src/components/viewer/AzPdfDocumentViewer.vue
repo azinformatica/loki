@@ -1,5 +1,5 @@
 <template>
-    <div class="az-pdf-container">
+    <div class="az-pdf-container" :class="customContainerClass" :style="{ height: height }">
         <Toolbar
             :downloadButton="downloadButton"
             :pagination="pagination"
@@ -9,7 +9,12 @@
             @download="download"
             v-show="!loadingPlaceHolder"
         />
-        <div id="az-pdf-viewer" class="Viewer" :style="{ height: height }" v-show="!loadingPlaceHolder">
+        <div
+            id="az-pdf-viewer"
+            class="Viewer"
+            :style="{ height: `calc(${height} - 62px)` }"
+            v-show="!loadingPlaceHolder"
+        >
             <div class="pdfViewer"></div>
         </div>
         <LoadingPlaceHolder :loading="loadingPlaceHolder" />
@@ -28,6 +33,10 @@ export default {
     },
     mounted() {
         this.start()
+        window.addEventListener('resize', this.updateScaleType)
+    },
+    destroyed() {
+        window.removeEventListener('resize', this.updateScaleType)
     },
     watch: {
         src() {
@@ -36,12 +45,11 @@ export default {
     },
     methods: {
         start() {
-            this.loadingPlaceHolder = this.progressBar
+            this.startLoadingPlaceHolderIfNecessary()
             this.getPdfContainer()
             this.createEventBus()
             this.createPdfViewer()
             this.renderDocument()
-            this.loadingPlaceHolder = false
         },
         getPdfContainer() {
             this.pdf.container = document.querySelector('#az-pdf-viewer')
@@ -54,15 +62,9 @@ export default {
             this.pdf.eventBus = eventBus
         },
         pagesInitEventHandler(e) {
-            this.pagination.current = e.source.currentPageNumber
-            this.pagination.total = e.source.pagesCount
-            if (this.validateSmallScreen()) {
-                this.pdf.viewer.currentScaleValue = 'page-width'
-            } else {
-                this.pdf.viewer.currentScaleValue = 'page-fit'
-            }
-            this.scale.current = e.source.currentScale
-            this.scale.default = e.source.currentScale
+            this.setInitialPagination(e.source)
+            this.updateScaleType()
+            this.setInitialScale(e.source)
         },
         scaleChangeEventHandler(e) {
             this.scale.current = e.scale
@@ -77,7 +79,7 @@ export default {
             })
         },
         renderDocument() {
-            if (!this.src) return
+            if (!this.src) return this.stopLoadingPlaceHolder()
             PDFJSLib.getDocument({
                 url: this.src,
                 httpHeaders: this.httpHeader,
@@ -85,12 +87,29 @@ export default {
             })
                 .then(pdf => {
                     this.pdf.viewer.setDocument(pdf)
+                    this.stopLoadingPlaceHolder()
                 })
                 .catch(error => {
+                    this.stopLoadingPlaceHolder()
                     this.handlePdfError(error)
                 })
         },
-        validateSmallScreen() {
+        setInitialPagination(pagination) {
+            this.pagination.current = pagination.currentPageNumber
+            this.pagination.total = pagination.pagesCount
+        },
+        updateScaleType() {
+            if (this.isSmallScreen()) {
+                this.pdf.viewer.currentScaleValue = 'page-width'
+            } else {
+                this.pdf.viewer.currentScaleValue = 'page-fit'
+            }
+        },
+        setInitialScale(scale) {
+            this.scale.current = scale.currentScale
+            this.scale.default = scale.currentScale
+        },
+        isSmallScreen() {
             return this.pdf.container.clientWidth <= 700
         },
         handlePdfError(error) {
@@ -115,13 +134,15 @@ export default {
         },
         download() {
             this.$emit('download')
+        },
+        startLoadingPlaceHolderIfNecessary() {
+            this.loadingPlaceHolder = this.progressBar
+        },
+        stopLoadingPlaceHolder() {
+            this.loadingPlaceHolder = false
         }
     },
     props: {
-        id: {
-            type: String,
-            default: ''
-        },
         src: {
             type: String,
             default: ''
@@ -132,7 +153,7 @@ export default {
         },
         height: {
             type: String,
-            default: 'calc(100vh - 62px)'
+            default: '100vh'
         },
         httpHeader: {
             type: Object,
@@ -145,6 +166,16 @@ export default {
         downloadButton: {
             type: Boolean,
             default: false
+        }
+    },
+    computed: {
+        customContainerClass() {
+            let classObject = {}
+            if (this.cssClass) {
+                const classes = this.cssClass.split(' ')
+                classes.forEach(clazz => (classObject[clazz] = true))
+            }
+            return classObject
         }
     },
     data: () => ({

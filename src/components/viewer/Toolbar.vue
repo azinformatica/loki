@@ -11,7 +11,7 @@
             <v-icon>zoom_in</v-icon>
         </v-btn>
         <div class="az-pdf-toolbar__pagination" data-test="pagination">
-            {{ pagination.current }} / {{ pagination.total }}
+            {{ pagination.current || '-' }} / {{ pagination.total  || '-' }}
         </div>
         <v-spacer />
         <v-btn

@@ -37,16 +37,17 @@ Vue.use(Vuetify)
 Vue.use(Vuex)
 
 describe('AzPdfDocumentViewer.spec.js', () => {
-    let src, httpHeader, downloadButton, wrapper
+    let src, httpHeader, downloadButton, progressBar, wrapper
 
     beforeEach(() => {
         src = 'document/url'
         httpHeader = { token: '123abcd456' }
         downloadButton = true
+        progressBar = true
 
         wrapper = shallowMount(AzPdfDocumentViewer, {
             localVue,
-            propsData: { src, httpHeader, downloadButton },
+            propsData: { src, httpHeader, downloadButton, progressBar },
             attachTo: document.body
         })
     })
@@ -72,6 +73,10 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         it('Should receive props downloadButton', () => {
             expect(wrapper.props().downloadButton).toBeTruthy()
         })
+
+        it('Should receive props progressBar', () => {
+            expect(wrapper.props().progressBar).toBeTruthy()
+        })
     })
 
     describe('Vue Lifecycle', () => {
@@ -81,6 +86,43 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             await wrapper.vm.$nextTick()
 
             expect(wrapper.vm.start).toHaveBeenCalledTimes(1)
+        })
+
+        it('Should start loading animation when run start function and stop when finish it', async () => {
+            wrapper.vm.getPdfContainer = jest.fn()
+            wrapper.vm.createEventBus = jest.fn()
+            wrapper.vm.createPdfViewer = jest.fn()
+            jest.spyOn(wrapper.vm, 'startLoadingPlaceHolderIfNecessary')
+            jest.spyOn(wrapper.vm, 'stopLoadingPlaceHolder')
+            wrapper.vm.start()
+            await wrapper.vm.$nextTick()
+
+            expect(wrapper.vm.startLoadingPlaceHolderIfNecessary).toBeCalledTimes(1)
+            expect(wrapper.vm.stopLoadingPlaceHolder).toBeCalledTimes(1)
+        })
+
+        it('Should register resize event listener', async () => {
+            window.addEventListener = jest.fn()
+            wrapper = shallowMount(AzPdfDocumentViewer, {
+                localVue,
+                propsData: { src, httpHeader, downloadButton, progressBar },
+                attachTo: document.body
+            })
+            await wrapper.vm.$nextTick()
+
+            expect(window.addEventListener.mock.calls[0][0]).toEqual('resize')
+        })
+
+        it('Should remove resize event listener', async () => {
+            window.removeEventListener = jest.fn()
+            wrapper = shallowMount(AzPdfDocumentViewer, {
+                localVue,
+                propsData: { src, httpHeader, downloadButton, progressBar },
+                attachTo: document.body
+            })
+            wrapper.destroy()
+
+            expect(window.removeEventListener.mock.calls[0][0]).toEqual('resize')
         })
     })
 
@@ -105,7 +147,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         })
 
         it('Should execute pagesInitEventHandler to "small screen"', () => {
-            wrapper.vm.validateSmallScreen = jest.fn().mockReturnValue(true)
+            wrapper.vm.isSmallScreen = jest.fn().mockReturnValue(true)
             wrapper.vm.pagesInitEventHandler({
                 source: {
                     currentPageNumber: 1,
@@ -120,7 +162,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         })
 
         it('Should execute pagesInitEventHandler to "non small screen"', () => {
-            wrapper.vm.validateSmallScreen = jest.fn().mockReturnValue(false)
+            wrapper.vm.isSmallScreen = jest.fn().mockReturnValue(false)
             wrapper.vm.pagesInitEventHandler({
                 source: {
                     currentPageNumber: 1,

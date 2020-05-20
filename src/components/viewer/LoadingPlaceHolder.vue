@@ -1,5 +1,5 @@
 <template>
-    <v-progress-linear indeterminate :active="loading" />
+    <v-progress-linear indeterminate :active="loading" v-show="loading" />
 </template>
 
 <script>
