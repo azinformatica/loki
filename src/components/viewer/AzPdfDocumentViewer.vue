@@ -1,5 +1,5 @@
 <template>
-    <div class="az-pdf-container">
+    <div class="az-pdf-container" :class="customContainerClass" :style="{ height: height }">
         <Toolbar
             :downloadButton="downloadButton"
             :pagination="pagination"
@@ -9,7 +9,12 @@
             @download="download"
             v-show="!loadingPlaceHolder"
         />
-        <div id="az-pdf-viewer" class="Viewer" :style="{ height: height }" v-show="!loadingPlaceHolder">
+        <div
+            id="az-pdf-viewer"
+            class="Viewer"
+            :style="{ height: `calc(${height} - 62px)` }"
+            v-show="!loadingPlaceHolder"
+        >
             <div class="pdfViewer"></div>
         </div>
         <LoadingPlaceHolder :loading="loadingPlaceHolder" />
@@ -148,7 +153,7 @@ export default {
         },
         height: {
             type: String,
-            default: 'calc(100vh - 62px)'
+            default: '100vh'
         },
         httpHeader: {
             type: Object,
@@ -161,6 +166,16 @@ export default {
         downloadButton: {
             type: Boolean,
             default: false
+        }
+    },
+    computed: {
+        customContainerClass() {
+            let classObject = {}
+            if (this.cssClass) {
+                const classes = this.cssClass.split(' ')
+                classes.forEach(clazz => (classObject[clazz] = true))
+            }
+            return classObject
         }
     },
     data: () => ({
