@@ -20,21 +20,26 @@
                     :value="value"
                     :locale="currentLanguage"
                     @input="pickDateEvent(), updateModelDate($event)"
+                    :min="minDate"
+                    :max="maxDate"
                     class="az-date"
                 />
             </v-dialog>
             <v-text-field
-                v-validate="{ required: isRequired }"
+                v-validate="validateDate"
                 :name="nameDate"
                 :error-messages="errors.collect(`${nameDate}`)"
                 v-model="dateFormatted"
                 :label="label"
-                mask="date"
-                :placeholder="dateFormat"
+                v-mask="'##/##/####'"
+                :placeholder="placeholderDate"
                 :disabled="isDisabled"
+                :min-date="minDate"
+                :max-date="maxDate"
                 append-icon="event"
                 @click:append="openMenuDate"
-                @blur="validateAndParseDate(dateFormatted), updateModelDate(date)"
+                @keyup="validateAndParseDate(dateFormatted)"
+                @blur="updateModelDate(date)"
             >
             </v-text-field>
         </div>
@@ -69,12 +74,12 @@
                 :disabled="isDisabled"
                 v-model="timeFormatted"
                 mask="time"
-                placeholder="HH:mm"
+                :placeholder="placeholderHour"
                 append-icon="access_time"
                 @click:append="openMenuTime"
                 @focus="selectContentInputHour"
                 @blur="validateTimeEvent(), updateModelTime(time)"
-            ></v-text-field>
+            />
         </div>
     </div>
 </template>
@@ -89,6 +94,10 @@ export default {
                 return ['DD/MM/YYYY', 'MM/DD/YYYY'].indexOf(value) !== -1
             }
         },
+        dateMask: {
+            type: String,
+            default: '##/##/####'
+        },
         dateTime: {
             type: Boolean,
             default: false
@@ -101,9 +110,19 @@ export default {
             type: String,
             default: ''
         },
+        isDisabled: {
+            type: Boolean,
+            default: false
+        },
         isRequired: {
             type: Boolean,
             default: false
+        },
+        maxDate: {
+            type: String
+        },
+        minDate: {
+            type: String
         },
         nameDate: {
             type: String,
@@ -113,9 +132,13 @@ export default {
             type: String,
             default: ''
         },
-        isDisabled: {
-            type: Boolean,
-            default: false
+        placeholderDate: {
+            type: String,
+            default: 'DD/MM/YYYY'
+        },
+        placeholderHour: {
+            type: String,
+            default: 'HH:mm'
         }
     },
     inject: ['$validator'],
@@ -123,6 +146,7 @@ export default {
         return {
             date: null,
             dateFormatted: null,
+            dateInvalid: false,
             time: null,
             timeFormatted: null,
             dialogDate: false,
@@ -139,30 +163,51 @@ export default {
         },
         currentLanguage() {
             return this.$vuetify.lang.current
+        },
+        validateDate() {
+            const validationDate = {}
+            if (this.isRequired) {
+                validationDate.required = true
+            }
+            if (this.dateFormatted && this.dateFormatted.length === 10) {
+                validationDate.date_format = this.dateFormat === 'DD/MM/YYYY' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'
+                if (this.maxDate) {
+                    validationDate.before = this.moment(this.maxDate)
+                        .add(1, 'days')
+                        .format(this.dateFormat)
+                }
+                if (this.minDate) {
+                    validationDate.after = this.moment(this.minDate)
+                        .subtract(1, 'days')
+                        .format(this.dateFormat)
+                }
+            }
+            return validationDate
         }
     },
     watch: {
-        value(val) {
-            this.updateDateTimeByModel(val)
-            this.updateValue(val)
+        value: {
+            handler(val) {
+                this.updateDateTimeByModel(val)
+                this.updateValue(val)
+            },
+            immediate: true
         }
     },
     methods: {
         getFormattedDate(day, month, year) {
             const getFnDateFormat = {
                 'DD/MM/YYYY': function() {
-                    return `${day}${month}${year}`
+                    return `${day}/${month}/${year}`
                 },
                 'MM/DD/YYYY': function() {
-                    return `${month}${day}${year}`
+                    return `${month}/${day}/${year}`
                 }
             }
-
             return getFnDateFormat[this.dateFormat]()
         },
         formatDate(date) {
             if (!date) return null
-
             const [year, month, day] = date.split('-')
             return this.getFormattedDate(day, month, year)
         },
@@ -171,64 +216,59 @@ export default {
             this.dateFormatted = this.formatDate(this.date)
         },
         validateAndParseDate(date) {
-            if (!date || !this.dateStringIsValid(date)) {
-                this.date = null
-                this.dateFormatted = ''
+            if (!date || !this.dateStringIsValid(date) || this.dateMaxIsAllowed(date) || this.dateMinIsAllowed(date)) {
+                if (date === null || date.length === 0) {
+                    this.date = null
+                    this.dateFormatted = ''
+                    this.$emit('input', null)
+                }
                 return
             }
-
             const dateObj = this.getDayMonthYearFromDateString(date)
 
             this.date = `${dateObj.year}-${dateObj.month}-${dateObj.day}`
+            this.updateModelDate(this.date)
         },
         getDayMonthYearFromDateString(date) {
+            const dateFormated = date.replace(new RegExp('/', 'g'), '')
             const getFnDateFormat = {
                 'DD/MM/YYYY': function() {
                     return {
-                        day: date.substring(0, 2),
-                        month: date.substring(2, 4),
-                        year: date.substring(4, 8)
+                        day: dateFormated.substring(0, 2),
+                        month: dateFormated.substring(2, 4),
+                        year: dateFormated.substring(4, 8)
                     }
                 },
                 'MM/DD/YYYY': function() {
                     return {
-                        day: date.substring(2, 4),
-                        month: date.substring(0, 2),
-                        year: date.substring(4, 8)
+                        day: dateFormated.substring(2, 4),
+                        month: dateFormated.substring(0, 2),
+                        year: dateFormated.substring(4, 8)
                     }
                 }
             }
-
             return getFnDateFormat[this.dateFormat]()
         },
         dayIsValidForMonthAndYear(day, month, year) {
             let daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
             const isLeapYear = (!(year % 4) && year % 100) || !(year % 400)
-
             if (isLeapYear) {
                 daysInMonth[1] = 29
             }
-
             return day > 0 && day <= daysInMonth[--month]
         },
         dateStringIsValid(date) {
             if (date.length < 8) return false
-
             const dateObj = this.getDayMonthYearFromDateString(date)
-
             const monthIsValid = Number(dateObj.month) > 0 && Number(dateObj.month) < 13
             const yearIsValid = Number(dateObj.year) > 999
-
             if (!monthIsValid || !yearIsValid) return false
-
             return this.dayIsValidForMonthAndYear(Number(dateObj.day), Number(dateObj.month), Number(dateObj.year))
         },
         timeStringIsValid() {
             if (!this.timeFormatted || this.timeFormatted.length < 4) return false
-
             const firstTimeDigit = Number(this.timeFormatted.substring(0, 2))
             const secondTimeDigit = Number(this.timeFormatted.substring(2, 4))
-
             return firstTimeDigit < 24 && secondTimeDigit < 60
         },
         validateTimeEvent() {
@@ -237,10 +277,8 @@ export default {
                 this.timeFormatted = ''
                 return
             }
-
             const hour = this.timeFormatted.substring(0, 2)
             const minute = this.timeFormatted.substring(2, 4)
-
             this.time = hour + ':' + minute
         },
         changeTimeEvent() {
@@ -260,6 +298,7 @@ export default {
             this.dateFormatted = ''
         },
         updateModelDate(value) {
+            this.dateInvalid = false
             if (this.time && value) {
                 const dateTimeWithTimezone = this.buildDateTimeWithTimezone(value, this.time)
                 const dateTimeTimezoneZero = this.getDateTimeZeroTimezone(dateTimeWithTimezone)
@@ -292,12 +331,10 @@ export default {
         },
         updateDateTimeByModel(modelVal) {
             const maxLengthOfModelDateWithTime = 28
-
             if (!modelVal || modelVal.length > maxLengthOfModelDateWithTime) {
                 this.setEmptyTimeAndDate()
                 return
             }
-
             if (this.dateTime) this.updateDateWithTimeByModel(modelVal)
             else this.updateDateWithoutTimeByModel(modelVal)
         },
@@ -305,7 +342,6 @@ export default {
             const maxLengthOfModel = 28,
                 dateModelLength = 10,
                 dateModelWithSeparatorLength = 11
-
             if (modelVal.length > dateModelWithSeparatorLength && modelVal.length < maxLengthOfModel) {
                 this.time = null
                 this.timeFormatted = ''
@@ -315,7 +351,6 @@ export default {
                 this.dateFormatted = ''
                 return
             }
-
             if (modelVal.length === dateModelLength) {
                 this.date = modelVal
                 this.dateFormatted = this.formatDate(modelVal)
@@ -330,13 +365,11 @@ export default {
         },
         updateDateWithoutTimeByModel(modelVal) {
             const maxDateModelLength = 10
-
             if (modelVal.length < maxDateModelLength) {
                 this.date = null
                 this.dateFormatted = ''
                 return
             }
-
             if (modelVal.length >= maxDateModelLength) {
                 this.date = modelVal.substring(0, maxDateModelLength)
                 this.dateFormatted = this.formatDate(this.date)
@@ -377,17 +410,34 @@ export default {
             if (val) {
                 const dateTime = this.getDateTimeWithSystemTimezone(val)
                 const splitDateTime = dateTime.split('T')
-
                 this.date = splitDateTime[0]
                 this.dateFormatted = this.formatDate(this.date)
                 this.time = splitDateTime[1].substring(0, 5)
                 this.timeFormatted = this.time.replace(':', '')
-
                 const dateTimeWithTimezone = this.buildDateTimeWithTimezone(this.date, this.time)
                 const dateTimeTimezoneZero = this.getDateTimeZeroTimezone(dateTimeWithTimezone)
-
                 this.$emit('input', dateTimeTimezoneZero)
             }
+        },
+        dateMinIsAllowed(date) {
+            if (this.minDate) {
+                const dateObj = this.getDayMonthYearFromDateString(date)
+                const minDateObj = this.getDayMonthYearFromDateString(this.moment(this.minDate).format('DD/MM/YYYY'))
+                return this.moment(`${dateObj.year}-${dateObj.month}-${dateObj.day}`).isBefore(
+                    `${minDateObj.year}-${minDateObj.month}-${minDateObj.day}`
+                )
+            }
+            return false
+        },
+        dateMaxIsAllowed(date) {
+            if (this.maxDate) {
+                const dateObj = this.getDayMonthYearFromDateString(date)
+                const maxDateObj = this.getDayMonthYearFromDateString(this.moment(this.maxDate).format('DD/MM/YYYY'))
+                return this.moment(`${dateObj.year}-${dateObj.month}-${dateObj.day}`).isAfter(
+                    `${maxDateObj.year}-${maxDateObj.month}-${maxDateObj.day}`
+                )
+            }
+            return false
         }
     }
 }
