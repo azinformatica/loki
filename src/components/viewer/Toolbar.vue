@@ -1,17 +1,18 @@
 <template>
+    <!-- eslint-disable max-len prettier/prettier -->
     <v-toolbar class="az-pdf-toolbar" flat>
         <v-spacer />
-        <v-btn class="az-pdf-toolbar__content" @click="$emit('zoomOut')" icon data-test="zoomOut">
+        <v-btn class="az-pdf-toolbar__content" @click="$emit('zoomOut')" icon data-test="zoomOut" :disabled="disableButtons">
             <v-icon>zoom_out</v-icon>
         </v-btn>
-        <v-btn class="az-pdf-toolbar__content" @click="$emit('resetZoom')" icon data-test="resetZoom">
+        <v-btn class="az-pdf-toolbar__content" @click="$emit('resetZoom')" icon data-test="resetZoom" :disabled="disableButtons">
             <v-icon>aspect_ratio</v-icon>
         </v-btn>
-        <v-btn class="az-pdf-toolbar__content" @click="$emit('zoomIn')" icon data-test="zoomIn">
+        <v-btn class="az-pdf-toolbar__content" @click="$emit('zoomIn')" icon data-test="zoomIn" :disabled="disableButtons">
             <v-icon>zoom_in</v-icon>
         </v-btn>
         <div class="az-pdf-toolbar__pagination" data-test="pagination">
-            {{ pagination.current || '-' }} / {{ pagination.total  || '-' }}
+            {{ pagination.current || '-' }} / {{ pagination.total || '-' }}
         </div>
         <v-spacer />
         <v-btn
@@ -20,6 +21,7 @@
             v-if="downloadButton"
             icon
             data-test="download"
+            :disabled="disableButtons"
         >
             <v-icon>get_app</v-icon>
         </v-btn>
@@ -30,6 +32,10 @@
 export default {
     name: 'Toolbar',
     props: {
+        disableButtons: {
+            type: Boolean,
+            default: false
+        },
         downloadButton: {
             type: Boolean,
             default: false

@@ -7,9 +7,10 @@ const localVue = createLocalVue()
 Vue.use(Vuetify)
 
 describe('Toolbar.spec.js', () => {
-    let downloadButton, pagination, wrapper
+    let disableButtons, downloadButton, pagination, wrapper
 
     beforeEach(() => {
+        disableButtons = true
         downloadButton = true
         pagination = {
             current: 1,
@@ -18,6 +19,7 @@ describe('Toolbar.spec.js', () => {
         wrapper = shallowMount(Toolbar, {
             localVue,
             propsData: {
+                disableButtons,
                 downloadButton,
                 pagination
             }
@@ -32,6 +34,15 @@ describe('Toolbar.spec.js', () => {
         it('Should have a default value to pagination', () => {
             wrapper = shallowMount(Toolbar, { localVue })
             expect(wrapper.props().pagination).toEqual({ current: '-', total: '-' })
+        })
+
+        it('Should receive a disableButtons', () => {
+            expect(wrapper.props().disableButtons).toBeTruthy()
+        })
+
+        it('Should have a default value to disableButtons', () => {
+            wrapper = shallowMount(Toolbar, { localVue })
+            expect(wrapper.props().disableButtons).toBeFalsy()
         })
 
         it('Should receive a downloadButton', () => {
@@ -51,7 +62,7 @@ describe('Toolbar.spec.js', () => {
         })
 
         it('Should have a zoomOut button', () => {
-            let zoomOutBtn = wrapper.find('[data-test="resetZoom"]')
+            let zoomOutBtn = wrapper.find('[data-test="zoomOut"]')
             expect(zoomOutBtn).toBeTruthy()
         })
 
@@ -61,7 +72,15 @@ describe('Toolbar.spec.js', () => {
         })
 
         it('Should have a resetZoom button', () => {
-            expect(wrapper.find('[data-test="resetZoom"]')).toBeTruthy()
+            const resetZoomBtn = wrapper.find('[data-test="resetZoom"]')
+            expect(resetZoomBtn).toBeTruthy()
+        })
+
+        it('Should disable the buttons', () => {
+            expect(wrapper.find('[data-test="zoomOut"]').html()).toContain('disabled="true"')
+            expect(wrapper.find('[data-test="zoomIn"]').html()).toContain('disabled="true"')
+            expect(wrapper.find('[data-test="resetZoom"]').html()).toContain('disabled="true"')
+            expect(wrapper.find('[data-test="download"]').html()).toContain('disabled="true"')
         })
     })
 

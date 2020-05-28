@@ -1,6 +1,7 @@
 <template>
     <div class="az-pdf-container" :class="customContainerClass" :style="{ height: height }">
         <Toolbar
+            :disableButtons="!src"
             :downloadButton="downloadButton"
             :pagination="pagination"
             @zoomIn="zoomIn"
