@@ -2,7 +2,7 @@ import Vue from 'vue'
 import money from 'v-money'
 import accounting from 'accounting'
 import moment from 'moment'
-import { actions, mutations, mutationTypes, state, getters } from './store'
+import { actions, mutations, mutationTypes, state } from './store'
 
 import AzTitle from './components/layout/AzTitle'
 import AzAvatar from './components/layout/AzAvatar'
@@ -15,6 +15,7 @@ import AzTemplateGmail from './components/layout/templates/AzTemplateGmail'
 import AzTemplateVader from './components/layout/templates/AzTemplateVader'
 import AzContainer from './components/layout/AzContainer'
 import AzAlert from './components/layout/AzAlert'
+import AzLoading from './components/layout/AzLoading'
 import AzOps from './components/layout/AzOps'
 import AzModal from './components/layout/AzModal'
 import AzSearch from './components/search/AzSearch'
@@ -54,6 +55,7 @@ import AzSearchUrlBuilder from './utils/AzSearchUrlBuilder'
 import AzSoundex from './utils/AzSoundex'
 import buildMenu from './utils/az-menu'
 import hasPermissions from './utils/az-auth'
+import AzDigitalSignature from './utils/AzDigitalSignature'
 
 Vue.use(accounting)
 Vue.use(money, {
@@ -75,7 +77,7 @@ const lokiPlugin = {
             throw new Error('Please provide router.')
         }
 
-        store.registerModule('loki', { state, mutations, actions, getters })
+        store.registerModule('loki', { state, mutations, actions })
         Vue.component('az-title', AzTitle)
         Vue.component('az-avatar', AzAvatar)
         Vue.component('az-logo', AzLogo)
@@ -87,6 +89,7 @@ const lokiPlugin = {
         Vue.component('az-template-vader', AzTemplateVader)
         Vue.component('az-container', AzContainer)
         Vue.component('az-alert', AzAlert)
+        Vue.component('az-loading', AzLoading)
         Vue.component('az-ops', AzOps)
         Vue.component('az-modal', AzModal)
         Vue.component('az-search', AzSearch)
@@ -143,4 +146,4 @@ const filters = {
     azTitleCase
 }
 
-export { lokiPlugin, filters, AzCurrency, AzSearchUrlBuilder, AzSoundex, buildMenu, hasPermissions }
+export { lokiPlugin, filters, AzCurrency, AzSearchUrlBuilder, AzSoundex, buildMenu, hasPermissions, AzDigitalSignature }

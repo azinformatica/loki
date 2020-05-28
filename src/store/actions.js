@@ -1,5 +1,4 @@
 import axios from 'axios'
-import pdfjs from '../utils/AzPdfJsLib'
 import mutationTypes from './mutation-types'
 import actionTypes from './action-types'
 
@@ -35,58 +34,49 @@ export default {
         }
     },
 
-    async [actionTypes.DOCUMENT.FETCH_DOCUMENT](context, src) {
-        let pdf = await pdfjs.fetchDocument(src)
-        context.commit(mutationTypes.DOCUMENT.SET_TOTAL_PAGE_NUM, pdf.numPages)
-        context.commit(mutationTypes.DOCUMENT.SET_PAGES, await pdfjs.getPages(pdf))
-        context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, 1.5)
-        context.dispatch(actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER)
-    },
-
-    [actionTypes.DOCUMENT.UPDATE_CURRENT_PAGE_NUM](context, currentPageNum) {
-        context.commit(mutationTypes.DOCUMENT.SET_CURRENT_PAGE_NUM, currentPageNum)
-    },
-
-    [actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER](context) {
-        let pageContainer = pdfjs.getPageContainer(
-            context.state.document.pages[0],
-            context.state.document.scale.current
-        )
-        context.commit(mutationTypes.DOCUMENT.SET_PAGE_CONTAINER, pageContainer)
-    },
-
-    [actionTypes.DOCUMENT.INCREASE_SCALE](context) {
-        if (context.state.document.scale.current < context.state.document.scale.max) {
-            context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.current + 0.5)
-            context.dispatch(actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER)
+    async [actionTypes.SIGNATURE.DIGITAL.START](context, { certificadoConteudo, documentId }) {
+        const flowbeeAccessParams = getFlowbeeAccessParams(context.state.flowbee.accessToken)
+        const url = `${flowbeeAccessParams.url}/${documentId}/assinaturas/digitais/iniciar`
+        const headers = {
+            'Content-Type': 'text/plain',
+            ...flowbeeAccessParams.headers
         }
+
+        const { data } = await axios.post(url, certificadoConteudo, { headers })
+
+        return data
     },
 
-    [actionTypes.DOCUMENT.DECREASE_SCALE](context) {
-        if (context.state.document.scale.current > context.state.document.scale.default) {
-            context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.current - 0.5)
-            context.dispatch(actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER)
+    async [actionTypes.SIGNATURE.DIGITAL.FINISH](
+        context,
+        { documentId, signHash, temporarySubscription, rubricBase64 }
+    ) {
+        const flowbeeAccessParams = getFlowbeeAccessParams(context.state.flowbee.accessToken)
+        const url = `${flowbeeAccessParams.url}/${documentId}/assinaturas/digitais/finalizar`
+        const headers = {
+            ...flowbeeAccessParams.headers
         }
-    },
-
-    [actionTypes.DOCUMENT.RESTORE_SCALE](context) {
-        if (context.state.document.scale.current != context.state.document.scale.default) {
-            context.commit(mutationTypes.DOCUMENT.SET_CURRENT_SCALE, context.state.document.scale.default)
-            context.dispatch(actionTypes.DOCUMENT.UPDATE_PAGE_CONTAINER)
+        const requestData = {
+            assinatura: signHash,
+            assinaturaTemporariaId: temporarySubscription,
+            rubricaBase64: rubricBase64
         }
-    },
 
-    async [actionTypes.DOCUMENT.RENDER_PAGE](context, { pageNum, canvasContext }) {
-        let page = context.state.document.pages[pageNum - 1]
-        let scale = context.state.document.scale.current
-        await pdfjs.renderPage({ page, scale, canvasContext })
-    },
+        const { data } = await axios.post(url, requestData, { headers })
 
-    [actionTypes.DOCUMENT.UPDATE_RENDERED_PAGES](context, pageNum) {
-        context.commit(mutationTypes.DOCUMENT.SET_RENDERED_PAGES, pageNum)
-    },
+        return data
+    }
+}
 
-    [actionTypes.DOCUMENT.CLEAR_RENDERED_PAGES](context) {
-        context.commit(mutationTypes.DOCUMENT.SET_RENDERED_PAGES, 'clear')
+function getFlowbeeAccessParams(accessToken) {
+    if (accessToken) {
+        return {
+            url: '/flowbee/api/public/documentos',
+            headers: { ...accessToken }
+        }
+    } else {
+        return {
+            url: '/flowbee/api/documentos'
+        }
     }
 }

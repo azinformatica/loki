@@ -109,32 +109,11 @@ export default {
             .format('Z')
     },
 
-    [mutationTypes.DOCUMENT.SET_PAGE_CONTAINER](state, { height, width }) {
-        state.document.pageContainer.height = height
-        state.document.pageContainer.width = width
+    [mutationTypes.FLOWBEE.SET_LACUNA_LICENSE](state, url) {
+        state.flowbee.license = url
     },
 
-    [mutationTypes.DOCUMENT.SET_PAGES](state, pages) {
-        state.document.pages = pages
-    },
-
-    [mutationTypes.DOCUMENT.SET_CURRENT_PAGE_NUM](state, currentPageNum) {
-        state.document.paginator.currentPageNum = currentPageNum
-    },
-
-    [mutationTypes.DOCUMENT.SET_TOTAL_PAGE_NUM](state, totalPageNum) {
-        state.document.paginator.totalPageNum = totalPageNum
-    },
-
-    [mutationTypes.DOCUMENT.SET_CURRENT_SCALE](state, scale) {
-        state.document.scale.current = scale
-    },
-
-    [mutationTypes.DOCUMENT.SET_RENDERED_PAGES](state, payload) {
-        if (typeof payload === 'number') {
-            state.document.renderedPages.push(payload)
-        } else {
-            state.document.renderedPages = []
-        }
+    [mutationTypes.FLOWBEE.SET_ACCESS_TOKEN](state, token) {
+        state.flowbee.accessToken = token
     }
 }
