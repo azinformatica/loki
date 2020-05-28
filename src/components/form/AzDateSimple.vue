@@ -186,12 +186,9 @@ export default {
         }
     },
     watch: {
-        value: {
-            handler(val) {
-                this.updateDateTimeByModel(val)
-                this.updateValue(val)
-            },
-            immediate: true
+        value(val) {
+            this.updateDateTimeByModel(val)
+            this.updateValue(val)
         }
     },
     methods: {
