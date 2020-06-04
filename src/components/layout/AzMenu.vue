@@ -25,7 +25,7 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-list-group v-else v-model="menu.expanded" no-action :prepend-icon="menu.icon" class="menu-item">
+                <v-list-group v-else v-model="menu.expanded" no-action :prepend-icon="menu.icon" class="menu-item" @click="open()">
                     <template v-slot:activator>
                         <v-list-item-content>
                             <v-list-item-title>{{ menu.name }}</v-list-item-title>
@@ -86,6 +86,7 @@
 </template>
 
 <script>
+    import mutationTypes from '../../store/mutation-types'
 export default {
     computed: {
         menuActions() {
@@ -105,6 +106,9 @@ export default {
         }
     },
     methods: {
+        open() {
+            this.$store.commit(mutationTypes.SET_ASIDE, false)
+        },
         expand(currentActiveMenu) {
             currentActiveMenu.expanded = true
         },
