@@ -237,13 +237,15 @@ export default {
         },
         validateAndParseDate(date) {
             if (!date || !this.dateStringIsValid(date) || this.dateMaxIsAllowed(date) || this.dateMinIsAllowed(date)) {
+                if ((date && this.dateStringIsValid(date)) && (this.dateMaxIsAllowed(date) || this.dateMinIsAllowed(date))) {
+                    this.date = null
+                    this.dateFormatted = ''
+                    return
+                }
                 if(date === null || date.length === 0) {
                     this.date = null
                     this.dateFormatted = ''
                     this.$emit('input', null)
-                } else if (this.dateMaxIsAllowed(date) || this.dateMinIsAllowed(date)) {
-                    this.date = null
-                    this.dateFormatted = ''
                 }
                 return
             }
