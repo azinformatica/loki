@@ -237,6 +237,11 @@ export default {
         },
         validateAndParseDate(date) {
             if (!date || !this.dateStringIsValid(date) || this.dateMaxIsAllowed(date) || this.dateMinIsAllowed(date)) {
+                if ((date && this.dateStringIsValid(date)) && (this.dateMaxIsAllowed(date) || this.dateMinIsAllowed(date))) {
+                    this.date = null
+                    this.dateFormatted = ''
+                    return
+                }
                 if(date === null || date.length === 0) {
                     this.date = null
                     this.dateFormatted = ''
@@ -458,8 +463,8 @@ export default {
             if (this.minDate) {
                 const dateObj = this.getDayMonthYearFromDateString(date)
                 const minDateObj = this.getDayMonthYearFromDateString(this.moment(this.minDate).format('DD/MM/YYYY'))
-                return this.moment(`${dateObj.year}-${dateObj.month}-${dateObj.day}`)
-                    .isBefore(`${minDateObj.year}-${minDateObj.month}-${minDateObj.day}`)
+                return this.moment(this.moment(`${dateObj.year}-${dateObj.month}-${dateObj.day}`))
+                    .isBefore(this.moment(`${minDateObj.year}-${minDateObj.month}-${minDateObj.day}`))
             }
             return false
         },
@@ -468,7 +473,7 @@ export default {
                 const dateObj = this.getDayMonthYearFromDateString(date)
                 const maxDateObj = this.getDayMonthYearFromDateString(this.moment(this.maxDate).format('DD/MM/YYYY'))
                 return this.moment(`${dateObj.year}-${dateObj.month}-${dateObj.day}`)
-                    .isAfter(`${maxDateObj.year}-${maxDateObj.month}-${maxDateObj.day}`)
+                    .isAfter(this.moment(`${maxDateObj.year}-${maxDateObj.month}-${maxDateObj.day}`))
             }
             return false
         },
