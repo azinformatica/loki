@@ -15,8 +15,7 @@
         @click:prepend-inner="cleanValue"
         @blur="updateValue($event.target.value, 'blur')"
         @keydown="validatorNegative($event)"
-        @keyup="checkKey($event)"
-    >
+        @keyup="checkKey($event)">
         <template v-slot:label if="this.$slots['label']">
             <slot name="label" />
         </template>
@@ -85,6 +84,9 @@ export default {
         requeridMessage: {
             type: String,
             default: 'O campo {name} é obrigatório'
+        },
+        validationField: {
+            type: Number
         }
     },
     inject: ['$validator'],
@@ -114,6 +116,16 @@ export default {
         },
         showClearButtonIf() {
             return this.value !== null && this.showClearButton ? 'fas fa-times-circle' : ''
+        }
+    },
+    watch: {
+        validationField() {
+            this.validateRequired(this.value)
+        }
+    },
+    updated(){
+        if(!this.required){
+            this.clearErrorValidate()
         }
     },
     methods: {

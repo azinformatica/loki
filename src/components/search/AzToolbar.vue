@@ -9,6 +9,7 @@
         </div>
     </div>
 </template>
+
 <script>
 import mutationTypes from '../../store/mutation-types'
 
@@ -32,6 +33,7 @@ export default {
     }
 }
 </script>
+
 <style lang="stylus">
 .v-toolbar__content
     padding: 0 20px
@@ -46,8 +48,6 @@ export default {
     justify-content: space-between
 
     .search
-        position: absolute
-        right: 0
         top: 15px
         display: flex
 
@@ -69,4 +69,8 @@ export default {
             i
                 margin-right: 5px
                 font-size: 18px
+
+    @media (max-width 720px)
+        .actions
+            padding: 0 5px 0 10px
 </style>

@@ -91,10 +91,17 @@ export default {
         }
     },
 
-    [mutationTypes.SHOW_ALERT](state, { message, type }) {
-        state.alert = { message, type }
+    [mutationTypes.SHOW_ALERT](state, { message, type , hasButtom, style ,  styleButtom , iconColor, mensageButtom,timeOut}) {
+        state.alert = { message, type , hasButtom, style , styleButtom, iconColor , mensageButtom,timeOut}
     },
+    [mutationTypes.ROLLBACK_ACTION](state,rollback){
+        state.rollback = rollback
+        setTimeout(()=>{
+            state.rollback = false  
+        },3000)
 
+    }
+    ,
     [mutationTypes.REMOVE_UPLOAD_FILE_PROGRESS](state, filename) {
         Vue.delete(state.uploadFileProgress, filename)
     },
@@ -140,8 +147,10 @@ export default {
     },
 
     [mutationTypes.AUTO_SAVING.DISABLE_AUTO_SAVING](state) {
-        Vue.set(state.autoSave, 'saving', false)
-        Vue.set(state.autoSave, 'dateLastSaved', new Date())
+        setTimeout(function () {
+            Vue.set(state.autoSave, 'saving', false)
+            Vue.set(state.autoSave, 'dateLastSaved', new Date())
+        }, 500)
     },
 
     [mutationTypes.AUTO_SAVING.ENABLE_AUTO_SAVING](state) {

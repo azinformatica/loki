@@ -19,7 +19,7 @@ const users = [
   {
     caption: 'Oberon Coding',
     image: '/loki/img/logo-oberon-coding.svg',
-    infoLink: 'https://www.google.com',
+    infoLink: 'https://oberoncoding.com.br',
     pinned: true
   },
   {
