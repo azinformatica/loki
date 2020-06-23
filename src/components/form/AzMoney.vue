@@ -87,6 +87,9 @@ export default {
         },
         validationField: {
             type: Number
+        },
+        eventSubmit: {
+            type: String
         }
     },
     inject: ['$validator'],
@@ -138,13 +141,17 @@ export default {
                 valueNumber = valueNumber.replace(this.suffix, '')
             }
             const valueFormatedSimple = accounting.unformat(valueNumber, ',')
+
             if (
                 (valueFormatedSimple !== this.value || event === 'keyupEnter' || event === 'keyupEsc') &&
                 this.clickedField
             ) {
-                this.$emit('input', valueFormatedSimple)
-                this.$emit(event, valueFormatedSimple)
-                this.clickedField = false
+
+                if(!this.eventSubmit || this.eventSubmit === event ) {
+                    this.$emit('input', valueFormatedSimple)
+                    this.$emit(event, valueFormatedSimple)
+                    this.clickedField = false
+                }
             }
 
             this.validateRequired(value)
