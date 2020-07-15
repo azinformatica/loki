@@ -71,15 +71,15 @@ describe('Toolbar.spec.js', () => {
             expect(zoomInBtn).toBeTruthy()
         })
 
-        it('Should have a resetZoom button', () => {
-            const resetZoomBtn = wrapper.find('[data-test="resetZoom"]')
-            expect(resetZoomBtn).toBeTruthy()
+        it('Should have a changeScaleType button', () => {
+            const changeScaleType = wrapper.find('[data-test="changeScaleType"]')
+            expect(changeScaleType).toBeTruthy()
         })
 
         it('Should disable the buttons', () => {
             expect(wrapper.find('[data-test="zoomOut"]').html()).toContain('disabled="true"')
             expect(wrapper.find('[data-test="zoomIn"]').html()).toContain('disabled="true"')
-            expect(wrapper.find('[data-test="resetZoom"]').html()).toContain('disabled="true"')
+            expect(wrapper.find('[data-test="changeScaleType"]').html()).toContain('disabled="true"')
             expect(wrapper.find('[data-test="download"]').html()).toContain('disabled="true"')
         })
     })
@@ -97,10 +97,10 @@ describe('Toolbar.spec.js', () => {
             expect(wrapper.emitted().zoomIn).toBeTruthy()
         })
 
-        it('Should emit an event on click at resetZoom button', () => {
-            let resetZoomBtn = wrapper.find('[data-test="resetZoom"]')
-            resetZoomBtn.vm.$emit('click')
-            expect(wrapper.emitted().resetZoom).toBeTruthy()
+        it('Should emit an event on click at changeScaleType button', () => {
+            let changeScaleTypeBtn = wrapper.find('[data-test="changeScaleType"]')
+            changeScaleTypeBtn.vm.$emit('click')
+            expect(wrapper.emitted().changeScaleType).toBeTruthy()
         })
     })
 })
