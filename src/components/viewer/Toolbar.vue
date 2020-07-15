@@ -5,8 +5,14 @@
         <v-btn class="az-pdf-toolbar__content" @click="$emit('zoomOut')" icon data-test="zoomOut" :disabled="disableButtons">
             <v-icon>zoom_out</v-icon>
         </v-btn>
-        <v-btn class="az-pdf-toolbar__content" @click="$emit('resetZoom')" icon data-test="resetZoom" :disabled="disableButtons">
-            <v-icon>aspect_ratio</v-icon>
+        <v-btn class="az-pdf-toolbar__content" @click="$emit('changeScaleType')" icon data-test="changeScaleType" :disabled="disableButtons">
+            <v-tooltip bottom>
+                <span v-if="scaleType === 'page-fit'" >Ajustar à largura</span>
+                <span v-if="scaleType === 'page-width'" >Ajustar à altura</span>
+
+                <v-icon v-if="scaleType === 'page-fit'" slot="activator" >fullscreen</v-icon>
+                <v-icon v-if="scaleType === 'page-width'" slot="activator" >fullscreen_exit</v-icon>
+            </v-tooltip>
         </v-btn>
         <v-btn class="az-pdf-toolbar__content" @click="$emit('zoomIn')" icon data-test="zoomIn" :disabled="disableButtons">
             <v-icon>zoom_in</v-icon>
@@ -43,6 +49,10 @@ export default {
         pagination: {
             type: Object,
             default: () => ({ current: '-', total: '-' })
+        },
+        scaleType: {
+            type: String,
+            required: true
         }
     }
 }

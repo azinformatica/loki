@@ -4,9 +4,10 @@
             :disableButtons="!src"
             :downloadButton="downloadButton"
             :pagination="pagination"
+            :scaleType="scale.type"
+            @changeScaleType="changeScaleType"
             @zoomIn="zoomIn"
             @zoomOut="zoomOut"
-            @resetZoom="resetZoom"
             @download="download"
             v-show="!loadingPlaceHolder"
         />
@@ -64,11 +65,12 @@ export default {
         },
         pagesInitEventHandler(e) {
             this.setInitialPagination(e.source)
-            this.updateScaleType()
+            this.updateScaleType(this.defaultScaleType)
             this.setInitialScale(e.source)
         },
         scaleChangeEventHandler(e) {
             this.scale.current = e.scale
+            this.scale.type = e.presetValue
         },
         pageChangeEventHandler(e) {
             this.pagination.current = e.pageNumber
@@ -99,16 +101,21 @@ export default {
             this.pagination.current = pagination.currentPageNumber
             this.pagination.total = pagination.pagesCount
         },
-        updateScaleType() {
-            if (this.isSmallScreen()) {
-                this.pdf.viewer.currentScaleValue = 'page-width'
+        updateScaleType(scaleType) {
+            if (scaleType && typeof scaleType === 'string') {
+                this.pdf.viewer.currentScaleValue = scaleType
             } else {
-                this.pdf.viewer.currentScaleValue = 'page-fit'
+                if (this.isSmallScreen()) {
+                    this.pdf.viewer.currentScaleValue = 'page-width'
+                } else {
+                    this.pdf.viewer.currentScaleValue = 'page-fit'
+                }
             }
         },
         setInitialScale(scale) {
             this.scale.current = scale.currentScale
             this.scale.default = scale.currentScale
+            this.scale.type = scale.currentScaleValue
         },
         isSmallScreen() {
             return this.pdf.container.clientWidth <= 700
@@ -122,6 +129,13 @@ export default {
                 throw new Error('Não autorizado, verifique seu token de acesso.')
             }
         },
+        changeScaleType() {
+            if (this.scale.type === 'page-fit') {
+                this.updateScaleType('page-width')
+            } else {
+                this.updateScaleType('page-fit')
+            }
+        },
         zoomIn() {
             this.pdf.viewer.currentScale = this.scale.current * 1.1
         },
@@ -129,9 +143,6 @@ export default {
             if (this.scale.current > 0.2) {
                 this.pdf.viewer.currentScale = this.scale.current / 1.1
             }
-        },
-        resetZoom() {
-            this.pdf.viewer.currentScale = this.scale.default
         },
         download() {
             this.$emit('download')
@@ -167,6 +178,11 @@ export default {
         downloadButton: {
             type: Boolean,
             default: false
+        },
+        defaultScaleType: {
+            type: String,
+            default: ''
+            // values: 'page-width', 'page-fit'
         }
     },
     computed: {
@@ -192,7 +208,8 @@ export default {
         },
         scale: {
             default: null,
-            current: null
+            current: null,
+            type: null
         }
     })
 }
