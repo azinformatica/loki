@@ -3,10 +3,13 @@
     <v-toolbar class="az-pdf-toolbar" flat>
         <v-spacer />
         <v-btn class="az-pdf-toolbar__content" @click="$emit('zoomOut')" icon data-test="zoomOut" :disabled="disableButtons">
-            <v-icon>zoom_out</v-icon>
+            <v-tooltip bottom open-delay="800">
+                <span>Zoom -</span>
+                <v-icon slot="activator" >zoom_out</v-icon>
+            </v-tooltip>
         </v-btn>
         <v-btn class="az-pdf-toolbar__content" @click="$emit('changeScaleType')" icon data-test="changeScaleType" :disabled="disableButtons">
-            <v-tooltip bottom>
+            <v-tooltip bottom open-delay="800">
                 <span v-if="scaleType === 'page-fit'" >Ajustar à largura</span>
                 <span v-if="scaleType === 'page-width'" >Ajustar à altura</span>
 
@@ -15,7 +18,10 @@
             </v-tooltip>
         </v-btn>
         <v-btn class="az-pdf-toolbar__content" @click="$emit('zoomIn')" icon data-test="zoomIn" :disabled="disableButtons">
-            <v-icon>zoom_in</v-icon>
+            <v-tooltip bottom open-delay="800">
+                <span>Zoom +</span>
+                <v-icon slot="activator" >zoom_in</v-icon>
+            </v-tooltip>
         </v-btn>
         <div class="az-pdf-toolbar__pagination" data-test="pagination">
             {{ pagination.current || '-' }} / {{ pagination.total || '-' }}
@@ -29,7 +35,10 @@
             data-test="download"
             :disabled="disableButtons"
         >
-            <v-icon>get_app</v-icon>
+            <v-tooltip bottom open-delay="800">
+                <span>Download</span>
+                <v-icon slot="activator" >get_app</v-icon>
+            </v-tooltip>
         </v-btn>
     </v-toolbar>
 </template>
