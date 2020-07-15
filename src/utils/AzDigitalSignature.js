@@ -76,7 +76,7 @@ export default class AzDigitalSignature {
             algoritmo: paramsToSign.algoritmoHash
         })
 
-        await this._finishSign(documentId, signHash, paramsToSign, rubricBase64)
+        return await this._finishSign(documentId, signHash, paramsToSign, rubricBase64)
     }
 
     /**
@@ -88,7 +88,7 @@ export default class AzDigitalSignature {
     }
 
     async _finishSign(documentId, signHash, paramsToSign, rubricBase64) {
-        await this.store.dispatch(actionTypes.SIGNATURE.DIGITAL.FINISH, {
+        return await this.store.dispatch(actionTypes.SIGNATURE.DIGITAL.FINISH, {
             documentId: documentId,
             signHash: signHash,
             temporarySubscription: paramsToSign.assinaturaTemporariaId,
