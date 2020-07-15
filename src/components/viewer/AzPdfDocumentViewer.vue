@@ -70,7 +70,7 @@ export default {
         },
         scaleChangeEventHandler(e) {
             this.scale.current = e.scale
-            this.scale.type = e.presetValue
+            if (e.presetValue) this.scale.type = e.presetValue
         },
         pageChangeEventHandler(e) {
             this.pagination.current = e.pageNumber
