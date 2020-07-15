@@ -209,7 +209,7 @@ export default {
         scale: {
             default: null,
             current: null,
-            type: null
+            type: ''
         }
     })
 }
