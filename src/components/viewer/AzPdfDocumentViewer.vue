@@ -182,7 +182,6 @@ export default {
         defaultScaleType: {
             type: String,
             default: ''
-            // values: 'page-width', 'page-fit'
         }
     },
     computed: {
