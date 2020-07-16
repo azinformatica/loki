@@ -288,7 +288,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             expect(wrapper.vm.pdf.viewer.currentScaleValue).toEqual('page-fit')
         })
 
-        it('Should execute changeScaleType method when has not a default value', () => {
+        it('Should execute changeScaleType method when has any value', () => {
             wrapper = shallowMount(AzPdfDocumentViewer, {
                 localVue,
                 propsData: { src, httpHeader, downloadButton },
