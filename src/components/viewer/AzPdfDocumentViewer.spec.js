@@ -265,12 +265,12 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             expect(wrapper.vm.pdf.viewer.currentScale).toEqual(0.2)
         })
 
-        it('Should execute resetZoom method', () => {
+        it('Should execute changeScaleType method when has a default value', () => {
             wrapper = shallowMount(AzPdfDocumentViewer, {
                 localVue,
                 propsData: { src, httpHeader, downloadButton },
                 stubs: {
-                    Toolbar: '<button @click=\'$emit("resetZoom")\' ></button>'
+                    Toolbar: '<button @click=\'$emit("changeScaleType")\' ></button>'
                 }
             })
             wrapper.setData({
@@ -285,7 +285,31 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             })
             wrapper.find('button').trigger('click')
 
-            expect(wrapper.vm.pdf.viewer.currentScale).toEqual(1)
+            expect(wrapper.vm.pdf.viewer.currentScaleValue).toEqual('page-fit')
+        })
+
+        it('Should execute changeScaleType method when has any value', () => {
+            wrapper = shallowMount(AzPdfDocumentViewer, {
+                localVue,
+                propsData: { src, httpHeader, downloadButton },
+                stubs: {
+                    Toolbar: '<button @click=\'$emit("changeScaleType")\' ></button>'
+                }
+            })
+            wrapper.setData({
+                scale: {
+                    default: 1,
+                    type: 'page-fit'
+                },
+                pdf: {
+                    viewer: {
+                        currentScale: 3
+                    }
+                }
+            })
+            wrapper.find('button').trigger('click')
+
+            expect(wrapper.vm.pdf.viewer.currentScaleValue).toEqual('page-width')
         })
     })
 
