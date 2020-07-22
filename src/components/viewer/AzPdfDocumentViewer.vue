@@ -8,6 +8,7 @@
             @changeScaleType="changeScaleType"
             @zoomIn="zoomIn"
             @zoomOut="zoomOut"
+            @rotate="rotate"
             @download="download"
             v-show="!loadingPlaceHolder"
         />
@@ -143,6 +144,9 @@ export default {
             if (this.scale.current > 0.2) {
                 this.pdf.viewer.currentScale = this.scale.current / 1.1
             }
+        },
+        rotate() {
+            this.pdf.viewer.pagesRotation = this.pdf.viewer.pagesRotation + 90
         },
         download() {
             this.$emit('download')

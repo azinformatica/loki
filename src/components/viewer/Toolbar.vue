@@ -27,6 +27,12 @@
             {{ pagination.current || '-' }} / {{ pagination.total || '-' }}
         </div>
         <v-spacer />
+        <v-btn class="az-pdf-toolbar__content" @click="$emit('rotate')" icon data-test="rotate" :disabled="disableButtons">
+            <v-tooltip bottom open-delay="800">
+                <span>Rotacionar</span>
+                <v-icon slot="activator">rotate_right</v-icon>
+            </v-tooltip>
+        </v-btn>
         <v-btn
             class="az-pdf-toolbar__content"
             @click="$emit('download')"
