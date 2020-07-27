@@ -11,10 +11,10 @@
         <v-btn class="az-pdf-toolbar__content" @click="$emit('changeScaleType')" icon data-test="changeScaleType" :disabled="disableButtons">
             <v-tooltip bottom open-delay="800">
                 <span v-if="scaleType === 'page-fit'" >Ajustar à largura</span>
-                <span v-if="scaleType === 'page-width'" >Ajustar à altura</span>
+                <span v-else >Ajustar à altura</span>
 
                 <v-icon v-if="scaleType === 'page-fit'" slot="activator" >fullscreen</v-icon>
-                <v-icon v-if="scaleType === 'page-width'" slot="activator" >fullscreen_exit</v-icon>
+                <v-icon v-else slot="activator" >fullscreen_exit</v-icon>
             </v-tooltip>
         </v-btn>
         <v-btn class="az-pdf-toolbar__content" @click="$emit('zoomIn')" icon data-test="zoomIn" :disabled="disableButtons">
