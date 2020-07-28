@@ -9,9 +9,13 @@ Vue.use(Vuetify)
 Vue.use(Vuex)
 
 describe('AzLogo.spec.js', () => {
-    let wrapper, store
+    let wrapper, store, $router
 
     beforeEach(() => {
+        $router = {
+            push: jest.fn()
+        }
+
         store = new Vuex.Store({
             state: {
                 loki: {
@@ -26,7 +30,13 @@ describe('AzLogo.spec.js', () => {
             }
         })
 
-        wrapper = shallowMount(AzLogo, { localVue, store })
+        wrapper = shallowMount(AzLogo, {
+            localVue,
+            store,
+            mocks: {
+                $router
+            }
+        })
     })
 
     it('Computed properties are rendered properly', () => {
