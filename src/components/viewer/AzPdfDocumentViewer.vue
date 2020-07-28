@@ -147,7 +147,7 @@ export default {
             }
         },
         rotate() {
-            this.pdf.viewer.pagesRotation = this.pdf.viewer.pagesRotation + 90
+            this.pdf.viewer.pagesRotation = (this.pdf.viewer.pagesRotation + 90) % 360
         },
         download() {
             this.$emit('download')
