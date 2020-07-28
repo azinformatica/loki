@@ -78,7 +78,7 @@ export default {
         },
         scaleType: {
             type: String,
-            required: true
+            default: 'page-fit'
         }
     }
 }
