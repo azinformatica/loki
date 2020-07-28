@@ -212,7 +212,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 localVue,
                 propsData: { src, httpHeader, downloadButton },
                 stubs: {
-                    Toolbar: '<button @click=\'$emit("zoomIn")\' ></button>'
+                    Toolbar: { template: '<button @click=\'$emit("zoomIn")\' ></button>' }
                 }
             })
             wrapper.setData({
@@ -235,7 +235,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 localVue,
                 propsData: { src, httpHeader, downloadButton },
                 stubs: {
-                    Toolbar: '<button @click=\'$emit("zoomOut")\' ></button>'
+                    Toolbar: { template: '<button @click=\'$emit("zoomOut")\' ></button>' }
                 }
             })
             wrapper.setData({
@@ -258,7 +258,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 localVue,
                 propsData: { src, httpHeader, downloadButton },
                 stubs: {
-                    Toolbar: '<button @click=\'$emit("zoomOut")\' ></button>'
+                    Toolbar: { template: '<button @click=\'$emit("zoomOut")\' ></button>' }
                 }
             })
             wrapper.setData({
@@ -281,7 +281,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 localVue,
                 propsData: { src, httpHeader, downloadButton },
                 stubs: {
-                    Toolbar: '<button @click=\'$emit("changeScaleType")\' ></button>'
+                    Toolbar: { template: '<button @click=\'$emit("changeScaleType")\' ></button>' }
                 }
             })
             wrapper.setData({
@@ -304,7 +304,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 localVue,
                 propsData: { src, httpHeader, downloadButton },
                 stubs: {
-                    Toolbar: '<button @click=\'$emit("changeScaleType")\' ></button>'
+                    Toolbar: { template: '<button @click=\'$emit("changeScaleType")\' ></button>' }
                 }
             })
             wrapper.setData({
@@ -328,7 +328,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 localVue,
                 propsData: { src, httpHeader, downloadButton },
                 stubs: {
-                    Toolbar: '<button @click=\'$emit("rotate")\' ></button>'
+                    Toolbar: { template: '<button @click=\'$emit("rotate")\' ></button>' }
                 }
             })
             wrapper.setData({
@@ -350,7 +350,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 localVue,
                 propsData: { src, httpHeader, downloadButton },
                 stubs: {
-                    Toolbar: '<button @click=\'$emit("download")\' ></button>'
+                    Toolbar: { template: '<button @click=\'$emit("download")\' ></button>' }
                 }
             })
             wrapper.find('button').trigger('click')
