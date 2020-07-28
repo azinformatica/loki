@@ -4,10 +4,12 @@
             :disableButtons="!src"
             :downloadButton="downloadButton"
             :pagination="pagination"
+            :rotateButton="rotateButton"
             :scaleType="scale.type"
             @changeScaleType="changeScaleType"
             @zoomIn="zoomIn"
             @zoomOut="zoomOut"
+            @rotate="rotate"
             @download="download"
             v-show="!loadingPlaceHolder"
         />
@@ -144,6 +146,9 @@ export default {
                 this.pdf.viewer.currentScale = this.scale.current / 1.1
             }
         },
+        rotate() {
+            this.pdf.viewer.pagesRotation = (this.pdf.viewer.pagesRotation + 90) % 360
+        },
         download() {
             this.$emit('download')
         },
@@ -182,6 +187,10 @@ export default {
         defaultScaleType: {
             type: String,
             default: ''
+        },
+        rotateButton: {
+            type: Boolean,
+            default: false
         }
     },
     computed: {

@@ -9,9 +9,11 @@ Vue.use(Vuetify)
 localVue.use(Vuex)
 
 describe('AzAvatar.spec.js', () => {
-    let wrapper, store
+    let wrapper, store, azAuth
 
     beforeEach(() => {
+        azAuth = jest.fn()
+
         store = new Vuex.Store({
             state: {
                 loki: {
@@ -29,7 +31,13 @@ describe('AzAvatar.spec.js', () => {
             }
         })
 
-        wrapper = mount(AzAvatar, { localVue, store })
+        wrapper = mount(AzAvatar, {
+            localVue,
+            store,
+            directives: {
+                azAuth
+            }
+        })
     })
 
     it('Computed properties are rendered properly', () => {

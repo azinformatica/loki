@@ -7,7 +7,7 @@ const localVue = createLocalVue()
 Vue.use(Vuetify)
 
 describe('Toolbar.spec.js', () => {
-    let disableButtons, downloadButton, pagination, wrapper
+    let disableButtons, downloadButton, pagination, rotateButton, scaleType, wrapper
 
     beforeEach(() => {
         disableButtons = true
@@ -16,12 +16,16 @@ describe('Toolbar.spec.js', () => {
             current: 1,
             total: 3
         }
+        rotateButton = true
+        scaleType = 'page-fit'
         wrapper = shallowMount(Toolbar, {
             localVue,
             propsData: {
                 disableButtons,
                 downloadButton,
-                pagination
+                pagination,
+                rotateButton,
+                scaleType
             }
         })
     })
@@ -32,7 +36,7 @@ describe('Toolbar.spec.js', () => {
         })
 
         it('Should have a default value to pagination', () => {
-            wrapper = shallowMount(Toolbar, { localVue })
+            wrapper = shallowMount(Toolbar, { localVue, propsData: { scaleType } })
             expect(wrapper.props().pagination).toEqual({ current: '-', total: '-' })
         })
 
@@ -41,17 +45,26 @@ describe('Toolbar.spec.js', () => {
         })
 
         it('Should have a default value to disableButtons', () => {
-            wrapper = shallowMount(Toolbar, { localVue })
+            wrapper = shallowMount(Toolbar, { localVue, propsData: { scaleType } })
             expect(wrapper.props().disableButtons).toBeFalsy()
         })
 
         it('Should receive a downloadButton', () => {
-            expect(wrapper.props().pagination).toBeTruthy()
+            expect(wrapper.props().downloadButton).toBeTruthy()
         })
 
         it('Should have a default value to downloadButton', () => {
-            wrapper = shallowMount(Toolbar, { localVue })
+            wrapper = shallowMount(Toolbar, { localVue, propsData: { scaleType } })
             expect(wrapper.props().downloadButton).toBeFalsy()
+        })
+
+        it('Should receive a rotateButton', () => {
+            expect(wrapper.props().rotateButton).toBeTruthy()
+        })
+
+        it('Should have a default value to rotateButton', () => {
+            wrapper = shallowMount(Toolbar, { localVue, propsData: { scaleType } })
+            expect(wrapper.props().rotateButton).toBeFalsy()
         })
     })
 
@@ -71,9 +84,28 @@ describe('Toolbar.spec.js', () => {
             expect(zoomInBtn).toBeTruthy()
         })
 
+        it('Should have a download button', () => {
+            let downloadBtn = wrapper.find('[data-test="download"]')
+            expect(downloadBtn).toBeTruthy()
+        })
+
+        it('Should have a rotate button', () => {
+            let rotateBtn = wrapper.find('[data-test="rotate"]')
+            expect(rotateBtn).toBeTruthy()
+        })
+
         it('Should have a changeScaleType button', () => {
-            const changeScaleType = wrapper.find('[data-test="changeScaleType"]')
-            expect(changeScaleType).toBeTruthy()
+            let changeScaleType = wrapper.find('[data-test="changeScaleType"]')
+            expect(changeScaleType.html()).toContain('fullscreen')
+
+            wrapper = shallowMount(Toolbar, {
+                localVue,
+                propsData: {
+                    scaleType: 'page-width'
+                }
+            })
+            changeScaleType = wrapper.find('[data-test="changeScaleType"]')
+            expect(changeScaleType.html()).toContain('fullscreen_exit')
         })
 
         it('Should disable the buttons', () => {
@@ -81,6 +113,7 @@ describe('Toolbar.spec.js', () => {
             expect(wrapper.find('[data-test="zoomIn"]').html()).toContain('disabled="true"')
             expect(wrapper.find('[data-test="changeScaleType"]').html()).toContain('disabled="true"')
             expect(wrapper.find('[data-test="download"]').html()).toContain('disabled="true"')
+            expect(wrapper.find('[data-test="rotate"]').html()).toContain('disabled="true"')
         })
     })
 
@@ -101,6 +134,18 @@ describe('Toolbar.spec.js', () => {
             let changeScaleTypeBtn = wrapper.find('[data-test="changeScaleType"]')
             changeScaleTypeBtn.vm.$emit('click')
             expect(wrapper.emitted().changeScaleType).toBeTruthy()
+        })
+
+        it('Should emit an event on click at download button', () => {
+            let downloadBtn = wrapper.find('[data-test="download"]')
+            downloadBtn.vm.$emit('click')
+            expect(wrapper.emitted().download).toBeTruthy()
+        })
+
+        it('Should emit an event on click at rotate button', () => {
+            let rotateBtn = wrapper.find('[data-test="rotate"]')
+            rotateBtn.vm.$emit('click')
+            expect(wrapper.emitted().rotate).toBeTruthy()
         })
     })
 })
