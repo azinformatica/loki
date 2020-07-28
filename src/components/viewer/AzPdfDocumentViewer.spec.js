@@ -37,17 +37,24 @@ Vue.use(Vuetify)
 Vue.use(Vuex)
 
 describe('AzPdfDocumentViewer.spec.js', () => {
-    let src, httpHeader, downloadButton, progressBar, wrapper
+    let src, httpHeader, downloadButton, progressBar, rotateButton, wrapper
 
     beforeEach(() => {
         src = 'document/url'
         httpHeader = { token: '123abcd456' }
         downloadButton = true
         progressBar = true
+        rotateButton = true
 
         wrapper = shallowMount(AzPdfDocumentViewer, {
             localVue,
-            propsData: { src, httpHeader, downloadButton, progressBar },
+            propsData: {
+                src,
+                httpHeader,
+                downloadButton,
+                progressBar,
+                rotateButton
+            },
             attachTo: document.body
         })
     })
@@ -76,6 +83,10 @@ describe('AzPdfDocumentViewer.spec.js', () => {
 
         it('Should receive props progressBar', () => {
             expect(wrapper.props().progressBar).toBeTruthy()
+        })
+
+        it('Should receive props rotateButton', () => {
+            expect(wrapper.props().rotateButton).toBeTruthy()
         })
     })
 
@@ -310,6 +321,26 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             wrapper.find('button').trigger('click')
 
             expect(wrapper.vm.pdf.viewer.currentScaleValue).toEqual('page-width')
+        })
+
+        it('Should execute rotate method', () => {
+            wrapper = shallowMount(AzPdfDocumentViewer, {
+                localVue,
+                propsData: { src, httpHeader, downloadButton },
+                stubs: {
+                    Toolbar: '<button @click=\'$emit("rotate")\' ></button>'
+                }
+            })
+            wrapper.setData({
+                pdf: {
+                    viewer: {
+                        pagesRotation: 0
+                    }
+                }
+            })
+            wrapper.find('button').trigger('click')
+
+            expect(wrapper.vm.pdf.viewer.pagesRotation).toEqual(90)
         })
     })
 
