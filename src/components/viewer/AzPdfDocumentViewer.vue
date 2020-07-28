@@ -4,6 +4,7 @@
             :disableButtons="!src"
             :downloadButton="downloadButton"
             :pagination="pagination"
+            :rotateButton="rotateButton"
             :scaleType="scale.type"
             @changeScaleType="changeScaleType"
             @zoomIn="zoomIn"
@@ -186,6 +187,10 @@ export default {
         defaultScaleType: {
             type: String,
             default: ''
+        },
+        rotateButton: {
+            type: Boolean,
+            default: false
         }
     },
     computed: {
