@@ -54,28 +54,6 @@ export default {
         }
     },
     methods: {
-        async print() {
-            this.startLoadingPrint()
-
-            this.pdf.printService = new PrintService({
-                pdfDocument: this.pdf.viewer.pdfDocument,
-                pagesOverview: await this.pdf.viewer.getPagesOverview()
-            })
-
-            this.pdf.printService.prepareLayout()
-
-            await this.pdf.printService.renderPages((currentPage, pageCount) => {
-                this.printProgress = (currentPage / pageCount) * 100
-            })
-
-            window.print()
-            this.pdf.printService.destroy()
-            this.stopLoadingPrint()
-        },
-        cancelPrint() {
-            this.pdf.printService.destroy()
-            this.stopLoadingPrint()
-        },
         start() {
             this.startLoadingPlaceHolderIfNecessary()
             this.getPdfContainer()
@@ -179,6 +157,26 @@ export default {
         },
         download() {
             this.$emit('download')
+        },
+        async print() {
+            this.startLoadingPrint()
+
+            this.pdf.printService = new PrintService({
+                pdfDocument: this.pdf.viewer.pdfDocument,
+                pagesOverview: await this.pdf.viewer.getPagesOverview()
+            })
+
+            this.pdf.printService.prepareLayout()
+            await this.pdf.printService.renderPages((currentPage, pageCount) => {
+                this.printProgress = (currentPage / pageCount) * 100
+            })
+            window.print()
+            this.pdf.printService.destroy()
+            this.stopLoadingPrint()
+        },
+        cancelPrint() {
+            this.pdf.printService.destroy()
+            this.stopLoadingPrint()
         },
         startLoadingPlaceHolderIfNecessary() {
             this.loadingPlaceHolder = this.progressBar
