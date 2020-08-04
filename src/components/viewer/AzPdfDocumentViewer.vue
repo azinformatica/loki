@@ -24,27 +24,22 @@
             <div class="pdfViewer"></div>
         </div>
         <LoadingPlaceHolder :loading="loadingPlaceHolder" />
-        <v-dialog v-model="isPrinting" width="500">
-            <v-card>
-                <v-card-title>Gerando impressão...</v-card-title>
-                <v-card-text>
-                    <v-progress-linear v-model="printProgress" />
-                </v-card-text>
-            </v-card>
-        </v-dialog>
+        <LoadingPrint :isPrinting="isPrinting" :printProgress="printProgress" />
     </div>
 </template>
 
 <script>
 import Toolbar from './Toolbar'
 import LoadingPlaceHolder from './LoadingPlaceHolder'
+import LoadingPrint from './LoadingPrint'
+import PrintService from './PrintService'
 import PDFJSLib from 'pdfjs-dist/build/pdf'
 import { PDFJS as PDFJSViewer } from 'pdfjs-dist/web/pdf_viewer.js'
-import PrintService from './PrintService'
 export default {
     components: {
         Toolbar,
-        LoadingPlaceHolder
+        LoadingPlaceHolder,
+        LoadingPrint
     },
     mounted() {
         this.start()
@@ -239,6 +234,7 @@ export default {
         }
     },
     data: () => ({
+        isPrinting: false,
         loadingPlaceHolder: false,
         pagination: {
             current: null,
@@ -249,7 +245,6 @@ export default {
             eventBus: null,
             viewer: {}
         },
-        isPrinting: false,
         printProgress: 0,
         scale: {
             default: null,
