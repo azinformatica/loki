@@ -56,9 +56,20 @@ export default {
     methods: {
         async print() {
             this.startLoadingPrint()
-            this.pdf.printService.print((currentPage, pageCount) => {
+
+            this.pdf.printService = new PrintService({
+                pdfDocument: this.pdf.viewer.pdfDocument,
+                pagesOverview: await this.pdf.viewer.getPagesOverview()
+            })
+
+            this.pdf.printService.prepareLayout()
+
+            await this.pdf.printService.renderPages((currentPage, pageCount) => {
                 this.printProgress = (currentPage / pageCount) * 100
             })
+
+            window.print()
+            this.pdf.printService.destroy()
             this.stopLoadingPrint()
         },
         start() {
@@ -66,7 +77,6 @@ export default {
             this.getPdfContainer()
             this.createEventBus()
             this.createPdfViewer()
-            this.createPrintService()
             this.renderDocument()
         },
         getPdfContainer() {
@@ -95,12 +105,6 @@ export default {
             this.pdf.viewer = new PDFJSViewer.PDFViewer({
                 container: this.pdf.container,
                 eventBus: this.pdf.eventBus
-            })
-        },
-        createPrintService() {
-            this.pdf.printService = new PrintService({
-                pdfDocument: this.pdf.viewer.pdfDocument,
-                pagesOverview: this.pdf.viewer.getPagesOverview().then(pagesOverview => pagesOverview)
             })
         },
         renderDocument() {
