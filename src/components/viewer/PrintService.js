@@ -9,7 +9,7 @@ class PrintService {
         this.printContainer = document.createElement('div')
         this.body = document.querySelector('body')
 
-        this._PRINT_RESOLUTION = 200
+        this._PRINT_RESOLUTION = 250
         this._PRINT_UNITS = this._PRINT_RESOLUTION / 72.0
         this._CSS_UNITS = 96.0 / 72.0
     }
