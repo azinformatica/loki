@@ -14,7 +14,14 @@ class PrintService {
         this._CSS_UNITS = 96.0 / 72.0
     }
 
-    prepareLayout() {
+    async print(renderProgressCb) {
+        this._prepareLayout()
+        await this._renderPages(renderProgressCb)
+        window.print()
+        this._destroy()
+    }
+
+    _prepareLayout() {
         this._warnIfHasNotEqualPageSizes()
 
         this.body.setAttribute('data-pdf-printing', true)
@@ -30,20 +37,8 @@ class PrintService {
         this.body.appendChild(this.pageStyleSheet)
     }
 
-    destroy() {
-        this.body.removeAttribute('data-pdf-printing')
-
-        this.body.removeChild(this.printContainer)
-        this.printContainer.textContent = ''
-
-        this.body.removeChild(this.pageStyleSheet)
-        this.pageStyleSheet.textContent = ''
-
-        this.scratchCanvas.width = this.scratchCanvas.height = 0
-    }
-
     // eslint-disable-next-line no-unused-vars
-    async renderPages(cb = (currentPage, pageCount) => {}) {
+    async _renderPages(cb = (currentPage, pageCount) => {}) {
         const renderNextPage = async () => {
             if (++this.currentPage >= this.pagesOverview.length) return
 
@@ -55,6 +50,18 @@ class PrintService {
         }
 
         return await renderNextPage()
+    }
+
+    _destroy() {
+        this.body.removeAttribute('data-pdf-printing')
+
+        this.body.removeChild(this.printContainer)
+        this.printContainer.textContent = ''
+
+        this.body.removeChild(this.pageStyleSheet)
+        this.pageStyleSheet.textContent = ''
+
+        this.scratchCanvas.width = this.scratchCanvas.height = 0
     }
 
     async _renderPage(pageNumber, size) {

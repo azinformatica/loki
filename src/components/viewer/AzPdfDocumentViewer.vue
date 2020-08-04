@@ -55,30 +55,18 @@ export default {
     },
     methods: {
         async print() {
-            this.isPrinting = true
-
-            const service = new PrintService({
-                pdfDocument: this.pdf.viewer.pdfDocument,
-                pagesOverview: await this.pdf.viewer.getPagesOverview()
-            })
-
-            service.prepareLayout()
-
-            await service.renderPages((currentPage, pageCount) => {
+            this.startLoadingPrint()
+            this.pdf.printService.print((currentPage, pageCount) => {
                 this.printProgress = (currentPage / pageCount) * 100
             })
-
-            window.print()
-
-            service.destroy()
-
-            this.isPrinting = false
+            this.stopLoadingPrint()
         },
         start() {
             this.startLoadingPlaceHolderIfNecessary()
             this.getPdfContainer()
             this.createEventBus()
             this.createPdfViewer()
+            this.createPrintService()
             this.renderDocument()
         },
         getPdfContainer() {
@@ -107,6 +95,12 @@ export default {
             this.pdf.viewer = new PDFJSViewer.PDFViewer({
                 container: this.pdf.container,
                 eventBus: this.pdf.eventBus
+            })
+        },
+        createPrintService() {
+            this.pdf.printService = new PrintService({
+                pdfDocument: this.pdf.viewer.pdfDocument,
+                pagesOverview: this.pdf.viewer.getPagesOverview().then(pagesOverview => pagesOverview)
             })
         },
         renderDocument() {
@@ -183,6 +177,12 @@ export default {
         },
         stopLoadingPlaceHolder() {
             this.loadingPlaceHolder = false
+        },
+        startLoadingPrint() {
+            this.isPrinting = true
+        },
+        stopLoadingPrint() {
+            this.isPrinting = false
         }
     },
     props: {
@@ -243,6 +243,7 @@ export default {
         pdf: {
             container: null,
             eventBus: null,
+            printService: null,
             viewer: {}
         },
         printProgress: 0,
