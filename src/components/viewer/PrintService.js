@@ -27,6 +27,7 @@ class PrintService {
             '@supports ((size:A4) and (size:1pt 1pt)) {' +
             `@page { size: ${pageSize.width}pt ${pageSize.height}pt }` +
             '}'
+        this.pageStyleSheet.setAttribute('id', 'print-style-sheet')
         this.body.appendChild(this.pageStyleSheet)
     }
 
@@ -46,13 +47,19 @@ class PrintService {
     }
 
     destroy() {
-        this.body.removeAttribute('data-pdf-printing')
+        if (this.body.getAttribute('data-pdf-printing')) {
+            this.body.removeAttribute('data-pdf-printing')
+        }
 
-        this.body.removeChild(this.printContainer)
-        this.printContainer.textContent = ''
+        if (document.querySelector('#print-container')) {
+            this.body.removeChild(this.printContainer)
+            this.printContainer.textContent = ''
+        }
 
-        this.body.removeChild(this.pageStyleSheet)
-        this.pageStyleSheet.textContent = ''
+        if (document.querySelector('#print-style-sheet')) {
+            this.body.removeChild(this.pageStyleSheet)
+            this.pageStyleSheet.textContent = ''
+        }
 
         this.scratchCanvas.width = this.scratchCanvas.height = 0
     }

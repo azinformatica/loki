@@ -1,10 +1,15 @@
 <template>
     <v-dialog v-model="isPrinting" width="500">
-        <v-card>
-            <v-card-title>Gerando impressão...</v-card-title>
+        <v-card class="az-pdf-loading-print">
+            <v-card-title class="az-pdf-loading-print__title">Gerando impressão...</v-card-title>
             <v-card-text>
                 <v-progress-linear v-model="printProgress" />
             </v-card-text>
+            <v-card-actions>
+                <v-spacer />
+                <v-btn outline class="az-pdf-loading-print__action" @click="$emit('cancel')">Cancelar</v-btn>
+                <v-spacer />
+            </v-card-actions>
         </v-card>
     </v-dialog>
 </template>
@@ -24,3 +29,8 @@ export default {
     }
 }
 </script>
+
+<style lang="stylus">
+.az-pdf-loading-print__action
+    color #777 !important
+</style>

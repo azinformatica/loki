@@ -24,7 +24,7 @@
             <div class="pdfViewer"></div>
         </div>
         <LoadingPlaceHolder :loading="loadingPlaceHolder" />
-        <LoadingPrint :isPrinting="isPrinting" :printProgress="printProgress" />
+        <LoadingPrint :isPrinting="isPrinting" :printProgress="printProgress" @cancel="cancelPrint" />
     </div>
 </template>
 
@@ -69,6 +69,10 @@ export default {
             })
 
             window.print()
+            this.pdf.printService.destroy()
+            this.stopLoadingPrint()
+        },
+        cancelPrint() {
             this.pdf.printService.destroy()
             this.stopLoadingPrint()
         },
