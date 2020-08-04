@@ -4,6 +4,7 @@
             :disableButtons="!src"
             :downloadButton="downloadButton"
             :pagination="pagination"
+            :printButton="printButton"
             :rotateButton="rotateButton"
             :scaleType="scale.type"
             @changeScaleType="changeScaleType"
@@ -11,6 +12,7 @@
             @zoomOut="zoomOut"
             @rotate="rotate"
             @download="download"
+            @print="print"
             v-show="!loadingPlaceHolder"
         />
         <div
@@ -22,6 +24,14 @@
             <div class="pdfViewer"></div>
         </div>
         <LoadingPlaceHolder :loading="loadingPlaceHolder" />
+        <v-dialog v-model="isPrinting" width="500">
+            <v-card>
+                <v-card-title>Gerando impressão...</v-card-title>
+                <v-card-text>
+                    <v-progress-linear v-model="printProgress" />
+                </v-card-text>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 
@@ -30,6 +40,7 @@ import Toolbar from './Toolbar'
 import LoadingPlaceHolder from './LoadingPlaceHolder'
 import PDFJSLib from 'pdfjs-dist/build/pdf'
 import { PDFJS as PDFJSViewer } from 'pdfjs-dist/web/pdf_viewer.js'
+import PrintService from './PrintService'
 export default {
     components: {
         Toolbar,
@@ -48,6 +59,26 @@ export default {
         }
     },
     methods: {
+        async print() {
+            this.isPrinting = true
+
+            const service = new PrintService({
+                pdfDocument: this.pdf.viewer.pdfDocument,
+                pagesOverview: await this.pdf.viewer.getPagesOverview()
+            })
+
+            service.layout()
+
+            await service.renderPages(() => {
+                this.printProgress++
+            })
+
+            window.print()
+
+            service.destroy()
+
+            this.isPrinting = false
+        },
         start() {
             this.startLoadingPlaceHolderIfNecessary()
             this.getPdfContainer()
@@ -191,6 +222,10 @@ export default {
         rotateButton: {
             type: Boolean,
             default: false
+        },
+        printButton: {
+            type: Boolean,
+            default: false
         }
     },
     computed: {
@@ -214,6 +249,8 @@ export default {
             eventBus: null,
             viewer: {}
         },
+        isPrinting: false,
+        printProgress: 0,
         scale: {
             default: null,
             current: null,
@@ -223,7 +260,7 @@ export default {
 }
 </script>
 
-<style src="pdfjs-dist/web/pdf_viewer.css" />
+<style src="pdfjs-dist/web/pdf_viewer.css"></style>
 
 <style lang="stylus">
 .az-pdf-container
@@ -243,4 +280,30 @@ export default {
             .canvasWrapper
                 -webkit-box-shadow 0 3px 6px -1px rgba(0, 0, 0, .2)
                 box-shadow 0 3px 6px -1px rgba(0, 0, 0, .2)
+
+@media print
+    body[data-pdfjsprinting] #app
+        display none
+
+    body[data-pdfjsprinting] #print-container
+        display block
+
+        img
+            display block
+            width 100%
+            height 100%
+
+    body[data-pdfjsprinting] #print-container:first-child
+        position relative
+        top 0
+        left 0
+        width 1px
+        height 1px
+        overflow visible
+        page-break-after always
+        page-break-inside avoid
+
+    body[data-pdfjsprinting] #print-container div
+        page-break-after always
+        page-break-inside avoid
 </style>
