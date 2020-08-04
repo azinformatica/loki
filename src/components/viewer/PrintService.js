@@ -3,68 +3,54 @@ class PrintService {
         this.pdfDocument = pdfDocument
         this.pagesOverview = pagesOverview
 
-        this.active = null
         this.currentPage = -1
         this.pageStyleSheet = document.createElement('style')
         this.scratchCanvas = document.createElement('canvas')
         this.printContainer = document.createElement('div')
         this.body = document.querySelector('body')
 
-        // The size of the canvas in pixels for printing.
         this._PRINT_RESOLUTION = 200
         this._PRINT_UNITS = this._PRINT_RESOLUTION / 72.0
         this._CSS_UNITS = 96.0 / 72.0
     }
 
-    layout() {
+    prepareLayout() {
         this._warnIfHasNotEqualPageSizes()
 
-        this.body.setAttribute('data-pdfjsprinting', true)
+        this.body.setAttribute('data-pdf-printing', true)
 
         this.printContainer.setAttribute('id', 'print-container')
         this.body.appendChild(this.printContainer)
 
-        let pageSize = this.pagesOverview[0]
+        const pageSize = this.pagesOverview[0]
         this.pageStyleSheet.textContent =
             '@supports ((size:A4) and (size:1pt 1pt)) {' +
-            '@page { size: ' +
-            pageSize.width +
-            'pt ' +
-            pageSize.height +
-            'pt;}' +
+            `@page { size: ${pageSize.width}pt ${pageSize.height}pt }` +
             '}'
         this.body.appendChild(this.pageStyleSheet)
     }
 
     destroy() {
-        this.body.removeAttribute('data-pdfjsprinting')
+        this.body.removeAttribute('data-pdf-printing')
+
         this.body.removeChild(this.printContainer)
-
-        this.body.removeChild(this.pageStyleSheet)
-        this.pageStyleSheet = null
-
         this.printContainer.textContent = ''
 
-        this.scratchCanvas.width = this.scratchCanvas.height = 0
-        this.scratchCanvas = null
+        this.body.removeChild(this.pageStyleSheet)
+        this.pageStyleSheet.textContent = ''
 
-        this.active = null
+        this.scratchCanvas.width = this.scratchCanvas.height = 0
     }
 
+    // eslint-disable-next-line no-unused-vars
     async renderPages(cb = (currentPage, pageCount) => {}) {
-        const pageCount = this.pagesOverview.length
-
         const renderNextPage = async () => {
-            if (++this.currentPage >= pageCount) {
-                return
-            }
+            if (++this.currentPage >= this.pagesOverview.length) return
 
-            cb(this.currentPage + 1, pageCount)
+            cb(this.currentPage + 1, this.pagesOverview.length)
 
-            const index = this.currentPage
-            const printItem = await this._renderPage(index + 1, this.pagesOverview[index])
-            await this._useRenderedPage(printItem)
-
+            await this._renderPage(this.currentPage + 1, this.pagesOverview[this.currentPage])
+            await this._useRenderedPage()
             await renderNextPage()
         }
 
@@ -72,13 +58,8 @@ class PrintService {
     }
 
     async _renderPage(pageNumber, size) {
-        // The size of the canvas in pixels for printing.
         this.scratchCanvas.width = Math.floor(size.width * this._PRINT_UNITS)
         this.scratchCanvas.height = Math.floor(size.height * this._PRINT_UNITS)
-
-        // The physical size of the img as specified by the PDF document.
-        const width = Math.floor(size.width * this._CSS_UNITS) + 'px'
-        const height = Math.floor(size.height * this._CSS_UNITS) + 'px'
 
         const ctx = this.scratchCanvas.getContext('2d')
         ctx.save()
@@ -94,13 +75,10 @@ class PrintService {
             intent: 'print'
         }
         await pdfPage.render(renderContext).promise
-
-        return { width, height }
     }
 
-    _useRenderedPage(printItem) {
+    _useRenderedPage() {
         const img = document.createElement('img')
-        // img.setAttribute('style', `width: ${printItem.width}; height: ${printItem.height}`)
 
         if ('toBlob' in this.scratchCanvas) {
             this.scratchCanvas.toBlob(blob => {
@@ -122,6 +100,7 @@ class PrintService {
 
     _warnIfHasNotEqualPageSizes() {
         if (!this._hasEqualPageSizes()) {
+            // eslint-disable-next-line no-console
             console.warn('Not all pages have the same size. The printed result may be incorrect!')
         }
     }

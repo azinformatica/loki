@@ -62,7 +62,7 @@ export default {
                 pagesOverview: await this.pdf.viewer.getPagesOverview()
             })
 
-            service.layout()
+            service.prepareLayout()
 
             await service.renderPages((currentPage, pageCount) => {
                 this.printProgress = (currentPage / pageCount) * 100
@@ -277,10 +277,10 @@ export default {
                 box-shadow 0 3px 6px -1px rgba(0, 0, 0, .2)
 
 @media print
-    body[data-pdfjsprinting] #app
+    body[data-pdf-printing] #app
         display none
 
-    body[data-pdfjsprinting] #print-container
+    body[data-pdf-printing] #print-container
         display block
 
         img
@@ -288,7 +288,7 @@ export default {
             width 100%
             height 100%
 
-    body[data-pdfjsprinting] #print-container:first-child
+    body[data-pdf-printing] #print-container:first-child
         position relative
         top 0
         left 0
@@ -298,7 +298,7 @@ export default {
         page-break-after always
         page-break-inside avoid
 
-    body[data-pdfjsprinting] #print-container div
+    body[data-pdf-printing] #print-container div
         page-break-after always
         page-break-inside avoid
 </style>
