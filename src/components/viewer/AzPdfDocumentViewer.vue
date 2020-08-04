@@ -69,8 +69,8 @@ export default {
 
             service.layout()
 
-            await service.renderPages(() => {
-                this.printProgress++
+            await service.renderPages((currentPage, pageCount) => {
+                this.printProgress = (currentPage / pageCount) * 100
             })
 
             window.print()

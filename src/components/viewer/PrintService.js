@@ -51,7 +51,7 @@ class PrintService {
         this.active = null
     }
 
-    async renderPages(cb = () => {}) {
+    async renderPages(cb = (currentPage, pageCount) => {}) {
         const pageCount = this.pagesOverview.length
 
         const renderNextPage = async () => {
@@ -59,11 +59,11 @@ class PrintService {
                 return
             }
 
+            cb(this.currentPage + 1, pageCount)
+
             const index = this.currentPage
             const printItem = await this._renderPage(index + 1, this.pagesOverview[index])
             await this._useRenderedPage(printItem)
-
-            cb()
 
             await renderNextPage()
         }
