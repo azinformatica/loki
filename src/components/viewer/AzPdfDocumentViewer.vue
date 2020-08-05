@@ -4,6 +4,7 @@
             :disableButtons="!src"
             :downloadButton="downloadButton"
             :pagination="pagination"
+            :printButton="printButton"
             :rotateButton="rotateButton"
             :scaleType="scale.type"
             @changeScaleType="changeScaleType"
@@ -11,6 +12,7 @@
             @zoomOut="zoomOut"
             @rotate="rotate"
             @download="download"
+            @print="print"
             v-show="!loadingPlaceHolder"
         />
         <div
@@ -22,18 +24,22 @@
             <div class="pdfViewer"></div>
         </div>
         <LoadingPlaceHolder :loading="loadingPlaceHolder" />
+        <LoadingPrint :isPrinting="isPrinting" :printProgress="printProgress" @cancel="cancelPrint" />
     </div>
 </template>
 
 <script>
 import Toolbar from './Toolbar'
 import LoadingPlaceHolder from './LoadingPlaceHolder'
+import LoadingPrint from './LoadingPrint'
+import PrintService from './PrintService'
 import PDFJSLib from 'pdfjs-dist/build/pdf'
 import { PDFJS as PDFJSViewer } from 'pdfjs-dist/web/pdf_viewer.js'
 export default {
     components: {
         Toolbar,
-        LoadingPlaceHolder
+        LoadingPlaceHolder,
+        LoadingPrint
     },
     mounted() {
         this.start()
@@ -99,6 +105,12 @@ export default {
                     this.handlePdfError(error)
                 })
         },
+        async createPrinterService() {
+            this.pdf.printService = new PrintService({
+                pdfDocument: this.pdf.viewer.pdfDocument,
+                pagesOverview: await this.pdf.viewer.getPagesOverview()
+            })
+        },
         setInitialPagination(pagination) {
             this.pagination.current = pagination.currentPageNumber
             this.pagination.total = pagination.pagesCount
@@ -152,11 +164,34 @@ export default {
         download() {
             this.$emit('download')
         },
+        async print() {
+            this.startLoadingPrint()
+
+            await this.createPrinterService()
+            this.pdf.printService.prepareLayout()
+            await this.pdf.printService.renderPages((currentPage, pageCount) => {
+                this.printProgress = (currentPage / pageCount) * 100
+            })
+            window.print()
+            this.pdf.printService.destroy()
+
+            this.stopLoadingPrint()
+        },
+        cancelPrint() {
+            this.pdf.printService.destroy()
+            this.stopLoadingPrint()
+        },
         startLoadingPlaceHolderIfNecessary() {
             this.loadingPlaceHolder = this.progressBar
         },
         stopLoadingPlaceHolder() {
             this.loadingPlaceHolder = false
+        },
+        startLoadingPrint() {
+            this.isPrinting = true
+        },
+        stopLoadingPrint() {
+            this.isPrinting = false
         }
     },
     props: {
@@ -191,6 +226,10 @@ export default {
         rotateButton: {
             type: Boolean,
             default: false
+        },
+        printButton: {
+            type: Boolean,
+            default: false
         }
     },
     computed: {
@@ -204,6 +243,7 @@ export default {
         }
     },
     data: () => ({
+        isPrinting: false,
         loadingPlaceHolder: false,
         pagination: {
             current: null,
@@ -212,8 +252,10 @@ export default {
         pdf: {
             container: null,
             eventBus: null,
+            printService: null,
             viewer: {}
         },
+        printProgress: 0,
         scale: {
             default: null,
             current: null,
@@ -223,7 +265,7 @@ export default {
 }
 </script>
 
-<style src="pdfjs-dist/web/pdf_viewer.css" />
+<style src="pdfjs-dist/web/pdf_viewer.css"></style>
 
 <style lang="stylus">
 .az-pdf-container
@@ -243,4 +285,30 @@ export default {
             .canvasWrapper
                 -webkit-box-shadow 0 3px 6px -1px rgba(0, 0, 0, .2)
                 box-shadow 0 3px 6px -1px rgba(0, 0, 0, .2)
+
+@media print
+    body[data-pdf-printing] #app
+        display none
+
+    body[data-pdf-printing] #print-container
+        display block
+
+        img
+            display block
+            width 100%
+            height 100%
+
+    body[data-pdf-printing] #print-container:first-child
+        position relative
+        top 0
+        left 0
+        width 1px
+        height 1px
+        overflow visible
+        page-break-after always
+        page-break-inside avoid
+
+    body[data-pdf-printing] #print-container div
+        page-break-after always
+        page-break-inside avoid
 </style>

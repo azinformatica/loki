@@ -53,6 +53,19 @@
                 <v-icon slot="activator" >get_app</v-icon>
             </v-tooltip>
         </v-btn>
+        <v-btn
+            class="az-pdf-toolbar__content"
+            @click="$emit('print')"
+            v-if="printButton"
+            icon
+            data-test="print"
+            :disabled="disableButtons"
+        >
+            <v-tooltip bottom open-delay="800">
+                <span>Imprimir</span>
+                <v-icon slot="activator">print</v-icon>
+            </v-tooltip>
+        </v-btn>
     </v-toolbar>
 </template>
 
@@ -71,6 +84,10 @@ export default {
         pagination: {
             type: Object,
             default: () => ({ current: '-', total: '-' })
+        },
+        printButton: {
+            type: Boolean,
+            default: false
         },
         rotateButton: {
             type: Boolean,

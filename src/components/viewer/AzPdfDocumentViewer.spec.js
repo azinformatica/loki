@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuex from 'vuex'
+import 'regenerator-runtime'
 import 'pdfjs-dist/build/pdf'
 import 'pdfjs-dist/web/pdf_viewer.js'
 import AzPdfDocumentViewer from './AzPdfDocumentViewer'
