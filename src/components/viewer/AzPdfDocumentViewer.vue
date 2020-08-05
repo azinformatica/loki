@@ -105,6 +105,12 @@ export default {
                     this.handlePdfError(error)
                 })
         },
+        async createPrinterService() {
+            this.pdf.printService = new PrintService({
+                pdfDocument: this.pdf.viewer.pdfDocument,
+                pagesOverview: await this.pdf.viewer.getPagesOverview()
+            })
+        },
         setInitialPagination(pagination) {
             this.pagination.current = pagination.currentPageNumber
             this.pagination.total = pagination.pagesCount
@@ -161,17 +167,14 @@ export default {
         async print() {
             this.startLoadingPrint()
 
-            this.pdf.printService = new PrintService({
-                pdfDocument: this.pdf.viewer.pdfDocument,
-                pagesOverview: await this.pdf.viewer.getPagesOverview()
-            })
-
+            await this.createPrinterService()
             this.pdf.printService.prepareLayout()
             await this.pdf.printService.renderPages((currentPage, pageCount) => {
                 this.printProgress = (currentPage / pageCount) * 100
             })
             window.print()
             this.pdf.printService.destroy()
+
             this.stopLoadingPrint()
         },
         cancelPrint() {
