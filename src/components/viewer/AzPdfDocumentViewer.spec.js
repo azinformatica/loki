@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import 'regenerator-runtime'
 import Vuetify from 'vuetify'
 import Vuex from 'vuex'
 import 'pdfjs-dist/build/pdf'
