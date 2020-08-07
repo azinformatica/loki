@@ -20,7 +20,11 @@ describe('AzAside', () => {
             }
         })
 
-        wrapper = shallowMount(AzAside, { localVue, store })
+        wrapper = shallowMount(AzAside, {
+            localVue,
+            store,
+            vuetify: new Vuetify()
+        })
     })
 
     it('asideClosed computed property works properly', () => {

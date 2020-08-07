@@ -1,5 +1,5 @@
 <template>
-    <v-snackbar   v-model='show' :color='color' right top :timeout='timeout'>
+    <v-snackbar  v-model='show' :color='color' right top :timeout='timeout'>
         <span :style='style'>{{ text }}</span>
          <a v-if="hasButtom" @click='undoAction' :style='styleButtom'>{{mensageButtom}}</a>
         <v-btn dark text @click='show = false' :style="styleButtomClose">
