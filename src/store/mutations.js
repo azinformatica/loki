@@ -91,14 +91,14 @@ export default {
         }
     },
 
-    [mutationTypes.SHOW_ALERT](state, { message, type , hasButtom, style ,  styleButtom , iconColor, mensageButtom,timeOut}) {
-        state.alert = { message, type , hasButtom, style , styleButtom, iconColor , mensageButtom,timeOut}
+    [mutationTypes.SHOW_ALERT](state, { message, type , hasButtom, style ,  styleButtom , iconColor, mensageButtom,timeOut,styleButtomClose}) {
+        state.alert = { message, type , hasButtom, style , styleButtom, iconColor , mensageButtom,timeOut,styleButtomClose}
     },
     [mutationTypes.ROLLBACK_ACTION](state,rollback){
         state.rollback = rollback
         setTimeout(()=>{
             state.rollback = false  
-        },3000)
+        },2000)
 
     }
     ,

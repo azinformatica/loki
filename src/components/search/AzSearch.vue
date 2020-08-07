@@ -16,6 +16,7 @@
                 <input
                         class="input-text"
                         v-model="searchText"
+                        :maxlength="maxlengthInput"
                         :placeholder="simpleSearchPlaceholder"
                         @keyup.enter="simpleSearch()"/>
             </div>
@@ -70,6 +71,10 @@ export default {
         filter: {
             type: Object,
             required: true
+        },
+         maxlengthInput: {
+            type:Number,
+            default:65
         },
         simpleSearchPlaceholder: {
             type: String,
