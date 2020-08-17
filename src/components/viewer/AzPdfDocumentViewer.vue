@@ -73,7 +73,7 @@ export default {
         },
         pagesInitEventHandler(e) {
             this.setInitialPagination(e.source)
-            this.updateScaleType(this.defaultScaleType)
+            this.updateScaleType()
             this.setInitialScale(e.source)
         },
         scaleChangeEventHandler(e) {
@@ -119,7 +119,9 @@ export default {
             if (scaleType && typeof scaleType === 'string') {
                 this.pdf.viewer.currentScaleValue = scaleType
             } else {
-                if (this.isSmallScreen()) {
+                if (this.defaultScaleType && typeof this.defaultScaleType === 'string') {
+                    this.pdf.viewer.currentScaleValue = this.defaultScaleType
+                } else if (this.isSmallScreen()) {
                     this.pdf.viewer.currentScaleValue = 'page-width'
                 } else {
                     this.pdf.viewer.currentScaleValue = 'page-fit'
