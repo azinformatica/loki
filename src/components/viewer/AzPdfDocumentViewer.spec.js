@@ -29,6 +29,11 @@ jest.mock('pdfjs-dist/web/pdf_viewer.js', () => ({
 
         PDFViewer: jest.fn(() => ({
             setDocument: jest.fn()
+        })),
+
+        PDFLinkService: jest.fn(() => ({
+            setDocument: jest.fn(),
+            setViewer: jest.fn()
         }))
     }
 }))
@@ -204,6 +209,13 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             wrapper.vm.createPdfViewer()
 
             expect(typeof wrapper.vm.pdf.viewer.setDocument).toEqual('function')
+        })
+
+        it('Should execute createPdfLinkService', () => {
+            wrapper.vm.createPdfLinkService()
+
+            expect(typeof wrapper.vm.pdf.linkService.setDocument).toEqual('function')
+            expect(typeof wrapper.vm.pdf.linkService.setViewer).toEqual('function')
         })
     })
 
