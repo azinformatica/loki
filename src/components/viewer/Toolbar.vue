@@ -36,7 +36,7 @@
             :disabled="disableButtons"
         >
             <v-tooltip bottom open-delay="800">
-                <span>Rotacionar</span>
+                <span>Girar</span>
                 <v-icon slot="activator">rotate_right</v-icon>
             </v-tooltip>
         </v-btn>
