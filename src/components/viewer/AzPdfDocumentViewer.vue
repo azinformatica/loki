@@ -58,6 +58,7 @@ export default {
             this.startLoadingPlaceHolderIfNecessary()
             this.getPdfContainer()
             this.createEventBus()
+            this.createPdfLinkService()
             this.createPdfViewer()
             this.renderDocument()
         },
@@ -83,10 +84,16 @@ export default {
         pageChangeEventHandler(e) {
             this.pagination.current = e.pageNumber
         },
+        createPdfLinkService() {
+            this.pdf.linkService = new PDFJSViewer.PDFLinkService({
+                eventBus: this.pdf.eventBus
+            })
+        },
         createPdfViewer() {
             this.pdf.viewer = new PDFJSViewer.PDFViewer({
                 container: this.pdf.container,
-                eventBus: this.pdf.eventBus
+                eventBus: this.pdf.eventBus,
+                linkService: this.pdf.linkService
             })
         },
         renderDocument() {
@@ -97,6 +104,8 @@ export default {
                 withCredentials: true
             })
                 .then(pdf => {
+                    this.pdf.linkService.setViewer(this.pdf.viewer)
+                    this.pdf.linkService.setDocument(pdf, null)
                     this.pdf.viewer.setDocument(pdf)
                     this.stopLoadingPlaceHolder()
                 })
@@ -254,6 +263,7 @@ export default {
         pdf: {
             container: null,
             eventBus: null,
+            linkService: null,
             printService: null,
             viewer: {}
         },
