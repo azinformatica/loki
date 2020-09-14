@@ -3,7 +3,7 @@
         app
         :mini-variant.sync="asideClosed"
         v-model="drawer"
-        mobile-break-point="720"
+        mobile-breakpoint="720"
         mini-variant-width="60"
         :width="width"
         class="az-aside primary"
