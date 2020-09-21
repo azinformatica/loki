@@ -16,6 +16,7 @@ import AzTemplateGmail from './components/layout/templates/AzTemplateGmail'
 import AzTemplateVader from './components/layout/templates/AzTemplateVader'
 import AzContainer from './components/layout/AzContainer'
 import AzAlert from './components/layout/AzAlert'
+import AzLoading from './components/layout/AzLoading'
 import AzOps from './components/layout/AzOps'
 import AzModal from './components/layout/AzModal'
 import AzSearch from './components/search/AzSearch'
@@ -90,6 +91,7 @@ const lokiPlugin = {
         Vue.component('az-template-vader', AzTemplateVader)
         Vue.component('az-container', AzContainer)
         Vue.component('az-alert', AzAlert)
+        Vue.component('az-loading', AzLoading)
         Vue.component('az-ops', AzOps)
         Vue.component('az-modal', AzModal)
         Vue.component('az-search', AzSearch)
