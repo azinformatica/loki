@@ -1,6 +1,6 @@
 {
   "name": "@thszk/loki",
-  "version": "2.1.0-ALPHA.1",
+  "version": "2.1.0-ALPHA.2",
   "description": "Biblioteca de componentes visuais compartilhados construidos usando vuejs.",
   "main": "src/index.js",
   "private": false,
