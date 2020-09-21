@@ -4,6 +4,8 @@
         :value="value"
         @input="alteraValor"
         :label="label"
+        :chips="chips"
+        :multiple="multiple"
         :placeholder="placeholder"
         v-validate="{ required: isRequired }"
         :name="name"
@@ -14,6 +16,12 @@
         </template>
         <template v-slot:append-outer v-if="this.$slots['append-outer']">
             <slot name="append-outer" />
+        </template>
+        <template v-if="selectionSlot" v-slot:selection="{item,index}">
+            <v-chip v-if="index ===0">
+                <span>{{item.text}}</span>
+            </v-chip>
+            <span v-if="index === 1" class="grey--text caption">(+{{ value.length - 1 }} others)</span>
         </template>
         <template v-slot:append v-if="this.$slots['append']">
             <slot name="append" />
@@ -33,6 +41,17 @@ export default {
         label: {
             type: String,
             default: ''
+        },
+        chips: {
+            default: false
+        },
+        multiple: {
+            type:Boolean,
+            default: false
+        },
+        selectionSlot:{
+            type:Boolean,
+            default:false
         },
         name: {
             type: String,
