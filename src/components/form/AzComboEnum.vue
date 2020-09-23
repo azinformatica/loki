@@ -38,6 +38,10 @@ export default {
             type: Object,
             required: true
         },
+        orderBy: {
+            type: String,
+            default: 'text'
+        },
         label: {
             type: String,
             default: ''
@@ -97,7 +101,7 @@ export default {
                 for (let [chave, valor] of Object.entries(objeto)) {
                     novoArray.push({ text: valor, value: chave })
                 }
-                novoArray = _.sortBy(novoArray, 'text')
+                novoArray = _.sortBy(novoArray, this.orderBy)
             }
             if (this.insertNullItem) {
                 return _.union([{ text: 'Selecione', value: null }], novoArray)
