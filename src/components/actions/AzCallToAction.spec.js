@@ -12,6 +12,7 @@ describe('AzCallToAction.spec.js', () => {
     beforeEach(() => {
         const propsData = {
             active: true,
+            disabled: true,
             dark: true,
             hideBorder: true,
             cssClass: 'myCssClass'
@@ -41,8 +42,12 @@ describe('AzCallToAction.spec.js', () => {
         expect(wrapper.html()).toContain('call-to-action')
         expect(wrapper.html()).toContain('myCssClass')
         expect(wrapper.html()).toContain('hide-border')
+        expect(wrapper.html()).toContain('btn-disabled-action')
 
         wrapper.setProps({ active: false })
         expect(wrapper.vm.hideBorder).not.toContain('hide-border')
+        
+        wrapper.setProps({ disabled: false })
+        expect(wrapper.vm.hideBorder).not.toContain('btn-disabled-action')
     })
 })
