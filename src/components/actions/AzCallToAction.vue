@@ -1,5 +1,5 @@
 <template>
-    <v-btn depressed :color="color" :dark="isDark" :outlined="isOutline" :class="style" @click="$emit('click')">
+    <v-btn depressed :disabled="disabled" :color="color" :dark="isDark" :outlined="isOutline" :class="style" @click="$emit('click')">
         <slot />
     </v-btn>
 </template>
@@ -9,6 +9,10 @@ export default {
     name: 'AzCallToAction',
     props: {
         active: {
+            type: Boolean,
+            default: false
+        },
+        disabled:{
             type: Boolean,
             default: false
         },
@@ -44,7 +48,8 @@ export default {
         style() {
             let styleObj = {
                 'call-to-action': true,
-                'hide-border': this.hideBorder
+                'hide-border': this.hideBorder,
+                'btn-disabled-action': this.disabled
             }
 
             if (this.cssClass) {
@@ -74,4 +79,8 @@ export default {
 
     &.hide-border
         border 0 !important
+
+    &.btn-disabled-action
+        pointer-events visible !important
+        cursor not-allowed !important
 </style>
