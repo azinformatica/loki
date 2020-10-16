@@ -3,7 +3,7 @@
         v-money="conditionalMoneyConfig"
         :name="name"
         :label="label"
-        :maxLength="maxLength"
+        :maxLength="length"
         :disabled="disabled"
         :required="required"
         :value="valueFormated"
@@ -15,7 +15,7 @@
         @click:prepend-inner="cleanValue"
         @blur="updateValue($event.target.value, 'blur')"
         @keydown="validatorNegative($event)"
-        @keyup="checkKey($event)">
+        @keyup="checkKey($event); validateMaxLength($event.target.value)">
         <template v-slot:label if="this.$slots['label']">
             <slot name="label" />
         </template>
@@ -65,6 +65,10 @@ export default {
             type: Number,
             default: 24
         },
+        validateLength: {
+            type: Boolean,
+            default: false
+        },
         negative: {
             type: Boolean,
             default: false
@@ -103,7 +107,9 @@ export default {
                 precision: this.precision,
                 masked: false
             },
-            clickedField: false
+            clickedField: false,
+            formatted: false,
+            length: this.maxLength
         }
     },
     computed: {
@@ -133,6 +139,7 @@ export default {
     },
     methods: {
         updateValue(value, event) {
+            this.formatted = true
             let valueNumber = value
             if (this.prefix) {
                 valueNumber = valueNumber.replace(this.prefix, '')
@@ -186,6 +193,14 @@ export default {
                         msg: this.requeridMessage.replace('{name}', this.name)
                     })
                 }
+            }
+        },
+        validateMaxLength(formattedValue) {
+            if(this.validateLength && this.formatted) {
+                const value = accounting.unformat(formattedValue, ',')
+                const difference = formattedValue.length - value.toString().length
+
+                this.length = this.maxLength + difference + 1
             }
         },
         clearErrorValidate() {
