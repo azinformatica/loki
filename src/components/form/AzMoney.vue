@@ -15,7 +15,7 @@
         @click:prepend-inner="cleanValue"
         @blur="updateValue($event.target.value, 'blur')"
         @keydown="validatorNegative($event)"
-        @keyup="checkKey($event); validateMaxLength($event.target.value)">
+        @keyup="checkKeyAndValidateLength($event)">
         <template v-slot:label if="this.$slots['label']">
             <slot name="label" />
         </template>
@@ -195,13 +195,17 @@ export default {
                 }
             }
         },
-        validateMaxLength(formattedValue) {
-            if(this.validateLength && this.formatted) {
+        checkMaxLength(formattedValue) {
+            if (this.validateLength && this.formatted) {
                 const value = accounting.unformat(formattedValue, ',')
                 const difference = formattedValue.length - value.toString().length
 
                 this.length = this.maxLength + difference + 1
             }
+        },
+        checkKeyAndValidateLength($event) {
+            this.checkKey($event)
+            this.checkMaxLength($event.target.value)
         },
         clearErrorValidate() {
             for (var index = 0; index < this.$validator.errors.items.length; index++) {
