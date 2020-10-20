@@ -14,8 +14,9 @@
         :error-messages="errors.collect(`${name}`)"
         @click:prepend-inner="cleanValue"
         @blur="updateValue($event.target.value, 'blur')"
-        @keydown="validatorNegative($event)"
-        @keyup="checkKeyAndValidateLength($event)">
+        @keydown.ctrl.65="selectValue"
+        @keydown="checkKeyAndValidateLength($event)"
+        @keyup="checkKey($event)">
         <template v-slot:label if="this.$slots['label']">
             <slot name="label" />
         </template>
@@ -109,6 +110,7 @@ export default {
             },
             clickedField: false,
             formatted: false,
+            select: false,
             length: this.maxLength
         }
     },
@@ -197,16 +199,27 @@ export default {
         },
         checkMaxLength($event) {
             if (this.validateLength) {
-                const pattern = /Digit\d|Numpad\d/i
-                if (this.formatted && pattern.test($event.code)) {
-                    this.length = this.maxLength + Math.floor(this.maxLength / 3) + 3
+                if (this.formatted && this.isDigit($event.code) && !this.select) {
+                    this.length = this.maxLength + Math.floor(this.maxLength / 3) + this.prefix.length
                 } else {
                     this.length = this.maxLength
                 }
+
+                if (this.isDigit($event.code)) {
+                    this.select = false
+                }
             }
         },
+        isDigit(key) {
+            const pattern = /Digit\d|Numpad\d/i
+
+            return pattern.test(key)
+        },
+        selectValue() {
+            this.select = true
+        },
         checkKeyAndValidateLength($event) {
-            this.checkKey($event)
+            this.validatorNegative($event)
             this.checkMaxLength($event)
         },
         clearErrorValidate() {
