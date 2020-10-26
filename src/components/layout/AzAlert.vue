@@ -16,6 +16,7 @@ export default {
         return {
             text: '',
             color: '',
+            iconColor: '',
             show: false,
             hasButtom: false,
             style: '',
