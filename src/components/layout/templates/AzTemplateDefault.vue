@@ -44,7 +44,7 @@
             <az-avatar />
         </v-app-bar>
 
-        <v-content>
+        <v-main>
             <v-container fluid class="container">
                 <az-alert />
 
@@ -56,7 +56,7 @@
                     <az-about />
                 </v-footer>
             </v-container>
-        </v-content>
+        </v-main>
     </v-app>
 </template>
 
