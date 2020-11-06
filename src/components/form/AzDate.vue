@@ -22,7 +22,9 @@
                     class="az-date"/>
             </v-dialog>
             <v-text-field
-                v-validate="validateDate"
+                v-validate="checkDate"
+                @focus="changeFocus"
+                @blur="changeFocus"
                 :name="nameDate"
                 :error-messages="errors.collect(`${nameDate}`)"
                 v-model="dateFormatted"
@@ -161,7 +163,8 @@ export default {
             reverseDateFormatObj: {
                 'DD/MM/YYYY': 'YYYY-MM-DD',
                 'MM/DD/YYYY': 'YYYY-DD-MM'
-            }
+            },
+            focus: false
         }
     },
     computed: {
@@ -170,6 +173,14 @@ export default {
         },
         currentLanguage() {
             return this.$vuetify.lang.current
+        },
+        checkDate() {
+            if (this.focus) {
+                return this.validateDate
+            }
+            return {
+                date_format: this.dateFormat === 'DD/MM/YYYY' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'
+            }
         },
         validateDate() {
             const validationDate = {}
@@ -486,6 +497,13 @@ export default {
             bottonsTime.forEach(btn => {
                 btn.tabIndex = '-1'
             })
+        },
+        changeFocus(event) {
+            if (event.type === 'focus') {
+                this.focus = true
+            } else if (event.type === 'blur') {
+                this.focus = false
+            }
         }
     }
 }
