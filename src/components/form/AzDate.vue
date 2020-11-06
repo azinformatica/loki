@@ -179,6 +179,7 @@ export default {
                 return this.validateDate
             }
             return {
+                required: this.isRequired,
                 date_format: this.dateFormat === 'DD/MM/YYYY' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'
             }
         },
