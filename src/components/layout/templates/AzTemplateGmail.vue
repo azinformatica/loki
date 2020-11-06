@@ -44,7 +44,7 @@
             />
             <az-avatar color="white" />
         </v-app-bar>
-        <v-content>
+        <v-main>
             <v-container fluid class="container">
                 <az-alert />
                 <slot />
@@ -53,7 +53,7 @@
                     <az-about />
                 </v-footer>
             </v-container>
-        </v-content>
+        </v-main>
     </v-app>
 </template>
 <script>
