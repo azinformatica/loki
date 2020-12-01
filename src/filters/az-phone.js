@@ -1,6 +1,7 @@
 import StringMask from 'string-mask'
 
 const filter = phone => {
+    phone = phone.replace(/\D+/g, '')
     if (!phone) {
         return 'Não informado'
     }
