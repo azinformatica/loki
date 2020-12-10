@@ -67,7 +67,7 @@
                     <v-icon slot="activator">print</v-icon>
                 </v-tooltip>
             </v-btn>
-            <v-btn class="az-pdf-toolbar__content az-pdf-toolbar__actions__more" @click="showToolbarActions" icon>
+            <v-btn class="az-pdf-toolbar__content az-pdf-toolbar__actions__more" @click="toggleToolbarActions" icon>
                 <v-icon>more_vert</v-icon>
             </v-btn>
         </div>
@@ -107,7 +107,7 @@ export default {
         showActions: false
     }),
     methods: {
-        showToolbarActions() {
+        toggleToolbarActions() {
             this.showActions = !this.showActions
         }
     }
