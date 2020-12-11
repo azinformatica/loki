@@ -27,45 +27,50 @@
             {{ pagination.current || '-' }} / {{ pagination.total || '-' }}
         </div>
         <v-spacer />
-        <v-btn 
-            class="az-pdf-toolbar__content"
-            @click="$emit('rotate')"
-            v-if="rotateButton"
-            icon
-            data-test="rotate"
-            :disabled="disableButtons"
-        >
-            <v-tooltip bottom open-delay="800">
-                <span>Girar</span>
-                <v-icon slot="activator">rotate_right</v-icon>
-            </v-tooltip>
-        </v-btn>
-        <v-btn
-            class="az-pdf-toolbar__content"
-            @click="$emit('download')"
-            v-if="downloadButton"
-            icon
-            data-test="download"
-            :disabled="disableButtons"
-        >
-            <v-tooltip bottom open-delay="800">
-                <span>Download</span>
-                <v-icon slot="activator" >get_app</v-icon>
-            </v-tooltip>
-        </v-btn>
-        <v-btn
-            class="az-pdf-toolbar__content"
-            @click="$emit('print')"
-            v-if="printButton"
-            icon
-            data-test="print"
-            :disabled="disableButtons"
-        >
-            <v-tooltip bottom open-delay="800">
-                <span>Imprimir</span>
-                <v-icon slot="activator">print</v-icon>
-            </v-tooltip>
-        </v-btn>
+        <div id="az-pdf-toolbar-actions" class="az-pdf-toolbar__actions" :class="{ 'show': showActions }">
+            <v-btn
+                class="az-pdf-toolbar__content az-pdf-toolbar__actions__btn"
+                @click="$emit('rotate')"
+                v-if="rotateButton"
+                icon
+                data-test="rotate"
+                :disabled="disableButtons"
+            >
+                <v-tooltip bottom open-delay="800">
+                    <span>Girar</span>
+                    <v-icon slot="activator">rotate_right</v-icon>
+                </v-tooltip>
+            </v-btn>
+            <v-btn
+                class="az-pdf-toolbar__content az-pdf-toolbar__actions__btn"
+                @click="$emit('download')"
+                v-if="downloadButton"
+                icon
+                data-test="download"
+                :disabled="disableButtons"
+            >
+                <v-tooltip bottom open-delay="800">
+                    <span>Download</span>
+                    <v-icon slot="activator" >get_app</v-icon>
+                </v-tooltip>
+            </v-btn>
+            <v-btn
+                class="az-pdf-toolbar__content az-pdf-toolbar__actions__btn"
+                @click="$emit('print')"
+                v-if="printButton"
+                icon
+                data-test="print"
+                :disabled="disableButtons"
+            >
+                <v-tooltip bottom open-delay="800">
+                    <span>Imprimir</span>
+                    <v-icon slot="activator">print</v-icon>
+                </v-tooltip>
+            </v-btn>
+            <v-btn class="az-pdf-toolbar__content az-pdf-toolbar__actions__more" @click="toggleToolbarActions" icon>
+                <v-icon>more_vert</v-icon>
+            </v-btn>
+        </div>
     </v-toolbar>
 </template>
 
@@ -97,6 +102,14 @@ export default {
             type: String,
             default: 'page-fit'
         }
+    },
+    data: () => ({
+        showActions: false
+    }),
+    methods: {
+        toggleToolbarActions() {
+            this.showActions = !this.showActions
+        }
     }
 }
 </script>
@@ -115,4 +128,29 @@ export default {
 
     .v-toolbar__content
         height 100% !important
+
+    &__actions
+        position absolute
+        right 20px
+
+        &__more
+            display none;
+
+@media (max-width: 600px)
+    .az-pdf-toolbar
+        &__actions
+            &__btn
+                display none
+
+            &__more
+                display inline
+
+    .show
+        .az-pdf-toolbar__actions__btn
+            display inline
+
+        background-color #fff
+        border-radius 6px
+        -webkit-box-shadow 0 3px 6px -1px rgba(0, 0, 0, .2)
+        box-shadow 0 3px 6px -1px rgba(0, 0, 0, .2)
 </style>

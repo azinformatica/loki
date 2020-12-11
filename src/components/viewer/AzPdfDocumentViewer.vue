@@ -127,14 +127,14 @@ export default {
         updateScaleType(scaleType) {
             if (scaleType && typeof scaleType === 'string') {
                 this.pdf.viewer.currentScaleValue = scaleType
+            } else if (this.scale.current !== this.scale.default) {
+                this.pdf.viewer.currentScale = this.scale.current
+            } else if (this.defaultScaleType && typeof this.defaultScaleType === 'string') {
+                this.pdf.viewer.currentScaleValue = this.defaultScaleType
+            } else if (this.isSmallScreen()) {
+                this.pdf.viewer.currentScaleValue = 'page-width'
             } else {
-                if (this.defaultScaleType && typeof this.defaultScaleType === 'string') {
-                    this.pdf.viewer.currentScaleValue = this.defaultScaleType
-                } else if (this.isSmallScreen()) {
-                    this.pdf.viewer.currentScaleValue = 'page-width'
-                } else {
-                    this.pdf.viewer.currentScaleValue = 'page-fit'
-                }
+                this.pdf.viewer.currentScaleValue = 'page-fit'
             }
         },
         setInitialScale(scale) {
