@@ -67,7 +67,12 @@
                     <v-icon slot="activator">print</v-icon>
                 </v-tooltip>
             </v-btn>
-            <v-btn class="az-pdf-toolbar__content az-pdf-toolbar__actions__more" @click="toggleToolbarActions" icon>
+            <v-btn
+                v-if="hasActionButtons()"
+                class="az-pdf-toolbar__content az-pdf-toolbar__actions__more"
+                @click="toggleToolbarActions"
+                icon
+            >
                 <v-icon>more_vert</v-icon>
             </v-btn>
         </div>
@@ -109,6 +114,9 @@ export default {
     methods: {
         toggleToolbarActions() {
             this.showActions = !this.showActions
+        },
+        hasActionButtons() {
+            return this.downloadButton || this.printButton || this.rotateButton
         }
     }
 }
