@@ -74,7 +74,7 @@ export default class AzDigitalSignature {
         const signHash = await this._sign({
             thumbprint: certificateThumbPrint,
             hash: paramsToSign.hashParaAssinar,
-            algoritmo: paramsToSign.algoritmoHash
+            algorithm: paramsToSign.algoritmoHash
         })
 
         return await this._finishSign(documentId, signHash, paramsToSign, rubricBase64, participation)
@@ -100,8 +100,8 @@ export default class AzDigitalSignature {
 
     async _preprareDocumentToSign(certificateContent, documentId) {
         return this.store.dispatch(actionTypes.SIGNATURE.DIGITAL.START, {
-            certificadoConteudo: certificateContent,
-            documentId: documentId
+            certificateContent,
+            documentId
         })
     }
 
@@ -114,15 +114,15 @@ export default class AzDigitalSignature {
         })
     }
 
-    async _sign({ thumbprint, hash, algoritmo }) {
+    async _sign({ thumbprint, hash, algorithm }) {
         return new Promise((resolve, reject) => {
             this.pki
                 .signHash({
                     thumbprint,
                     hash,
-                    digestAlgorithm: algoritmo
+                    digestAlgorithm: algorithm
                 })
-                .success(hashAssinatura => resolve(hashAssinatura))
+                .success(signatureHash => resolve(signatureHash))
                 .error(error => reject(error))
         })
     }

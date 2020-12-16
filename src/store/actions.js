@@ -34,7 +34,7 @@ export default {
         }
     },
 
-    async [actionTypes.SIGNATURE.DIGITAL.START](context, { certificadoConteudo, documentId }) {
+    async [actionTypes.SIGNATURE.DIGITAL.START](context, { certificateContent, documentId }) {
         const flowbeeAccessParams = getFlowbeeAccessParams(context.state.flowbee.accessToken)
         const url = `${flowbeeAccessParams.url}/${documentId}/assinaturas/digitais/iniciar`
         const headers = {
@@ -42,7 +42,7 @@ export default {
             ...flowbeeAccessParams.headers
         }
 
-        const { data } = await axios.post(url, certificadoConteudo, { headers })
+        const { data } = await axios.post(url, certificateContent, { headers })
 
         return data
     },
