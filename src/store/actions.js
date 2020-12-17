@@ -34,7 +34,7 @@ export default {
         }
     },
 
-    async [actionTypes.SIGNATURE.DIGITAL.START](context, { certificadoConteudo, documentId }) {
+    async [actionTypes.SIGNATURE.DIGITAL.START](context, { certificateContent, documentId }) {
         const flowbeeAccessParams = getFlowbeeAccessParams(context.state.flowbee.accessToken)
         const url = `${flowbeeAccessParams.url}/${documentId}/assinaturas/digitais/iniciar`
         const headers = {
@@ -42,14 +42,14 @@ export default {
             ...flowbeeAccessParams.headers
         }
 
-        const { data } = await axios.post(url, certificadoConteudo, { headers })
+        const { data } = await axios.post(url, certificateContent, { headers })
 
         return data
     },
 
     async [actionTypes.SIGNATURE.DIGITAL.FINISH](
         context,
-        { documentId, signHash, temporarySubscription, rubricBase64 }
+        { documentId, signHash, temporarySubscription, rubricBase64, participation }
     ) {
         const flowbeeAccessParams = getFlowbeeAccessParams(context.state.flowbee.accessToken)
         const url = `${flowbeeAccessParams.url}/${documentId}/assinaturas/digitais/finalizar`
@@ -59,7 +59,8 @@ export default {
         const requestData = {
             assinatura: signHash,
             assinaturaTemporariaId: temporarySubscription,
-            rubricaBase64: rubricBase64
+            rubricaBase64: rubricBase64,
+            participacao: participation
         }
 
         const { data } = await axios.post(url, requestData, { headers })

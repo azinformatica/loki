@@ -63,9 +63,10 @@ export default class AzDigitalSignature {
      * @param {String} certificateThumbPrint
      * @param {String} documentId
      * @param {String} rubricBase64 (optional)
+     * @param {String} participation (optional)
      * @return {void}
      */
-    async sign(certificateThumbPrint, documentId, rubricBase64 = null) {
+    async sign(certificateThumbPrint, documentId, rubricBase64 = null, participation = null) {
         const certificateContent = await this._readCertificate(certificateThumbPrint)
 
         const paramsToSign = await this._preprareDocumentToSign(certificateContent, documentId)
@@ -73,10 +74,10 @@ export default class AzDigitalSignature {
         const signHash = await this._sign({
             thumbprint: certificateThumbPrint,
             hash: paramsToSign.hashParaAssinar,
-            algoritmo: paramsToSign.algoritmoHash
+            algorithm: paramsToSign.algoritmoHash
         })
 
-        return await this._finishSign(documentId, signHash, paramsToSign, rubricBase64)
+        return await this._finishSign(documentId, signHash, paramsToSign, rubricBase64, participation)
     }
 
     /**
@@ -87,19 +88,20 @@ export default class AzDigitalSignature {
         this.pki.redirectToInstallPage()
     }
 
-    async _finishSign(documentId, signHash, paramsToSign, rubricBase64) {
+    async _finishSign(documentId, signHash, paramsToSign, rubricBase64, participation) {
         return await this.store.dispatch(actionTypes.SIGNATURE.DIGITAL.FINISH, {
-            documentId: documentId,
-            signHash: signHash,
+            documentId,
+            signHash,
             temporarySubscription: paramsToSign.assinaturaTemporariaId,
-            rubricBase64
+            rubricBase64,
+            participation
         })
     }
 
     async _preprareDocumentToSign(certificateContent, documentId) {
         return this.store.dispatch(actionTypes.SIGNATURE.DIGITAL.START, {
-            certificadoConteudo: certificateContent,
-            documentId: documentId
+            certificateContent,
+            documentId
         })
     }
 
@@ -112,15 +114,15 @@ export default class AzDigitalSignature {
         })
     }
 
-    async _sign({ thumbprint, hash, algoritmo }) {
+    async _sign({ thumbprint, hash, algorithm }) {
         return new Promise((resolve, reject) => {
             this.pki
                 .signHash({
                     thumbprint,
                     hash,
-                    digestAlgorithm: algoritmo
+                    digestAlgorithm: algorithm
                 })
-                .success(hashAssinatura => resolve(hashAssinatura))
+                .success(signatureHash => resolve(signatureHash))
                 .error(error => reject(error))
         })
     }
