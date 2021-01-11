@@ -88,6 +88,8 @@ export default {
             this.pdf.linkService = new PDFJSViewer.PDFLinkService({
                 eventBus: this.pdf.eventBus
             })
+            PDFJSViewer.externalLinkTarget = PDFJSViewer.LinkTarget.BLANK
+            this.pdf.linkService.externalLinkTarget = PDFJSViewer.externalLinkTarget
         },
         createPdfViewer() {
             this.pdf.viewer = new PDFJSViewer.PDFViewer({
