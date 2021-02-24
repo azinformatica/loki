@@ -18,7 +18,7 @@ describe('AzBackButton.spec.js', () => {
         }
 
         const router = new VueRouter({ routes: [{ path: '/route', name: 'myRoute' }] })
-        wrapper = mount(AzBackButton, { localVue, propsData, router })
+        wrapper = mount(AzBackButton, { localVue, propsData, router, vuetify: new Vuetify() })
     })
 
     it('Required data is rendered properly', () => {
