@@ -10,14 +10,14 @@
     >
         <template v-slot:activator="{ on }">
             <v-btn icon v-on="on" @click="$emit('read')">
-                <v-badge right overlap color="secondary">
+                <v-badge :left="isBadgeLeft" :offset-x="badgeOffsetX" :offset-y="badgeOffsetY" overlap :color="badgeColor" class="badgeNumber">
                     <span slot="badge" v-if="hasNotificationsToRead">{{ notification.unread }}</span>
-                    <v-icon color="white">notification_important</v-icon>
+                    <v-icon :size="notificationIconSize" :color="notificationIconColor">{{notificationIcon}}</v-icon>
                 </v-badge>
             </v-btn>
         </template>
         <v-list>
-            <div class="notification__top">
+            <div v-if="!hideTitle" class="notification__top">
                 <b>{{ title }}</b>
                 <div v-if="enableFiltering">
                     <a
@@ -39,22 +39,27 @@
                     <div @click="$emit('visit', message)">
                         <div v-html="message.text" class="text" />
                         <div class="when">
-                            <v-icon size="14px">alarm</v-icon>
+                            <v-icon :size="whenIconSize" :color="whenIconColor">{{whenIcon}}</v-icon>
                             {{ message.when | azElapsedTime }}
                         </div>
                     </div>
-                    <div>
+                    <div v-if="!hideCloseIcon">
                         <a @click.prevent="$emit('remove', message)">
-                            <v-icon size="14px">close</v-icon>
+                            <v-icon :size="closeIconSize" :color="closeIconColor">{{closeIcon}}</v-icon>
                         </a>
                     </div>
                 </v-list-item>
-                <v-list-item v-if="notification.viewMore">
-                    <a class="more" @click="$emit('paginate')">Ver mais</a>
+                <v-list-item class="listItemMore" v-if="notification.viewMore">
+                    <div v-if="isViewMoreLoading" class="more">
+                        <v-progress-circular indeterminate :color="loadingViewMoreColor" :size="loadingViewMoreSize"/>
+                    </div>
+                    <a v-else class="more" @click="pagination">{{viewMoreText}}</a>
                 </v-list-item>
-                <span id="notificationListEnd" style="visibility: hidden">Fim das notificações.</span>
+              <div class="endNotification">
+                <span v-if="!hideEndNotificationText && notification.endNotification" id="notificationListEnd">{{endNotificationText}}</span>
+              </div>
             </div>
-            <div v-else class="notification notification__top">Nenhuma notificação encontrada...</div>
+            <div v-else class="notification notification__top">{{noNotificationText}}</div>
         </v-list>
     </v-menu>
 </template>
@@ -74,7 +79,13 @@ export default {
     data() {
         return {
             isOpen: false,
-            processUpdate: undefined
+            processUpdate: undefined,
+            isViewMoreLoading: false
+        }
+    },
+    watch: {
+        'notification.messages.length'() {
+            this.isViewMoreLoading = false
         }
     },
     computed: {
@@ -99,6 +110,78 @@ export default {
         },
         title() {
             return this.loki.notificationConfig.title
+        },
+        notificationIcon() {
+            return this.loki.notificationConfig.notificationIcon
+        },
+        notificationIconColor() {
+            return this.loki.notificationConfig.notificationIconColor
+        },
+        notificationIconSize() {
+            return this.loki.notificationConfig.notificationIconSize
+        },
+        whenIcon() {
+            return this.loki.notificationConfig.whenIcon
+        },
+        whenIconColor() {
+            return this.loki.notificationConfig.whenIconColor
+        },
+        whenIconSize() {
+            return this.loki.notificationConfig.whenIconSize
+        },
+        closeIcon() {
+            return this.loki.notificationConfig.closeIcon
+        },
+        closeIconColor() {
+            return this.loki.notificationConfig.closeIconColor
+        },
+        closeIconSize() {
+            return this.loki.notificationConfig.closeIconSize
+        },
+        badgeColor() {
+            return this.loki.notificationConfig.badgeColor
+        },
+        badgeOffsetX(){
+            return this.loki.notificationConfig.badgeOffsetX
+        },
+        badgeOffsetY(){
+            return this.loki.notificationConfig.badgeOffsetY
+        },
+        isBadgeLeft() {
+            return this.loki.notificationConfig.isBadgeLeft
+        },
+        hideCloseIcon() {
+            return this.loki.notificationConfig.hideCloseIcon
+        },
+        hideTitle() {
+            return this.loki.notificationConfig.hideTitle
+        },
+        hideEndNotificationText() {
+            return this.loki.notificationConfig.hideEndNotificationText
+        },
+        changeNotificationUnreadColor() {
+            return this.loki.notificationConfig.changeNotificationUnreadColor
+        },
+        notificationUnreadColor() {
+            return this.loki.notificationConfig.notificationUnreadColor
+        },
+        allowLoadingViewMore() {
+            return this.loki.notificationConfig.allowLoadingViewMore
+        },
+        loadingViewMoreColor() {
+            return this.loki.notificationConfig.loadingViewMoreColor
+        },
+        loadingViewMoreSize() {
+            return this.loki.notificationConfig.loadingViewMoreSize
+        },
+        endNotificationText() {
+            return this.loki.notificationConfig.endNotificationText
+        },
+        noNotificationText() {
+            return this.loki.notificationConfig.noNotificationText
+        },
+        viewMoreText(){
+            return this.loki.notificationConfig.viewMoreText
         }
     },
     created() {
@@ -127,9 +210,13 @@ export default {
             this.askForRefresh()
         },
         getNotificationCardClass(message) {
-            return {
-                notification__card: true,
-                notification__unread: !message.read
+            if(this.changeNotificationUnreadColor){
+                return this.notificationUnreadColor
+            }else {
+                return {
+                    notification__card: true,
+                    notification__unread: !message.read
+                }
             }
         },
         getActiveFilterClass(filter) {
@@ -148,12 +235,23 @@ export default {
             } else {
                 this.$emit('close')
             }
+        },
+        pagination() {
+            if(this.allowLoadingViewMore){
+                this.isViewMoreLoading = true
+            }
+            this.$emit('paginate')
         }
     }
 }
 </script>
 
 <style lang="stylus">
+.endNotification
+    width 100%
+    text-align center
+    color gray
+    font-size 14px
 .notification
     &__body
         cursor pointer
