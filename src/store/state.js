@@ -80,7 +80,8 @@ export default {
         notificationUnreadColor: 'blue lighten-5',
         allowLoadingViewMore: false,
         loadingViewMoreColor: 'secondary',
-        loadingViewMoreSize: '25'
+        loadingViewMoreSize: '25',
+        closeOnContentClick: true
     },
 
     document: {

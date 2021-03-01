@@ -5,7 +5,7 @@
         bottom
         left
         class="notification notification__no-mobile"
-        :close-on-content-click="false"
+        :close-on-content-click="closeOnContentClick"
         @input="setVisibility"
     >
         <template v-slot:activator="{ on }">
@@ -182,6 +182,9 @@ export default {
         },
         viewMoreText(){
             return this.loki.notificationConfig.viewMoreText
+        },
+        closeOnContentClick(){
+            return this.loki.notificationConfig.closeOnContentClick
         }
     },
     created() {
