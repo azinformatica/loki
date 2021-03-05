@@ -11,7 +11,7 @@
     >
         <template v-slot:activator="{ on }">
             <v-btn icon v-on="on" @click="$emit('read')">
-                <v-badge class="badgeNumber">
+                <v-badge right overlap class="badgeNumber">
                     <span slot="badge" v-if="hasNotificationsToRead">{{ notification.unread }}</span>
                     <v-icon class="notificationIcon">{{notificationIcon}}</v-icon>
                 </v-badge>
