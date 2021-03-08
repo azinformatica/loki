@@ -57,7 +57,7 @@
                     <a v-else class="more" @click="pagination">{{viewMoreText}}</a>
                 </v-list-item>
                 <div class="end-notification">
-                    <span v-if="endNotificationText && notification.endNotification" id="notification-list-end">{{endNotificationText}}</span>
+                    <span v-if="endNotificationText && notification.endNotification" id="notificationListEnd">{{endNotificationText}}</span>
                 </div>
             </div>
             <div v-else class="notification notification__top">{{noNotificationText}}</div>
