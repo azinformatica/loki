@@ -6,18 +6,19 @@
         left
         class="notification notification__no-mobile"
         :close-on-content-click="false"
+        v-model="menu"
         @input="setVisibility"
     >
         <template v-slot:activator="{ on }">
             <v-btn icon v-on="on" @click="$emit('read')">
-                <v-badge right overlap color="secondary">
+                <v-badge right overlap class="badge-number">
                     <span slot="badge" v-if="hasNotificationsToRead">{{ notification.unread }}</span>
-                    <v-icon color="white">notification_important</v-icon>
+                    <v-icon class="notification-icon">{{notificationIcon}}</v-icon>
                 </v-badge>
             </v-btn>
         </template>
         <v-list>
-            <div class="notification__top">
+            <div v-if="title" class="notification__top">
                 <b>{{ title }}</b>
                 <div v-if="enableFiltering">
                     <a
@@ -36,25 +37,30 @@
                     :key="index"
                     :class="getNotificationCardClass(message)"
                 >
-                    <div @click="$emit('visit', message)">
+                    <div @click="visit(message)">
                         <div v-html="message.text" class="text" />
                         <div class="when">
-                            <v-icon size="14px">alarm</v-icon>
+                            <v-icon v-if="whenIcon" class="when-icon">{{whenIcon}}</v-icon>
                             {{ message.when | azElapsedTime }}
                         </div>
                     </div>
-                    <div>
+                    <div v-if="closeIcon">
                         <a @click.prevent="$emit('remove', message)">
-                            <v-icon size="14px">close</v-icon>
+                            <v-icon class="close-icon">{{closeIcon}}</v-icon>
                         </a>
                     </div>
                 </v-list-item>
-                <v-list-item v-if="notification.viewMore">
-                    <a class="more" @click="$emit('paginate')">Ver mais</a>
+                <v-list-item class="list-item-more" v-if="notification.viewMore">
+                    <div v-if="isViewMoreLoading" class="more">
+                        <v-progress-circular indeterminate class="loading-view-more"/>
+                    </div>
+                    <a v-else class="more" @click="pagination">{{viewMoreText}}</a>
                 </v-list-item>
-                <span id="notificationListEnd" style="visibility: hidden">Fim das notificações.</span>
+                <div class="end-notification">
+                    <span v-if="endNotificationText && notification.endNotification" id="notificationListEnd">{{endNotificationText}}</span>
+                </div>
             </div>
-            <div v-else class="notification notification__top">Nenhuma notificação encontrada...</div>
+            <div v-else class="notification notification__top">{{noNotificationText}}</div>
         </v-list>
     </v-menu>
 </template>
@@ -74,7 +80,14 @@ export default {
     data() {
         return {
             isOpen: false,
-            processUpdate: undefined
+            processUpdate: undefined,
+            isViewMoreLoading: false,
+            menu: false
+        }
+    },
+    watch: {
+        'notification.messages.length'() {
+            this.isViewMoreLoading = false
         }
     },
     computed: {
@@ -99,6 +112,30 @@ export default {
         },
         title() {
             return this.loki.notificationConfig.title
+        },
+        notificationIcon() {
+            return this.loki.notificationConfig.notificationIcon
+        },
+        whenIcon() {
+            return this.loki.notificationConfig.whenIcon
+        },
+        closeIcon() {
+            return this.loki.notificationConfig.closeIcon
+        },
+        allowLoadingViewMore() {
+            return this.loki.notificationConfig.allowLoadingViewMore
+        },
+        endNotificationText() {
+            return this.loki.notificationConfig.endNotificationText
+        },
+        noNotificationText() {
+            return this.loki.notificationConfig.noNotificationText
+        },
+        viewMoreText(){
+            return this.loki.notificationConfig.viewMoreText
+        },
+        closeMenuOnVisit(){
+            return this.loki.notificationConfig.closeMenuOnVisit
         }
     },
     created() {
@@ -148,12 +185,38 @@ export default {
             } else {
                 this.$emit('close')
             }
+        },
+        pagination() {
+            if(this.allowLoadingViewMore){
+                this.isViewMoreLoading = true
+            }
+            this.$emit('paginate')
+        },
+        visit(message){
+            if(this.closeMenuOnVisit){
+                this.menu = false
+            }
+            this.$emit('visit', message)
         }
     }
 }
 </script>
 
 <style lang="stylus">
+.loading-view-more
+    color #487b9c
+    height 25px!important
+.close-icon
+    font-size 14px!important
+.when-icon
+    font-size 14px!important
+.notification-icon
+    color white!important
+.end-notification
+    width 100%
+    text-align center
+    color gray
+    font-size 14px
 .notification
     &__body
         cursor pointer

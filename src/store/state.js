@@ -56,7 +56,15 @@ export default {
         refreshTimeout: 30 * 1000,
         activeFilter: 'Todas',
         filters: ['Todas', 'Lidas', 'Não Lidas'],
-        title: 'Notificações'
+        title: 'Notificações',
+        endNotificationText: 'Fim das notificações.',
+        noNotificationText: 'Nenhuma notificação encontrada...',
+        viewMoreText: 'Ver mais',
+        notificationIcon: 'notification_important',
+        whenIcon: 'alarm',
+        closeIcon: 'close',
+        allowLoadingViewMore: false,
+        closeMenuOnVisit: false
     },
 
     document: {
