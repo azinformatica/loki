@@ -11,9 +11,9 @@
     >
         <template v-slot:activator="{ on }">
             <v-btn icon v-on="on" @click="$emit('read')">
-                <v-badge right overlap class="badgeNumber">
+                <v-badge right overlap class="badge-number">
                     <span slot="badge" v-if="hasNotificationsToRead">{{ notification.unread }}</span>
-                    <v-icon class="notificationIcon">{{notificationIcon}}</v-icon>
+                    <v-icon class="notification-icon">{{notificationIcon}}</v-icon>
                 </v-badge>
             </v-btn>
         </template>
@@ -40,24 +40,24 @@
                     <div @click="visit(message)">
                         <div v-html="message.text" class="text" />
                         <div class="when">
-                            <v-icon v-if="whenIcon" class="whenIcon">{{whenIcon}}</v-icon>
+                            <v-icon v-if="whenIcon" class="when-icon">{{whenIcon}}</v-icon>
                             {{ message.when | azElapsedTime }}
                         </div>
                     </div>
                     <div v-if="closeIcon">
                         <a @click.prevent="$emit('remove', message)">
-                            <v-icon class="closeIcon">{{closeIcon}}</v-icon>
+                            <v-icon class="close-icon">{{closeIcon}}</v-icon>
                         </a>
                     </div>
                 </v-list-item>
-                <v-list-item class="listItemMore" v-if="notification.viewMore">
+                <v-list-item class="list-item-more" v-if="notification.viewMore">
                     <div v-if="isViewMoreLoading" class="more">
-                        <v-progress-circular indeterminate class="loadingViewMore"/>
+                        <v-progress-circular indeterminate class="loading-view-more"/>
                     </div>
                     <a v-else class="more" @click="pagination">{{viewMoreText}}</a>
                 </v-list-item>
-                <div class="endNotification">
-                    <span v-if="endNotificationText && notification.endNotification" id="notificationListEnd">{{endNotificationText}}</span>
+                <div class="end-notification">
+                    <span v-if="endNotificationText && notification.endNotification" id="notification-list-end">{{endNotificationText}}</span>
                 </div>
             </div>
             <div v-else class="notification notification__top">{{noNotificationText}}</div>
@@ -203,16 +203,16 @@ export default {
 </script>
 
 <style lang="stylus">
-.loadingViewMore
+.loading-view-more
     color #487b9c
     height 25px!important
-.closeIcon
+.close-icon
     font-size 14px!important
-.whenIcon
+.when-icon
     font-size 14px!important
-.notificationIcon
+.notification-icon
     color white!important
-.endNotification
+.end-notification
     width 100%
     text-align center
     color gray
