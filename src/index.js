@@ -74,9 +74,6 @@ const lokiPlugin = {
         if (!store) {
             throw new Error('Please provide vuex store.')
         }
-        if (!router) {
-            throw new Error('Please provide router.')
-        }
 
         store.registerModule('loki', { state, mutations, actions, getters })
         Vue.component('az-title', AzTitle)
@@ -126,11 +123,14 @@ const lokiPlugin = {
         Vue.filter('azPhone', azPhone)
         Vue.filter('azTitleCase', azTitleCase)
 
-        store.commit(mutationTypes.SET_MENU_ACTIONS, buildMenu(store, router))
+        if (router) {
+            store.commit(mutationTypes.SET_MENU_ACTIONS,
+              buildMenu(store, router))
 
-        router.afterEach(to => {
-            store.commit(mutationTypes.SET_CURRENT_PAGE, to)
-        })
+            router.afterEach(to => {
+                store.commit(mutationTypes.SET_CURRENT_PAGE, to)
+            })
+        }
     }
 }
 
