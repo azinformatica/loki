@@ -124,8 +124,7 @@ const lokiPlugin = {
         Vue.filter('azTitleCase', azTitleCase)
 
         if (router) {
-            store.commit(mutationTypes.SET_MENU_ACTIONS,
-              buildMenu(store, router))
+            store.commit(mutationTypes.SET_MENU_ACTIONS, buildMenu(store, router))
 
             router.afterEach(to => {
                 store.commit(mutationTypes.SET_CURRENT_PAGE, to)
