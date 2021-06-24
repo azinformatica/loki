@@ -6,7 +6,6 @@
                     active-class="active-menu"
                     dark
                     v-if="!menu.children"
-                    :to="menu.path"
                     @click="redirectTo(menu.path)"
                     class="menu-item"
                 >
