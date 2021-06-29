@@ -20,20 +20,23 @@ describe('AzCallToAction.spec.js', () => {
         wrapper = shallowMount(AzCallToActionn, { localVue, propsData })
     })
 
-    it('Color property is properly returned', () => {
+    it('Color property is properly returned', async () => {
         expect(wrapper.vm.color).toContain('secondary')
 
         wrapper.setProps({ active: false })
+        await wrapper.vm.$nextTick()
         expect(wrapper.vm.color).toContain('')
 
         wrapper.setProps({ dark: false })
+        await wrapper.vm.$nextTick()
         expect(wrapper.vm.color).toContain('primary')
     })
 
-    it('isDark property is properly returned', () => {
+    it('isDark property is properly returned', async () => {
         expect(wrapper.vm.isDark).toBe(false)
 
         wrapper.setProps({ active: false })
+        await wrapper.vm.$nextTick()
         expect(wrapper.vm.isDark).toBe(true)
     })
 
