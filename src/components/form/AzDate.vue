@@ -175,12 +175,10 @@ export default {
             return this.$vuetify.lang.current
         },
         checkDate() {
-            if (this.focus) {
-                return this.validateDate
-            }
             return {
                 required: this.isRequired,
-                date_format: this.dateFormat === 'DD/MM/YYYY' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'
+                date_format: this.dateFormat === 'DD/MM/YYYY' ? 'dd/MM/yyyy' : 'MM/dd/yyyy',
+                ...this.validateDate
             }
         },
         validateDate() {
@@ -249,11 +247,6 @@ export default {
         },
         validateAndParseDate(date) {
             if (!date || !this.dateStringIsValid(date) || this.dateMaxIsAllowed(date) || this.dateMinIsAllowed(date)) {
-                if ((date && this.dateStringIsValid(date)) && (this.dateMaxIsAllowed(date) || this.dateMinIsAllowed(date))) {
-                    this.date = null
-                    this.dateFormatted = ''
-                    return
-                }
                 if(date === null || date.length === 0) {
                     this.date = null
                     this.dateFormatted = ''
