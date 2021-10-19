@@ -43,10 +43,10 @@ export default {
     },
     mounted() {
         this.start()
-        window.addEventListener('resize', this.updateScaleType)
+        this.registerEventListener()
     },
     destroyed() {
-        window.removeEventListener('resize', this.updateScaleType)
+        this.removeEventListener()
     },
     watch: {
         src() {
@@ -61,6 +61,14 @@ export default {
             this.createPdfLinkService()
             this.createPdfViewer()
             this.renderDocument()
+        },
+        registerEventListener() {
+            window.addEventListener('resize', this.updateScaleType)
+            window.addEventListener('keydown', this.handleKeydownEvent)
+        },
+        removeEventListener() {
+            window.removeEventListener('resize', this.updateScaleType)
+            window.removeEventListener('keydown', this.handleKeydownEvent)
         },
         getPdfContainer() {
             this.pdf.container = document.querySelector('#az-pdf-viewer')
@@ -169,6 +177,15 @@ export default {
         zoomOut() {
             if (this.scale.current > 0.2) {
                 this.pdf.viewer.currentScale = this.scale.current / 1.1
+            }
+        },
+        handleKeydownEvent(event) {
+            if (event.ctrlKey && event.keyCode == 187) {
+                event.preventDefault()
+                this.zoomIn()
+            } else if (event.ctrlKey && event.keyCode == 189) {
+                event.preventDefault()
+                this.zoomOut()
             }
         },
         rotate() {
