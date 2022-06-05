@@ -1,6 +1,6 @@
 import azCurrency from '../utils/AzCurrency'
 
-const filter = value => {
+const filter = (value) => {
     if (!value) {
         return ''
     }

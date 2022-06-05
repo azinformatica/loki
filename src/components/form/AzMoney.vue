@@ -26,52 +26,52 @@ export default {
     props: {
         value: {
             required: true,
-            default: null
+            default: null,
         },
         label: {
             type: String,
-            default: ''
+            default: '',
         },
         placeholder: {
             type: String,
-            default: ''
+            default: '',
         },
         name: {
             type: String,
-            default: ''
+            default: '',
         },
         required: {
             type: Boolean,
-            default: false
+            default: false,
         },
         disabled: {
             type: Boolean,
-            default: false
+            default: false,
         },
         showClearButton: {
             type: Boolean,
-            default: true
+            default: true,
         },
         maxLength: {
             type: Number,
-            default: 24
+            default: 24,
         },
         negative: {
             type: Boolean,
-            default: false
+            default: false,
         },
         precision: {
             type: Number,
-            default: 2
+            default: 2,
         },
         prefix: {
             type: String,
-            default: 'R$ '
+            default: 'R$ ',
         },
         suffix: {
             type: String,
-            default: ''
-        }
+            default: '',
+        },
     },
     data() {
         return {
@@ -81,9 +81,9 @@ export default {
                 prefix: this.prefix,
                 suffix: this.suffix,
                 precision: this.precision,
-                masked: false
+                masked: false,
             },
-            clickedField: false
+            clickedField: false,
         }
     },
     computed: {
@@ -99,7 +99,7 @@ export default {
         },
         showClearButtonIf() {
             return this.value !== null && this.showClearButton ? 'fas fa-times-circle' : ''
-        }
+        },
     },
     methods: {
         updateValue(value, event) {
@@ -129,8 +129,8 @@ export default {
             if ($event.key !== 'Tab') {
                 this.clickedField = true
             }
-        }
-    }
+        },
+    },
 }
 </script>
 

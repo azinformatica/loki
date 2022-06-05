@@ -63,12 +63,12 @@ export default {
     props: {
         filter: {
             type: Object,
-            required: true
+            required: true,
         },
         simpleSearchPlaceholder: {
             type: String,
-            required: true
-        }
+            required: true,
+        },
     },
     data() {
         return {
@@ -76,7 +76,7 @@ export default {
             searchText: null,
             isClosedAdvancedSearch: false,
             isSimpleSearch: false,
-            searchTextSize: 200
+            searchTextSize: 200,
         }
     },
     computed: {
@@ -86,15 +86,15 @@ export default {
         },
         filledFilters() {
             return Object.keys(this.filter)
-                .filter(key => this.filter[key].value)
+                .filter((key) => this.filter[key].value)
                 .reduce((obj, key) => {
                     obj[key] = this.filter[key]
                     return obj
                 }, {})
-        }
+        },
     },
     mounted() {
-        const advancedSearchItems = this.$children[1].$children.filter(child => {
+        const advancedSearchItems = this.$children[1].$children.filter((child) => {
             return child.$options._componentTag === 'az-search-item'
         })
         this.hasAdvancedSearchItems = advancedSearchItems.length > 0
@@ -123,8 +123,8 @@ export default {
         toggle() {
             this.isClosedAdvancedSearch = !this.isClosedAdvancedSearch
             this.closeAsideMenu()
-        }
-    }
+        },
+    },
 }
 </script>
 <style lang="stylus">

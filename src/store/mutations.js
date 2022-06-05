@@ -38,7 +38,7 @@ export default {
     [mutationTypes.SET_UPLOAD_FILE_PROGRESS](state, uploadProgress) {
         Vue.set(state.uploadFileProgress, uploadProgress.hashName, {
             filename: uploadProgress.filename,
-            progress: uploadProgress.progress
+            progress: uploadProgress.progress,
         })
     },
 
@@ -104,9 +104,7 @@ export default {
 
     [mutationTypes.SET_TIMEZONE](state, timezone) {
         state.timezone = timezone
-        state.offset = moment()
-            .tz(timezone)
-            .format('Z')
+        state.offset = moment().tz(timezone).format('Z')
     },
 
     [mutationTypes.FLOWBEE.SET_LACUNA_LICENSE](state, url) {
@@ -115,5 +113,5 @@ export default {
 
     [mutationTypes.FLOWBEE.SET_ACCESS_TOKEN](state, token) {
         state.flowbee.accessToken = token
-    }
+    },
 }

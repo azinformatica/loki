@@ -85,31 +85,31 @@ export default {
     props: {
         disableButtons: {
             type: Boolean,
-            default: false
+            default: false,
         },
         downloadButton: {
             type: Boolean,
-            default: false
+            default: false,
         },
         pagination: {
             type: Object,
-            default: () => ({ current: '-', total: '-' })
+            default: () => ({ current: '-', total: '-' }),
         },
         printButton: {
             type: Boolean,
-            default: false
+            default: false,
         },
         rotateButton: {
             type: Boolean,
-            default: false
+            default: false,
         },
         scaleType: {
             type: String,
-            default: 'page-fit'
-        }
+            default: 'page-fit',
+        },
     },
     data: () => ({
-        showActions: false
+        showActions: false,
     }),
     methods: {
         toggleToolbarActions() {
@@ -117,8 +117,8 @@ export default {
         },
         hasActionButtons() {
             return this.downloadButton || this.printButton || this.rotateButton
-        }
-    }
+        },
+    },
 }
 </script>
 

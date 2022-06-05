@@ -79,7 +79,7 @@ class PrintService {
             canvasContext: ctx,
             transform: [this._PRINT_UNITS, 0, 0, this._PRINT_UNITS, 0, 0],
             viewport: pdfPage.getViewport(1, size.rotation),
-            intent: 'print'
+            intent: 'print',
         }
         await pdfPage.render(renderContext).promise
     }
@@ -88,7 +88,7 @@ class PrintService {
         const img = document.createElement('img')
 
         if ('toBlob' in this.scratchCanvas) {
-            this.scratchCanvas.toBlob(blob => {
+            this.scratchCanvas.toBlob((blob) => {
                 img.src = URL.createObjectURL(blob)
             })
         } else {
@@ -114,7 +114,7 @@ class PrintService {
 
     _hasEqualPageSizes() {
         return this.pagesOverview.every(
-            page => page.width === this.pagesOverview[0].width && page.height === this.pagesOverview[0].height
+            (page) => page.width === this.pagesOverview[0].width && page.height === this.pagesOverview[0].height
         )
     }
 }

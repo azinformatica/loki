@@ -1,7 +1,7 @@
 import enumFiltro from './enum'
 const texto = {
     EM_ELABORACAO: 'Em Elaboração',
-    ABERTA: 'Aberta'
+    ABERTA: 'Aberta',
 }
 
 describe('enum.spec.js', () => {

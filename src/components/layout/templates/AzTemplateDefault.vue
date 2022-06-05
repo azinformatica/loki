@@ -15,7 +15,7 @@
                 </div>
             </div>
             <template v-slot:banner>
-              <slot name="bannerAside"></slot>
+                <slot name="bannerAside"></slot>
             </template>
         </az-aside>
 
@@ -59,20 +59,21 @@ import AzNotification from '../AzNotification'
 import mutationTypes from '../../../store/mutation-types'
 
 export default {
+    name: 'az-template-default',
     components: { AzLoading, AzAlert, AzFileProgress, AzNotification },
     props: {
         showMainAction: {
             type: Boolean,
-            default: false
+            default: false,
         },
         showMainHeader: {
             type: Boolean,
-            default: false
+            default: false,
         },
         showNotification: {
             type: Boolean,
-            default: false
-        }
+            default: false,
+        },
     },
     methods: {
         showAside() {
@@ -83,8 +84,8 @@ export default {
         },
         visitNotification(message) {
             this.$emit('visitNotification', message)
-        }
-    }
+        },
+    },
 }
 </script>
 <style lang="stylus">

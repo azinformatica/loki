@@ -66,13 +66,13 @@ export default {
     props: {
         enableFiltering: {
             type: Boolean,
-            default: false
-        }
+            default: false,
+        },
     },
     data() {
         return {
             isOpen: false,
-            processUpdate: undefined
+            processUpdate: undefined,
         }
     },
     computed: {
@@ -97,7 +97,7 @@ export default {
         },
         title() {
             return this.loki.notificationConfig.title
-        }
+        },
     },
     created() {
         this.setupUpdateInterval()
@@ -127,12 +127,12 @@ export default {
         getNotificationCardClass(message) {
             return {
                 notification__card: true,
-                notification__unread: !message.read
+                notification__unread: !message.read,
             }
         },
         getActiveFilterClass(filter) {
             return {
-                'font-weight-bold': filter === this.activeFilter
+                'font-weight-bold': filter === this.activeFilter,
             }
         },
         setupUpdateInterval() {
@@ -146,8 +146,8 @@ export default {
             } else {
                 this.$emit('close')
             }
-        }
-    }
+        },
+    },
 }
 </script>
 

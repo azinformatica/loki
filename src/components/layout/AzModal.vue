@@ -22,9 +22,9 @@ export default {
     props: {
         maxWidth: {
             type: String,
-            default: '650px'
-        }
-    }
+            default: '650px',
+        },
+    },
 }
 </script>
 

@@ -8,5 +8,5 @@ export default {
         if (!hasPermissions(userPermissions, requiredPermissions)) {
             el.parentNode.removeChild(el)
         }
-    }
+    },
 }

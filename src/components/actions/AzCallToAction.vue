@@ -10,20 +10,20 @@ export default {
     props: {
         active: {
             type: Boolean,
-            default: false
+            default: false,
         },
         dark: {
             type: Boolean,
-            default: false
+            default: false,
         },
         hideBorder: {
             type: Boolean,
-            default: false
+            default: false,
         },
         cssClass: {
             type: String,
-            default: ''
-        }
+            default: '',
+        },
     },
     computed: {
         color() {
@@ -44,16 +44,16 @@ export default {
         style() {
             let styleObj = {
                 'call-to-action': true,
-                'hide-border': this.hideBorder
+                'hide-border': this.hideBorder,
             }
 
             if (this.cssClass) {
                 const classes = this.cssClass.split(' ')
-                classes.forEach(clazz => (styleObj[clazz] = true))
+                classes.forEach((clazz) => (styleObj[clazz] = true))
             }
             return styleObj
-        }
-    }
+        },
+    },
 }
 </script>
 

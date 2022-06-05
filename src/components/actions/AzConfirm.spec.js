@@ -12,7 +12,7 @@ describe('AzConfirm.spec.js', () => {
     beforeEach(() => {
         const propsData = {
             labelConfirm: 'Confirm',
-            labelDecline: 'Decline'
+            labelDecline: 'Decline',
         }
         wrapper = shallowMount(AzConfirm, { localVue, propsData })
     })

@@ -3,19 +3,19 @@ import azSearchUrlBuilder from './AzSearchUrlBuilder'
 describe('AzSearchUrlBuilder.spec.js', () => {
     let pathUrl, filters, pagination
 
-    beforeEach(function() {
+    beforeEach(function () {
         pathUrl = '/pregao'
         filters = {
             filtroInvalido: {},
             status: { value: 'ABERTO' },
             responsavel: { value: 'SAD' },
-            edital: { value: '0001/2018' }
+            edital: { value: '0001/2018' },
         }
         pagination = {
             page: 1,
             rowsPerPage: 10,
             sortBy: 'dataAbertura',
-            descending: false
+            descending: false,
         }
     })
 

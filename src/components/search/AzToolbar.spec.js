@@ -11,8 +11,8 @@ describe('AzToolbar.spec.js', () => {
             localVue,
             slots: {
                 actions: '<div>Actions Slot</div>',
-                simpleSearch: '<div>Simple Search Slot</div>'
-            }
+                simpleSearch: '<div>Simple Search Slot</div>',
+            },
         })
     })
 

@@ -8,8 +8,8 @@ export default {
     props: {
         loading: {
             type: Boolean,
-            default: false
-        }
-    }
+            default: false,
+        },
+    },
 }
 </script>

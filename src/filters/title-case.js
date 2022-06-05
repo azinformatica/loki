@@ -1,4 +1,4 @@
-const filter = str => {
+const filter = (str) => {
     if (!str) {
         return ''
     }

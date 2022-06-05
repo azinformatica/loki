@@ -14,7 +14,7 @@ describe('AzBackButton.spec.js', () => {
     beforeEach(() => {
         const propsData = {
             route: { name: 'myRoute' },
-            text: 'Button Text'
+            text: 'Button Text',
         }
 
         const router = new VueRouter({ routes: [{ path: '/route', name: 'myRoute' }] })

@@ -13,7 +13,7 @@ describe('AzLogo.spec.js', () => {
 
     beforeEach(() => {
         $router = {
-            push: jest.fn()
+            push: jest.fn(),
         }
 
         store = new Vuex.Store({
@@ -24,18 +24,18 @@ describe('AzLogo.spec.js', () => {
                         id: null,
                         name: '',
                         mainLogo: 'mainLogoPicture.jpg',
-                        symbolLogo: 'symbolLogoPicture.jpg'
-                    }
-                }
-            }
+                        symbolLogo: 'symbolLogoPicture.jpg',
+                    },
+                },
+            },
         })
 
         wrapper = shallowMount(AzLogo, {
             localVue,
             store,
             mocks: {
-                $router
-            }
+                $router,
+            },
         })
     })
 

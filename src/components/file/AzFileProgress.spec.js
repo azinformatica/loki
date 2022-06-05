@@ -9,11 +9,11 @@ localVue.use(Vuex)
 Vue.use(Vuetify)
 
 describe('AzFileProgress.spec.js', () => {
-    let wrapper, props, store, mutations
+    let wrapper, propsData, store, mutations
 
     beforeEach(() => {
         mutations = {
-            REMOVE_UPLOAD_FILE_PROGRESS: jest.fn()
+            REMOVE_UPLOAD_FILE_PROGRESS: jest.fn(),
         }
 
         store = new Vuex.Store({
@@ -21,20 +21,19 @@ describe('AzFileProgress.spec.js', () => {
                 loki: {
                     uploadFileProgress: {
                         'default.png': { filename: 'default.png' },
-                        'error.png': { filename: 'error.png', error: true }
+                        'error.png': { filename: 'error.png', error: true },
                     },
-                    uploadedFiles: [{ name: 'picture.png' }]
-                }
+                    uploadedFiles: [{ name: 'picture.png' }],
+                },
             },
-            mutations
+            mutations,
         })
 
-        props = {
-            repository: 'repo1'
+        propsData = {
+            repository: 'repo1',
         }
 
-        wrapper = shallowMount(AzFileUpload, { localVue, store, props })
-        wrapper.setProps(props)
+        wrapper = shallowMount(AzFileUpload, { localVue, store, propsData })
     })
 
     it('Computed properties are set properly', () => {
