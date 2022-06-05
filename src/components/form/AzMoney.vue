@@ -16,7 +16,8 @@
         @blur="updateValue($event.target.value, 'blur')"
         @keydown.ctrl.65="selectValue"
         @keydown="checkKeyAndValidateLength($event)"
-        @keyup="checkKey($event)">
+        @keyup="checkKey($event)"
+    >
         <template v-slot:label if="this.$slots['label']">
             <slot name="label" />
         </template>
@@ -36,66 +37,66 @@ export default {
     props: {
         value: {
             required: true,
-            default: null
+            default: null,
         },
         label: {
             type: String,
-            default: ''
+            default: '',
         },
         placeholder: {
             type: String,
-            default: ''
+            default: '',
         },
         name: {
             type: String,
-            default: ''
+            default: '',
         },
         required: {
             type: Boolean,
-            default: false
+            default: false,
         },
         disabled: {
             type: Boolean,
-            default: false
+            default: false,
         },
         showClearButton: {
             type: Boolean,
-            default: false
+            default: false,
         },
         maxLength: {
             type: Number,
-            default: 24
+            default: 24,
         },
         validateLength: {
             type: Boolean,
-            default: false
+            default: false,
         },
         negative: {
             type: Boolean,
-            default: false
+            default: false,
         },
         precision: {
             type: Number,
-            default: 2
+            default: 2,
         },
         prefix: {
             type: String,
-            default: 'R$ '
+            default: 'R$ ',
         },
         suffix: {
             type: String,
-            default: ''
+            default: '',
         },
         requeridMessage: {
             type: String,
-            default: 'O campo {name} é obrigatório'
+            default: 'O campo {name} é obrigatório',
         },
         validationField: {
-            type: Number
+            type: Number,
         },
         eventSubmit: {
-            type: String
-        }
+            type: String,
+        },
     },
     inject: ['$validator'],
     data() {
@@ -106,12 +107,12 @@ export default {
                 prefix: this.prefix,
                 suffix: this.suffix,
                 precision: this.precision,
-                masked: false
+                masked: false,
             },
             clickedField: false,
             formatted: false,
             select: false,
-            length: this.maxLength
+            length: this.maxLength,
         }
     },
     computed: {
@@ -127,15 +128,15 @@ export default {
         },
         showClearButtonIf() {
             return this.value !== null && this.showClearButton ? 'fas fa-times-circle' : ''
-        }
+        },
     },
     watch: {
         validationField() {
             this.validateRequired(this.value)
-        }
+        },
     },
-    updated(){
-        if(!this.required){
+    updated() {
+        if (!this.required) {
             this.clearErrorValidate()
         }
     },
@@ -155,8 +156,7 @@ export default {
                 (valueFormatedSimple !== this.value || event === 'keyupEnter' || event === 'keyupEsc') &&
                 this.clickedField
             ) {
-
-                if(!this.eventSubmit || this.eventSubmit === event ) {
+                if (!this.eventSubmit || this.eventSubmit === event) {
                     this.$emit('input', valueFormatedSimple)
                     this.$emit(event, valueFormatedSimple)
                     this.clickedField = false
@@ -192,7 +192,7 @@ export default {
                 if (!value) {
                     this.errors.add({
                         field: this.name,
-                        msg: this.requeridMessage.replace('{name}', this.name)
+                        msg: this.requeridMessage.replace('{name}', this.name),
                     })
                 }
             }
@@ -228,8 +228,8 @@ export default {
                     this.$validator.errors.items.splice(index, 1)
                 }
             }
-        }
-    }
+        },
+    },
 }
 </script>
 

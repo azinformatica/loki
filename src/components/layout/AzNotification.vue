@@ -13,7 +13,7 @@
             <v-btn icon v-on="on" @click="$emit('read')">
                 <v-badge right overlap class="badge-number">
                     <span slot="badge" v-if="hasNotificationsToRead">{{ notification.unread }}</span>
-                    <v-icon class="notification-icon">{{notificationIcon}}</v-icon>
+                    <v-icon class="notification-icon">{{ notificationIcon }}</v-icon>
                 </v-badge>
             </v-btn>
         </template>
@@ -40,27 +40,29 @@
                     <div @click="visit(message)">
                         <div v-html="message.text" class="text" />
                         <div class="when">
-                            <v-icon v-if="whenIcon" class="when-icon">{{whenIcon}}</v-icon>
+                            <v-icon v-if="whenIcon" class="when-icon">{{ whenIcon }}</v-icon>
                             {{ message.when | azElapsedTime }}
                         </div>
                     </div>
                     <div v-if="closeIcon">
                         <a @click.prevent="$emit('remove', message)">
-                            <v-icon class="close-icon">{{closeIcon}}</v-icon>
+                            <v-icon class="close-icon">{{ closeIcon }}</v-icon>
                         </a>
                     </div>
                 </v-list-item>
                 <v-list-item class="list-item-more" v-if="notification.viewMore">
                     <div v-if="isViewMoreLoading" class="more">
-                        <v-progress-circular indeterminate class="loading-view-more"/>
+                        <v-progress-circular indeterminate class="loading-view-more" />
                     </div>
-                    <a v-else class="more" @click="pagination">{{viewMoreText}}</a>
+                    <a v-else class="more" @click="pagination">{{ viewMoreText }}</a>
                 </v-list-item>
                 <div class="end-notification">
-                    <span v-if="endNotificationText && notification.endNotification" id="notificationListEnd">{{endNotificationText}}</span>
+                    <span v-if="endNotificationText && notification.endNotification" id="notificationListEnd">{{
+                        endNotificationText
+                    }}</span>
                 </div>
             </div>
-            <div v-else class="notification notification__top">{{noNotificationText}}</div>
+            <div v-else class="notification notification__top">{{ noNotificationText }}</div>
         </v-list>
     </v-menu>
 </template>
@@ -74,21 +76,21 @@ export default {
     props: {
         enableFiltering: {
             type: Boolean,
-            default: false
-        }
+            default: false,
+        },
     },
     data() {
         return {
             isOpen: false,
             processUpdate: undefined,
             isViewMoreLoading: false,
-            menu: false
+            menu: false,
         }
     },
     watch: {
         'notification.messages.length'() {
             this.isViewMoreLoading = false
-        }
+        },
     },
     computed: {
         ...mapState(['loki']),
@@ -131,12 +133,12 @@ export default {
         noNotificationText() {
             return this.loki.notificationConfig.noNotificationText
         },
-        viewMoreText(){
+        viewMoreText() {
             return this.loki.notificationConfig.viewMoreText
         },
-        closeMenuOnVisit(){
+        closeMenuOnVisit() {
             return this.loki.notificationConfig.closeMenuOnVisit
-        }
+        },
     },
     created() {
         this.setupUpdateInterval()
@@ -166,12 +168,12 @@ export default {
         getNotificationCardClass(message) {
             return {
                 notification__card: true,
-                notification__unread: !message.read
+                notification__unread: !message.read,
             }
         },
         getActiveFilterClass(filter) {
             return {
-                'font-weight-bold': filter === this.activeFilter
+                'font-weight-bold': filter === this.activeFilter,
             }
         },
         setupUpdateInterval() {
@@ -187,18 +189,18 @@ export default {
             }
         },
         pagination() {
-            if(this.allowLoadingViewMore){
+            if (this.allowLoadingViewMore) {
                 this.isViewMoreLoading = true
             }
             this.$emit('paginate')
         },
-        visit(message){
-            if(this.closeMenuOnVisit){
+        visit(message) {
+            if (this.closeMenuOnVisit) {
                 this.menu = false
             }
             this.$emit('visit', message)
-        }
-    }
+        },
+    },
 }
 </script>
 

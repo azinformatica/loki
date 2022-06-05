@@ -2,17 +2,19 @@ import AzFileUpload from './AzFileUpload'
 import Vuex from 'vuex'
 import Vuetify from 'vuetify'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
+import Vue from 'vue'
 
 const localVue = createLocalVue()
-localVue.use(Vuex)
-localVue.use(Vuetify)
+Vue.use(Vuex)
+Vue.use(Vuetify)
 
 describe('AzFileUpload', () => {
-    let wrapper, props, store, actions
+    let wrapper, vuetify, propsData, store, actions
 
     beforeEach(() => {
+        vuetify = new Vuetify()
         actions = {
-            uploadFile: jest.fn()
+            uploadFile: jest.fn(),
         }
 
         store = new Vuex.Store({
@@ -21,19 +23,18 @@ describe('AzFileUpload', () => {
                     uploadFileProgress: {},
                     uploadedFiles: [],
                     file: {
-                        maxSize: '16Mb'
-                    }
-                }
+                        maxSize: '16Mb',
+                    },
+                },
             },
-            actions
+            actions,
         })
 
-        props = {
-            repository: 'repo1'
+        propsData = {
+            repository: 'repo1',
         }
 
-        wrapper = shallowMount(AzFileUpload, { localVue, store, props, vuetify: new Vuetify() })
-        wrapper.setProps(props)
+        wrapper = shallowMount(AzFileUpload, { localVue, store, vuetify, propsData })
     })
 
     it('Props are defined', () => {
@@ -74,12 +75,12 @@ describe('AzFileUpload', () => {
                 kind: 'file',
                 getAsFile() {
                     return { name: 'file1' }
-                }
+                },
             },
             1: {
                 name: 'file2',
-                kind: 'notfile'
-            }
+                kind: 'notfile',
+            },
         }
         wrapper.vm.onDropFiles(droppedItems)
 
@@ -89,7 +90,7 @@ describe('AzFileUpload', () => {
 
     it('Opens the file selector', () => {
         const mockedInput = {
-            click: jest.fn()
+            click: jest.fn(),
         }
         document.getElementById = jest.fn().mockReturnValue(mockedInput)
         wrapper.vm.openFileSelector()

@@ -8,34 +8,34 @@ describe('azBuildMenu', () => {
             state: {
                 loki: {
                     product: {
-                        id: 150
+                        id: 150,
                     },
                     user: {
                         authorities: [
                             {
                                 name: 'A',
                                 hasAccess: true,
-                                produtoId: 150
+                                produtoId: 150,
                             },
                             {
                                 name: 'B',
                                 hasAccess: true,
-                                produtoId: 150
+                                produtoId: 150,
                             },
                             {
                                 name: 'C',
                                 hasAccess: true,
-                                produtoId: 0
+                                produtoId: 0,
                             },
                             {
                                 name: 'D',
                                 hasAccess: false,
-                                produtoId: 150
-                            }
-                        ]
-                    }
-                }
-            }
+                                produtoId: 150,
+                            },
+                        ],
+                    },
+                },
+            },
         }
     })
 
@@ -51,14 +51,14 @@ describe('azBuildMenu', () => {
                     routes: [
                         {
                             path: '/a',
-                            name: 'a'
+                            name: 'a',
                         },
                         {
                             path: '/b',
-                            name: 'b'
-                        }
-                    ]
-                }
+                            name: 'b',
+                        },
+                    ],
+                },
             }
             expect(azBuildMenu(store, router)).toEqual([])
         })
@@ -73,9 +73,9 @@ describe('azBuildMenu', () => {
                             meta: {
                                 page: {
                                     title: 'a',
-                                    subtitle: 'a'
-                                }
-                            }
+                                    subtitle: 'a',
+                                },
+                            },
                         },
                         {
                             path: '/b',
@@ -83,12 +83,12 @@ describe('azBuildMenu', () => {
                             meta: {
                                 page: {
                                     title: 'b',
-                                    subtitle: 'b'
-                                }
-                            }
-                        }
-                    ]
-                }
+                                    subtitle: 'b',
+                                },
+                            },
+                        },
+                    ],
+                },
             }
             expect(azBuildMenu(store, router)).toEqual([])
         })
@@ -105,9 +105,9 @@ describe('azBuildMenu', () => {
                             meta: {
                                 menu: {
                                     title: 'a',
-                                    icon: 'a'
-                                }
-                            }
+                                    icon: 'a',
+                                },
+                            },
                         },
                         {
                             path: '/b',
@@ -115,26 +115,26 @@ describe('azBuildMenu', () => {
                             meta: {
                                 menu: {
                                     title: 'b',
-                                    icon: 'b'
-                                }
-                            }
-                        }
-                    ]
-                }
+                                    icon: 'b',
+                                },
+                            },
+                        },
+                    ],
+                },
             }
             const expectedMenu = [
                 {
                     name: 'a',
                     icon: 'a',
                     path: '/a',
-                    selected: false
+                    selected: false,
                 },
                 {
                     name: 'b',
                     icon: 'b',
                     path: '/b',
-                    selected: false
-                }
+                    selected: false,
+                },
             ]
             expect(azBuildMenu(store, router)).toEqual(expectedMenu)
         })
@@ -149,10 +149,10 @@ describe('azBuildMenu', () => {
                             meta: {
                                 menu: {
                                     title: 'a',
-                                    icon: 'a'
+                                    icon: 'a',
                                 },
-                                authorities: ['A']
-                            }
+                                authorities: ['A'],
+                            },
                         },
                         {
                             path: '/b',
@@ -160,27 +160,27 @@ describe('azBuildMenu', () => {
                             meta: {
                                 menu: {
                                     title: 'b',
-                                    icon: 'b'
+                                    icon: 'b',
                                 },
-                                authorities: ['A', 'B']
-                            }
-                        }
-                    ]
-                }
+                                authorities: ['A', 'B'],
+                            },
+                        },
+                    ],
+                },
             }
             const expectedMenu = [
                 {
                     name: 'a',
                     icon: 'a',
                     path: '/a',
-                    selected: false
+                    selected: false,
                 },
                 {
                     name: 'b',
                     icon: 'b',
                     path: '/b',
-                    selected: false
-                }
+                    selected: false,
+                },
             ]
             expect(azBuildMenu(store, router)).toEqual(expectedMenu)
         })
@@ -195,10 +195,10 @@ describe('azBuildMenu', () => {
                             meta: {
                                 menu: {
                                     title: 'a',
-                                    icon: 'a'
+                                    icon: 'a',
                                 },
-                                authorities: ['A']
-                            }
+                                authorities: ['A'],
+                            },
                         },
                         {
                             path: '/d',
@@ -206,21 +206,21 @@ describe('azBuildMenu', () => {
                             meta: {
                                 menu: {
                                     title: 'd',
-                                    icon: 'd'
+                                    icon: 'd',
                                 },
-                                authorities: ['D']
-                            }
-                        }
-                    ]
-                }
+                                authorities: ['D'],
+                            },
+                        },
+                    ],
+                },
             }
             const expectedMenu = [
                 {
                     name: 'a',
                     icon: 'a',
                     path: '/a',
-                    selected: false
-                }
+                    selected: false,
+                },
             ]
             expect(azBuildMenu(store, router)).toEqual(expectedMenu)
         })
@@ -235,10 +235,10 @@ describe('azBuildMenu', () => {
                             meta: {
                                 menu: {
                                     title: 'a',
-                                    icon: 'a'
+                                    icon: 'a',
                                 },
-                                authorities: ['A']
-                            }
+                                authorities: ['A'],
+                            },
                         },
                         {
                             path: '/c',
@@ -246,21 +246,21 @@ describe('azBuildMenu', () => {
                             meta: {
                                 menu: {
                                     title: 'c',
-                                    icon: 'c'
+                                    icon: 'c',
                                 },
-                                authorities: ['C']
-                            }
-                        }
-                    ]
-                }
+                                authorities: ['C'],
+                            },
+                        },
+                    ],
+                },
             }
             const expectedMenu = [
                 {
                     name: 'a',
                     icon: 'a',
                     path: '/a',
-                    selected: false
-                }
+                    selected: false,
+                },
             ]
             expect(azBuildMenu(store, router)).toEqual(expectedMenu)
         })
@@ -277,9 +277,9 @@ describe('azBuildMenu', () => {
                             meta: {
                                 menu: {
                                     title: 'a',
-                                    icon: 'a'
+                                    icon: 'a',
                                 },
-                                authorities: ['A', 'B']
+                                authorities: ['A', 'B'],
                             },
                             children: [
                                 {
@@ -288,10 +288,10 @@ describe('azBuildMenu', () => {
                                     meta: {
                                         menu: {
                                             title: 'a1',
-                                            icon: 'a1'
+                                            icon: 'a1',
                                         },
-                                        authorities: ['A']
-                                    }
+                                        authorities: ['A'],
+                                    },
                                 },
                                 {
                                     path: '/a2',
@@ -299,15 +299,15 @@ describe('azBuildMenu', () => {
                                     meta: {
                                         menu: {
                                             title: 'a2',
-                                            icon: 'a2'
+                                            icon: 'a2',
                                         },
-                                        authorities: ['B']
-                                    }
-                                }
-                            ]
-                        }
-                    ]
-                }
+                                        authorities: ['B'],
+                                    },
+                                },
+                            ],
+                        },
+                    ],
+                },
             }
             const expectedMenu = [
                 {
@@ -321,16 +321,16 @@ describe('azBuildMenu', () => {
                             name: 'a1',
                             icon: 'a1',
                             path: '/a1',
-                            selected: false
+                            selected: false,
                         },
                         {
                             name: 'a2',
                             icon: 'a2',
                             path: '/a2',
-                            selected: false
-                        }
-                    ]
-                }
+                            selected: false,
+                        },
+                    ],
+                },
             ]
             expect(azBuildMenu(store, router)).toEqual(expectedMenu)
         })

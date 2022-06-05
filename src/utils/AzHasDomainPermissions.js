@@ -2,7 +2,10 @@ function userHasDomainPermission(userDomainPermissions, requiredPermission, doma
     let hasPermission = false
     for (let i = 0; i < userDomainPermissions.length && !hasPermission; i++) {
         const userDomainPermission = userDomainPermissions[i]
-        if (userDomainPermission.domainName === requiredPermission && userDomainPermission.domainId.indexOf(domainId) >= 0) {
+        if (
+            userDomainPermission.domainName === requiredPermission &&
+            userDomainPermission.domainId.indexOf(domainId) >= 0
+        ) {
             hasPermission = true
             break
         }
@@ -21,7 +24,7 @@ function hasAccess(userDomainPermissions, requiredPermissions, domainId) {
     let hasPermission = false
     for (let i = 0; i < requiredPermissions.length && !hasPermission; i++) {
         const requiredPermission = requiredPermissions[i]
-        if(userHasDomainPermission(userDomainPermissions, requiredPermission, domainId)) {
+        if (userHasDomainPermission(userDomainPermissions, requiredPermission, domainId)) {
             hasPermission = true
             break
         }
@@ -29,6 +32,6 @@ function hasAccess(userDomainPermissions, requiredPermissions, domainId) {
     return hasPermission
 }
 
-export default function(userDomainPermissions, requiredPermissions, domainId) {
+export default function (userDomainPermissions, requiredPermissions, domainId) {
     return hasAccess(userDomainPermissions, requiredPermissions, domainId)
 }

@@ -23,7 +23,7 @@ export default {
             styleButtom: '',
             mensageButtom: '',
             timeout: 6000,
-            styleButtomClose: ''
+            styleButtomClose: '',
         }
     },
     methods: {
@@ -31,11 +31,11 @@ export default {
             const rollback = true
             await this.$store.commit(mutationTypes.ROLLBACK_ACTION, rollback)
             this.show = false
-        }
+        },
     },
-    created: function() {
+    created: function () {
         this.$store.watch(
-            state => state.loki.alert,
+            (state) => state.loki.alert,
             () => {
                 const alert = this.$store.state.loki.alert
                 if (alert.message !== '') {
@@ -52,7 +52,7 @@ export default {
                 }
             }
         )
-    }
+    },
 }
 </script>
 

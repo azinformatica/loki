@@ -8,5 +8,5 @@ export default {
         if (!hasDomainPermissions(userDomainPermissions, requiredPermissions, value.domainId)) {
             el.parentNode.removeChild(el)
         }
-    }
+    },
 }

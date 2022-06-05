@@ -8,7 +8,7 @@ import AzPdfDocumentViewer from './AzPdfDocumentViewer'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 
 jest.mock('pdfjs-dist/build/pdf', () => ({
-    getDocument: jest.fn(() => Promise.resolve(true))
+    getDocument: jest.fn(() => Promise.resolve(true)),
 }))
 
 jest.mock('pdfjs-dist/web/pdf_viewer.js', () => ({
@@ -19,23 +19,23 @@ jest.mock('pdfjs-dist/web/pdf_viewer.js', () => ({
                     source: {
                         currentPageNumber: 1,
                         currentScale: 1,
-                        pagesCount: 10
+                        pagesCount: 10,
                     },
                     scale: 1,
-                    pageNumber: 2
+                    pageNumber: 2,
                 })
-            )
+            ),
         })),
 
         PDFViewer: jest.fn(() => ({
-            setDocument: jest.fn()
+            setDocument: jest.fn(),
         })),
 
         PDFLinkService: jest.fn(() => ({
             setDocument: jest.fn(),
-            setViewer: jest.fn()
-        }))
-    }
+            setViewer: jest.fn(),
+        })),
+    },
 }))
 
 const localVue = createLocalVue()
@@ -59,9 +59,9 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 httpHeader,
                 downloadButton,
                 progressBar,
-                rotateButton
+                rotateButton,
             },
-            attachTo: document.body
+            attachTo: document.body,
         })
     })
 
@@ -78,7 +78,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             wrapper = shallowMount(AzPdfDocumentViewer, {
                 localVue,
                 propsData: { src, downloadButton },
-                attachTo: document.body
+                attachTo: document.body,
             })
             expect(wrapper.props().httpHeader).toEqual({})
         })
@@ -123,7 +123,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             wrapper = shallowMount(AzPdfDocumentViewer, {
                 localVue,
                 propsData: { src, httpHeader, downloadButton, progressBar },
-                attachTo: document.body
+                attachTo: document.body,
             })
             await wrapper.vm.$nextTick()
 
@@ -135,7 +135,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             wrapper = shallowMount(AzPdfDocumentViewer, {
                 localVue,
                 propsData: { src, httpHeader, downloadButton, progressBar },
-                attachTo: document.body
+                attachTo: document.body,
             })
             wrapper.destroy()
 
@@ -169,8 +169,8 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 source: {
                     currentPageNumber: 1,
                     currentScale: 1,
-                    pagesCount: 10
-                }
+                    pagesCount: 10,
+                },
             })
 
             expect(wrapper.vm.pagination).toEqual({ current: 1, total: 10 })
@@ -184,8 +184,8 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 source: {
                     currentPageNumber: 1,
                     currentScale: 1,
-                    pagesCount: 10
-                }
+                    pagesCount: 10,
+                },
             })
 
             expect(wrapper.vm.pagination).toEqual({ current: 1, total: 10 })
@@ -225,18 +225,18 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 localVue,
                 propsData: { src, httpHeader, downloadButton },
                 stubs: {
-                    Toolbar: { template: '<button @click=\'$emit("zoomIn")\' ></button>' }
-                }
+                    Toolbar: { template: '<button @click=\'$emit("zoomIn")\' ></button>' },
+                },
             })
             wrapper.setData({
                 scale: {
-                    current: 1
+                    current: 1,
                 },
                 pdf: {
                     viewer: {
-                        currentScale: 1
-                    }
-                }
+                        currentScale: 1,
+                    },
+                },
             })
             wrapper.find('button').trigger('click')
 
@@ -248,18 +248,18 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 localVue,
                 propsData: { src, httpHeader, downloadButton },
                 stubs: {
-                    Toolbar: { template: '<button @click=\'$emit("zoomOut")\' ></button>' }
-                }
+                    Toolbar: { template: '<button @click=\'$emit("zoomOut")\' ></button>' },
+                },
             })
             wrapper.setData({
                 scale: {
-                    current: 1
+                    current: 1,
                 },
                 pdf: {
                     viewer: {
-                        currentScale: 1
-                    }
-                }
+                        currentScale: 1,
+                    },
+                },
             })
             wrapper.find('button').trigger('click')
 
@@ -271,18 +271,18 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 localVue,
                 propsData: { src, httpHeader, downloadButton },
                 stubs: {
-                    Toolbar: { template: '<button @click=\'$emit("zoomOut")\' ></button>' }
-                }
+                    Toolbar: { template: '<button @click=\'$emit("zoomOut")\' ></button>' },
+                },
             })
             wrapper.setData({
                 scale: {
-                    current: 0.2
+                    current: 0.2,
                 },
                 pdf: {
                     viewer: {
-                        currentScale: 0.2
-                    }
-                }
+                        currentScale: 0.2,
+                    },
+                },
             })
             wrapper.find('button').trigger('click')
 
@@ -294,18 +294,18 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 localVue,
                 propsData: { src, httpHeader, downloadButton },
                 stubs: {
-                    Toolbar: { template: '<button @click=\'$emit("changeScaleType")\' ></button>' }
-                }
+                    Toolbar: { template: '<button @click=\'$emit("changeScaleType")\' ></button>' },
+                },
             })
             wrapper.setData({
                 scale: {
-                    default: 1
+                    default: 1,
                 },
                 pdf: {
                     viewer: {
-                        currentScale: 3
-                    }
-                }
+                        currentScale: 3,
+                    },
+                },
             })
             wrapper.find('button').trigger('click')
 
@@ -317,19 +317,19 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 localVue,
                 propsData: { src, httpHeader, downloadButton },
                 stubs: {
-                    Toolbar: { template: '<button @click=\'$emit("changeScaleType")\' ></button>' }
-                }
+                    Toolbar: { template: '<button @click=\'$emit("changeScaleType")\' ></button>' },
+                },
             })
             wrapper.setData({
                 scale: {
                     default: 1,
-                    type: 'page-fit'
+                    type: 'page-fit',
                 },
                 pdf: {
                     viewer: {
-                        currentScale: 3
-                    }
-                }
+                        currentScale: 3,
+                    },
+                },
             })
             wrapper.find('button').trigger('click')
 
@@ -341,15 +341,15 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 localVue,
                 propsData: { src, httpHeader, downloadButton },
                 stubs: {
-                    Toolbar: { template: '<button @click=\'$emit("rotate")\' ></button>' }
-                }
+                    Toolbar: { template: '<button @click=\'$emit("rotate")\' ></button>' },
+                },
             })
             wrapper.setData({
                 pdf: {
                     viewer: {
-                        pagesRotation: 0
-                    }
-                }
+                        pagesRotation: 0,
+                    },
+                },
             })
             wrapper.find('button').trigger('click')
 
@@ -363,8 +363,8 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 localVue,
                 propsData: { src, httpHeader, downloadButton },
                 stubs: {
-                    Toolbar: { template: '<button @click=\'$emit("download")\' ></button>' }
-                }
+                    Toolbar: { template: '<button @click=\'$emit("download")\' ></button>' },
+                },
             })
             wrapper.find('button').trigger('click')
 

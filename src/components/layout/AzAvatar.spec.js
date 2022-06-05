@@ -17,21 +17,21 @@ describe('AzAvatar', () => {
                 loki: {
                     user: {
                         photo: 'picture.jpg',
-                        name: 'Andrew Stuart Tanenbaum'
+                        name: 'Andrew Stuart Tanenbaum',
                     },
                     avatarActions: {
                         1: { title: 'Profile', icon: 'star', path: '/profile' },
                         2: { title: 'Settings', icon: 'settings', path: '/settings' },
-                        3: { title: 'More...', icon: 'more', path: '/more' }
-                    }
-                }
-            }
+                        3: { title: 'More...', icon: 'more', path: '/more' },
+                    },
+                },
+            },
         })
 
         wrapper = mount(AzAvatar, {
             localVue,
             vuetify: new Vuetify(),
-            store
+            store,
         })
     })
 

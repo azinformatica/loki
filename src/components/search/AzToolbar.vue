@@ -16,7 +16,7 @@ import mutationTypes from '../../store/mutation-types'
 export default {
     data() {
         return {
-            isClosed: true
+            isClosed: true,
         }
     },
     methods: {
@@ -29,8 +29,8 @@ export default {
         },
         closeAsideMenu() {
             this.$store.commit(mutationTypes.SET_ASIDE, true)
-        }
-    }
+        },
+    },
 }
 </script>
 

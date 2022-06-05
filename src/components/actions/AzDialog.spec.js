@@ -11,7 +11,7 @@ describe('AzDialog.spec.js', () => {
 
     beforeEach(() => {
         const slots = {
-            default: '<div>Sample Text</div>'
+            default: '<div>Sample Text</div>',
         }
         wrapper = mount(AzDialog, { localVue, slots, vuetify: new Vuetify() })
     })

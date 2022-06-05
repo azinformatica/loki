@@ -1,5 +1,13 @@
 <template>
-    <v-btn depressed :disabled="disabled" :color="color" :dark="isDark" :outlined="isOutline" :class="style" @click="$emit('click')">
+    <v-btn
+        depressed
+        :disabled="disabled"
+        :color="color"
+        :dark="isDark"
+        :outlined="isOutline"
+        :class="style"
+        @click="$emit('click')"
+    >
         <slot />
     </v-btn>
 </template>
@@ -10,24 +18,24 @@ export default {
     props: {
         active: {
             type: Boolean,
-            default: false
+            default: false,
         },
-        disabled:{
+        disabled: {
             type: Boolean,
-            default: false
+            default: false,
         },
         dark: {
             type: Boolean,
-            default: false
+            default: false,
         },
         hideBorder: {
             type: Boolean,
-            default: false
+            default: false,
         },
         cssClass: {
             type: String,
-            default: ''
-        }
+            default: '',
+        },
     },
     computed: {
         color() {
@@ -49,16 +57,16 @@ export default {
             let styleObj = {
                 'call-to-action': true,
                 'hide-border': this.hideBorder,
-                'btn-disabled-action': this.disabled
+                'btn-disabled-action': this.disabled,
             }
 
             if (this.cssClass) {
                 const classes = this.cssClass.split(' ')
-                classes.forEach(clazz => (styleObj[clazz] = true))
+                classes.forEach((clazz) => (styleObj[clazz] = true))
             }
             return styleObj
-        }
-    }
+        },
+    },
 }
 </script>
 

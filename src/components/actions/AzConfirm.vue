@@ -21,17 +21,17 @@ export default {
     props: {
         labelConfirm: {
             type: String,
-            default: 'Sim'
+            default: 'Sim',
         },
         labelDecline: {
             type: String,
-            default: 'Não'
+            default: 'Não',
         },
         maxWidth: {
             type: Number,
-            default: 290
-        }
-    }
+            default: 290,
+        },
+    },
 }
 </script>
 

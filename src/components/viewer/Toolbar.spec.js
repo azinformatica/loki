@@ -14,7 +14,7 @@ describe('Toolbar.spec.js', () => {
         downloadButton = true
         pagination = {
             current: 1,
-            total: 3
+            total: 3,
         }
         rotateButton = true
         scaleType = 'page-fit'
@@ -25,8 +25,8 @@ describe('Toolbar.spec.js', () => {
                 downloadButton,
                 pagination,
                 rotateButton,
-                scaleType
-            }
+                scaleType,
+            },
         })
     })
 
@@ -101,8 +101,8 @@ describe('Toolbar.spec.js', () => {
             wrapper = shallowMount(Toolbar, {
                 localVue,
                 propsData: {
-                    scaleType: 'page-width'
-                }
+                    scaleType: 'page-width',
+                },
             })
             changeScaleType = wrapper.find('[data-test="changeScaleType"]')
             expect(changeScaleType.html()).toContain('fullscreen_exit')

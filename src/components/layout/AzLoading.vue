@@ -12,20 +12,20 @@
 </template>
 
 <script>
-    export default {
-        name: 'AzLoading',
-        computed: {
-            isLoading() {
-                return this.$store.state.loki.isLoading
-            },
-            loadingMessage() {
-                return this.$store.state.loki.loadingMessage
-            }
-        }
-    }
+export default {
+    name: 'AzLoading',
+    computed: {
+        isLoading() {
+            return this.$store.state.loki.isLoading
+        },
+        loadingMessage() {
+            return this.$store.state.loki.loadingMessage
+        },
+    },
+}
 </script>
 
 <style lang="stylus">
-    .az-loading
-        z-index 100
+.az-loading
+    z-index 100
 </style>

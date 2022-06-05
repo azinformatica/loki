@@ -10,18 +10,18 @@ export default {
     props: {
         route: {
             type: Object,
-            required: true
+            required: true,
         },
         text: {
             type: String,
-            required: true
-        }
+            required: true,
+        },
     },
     methods: {
         back() {
             this.$router.push(this.route)
-        }
-    }
+        },
+    },
 }
 </script>
 

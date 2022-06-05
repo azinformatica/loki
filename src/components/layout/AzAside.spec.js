@@ -15,15 +15,15 @@ describe('AzAside', () => {
         store = new Vuex.Store({
             state: {
                 loki: {
-                    asideClosed: true
-                }
-            }
+                    asideClosed: true,
+                },
+            },
         })
 
         wrapper = shallowMount(AzAside, {
             localVue,
             store,
-            vuetify: new Vuetify()
+            vuetify: new Vuetify(),
         })
     })
 

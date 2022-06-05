@@ -7,14 +7,15 @@ const localVue = createLocalVue()
 Vue.use(Vuetify)
 
 describe('AzConfirm.spec.js', () => {
-    let wrapper
+    let wrapper, vuetify
 
     beforeEach(() => {
+        vuetify = new Vuetify()
         const propsData = {
             labelConfirm: 'Confirm',
-            labelDecline: 'Decline'
+            labelDecline: 'Decline',
         }
-        wrapper = mount(AzConfirm, { localVue, propsData, vuetify: new Vuetify() })
+        wrapper = mount(AzConfirm, { localVue, vuetify, propsData })
     })
 
     it('Labels are properly rendered', () => {
@@ -27,16 +28,10 @@ describe('AzConfirm.spec.js', () => {
     })
 
     it('Events are being emmited', () => {
-        wrapper
-            .findAll('button')
-            .at(0)
-            .trigger('click.native')
+        wrapper.findAll('button').at(0).trigger('click.native')
         expect(wrapper.emitted().onDecline).toBeTruthy()
 
-        wrapper
-            .findAll('button')
-            .at(1)
-            .trigger('click.native')
+        wrapper.findAll('button').at(1).trigger('click.native')
         expect(wrapper.emitted().onConfirm).toBeTruthy()
     })
 })

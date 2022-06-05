@@ -25,7 +25,14 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-list-group v-else v-model="menu.expanded" no-action :prepend-icon="menu.icon" class="menu-item" @click="open()">
+                <v-list-group
+                    v-else
+                    v-model="menu.expanded"
+                    no-action
+                    :prepend-icon="menu.icon"
+                    class="menu-item"
+                    @click="open()"
+                >
                     <template v-slot:activator>
                         <v-list-item-content>
                             <v-list-item-title>{{ menu.name }}</v-list-item-title>
@@ -86,7 +93,7 @@
 </template>
 
 <script>
-    import mutationTypes from '../../store/mutation-types'
+import mutationTypes from '../../store/mutation-types'
 export default {
     computed: {
         menuActions() {
@@ -97,7 +104,7 @@ export default {
         },
         avatarActions() {
             return this.$store.state.loki.avatarActions
-        }
+        },
     },
     mounted() {
         const currentActiveMenu = this.getCurrentActiveMenu()
@@ -148,10 +155,10 @@ export default {
         submenuStyle(submenu) {
             return {
                 'az-submenu-item': true,
-                'active-menu': this.isMenuItemActive(submenu)
+                'active-menu': this.isMenuItemActive(submenu),
             }
-        }
-    }
+        },
+    },
 }
 </script>
 
