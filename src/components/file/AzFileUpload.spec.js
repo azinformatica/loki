@@ -6,11 +6,11 @@ const localVue = createLocalVue()
 localVue.use(Vuex)
 
 describe('AzFileUpload.spec.js', () => {
-    let wrapper, props, store, actions
+    let wrapper, propsData, store, actions
 
     beforeEach(() => {
         actions = {
-            uploadFile: jest.fn()
+            uploadFile: jest.fn(),
         }
 
         store = new Vuex.Store({
@@ -19,19 +19,18 @@ describe('AzFileUpload.spec.js', () => {
                     uploadFileProgress: {},
                     uploadedFiles: [],
                     file: {
-                        maxSize: '16Mb'
-                    }
-                }
+                        maxSize: '16Mb',
+                    },
+                },
             },
-            actions
+            actions,
         })
 
-        props = {
-            repository: 'repo1'
+        propsData = {
+            repository: 'repo1',
         }
 
-        wrapper = shallowMount(AzFileUpload, { localVue, store, props })
-        wrapper.setProps(props)
+        wrapper = shallowMount(AzFileUpload, { localVue, store, propsData })
     })
 
     it('Props are defined', () => {
@@ -72,12 +71,12 @@ describe('AzFileUpload.spec.js', () => {
                 kind: 'file',
                 getAsFile() {
                     return { name: 'file1' }
-                }
+                },
             },
             1: {
                 name: 'file2',
-                kind: 'notfile'
-            }
+                kind: 'notfile',
+            },
         }
         wrapper.vm.onDropFiles(droppedItems)
 
@@ -87,7 +86,7 @@ describe('AzFileUpload.spec.js', () => {
 
     it('Opens the file selector', () => {
         const mockedInput = {
-            click: jest.fn()
+            click: jest.fn(),
         }
         document.getElementById = jest.fn().mockReturnValue(mockedInput)
         wrapper.vm.openFileSelector()

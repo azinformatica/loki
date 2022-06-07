@@ -16,12 +16,12 @@ describe('AzSearch.spec.js', () => {
         store = new Vuex.Store({
             state: {
                 loki: {
-                    asideClosed: true
-                }
+                    asideClosed: true,
+                },
             },
             mutations: {
-                [mutationTypes.SET_ASIDE]: jest.fn()
-            }
+                [mutationTypes.SET_ASIDE]: jest.fn(),
+            },
         })
 
         wrapper = shallowMount(AzSearch, {
@@ -29,8 +29,8 @@ describe('AzSearch.spec.js', () => {
             store,
             propsData: {
                 filter: {},
-                simpleSearchPlaceholder: 'Informe o objeto'
-            }
+                simpleSearchPlaceholder: 'Informe o objeto',
+            },
         })
     })
 
@@ -63,8 +63,8 @@ describe('AzSearch.spec.js', () => {
             store,
             propsData: {
                 filter: {},
-                simpleSearchPlaceholder: 'Informe o objeto'
-            }
+                simpleSearchPlaceholder: 'Informe o objeto',
+            },
         })
 
         jest.spyOn(wrapper.vm, 'advancedSearch')

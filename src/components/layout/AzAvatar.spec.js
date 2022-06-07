@@ -20,23 +20,23 @@ describe('AzAvatar.spec.js', () => {
                     user: {
                         photo: 'picture.jpg',
                         name: 'Andrew Stuart Tanenbaum',
-                        authorities: []
+                        authorities: [],
                     },
                     avatarActions: {
                         1: { title: 'Profile', icon: 'star', path: '/profile' },
                         2: { title: 'Settings', icon: 'settings', path: '/settings' },
-                        3: { title: 'More...', icon: 'more', path: '/more' }
-                    }
-                }
-            }
+                        3: { title: 'More...', icon: 'more', path: '/more' },
+                    },
+                },
+            },
         })
 
         wrapper = mount(AzAvatar, {
             localVue,
             store,
             directives: {
-                azAuth
-            }
+                azAuth,
+            },
         })
     })
 

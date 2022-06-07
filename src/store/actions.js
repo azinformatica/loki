@@ -12,15 +12,15 @@ export default {
         const hashName = filename + new Date().getTime()
         commit(mutationTypes.SET_UPLOAD_FILE_PROGRESS, { hashName, filename, progress: 0 })
 
-        const onUploadProgress = progressEvent => {
+        const onUploadProgress = (progressEvent) => {
             const progress = parseInt(Math.round((progressEvent.loaded * 100) / progressEvent.total))
             commit(mutationTypes.SET_UPLOAD_FILE_PROGRESS, { hashName, filename, progress })
         }
         const options = {
             headers: {
-                'Content-Type': 'multipart/form-data'
+                'Content-Type': 'multipart/form-data',
             },
-            onUploadProgress: onUploadProgress
+            onUploadProgress: onUploadProgress,
         }
 
         try {
@@ -39,7 +39,7 @@ export default {
         const url = `${flowbeeAccessParams.url}/${documentId}/assinaturas/digitais/iniciar`
         const headers = {
             'Content-Type': 'text/plain',
-            ...flowbeeAccessParams.headers
+            ...flowbeeAccessParams.headers,
         }
 
         const { data } = await axios.post(url, certificateContent, { headers })
@@ -54,30 +54,30 @@ export default {
         const flowbeeAccessParams = getFlowbeeAccessParams(context.state.flowbee.accessToken)
         const url = `${flowbeeAccessParams.url}/${documentId}/assinaturas/digitais/finalizar`
         const headers = {
-            ...flowbeeAccessParams.headers
+            ...flowbeeAccessParams.headers,
         }
         const requestData = {
             assinatura: signHash,
             assinaturaTemporariaId: temporarySubscription,
             rubricaBase64: rubricBase64,
-            participacao: participation
+            participacao: participation,
         }
 
         const { data } = await axios.post(url, requestData, { headers })
 
         return data
-    }
+    },
 }
 
 function getFlowbeeAccessParams(accessToken) {
     if (accessToken) {
         return {
             url: '/flowbee/api/public/documentos',
-            headers: { ...accessToken }
+            headers: { ...accessToken },
         }
     } else {
         return {
-            url: '/flowbee/api/documentos'
+            url: '/flowbee/api/documentos',
         }
     }
 }

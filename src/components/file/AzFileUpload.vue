@@ -29,28 +29,28 @@ export default {
     props: {
         accept: {
             type: String,
-            default: '*'
+            default: '*',
         },
         repository: {
             type: String,
-            required: true
+            required: true,
         },
         thumbnail: {
             type: Boolean,
-            default: false
+            default: false,
         },
         height: {
             type: String,
-            default: '200px'
+            default: '200px',
         },
         multiple: {
             type: Boolean,
-            default: true
-        }
+            default: true,
+        },
     },
     data() {
         return {
-            uploadFieldName: 'file'
+            uploadFieldName: 'file',
         }
     },
     methods: {
@@ -68,7 +68,7 @@ export default {
         createPayload(file) {
             return {
                 formData: this.createFormData(file),
-                filename: file.name
+                filename: file.name,
             }
         },
         getMaxSizeConfig() {
@@ -87,7 +87,7 @@ export default {
                 return
             }
             const files = []
-            Object.keys(eventItems).forEach(key => {
+            Object.keys(eventItems).forEach((key) => {
                 const item = eventItems[key]
                 if (item.kind === 'file') {
                     files.push(item.getAsFile())
@@ -106,7 +106,7 @@ export default {
             document.getElementById('azFileSelector').click()
         },
         uploadFiles(fileList) {
-            Array.from(Array(fileList.length).keys()).map(x => {
+            Array.from(Array(fileList.length).keys()).map((x) => {
                 const file = fileList[x]
                 if (this.isFileBiggerThanExpected(file)) {
                     this.throwFileExceedMaxLimitSizeEvent(file)
@@ -122,10 +122,10 @@ export default {
         throwFileExceedMaxLimitSizeEvent(file) {
             this.$emit('error', {
                 type: 'FILE_EXCEEDED_MAX_SIZE_LIMIT',
-                filename: file.name
+                filename: file.name,
             })
-        }
-    }
+        },
+    },
 }
 </script>
 

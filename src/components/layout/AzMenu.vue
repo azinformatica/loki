@@ -2,13 +2,7 @@
     <div class="az-menu">
         <v-list subheader>
             <div v-for="menu in menuActions" :key="menu.name">
-                <v-list-tile
-                    active-class="active-menu"
-                    dark
-                    v-if="!menu.children"
-                    :to="menu.path"
-                    class="menu-item"
-                >
+                <v-list-tile active-class="active-menu" dark v-if="!menu.children" :to="menu.path" class="menu-item">
                     <v-list-tile-action>
                         <v-tooltip right color="dark-grey" v-if="asideClosed">
                             <v-icon slot="activator">{{ menu.icon }}</v-icon>
@@ -87,7 +81,7 @@ export default {
         },
         avatarActions() {
             return this.$store.state.loki.avatarActions
-        }
+        },
     },
     mounted() {
         const currentActiveMenu = this.getCurrentActiveMenu()
@@ -135,10 +129,10 @@ export default {
         submenuStyle(submenu) {
             return {
                 'az-submenu__tile': true,
-                'active-menu': this.isMenuItemActive(submenu)
+                'active-menu': this.isMenuItemActive(submenu),
             }
-        }
-    }
+        },
+    },
 }
 </script>
 <style lang="stylus">

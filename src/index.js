@@ -64,7 +64,7 @@ Vue.use(money, {
     prefix: 'R$ ',
     suffix: '',
     precision: 2,
-    masked: true
+    masked: true,
 })
 Vue.prototype.moment = moment
 
@@ -126,10 +126,10 @@ const lokiPlugin = {
 
         store.commit(mutationTypes.SET_MENU_ACTIONS, buildMenu(store, router))
 
-        router.afterEach(to => {
+        router.afterEach((to) => {
             store.commit(mutationTypes.SET_CURRENT_PAGE, to)
         })
-    }
+    },
 }
 
 export default lokiPlugin
@@ -143,7 +143,7 @@ const filters = {
     azEnum,
     azNumber,
     azPhone,
-    azTitleCase
+    azTitleCase,
 }
 
 export { lokiPlugin, filters, AzCurrency, AzSearchUrlBuilder, AzSoundex, buildMenu, hasPermissions, AzDigitalSignature }

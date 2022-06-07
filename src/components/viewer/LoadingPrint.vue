@@ -20,13 +20,13 @@ export default {
     props: {
         isPrinting: {
             type: Boolean,
-            default: false
+            default: false,
         },
         printProgress: {
             type: Number || String,
-            default: 0
-        }
-    }
+            default: 0,
+        },
+    },
 }
 </script>
 

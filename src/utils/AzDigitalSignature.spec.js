@@ -7,7 +7,7 @@ describe('AzDigitalSignature', () => {
         pkiMock = {
             init({ ready }) {
                 return ready()
-            }
+            },
         }
         assinatura = new AzDigitalSignature({ pki: pkiMock })
         const resposta = await assinatura.loadWebPki()
@@ -19,7 +19,7 @@ describe('AzDigitalSignature', () => {
         pkiMock = {
             init({ notInstalled }) {
                 return notInstalled()
-            }
+            },
         }
         assinatura = new AzDigitalSignature({ pki: pkiMock })
         const resposta = await assinatura.loadWebPki()
@@ -31,7 +31,7 @@ describe('AzDigitalSignature', () => {
         pkiMock = {
             init({ defaultError }) {
                 return defaultError('erro ao iniciar')
-            }
+            },
         }
         assinatura = new AzDigitalSignature({ pki: pkiMock })
 
@@ -44,14 +44,14 @@ describe('AzDigitalSignature', () => {
                 thumbprint: '1',
                 subjectName: 'Certificado',
                 issuerName: 'ICP BR',
-                validityEnd: new Date('Thu Jan 12 3000 18:20:00 GMT-0400')
+                validityEnd: new Date('Thu Jan 12 3000 18:20:00 GMT-0400'),
             },
             {
                 thumbprint: '2',
                 subjectName: 'Certificado 2',
                 issuerName: 'ICP BR',
-                validityEnd: new Date('Thu Jan 12 2017 18:20:00 GMT-0400')
-            }
+                validityEnd: new Date('Thu Jan 12 2017 18:20:00 GMT-0400'),
+            },
         ]
         pkiMock = {
             listCertificates() {
@@ -59,9 +59,9 @@ describe('AzDigitalSignature', () => {
                     success(fn) {
                         fn(listaCertificados)
                     },
-                    error() {}
+                    error() {},
                 }
-            }
+            },
         }
         assinatura = new AzDigitalSignature({ pki: pkiMock })
         const certificados = await assinatura.listCertificates()
@@ -80,9 +80,9 @@ describe('AzDigitalSignature', () => {
                     success(fn) {
                         fn(`chave publica do certificado ${certificado}`)
                     },
-                    error() {}
+                    error() {},
                 }
-            }
+            },
         }
         assinatura = new AzDigitalSignature({ pki: pkiMock })
         const chave = await assinatura._readCertificate(123)
@@ -97,9 +97,9 @@ describe('AzDigitalSignature', () => {
                     success(fn) {
                         fn('hash de assinatura')
                     },
-                    error() {}
+                    error() {},
                 }
-            }
+            },
         }
         assinatura = new AzDigitalSignature({ pki: pkiMock })
         const hash = await assinatura._sign({ thumbprint: '1', hash: 'hash backend do lacuna', algoritmo: 'algum' })
@@ -109,7 +109,7 @@ describe('AzDigitalSignature', () => {
 
     it('Deve redirecionar para página de instalação do pki', async () => {
         pkiMock = {
-            redirectToInstallPage: jest.fn()
+            redirectToInstallPage: jest.fn(),
         }
         assinatura = new AzDigitalSignature({ pki: pkiMock })
         assinatura.redirectToInstallWebPki()

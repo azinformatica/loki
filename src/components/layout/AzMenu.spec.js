@@ -26,7 +26,7 @@ describe('AzMenu.spec.js', () => {
                             name: 'Item 1',
                             icon: 'item1',
                             path: '/item1',
-                            selected: false
+                            selected: false,
                         },
                         {
                             name: 'Item 2',
@@ -38,25 +38,25 @@ describe('AzMenu.spec.js', () => {
                                     name: 'Item 2.1',
                                     icon: 'item21',
                                     path: '/item2/item21',
-                                    selected: false
+                                    selected: false,
                                 },
                                 {
                                     name: 'Item 2.2',
                                     icon: 'item22',
                                     path: '/item2/item22',
-                                    selected: false
-                                }
-                            ]
+                                    selected: false,
+                                },
+                            ],
                         },
                         {
                             name: 'Item 3',
                             icon: 'item3',
                             path: '/item3',
-                            selected: false
-                        }
-                    ]
-                }
-            }
+                            selected: false,
+                        },
+                    ],
+                },
+            },
         })
 
         wrapper = shallowMount(AzMenu, { localVue, store, router })
@@ -65,7 +65,7 @@ describe('AzMenu.spec.js', () => {
     it('Computed properties are rendered properly', () => {
         const renderedHtml = expect(wrapper.html())
 
-        wrapper.vm.menuActions.map(action => {
+        wrapper.vm.menuActions.map((action) => {
             renderedHtml.toContain(action.name)
             renderedHtml.toContain(action.icon)
             //renderedHtml.toContain(action.path)

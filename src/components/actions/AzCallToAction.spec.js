@@ -14,7 +14,7 @@ describe('AzCallToAction.spec.js', () => {
             active: true,
             dark: true,
             hideBorder: true,
-            cssClass: 'myCssClass'
+            cssClass: 'myCssClass',
         }
 
         wrapper = shallowMount(AzCallToActionn, { localVue, propsData })

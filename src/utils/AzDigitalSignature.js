@@ -37,7 +37,7 @@ export default class AzDigitalSignature {
             this.pki.init({
                 ready: () => resolve(true),
                 notInstalled: () => resolve(false),
-                defaultError: message => reject(message)
+                defaultError: (message) => reject(message),
             })
         })
     }
@@ -50,11 +50,11 @@ export default class AzDigitalSignature {
         return new Promise((resolve, reject) => {
             this.pki
                 .listCertificates()
-                .success(certificates => {
+                .success((certificates) => {
                     const formatedCertificates = this._formatCertificatesTitles(certificates)
                     resolve(formatedCertificates)
                 })
-                .error(error => reject(error))
+                .error((error) => reject(error))
         })
     }
 
@@ -74,7 +74,7 @@ export default class AzDigitalSignature {
         const signHash = await this._sign({
             thumbprint: certificateThumbPrint,
             hash: paramsToSign.hashParaAssinar,
-            algorithm: paramsToSign.algoritmoHash
+            algorithm: paramsToSign.algoritmoHash,
         })
 
         return await this._finishSign(documentId, signHash, paramsToSign, rubricBase64, participation)
@@ -94,14 +94,14 @@ export default class AzDigitalSignature {
             signHash,
             temporarySubscription: paramsToSign.assinaturaTemporariaId,
             rubricBase64,
-            participation
+            participation,
         })
     }
 
     async _preprareDocumentToSign(certificateContent, documentId) {
         return this.store.dispatch(actionTypes.SIGNATURE.DIGITAL.START, {
             certificateContent,
-            documentId
+            documentId,
         })
     }
 
@@ -109,8 +109,8 @@ export default class AzDigitalSignature {
         return new Promise((resolve, reject) => {
             this.pki
                 .readCertificate(thumbprint)
-                .success(informacoesPublicas => resolve(informacoesPublicas))
-                .error(error => reject(error))
+                .success((informacoesPublicas) => resolve(informacoesPublicas))
+                .error((error) => reject(error))
         })
     }
 
@@ -120,15 +120,15 @@ export default class AzDigitalSignature {
                 .signHash({
                     thumbprint,
                     hash,
-                    digestAlgorithm: algorithm
+                    digestAlgorithm: algorithm,
                 })
-                .success(signatureHash => resolve(signatureHash))
-                .error(error => reject(error))
+                .success((signatureHash) => resolve(signatureHash))
+                .error((error) => reject(error))
         })
     }
 
     _formatCertificatesTitles(certificados) {
-        certificados.forEach(certificado => {
+        certificados.forEach((certificado) => {
             if (new Date() > certificado.validityEnd) {
                 certificado.prettyName = `[EXPIRADO] ${certificado.subjectName} (emitido por ${certificado.issuerName})`
             } else {

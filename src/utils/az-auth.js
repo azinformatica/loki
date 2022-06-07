@@ -25,6 +25,6 @@ function hasAccess(userPermissions, requiredPermissions) {
     return hasPermission
 }
 
-export default function(userPermissions, requiredPermissions) {
+export default function (userPermissions, requiredPermissions) {
     return hasAccess(userPermissions, requiredPermissions)
 }

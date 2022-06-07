@@ -45,8 +45,8 @@ export default {
     props: {
         color: {
             type: String,
-            default: '#777'
-        }
+            default: '#777',
+        },
     },
     computed: {
         userPhoto() {
@@ -63,7 +63,7 @@ export default {
         },
         plan() {
             return this.$store.state.loki.user.plan
-        }
+        },
     },
     methods: {
         redirectTo(item) {
@@ -71,8 +71,8 @@ export default {
         },
         logout() {
             window.location.href = this.$store.state.loki.product.logoutUrl
-        }
-    }
+        },
+    },
 }
 </script>
 <style lang="stylus">

@@ -27,8 +27,8 @@ import mutationTypes from '../../store/mutation-types'
 export default {
     props: {
         width: {
-            default: 200
-        }
+            default: 200,
+        },
     },
     methods: {
         toogle() {
@@ -36,14 +36,14 @@ export default {
         },
         change(closed) {
             this.$store.commit(mutationTypes.SET_ASIDE, closed)
-        }
+        },
     },
     computed: {
         asideClosed: {
             get() {
                 return this.$store.state.loki.asideClosed
             },
-            set() {}
+            set() {},
         },
         drawer: {
             get() {
@@ -51,9 +51,9 @@ export default {
             },
             set(hide) {
                 this.$store.commit(mutationTypes.SET_ASIDE_HIDE, hide)
-            }
-        }
-    }
+            },
+        },
+    },
 }
 </script>
 <style lang="stylus">

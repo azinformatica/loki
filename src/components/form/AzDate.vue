@@ -1,5 +1,5 @@
 <template>
-    <div style="display: flex;">
+    <div style="display: flex">
         <div v-bind:style="dateTime ? 'width: 60%' : 'width: 100%'">
             <v-dialog
                 ref="menu"
@@ -85,38 +85,38 @@ export default {
         dateFormat: {
             type: String,
             default: 'DD/MM/YYYY',
-            validator: function(value) {
+            validator: function (value) {
                 return ['DD/MM/YYYY', 'MM/DD/YYYY'].indexOf(value) !== -1
-            }
+            },
         },
         dateTime: {
             type: Boolean,
-            default: false
+            default: false,
         },
         value: {
             type: String,
-            default: ''
+            default: '',
         },
         label: {
             type: String,
-            default: ''
+            default: '',
         },
         isRequired: {
             type: Boolean,
-            default: false
+            default: false,
         },
         nameDate: {
             type: String,
-            default: ''
+            default: '',
         },
         nameHour: {
             type: String,
-            default: ''
+            default: '',
         },
         isDisabled: {
             type: Boolean,
-            default: false
-        }
+            default: false,
+        },
     },
     inject: ['$validator'],
     data() {
@@ -129,8 +129,8 @@ export default {
             dialogTime: false,
             reverseDateFormatObj: {
                 'DD/MM/YYYY': 'YYYY-MM-DD',
-                'MM/DD/YYYY': 'YYYY-DD-MM'
-            }
+                'MM/DD/YYYY': 'YYYY-DD-MM',
+            },
         }
     },
     computed: {
@@ -139,22 +139,22 @@ export default {
         },
         currentLanguage() {
             return this.$vuetify.lang.current
-        }
+        },
     },
     watch: {
         value(val) {
             this.updateDateTimeByModel(val)
-        }
+        },
     },
     methods: {
         getFormattedDate(day, month, year) {
             const getFnDateFormat = {
-                'DD/MM/YYYY': function() {
+                'DD/MM/YYYY': function () {
                     return `${day}${month}${year}`
                 },
-                'MM/DD/YYYY': function() {
+                'MM/DD/YYYY': function () {
                     return `${month}${day}${year}`
-                }
+                },
             }
 
             return getFnDateFormat[this.dateFormat]()
@@ -182,20 +182,20 @@ export default {
         },
         getDayMonthYearFromDateString(date) {
             const getFnDateFormat = {
-                'DD/MM/YYYY': function() {
+                'DD/MM/YYYY': function () {
                     return {
                         day: date.substring(0, 2),
                         month: date.substring(2, 4),
-                        year: date.substring(4, 8)
+                        year: date.substring(4, 8),
                     }
                 },
-                'MM/DD/YYYY': function() {
+                'MM/DD/YYYY': function () {
                     return {
                         day: date.substring(2, 4),
                         month: date.substring(0, 2),
-                        year: date.substring(4, 8)
+                        year: date.substring(4, 8),
                     }
-                }
+                },
             }
 
             return getFnDateFormat[this.dateFormat]()
@@ -359,9 +359,7 @@ export default {
             return dateTime + offset
         },
         getOffsetFromCurrentDateTime(dateTime) {
-            return this.moment(dateTime)
-                .tz(this.$store.state.loki.timezone)
-                .format('Z')
+            return this.moment(dateTime).tz(this.$store.state.loki.timezone).format('Z')
         },
         selectContentInputHour() {
             this.$nextTick(() => {
@@ -370,8 +368,8 @@ export default {
                     input.setSelectionRange(0, 5)
                 }
             })
-        }
-    }
+        },
+    },
 }
 </script>
 

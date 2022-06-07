@@ -33,32 +33,32 @@ export default {
     props: {
         background: {
             type: String,
-            default: '#ccc'
+            default: '#ccc',
         },
         height: {
-            type: String
+            type: String,
         },
         images: {
-            default: []
+            default: [],
         },
         width: {
-            type: String
+            type: String,
         },
         enableZoom: {
             type: Boolean,
-            default: false
+            default: false,
         },
         initialZoom: {
             type: Number,
-            default: 75
-        }
+            default: 75,
+        },
     },
     data() {
         return {
             currentPage: 1,
             pageIndicatorPosition: {},
             showPageIndicator: false,
-            zoom: this.initialZoom
+            zoom: this.initialZoom,
         }
     },
     computed: {
@@ -67,7 +67,7 @@ export default {
                 width: this.width ? this.width : 'auto',
                 height: this.height ? this.height : 'auto',
                 'overflow-x': 'scroll',
-                'background-color': this.background
+                'background-color': this.background,
             }
         },
         isZoomEnabled() {
@@ -79,7 +79,7 @@ export default {
                 pages.push({
                     image,
                     index,
-                    elementId: `az-document-viewer-page-${index}`
+                    elementId: `az-document-viewer-page-${index}`,
                 })
             })
             return pages
@@ -89,7 +89,7 @@ export default {
         },
         totalPages() {
             return this.pages.length
-        }
+        },
     },
     mounted() {
         this.createWindowListeners()
@@ -138,8 +138,8 @@ export default {
         },
         zoomOut() {
             this.zoom -= INCREASE_ZOOM_BY
-        }
-    }
+        },
+    },
 }
 </script>
 

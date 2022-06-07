@@ -18,32 +18,32 @@ export default {
     props: {
         enumObject: {
             type: Object,
-            required: true
+            required: true,
         },
         label: {
             type: String,
-            default: ''
+            default: '',
         },
         name: {
             type: String,
-            default: ''
+            default: '',
         },
         placeholder: {
             type: String,
-            default: ''
+            default: '',
         },
         isRequired: {
             type: Boolean,
-            default: false
+            default: false,
         },
         value: {
-            required: true
-        }
+            required: true,
+        },
     },
     inject: ['$validator'],
     data() {
         return {
-            combo: []
+            combo: [],
         }
     },
     beforeMount() {
@@ -64,7 +64,7 @@ export default {
             }
 
             return _.union([{ text: 'Selecione', value: null }], novoArray)
-        }
-    }
+        },
+    },
 }
 </script>

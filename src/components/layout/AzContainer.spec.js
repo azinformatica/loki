@@ -12,7 +12,7 @@ describe('AzContainer.spec.js', () => {
     beforeEach(() => {
         wrapper = shallowMount(AzContainer, {
             localVue,
-            slots: { default: '**Default Content**' }
+            slots: { default: '**Default Content**' },
         })
     })
 

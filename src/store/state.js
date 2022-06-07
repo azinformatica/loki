@@ -6,32 +6,32 @@ export default {
         symbolLogo: '',
         version: '',
         copywrite: '',
-        logoutUrl: '/logout'
+        logoutUrl: '/logout',
     },
 
     page: {
         title: '',
-        subtitle: ''
+        subtitle: '',
     },
 
     user: {
         name: '',
         fullName: '',
-        photo: ''
+        photo: '',
     },
 
     asideClosed: false,
     asideHide: true,
     avatarActions: {
         1: { title: 'Profile', icon: 'person', path: '/profile' },
-        2: { title: 'Settings', icon: 'settings', path: '/settings' }
+        2: { title: 'Settings', icon: 'settings', path: '/settings' },
     },
     menuActions: [],
     alert: {},
 
     file: {
         api: '/public/arquivos',
-        maxSize: '16Mb'
+        maxSize: '16Mb',
     },
     uploadFileProgress: {},
     uploadedFiles: [],
@@ -48,11 +48,11 @@ export default {
         refreshTimeout: 30 * 1000,
         activeFilter: 'Todas',
         filters: ['Todas', 'Lidas', 'Não Lidas'],
-        title: 'Notificações'
+        title: 'Notificações',
     },
 
     flowbee: {
         accessToken: null,
-        license: null
-    }
+        license: null,
+    },
 }

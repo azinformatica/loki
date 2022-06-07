@@ -20,7 +20,7 @@ export default {
         },
         loadingMessage() {
             return this.$store.state.loki.loadingMessage
-        }
-    }
+        },
+    },
 }
 </script>

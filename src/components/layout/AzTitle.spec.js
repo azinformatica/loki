@@ -17,10 +17,10 @@ describe('AzTitle.spec.js', () => {
                 loki: {
                     page: {
                         title: '***Page Title***',
-                        subtitle: '***Page SubTitle***'
-                    }
-                }
-            }
+                        subtitle: '***Page SubTitle***',
+                    },
+                },
+            },
         })
 
         wrapper = shallowMount(AzTitle, { localVue, store })

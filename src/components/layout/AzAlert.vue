@@ -14,12 +14,12 @@ export default {
         return {
             text: '',
             color: '',
-            show: false
+            show: false,
         }
     },
-    created: function() {
+    created: function () {
         this.$store.watch(
-            state => state.loki.alert,
+            (state) => state.loki.alert,
             () => {
                 const alert = this.$store.state.loki.alert
                 if (alert.message !== '') {
@@ -29,6 +29,6 @@ export default {
                 }
             }
         )
-    }
+    },
 }
 </script>
