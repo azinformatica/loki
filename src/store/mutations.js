@@ -183,4 +183,12 @@ export default {
     [mutationTypes.AUTO_SAVING.SET_AUTO_SAVED_DESCRIPTION](state, message) {
         state.autoSave.autoSavedMessage = message
     },
+
+    [mutationTypes.FLOWBEE.SET_LACUNA_LICENSE](state, url) {
+        state.flowbee.license = url
+    },
+
+    [mutationTypes.FLOWBEE.SET_ACCESS_TOKEN](state, token) {
+        state.flowbee.accessToken = token
+    },
 }

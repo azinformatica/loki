@@ -43,10 +43,10 @@ export default {
     },
     mounted() {
         this.start()
-        window.addEventListener('resize', this.updateScaleType)
+        this.registerEventListener()
     },
     destroyed() {
-        window.removeEventListener('resize', this.updateScaleType)
+        this.removeEventListener()
     },
     watch: {
         src() {
@@ -61,6 +61,14 @@ export default {
             this.createPdfLinkService()
             this.createPdfViewer()
             this.renderDocument()
+        },
+        registerEventListener() {
+            window.addEventListener('resize', this.updateScaleType)
+            window.addEventListener('keydown', this.handleKeydownEvent)
+        },
+        removeEventListener() {
+            window.removeEventListener('resize', this.updateScaleType)
+            window.removeEventListener('keydown', this.handleKeydownEvent)
         },
         getPdfContainer() {
             this.pdf.container = document.querySelector('#az-pdf-viewer')
@@ -88,6 +96,8 @@ export default {
             this.pdf.linkService = new PDFJSViewer.PDFLinkService({
                 eventBus: this.pdf.eventBus,
             })
+            PDFJSViewer.externalLinkTarget = PDFJSViewer.LinkTarget.BLANK
+            this.pdf.linkService.externalLinkTarget = PDFJSViewer.externalLinkTarget
         },
         createPdfViewer() {
             this.pdf.viewer = new PDFJSViewer.PDFViewer({
@@ -127,14 +137,14 @@ export default {
         updateScaleType(scaleType) {
             if (scaleType && typeof scaleType === 'string') {
                 this.pdf.viewer.currentScaleValue = scaleType
+            } else if (this.scale.current !== this.scale.default) {
+                this.pdf.viewer.currentScale = this.scale.current
+            } else if (this.defaultScaleType && typeof this.defaultScaleType === 'string') {
+                this.pdf.viewer.currentScaleValue = this.defaultScaleType
+            } else if (this.isSmallScreen()) {
+                this.pdf.viewer.currentScaleValue = 'page-width'
             } else {
-                if (this.defaultScaleType && typeof this.defaultScaleType === 'string') {
-                    this.pdf.viewer.currentScaleValue = this.defaultScaleType
-                } else if (this.isSmallScreen()) {
-                    this.pdf.viewer.currentScaleValue = 'page-width'
-                } else {
-                    this.pdf.viewer.currentScaleValue = 'page-fit'
-                }
+                this.pdf.viewer.currentScaleValue = 'page-fit'
             }
         },
         setInitialScale(scale) {
@@ -167,6 +177,15 @@ export default {
         zoomOut() {
             if (this.scale.current > 0.2) {
                 this.pdf.viewer.currentScale = this.scale.current / 1.1
+            }
+        },
+        handleKeydownEvent(event) {
+            if (event.ctrlKey && event.keyCode === 187) {
+                event.preventDefault()
+                this.zoomIn()
+            } else if (event.ctrlKey && event.keyCode === 189) {
+                event.preventDefault()
+                this.zoomOut()
             }
         },
         rotate() {

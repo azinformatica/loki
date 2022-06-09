@@ -1,5 +1,7 @@
 import axios from 'axios'
 import mutationTypes from './mutation-types'
+import actionTypes from './action-types'
+
 export default {
     async getProduct({ commit, state }) {
         const response = await axios.get('public/produtos', { params: { productName: state.productName } })
@@ -31,4 +33,51 @@ export default {
             commit(mutationTypes.SET_UPLOAD_FILE_PROGRESS_ERROR, hashName)
         }
     },
+
+    async [actionTypes.SIGNATURE.DIGITAL.START](context, { certificateContent, documentId }) {
+        const flowbeeAccessParams = getFlowbeeAccessParams(context.state.flowbee.accessToken)
+        const url = `${flowbeeAccessParams.url}/${documentId}/assinaturas/digitais/iniciar`
+        const headers = {
+            'Content-Type': 'text/plain',
+            ...flowbeeAccessParams.headers,
+        }
+
+        const { data } = await axios.post(url, certificateContent, { headers })
+
+        return data
+    },
+
+    async [actionTypes.SIGNATURE.DIGITAL.FINISH](
+        context,
+        { documentId, signHash, temporarySubscription, rubricBase64, participation }
+    ) {
+        const flowbeeAccessParams = getFlowbeeAccessParams(context.state.flowbee.accessToken)
+        const url = `${flowbeeAccessParams.url}/${documentId}/assinaturas/digitais/finalizar`
+        const headers = {
+            ...flowbeeAccessParams.headers,
+        }
+        const requestData = {
+            assinatura: signHash,
+            assinaturaTemporariaId: temporarySubscription,
+            rubricaBase64: rubricBase64,
+            participacao: participation,
+        }
+
+        const { data } = await axios.post(url, requestData, { headers })
+
+        return data
+    },
+}
+
+function getFlowbeeAccessParams(accessToken) {
+    if (accessToken) {
+        return {
+            url: '/flowbee/api/public/documentos',
+            headers: { ...accessToken },
+        }
+    } else {
+        return {
+            url: '/flowbee/api/documentos',
+        }
+    }
 }

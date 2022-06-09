@@ -57,6 +57,7 @@ import AzSoundex from './utils/AzSoundex'
 import buildMenu from './utils/azBuildMenu'
 import hasPermissions from './utils/AzHasPermissions'
 import hasDomainPermissions from './utils/AzHasDomainPermissions'
+import AzDigitalSignature from './utils/AzDigitalSignature'
 
 Vue.use(accounting)
 Vue.use(money, {
@@ -155,4 +156,5 @@ export {
     buildMenu,
     hasPermissions,
     hasDomainPermissions,
+    AzDigitalSignature,
 }

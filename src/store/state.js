@@ -84,4 +84,9 @@ export default {
             max: 3.0,
         },
     },
+
+    flowbee: {
+        accessToken: null,
+        license: null,
+    },
 }

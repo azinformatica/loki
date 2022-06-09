@@ -35,6 +35,10 @@ jest.mock('pdfjs-dist/web/pdf_viewer.js', () => ({
             setDocument: jest.fn(),
             setViewer: jest.fn(),
         })),
+
+        LinkTarget: {
+            BLANK: 2,
+        },
     },
 }))
 
@@ -216,6 +220,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
 
             expect(typeof wrapper.vm.pdf.linkService.setDocument).toEqual('function')
             expect(typeof wrapper.vm.pdf.linkService.setViewer).toEqual('function')
+            expect(wrapper.vm.pdf.linkService.externalLinkTarget).toEqual(2)
         })
     })
 
