@@ -14,11 +14,12 @@
                 </v-tooltip>
 
                 <input
-                        class="input-text"
-                        v-model="searchText"
-                        :maxlength="maxlengthInput"
-                        :placeholder="simpleSearchPlaceholder"
-                        @keyup.enter="simpleSearch()"/>
+                    class="input-text"
+                    v-model="searchText"
+                    :maxlength="maxlengthInput"
+                    :placeholder="simpleSearchPlaceholder"
+                    @keyup.enter="simpleSearch()"
+                />
             </div>
 
             <v-btn class="icon-search" fab dark small depressed color="primary" @click="simpleSearch()">
@@ -27,22 +28,23 @@
         </div>
 
         <v-btn
-                class="btn-advanced-search"
-                depressed
-                color="grey darken-1"
-                @click="toggle()"
-                v-if="hasAdvancedSearchItems">
+            class="btn-advanced-search"
+            depressed
+            color="grey darken-1"
+            @click="toggle()"
+            v-if="hasAdvancedSearchItems"
+        >
             <v-icon small>chevron_left</v-icon>Filtros
         </v-btn>
 
         <v-navigation-drawer
-                absolute
-                right
-                width="340"
-                v-model="isClosedAdvancedSearch"
-                mini-variant-width="0"
-                floating
-                class="advanced-search-bar"
+            absolute
+            right
+            width="340"
+            v-model="isClosedAdvancedSearch"
+            mini-variant-width="0"
+            floating
+            class="advanced-search-bar"
         >
             <v-toolbar flat class="title" color="primary">
                 <v-btn class="btn-close" icon small @click.prevent="toggle()">
@@ -70,16 +72,16 @@ export default {
     props: {
         filter: {
             type: Object,
-            required: true
+            required: true,
         },
-         maxlengthInput: {
-            type:Number,
-            default:65
+        maxlengthInput: {
+            type: Number,
+            default: 65,
         },
         simpleSearchPlaceholder: {
             type: String,
-            required: true
-        }
+            required: true,
+        },
     },
     data() {
         return {
@@ -87,7 +89,7 @@ export default {
             searchText: null,
             isClosedAdvancedSearch: false,
             isSimpleSearch: false,
-            searchTextSize: 200
+            searchTextSize: 200,
         }
     },
     computed: {
@@ -97,15 +99,15 @@ export default {
         },
         filledFilters() {
             return Object.keys(this.filter)
-                .filter(key => this.filter[key].value)
+                .filter((key) => this.filter[key].value)
                 .reduce((obj, key) => {
                     obj[key] = this.filter[key]
                     return obj
                 }, {})
-        }
+        },
     },
     mounted() {
-        const advancedSearchItems = this.$children[1].$children.filter(child => {
+        const advancedSearchItems = this.$children[1].$children.filter((child) => {
             return child.$options._componentTag === 'az-search-item'
         })
         this.hasAdvancedSearchItems = advancedSearchItems.length > 0
@@ -134,8 +136,8 @@ export default {
         toggle() {
             this.isClosedAdvancedSearch = !this.isClosedAdvancedSearch
             this.closeAsideMenu()
-        }
-    }
+        },
+    },
 }
 </script>
 

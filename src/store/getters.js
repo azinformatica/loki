@@ -1,23 +1,23 @@
 export default {
-    currentPageNum: state => {
+    currentPageNum: (state) => {
         return state.document.paginator.currentPageNum
     },
-    pageContainer: state => {
+    pageContainer: (state) => {
         return {
             height: state.document.pageContainer.height,
-            width: state.document.pageContainer.width
+            width: state.document.pageContainer.width,
         }
     },
-    pages: state => {
+    pages: (state) => {
         return state.document.pages
     },
-    renderedPages: state => {
+    renderedPages: (state) => {
         return state.document.renderedPages
     },
-    scale: state => {
+    scale: (state) => {
         return state.document.scale.current
     },
-    totalPageNum: state => {
+    totalPageNum: (state) => {
         return state.document.paginator.totalPageNum
-    }
+    },
 }

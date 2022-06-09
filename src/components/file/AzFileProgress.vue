@@ -42,18 +42,18 @@ export default {
             const uploadFileProgress = this.$store.state.loki.uploadFileProgress
             const hashNames = Object.keys(uploadFileProgress)
             const files = []
-            hashNames.forEach(hashName => {
+            hashNames.forEach((hashName) => {
                 files.push(uploadFileProgress[hashName])
             })
             return files
         },
         finishedUploadsCount() {
             return this.$store.state.loki.uploadedFiles.length
-        }
+        },
     },
     methods: {
         close() {
-            Object.keys(this.$store.state.loki.uploadFileProgress).forEach(filename => {
+            Object.keys(this.$store.state.loki.uploadFileProgress).forEach((filename) => {
                 this.$store.commit(mutationTypes.REMOVE_UPLOAD_FILE_PROGRESS, filename)
             })
         },
@@ -66,7 +66,7 @@ export default {
         getUploadInProgressCount() {
             let uploading = 0
 
-            Object.keys(this.$store.state.loki.uploadFileProgress).forEach(filename => {
+            Object.keys(this.$store.state.loki.uploadFileProgress).forEach((filename) => {
                 const file = this.$store.state.loki.uploadFileProgress[filename]
                 if (file && !file.error) {
                     uploading++
@@ -80,8 +80,8 @@ export default {
         },
         hasUploadError(file) {
             return file && file.error
-        }
-    }
+        },
+    },
 }
 </script>
 

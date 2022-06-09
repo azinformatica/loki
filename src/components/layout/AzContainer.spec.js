@@ -13,7 +13,7 @@ describe('AzContainer', () => {
         wrapper = shallowMount(AzContainer, {
             localVue,
             vuetify: new Vuetify(),
-            slots: { default: '**Default Content**' }
+            slots: { default: '**Default Content**' },
         })
     })
 

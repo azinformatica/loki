@@ -13,8 +13,8 @@ export default {
         },
         subtitle() {
             return this.$store.state.loki.page.subtitle
-        }
-    }
+        },
+    },
 }
 </script>
 

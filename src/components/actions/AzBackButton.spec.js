@@ -9,16 +9,18 @@ Vue.use(Vuetify)
 localVue.use(VueRouter)
 
 describe('AzBackButton.spec.js', () => {
-    let wrapper
+    let wrapper, vuetify
 
     beforeEach(() => {
+        vuetify = new Vuetify()
+
         const propsData = {
             route: { name: 'myRoute' },
-            text: 'Button Text'
+            text: 'Button Text',
         }
 
         const router = new VueRouter({ routes: [{ path: '/route', name: 'myRoute' }] })
-        wrapper = mount(AzBackButton, { localVue, propsData, router })
+        wrapper = mount(AzBackButton, { localVue, vuetify, propsData, router })
     })
 
     it('Required data is rendered properly', () => {

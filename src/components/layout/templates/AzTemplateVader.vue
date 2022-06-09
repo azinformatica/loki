@@ -42,8 +42,8 @@ export default {
     methods: {
         showAside() {
             this.$store.commit(mutationTypes.SET_ASIDE_HIDE, true)
-        }
-    }
+        },
+    },
 }
 </script>
 <style lang="stylus">

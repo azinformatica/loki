@@ -39,19 +39,19 @@ export default {
     components: {
         Toolbar,
         LoadingPlaceHolder,
-        LoadingPrint
+        LoadingPrint,
     },
     mounted() {
         this.start()
-        window.addEventListener('resize', this.updateScaleType)
+        this.registerEventListener()
     },
     destroyed() {
-        window.removeEventListener('resize', this.updateScaleType)
+        this.removeEventListener()
     },
     watch: {
         src() {
             this.start()
-        }
+        },
     },
     methods: {
         start() {
@@ -61,6 +61,14 @@ export default {
             this.createPdfLinkService()
             this.createPdfViewer()
             this.renderDocument()
+        },
+        registerEventListener() {
+            window.addEventListener('resize', this.updateScaleType)
+            window.addEventListener('keydown', this.handleKeydownEvent)
+        },
+        removeEventListener() {
+            window.removeEventListener('resize', this.updateScaleType)
+            window.removeEventListener('keydown', this.handleKeydownEvent)
         },
         getPdfContainer() {
             this.pdf.container = document.querySelector('#az-pdf-viewer')
@@ -86,14 +94,16 @@ export default {
         },
         createPdfLinkService() {
             this.pdf.linkService = new PDFJSViewer.PDFLinkService({
-                eventBus: this.pdf.eventBus
+                eventBus: this.pdf.eventBus,
             })
+            PDFJSViewer.externalLinkTarget = PDFJSViewer.LinkTarget.BLANK
+            this.pdf.linkService.externalLinkTarget = PDFJSViewer.externalLinkTarget
         },
         createPdfViewer() {
             this.pdf.viewer = new PDFJSViewer.PDFViewer({
                 container: this.pdf.container,
                 eventBus: this.pdf.eventBus,
-                linkService: this.pdf.linkService
+                linkService: this.pdf.linkService,
             })
         },
         renderDocument() {
@@ -101,15 +111,15 @@ export default {
             PDFJSLib.getDocument({
                 url: this.src,
                 httpHeaders: this.httpHeader,
-                withCredentials: true
+                withCredentials: true,
             })
-                .then(pdf => {
+                .then((pdf) => {
                     this.pdf.linkService.setViewer(this.pdf.viewer)
                     this.pdf.linkService.setDocument(pdf, null)
                     this.pdf.viewer.setDocument(pdf)
                     this.stopLoadingPlaceHolder()
                 })
-                .catch(error => {
+                .catch((error) => {
                     this.stopLoadingPlaceHolder()
                     this.handlePdfError(error)
                 })
@@ -117,7 +127,7 @@ export default {
         async createPrinterService() {
             this.pdf.printService = new PrintService({
                 pdfDocument: this.pdf.viewer.pdfDocument,
-                pagesOverview: await this.pdf.viewer.getPagesOverview()
+                pagesOverview: await this.pdf.viewer.getPagesOverview(),
             })
         },
         setInitialPagination(pagination) {
@@ -127,14 +137,14 @@ export default {
         updateScaleType(scaleType) {
             if (scaleType && typeof scaleType === 'string') {
                 this.pdf.viewer.currentScaleValue = scaleType
+            } else if (this.scale.current !== this.scale.default) {
+                this.pdf.viewer.currentScale = this.scale.current
+            } else if (this.defaultScaleType && typeof this.defaultScaleType === 'string') {
+                this.pdf.viewer.currentScaleValue = this.defaultScaleType
+            } else if (this.isSmallScreen()) {
+                this.pdf.viewer.currentScaleValue = 'page-width'
             } else {
-                if (this.defaultScaleType && typeof this.defaultScaleType === 'string') {
-                    this.pdf.viewer.currentScaleValue = this.defaultScaleType
-                } else if (this.isSmallScreen()) {
-                    this.pdf.viewer.currentScaleValue = 'page-width'
-                } else {
-                    this.pdf.viewer.currentScaleValue = 'page-fit'
-                }
+                this.pdf.viewer.currentScaleValue = 'page-fit'
             }
         },
         setInitialScale(scale) {
@@ -167,6 +177,15 @@ export default {
         zoomOut() {
             if (this.scale.current > 0.2) {
                 this.pdf.viewer.currentScale = this.scale.current / 1.1
+            }
+        },
+        handleKeydownEvent(event) {
+            if (event.ctrlKey && event.keyCode === 187) {
+                event.preventDefault()
+                this.zoomIn()
+            } else if (event.ctrlKey && event.keyCode === 189) {
+                event.preventDefault()
+                this.zoomOut()
             }
         },
         rotate() {
@@ -203,77 +222,77 @@ export default {
         },
         stopLoadingPrint() {
             this.isPrinting = false
-        }
+        },
     },
     props: {
         src: {
             type: String,
-            default: ''
+            default: '',
         },
         cssClass: {
             type: String,
-            default: ''
+            default: '',
         },
         height: {
             type: String,
-            default: '100vh'
+            default: '100vh',
         },
         httpHeader: {
             type: Object,
-            default: () => new Object()
+            default: () => new Object(),
         },
         progressBar: {
             type: Boolean,
-            default: false
+            default: false,
         },
         downloadButton: {
             type: Boolean,
-            default: false
+            default: false,
         },
         defaultScaleType: {
             type: String,
-            default: ''
+            default: '',
         },
         rotateButton: {
             type: Boolean,
-            default: false
+            default: false,
         },
         printButton: {
             type: Boolean,
-            default: false
-        }
+            default: false,
+        },
     },
     computed: {
         customContainerClass() {
             let classObject = {}
             if (this.cssClass) {
                 const classes = this.cssClass.split(' ')
-                classes.forEach(clazz => (classObject[clazz] = true))
+                classes.forEach((clazz) => (classObject[clazz] = true))
             }
             return classObject
-        }
+        },
     },
     data: () => ({
         isPrinting: false,
         loadingPlaceHolder: false,
         pagination: {
             current: null,
-            total: null
+            total: null,
         },
         pdf: {
             container: null,
             eventBus: null,
             linkService: null,
             printService: null,
-            viewer: {}
+            viewer: {},
         },
         printProgress: 0,
         scale: {
             default: null,
             current: null,
-            type: ''
-        }
-    })
+            type: '',
+        },
+    }),
 }
 </script>
 

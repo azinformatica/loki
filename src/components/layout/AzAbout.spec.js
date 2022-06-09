@@ -17,10 +17,10 @@ describe('AzAbout', () => {
                 loki: {
                     product: {
                         copywrite: '123456',
-                        version: '1.2.3'
-                    }
-                }
-            }
+                        version: '1.2.3',
+                    },
+                },
+            },
         })
 
         //A Wrapper is an object that contains a mounted component

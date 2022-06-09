@@ -1,5 +1,5 @@
 <template>
-    <div style="display: flex;">
+    <div style="display: flex">
         <div v-bind:style="dateTime ? 'width: 60%' : 'width: 100%'">
             <v-dialog
                 ref="menu"
@@ -11,7 +11,8 @@
                 offset-y
                 max-width="290px"
                 min-width="290px"
-                v-if="!isDisabled">
+                v-if="!isDisabled"
+            >
                 <v-date-picker
                     v-model="date"
                     :value="value"
@@ -19,7 +20,8 @@
                     @input="updateModelDate($event), pickDateEvent()"
                     :min="minDate"
                     :max="maxDate"
-                    class="az-date"/>
+                    class="az-date"
+                />
             </v-dialog>
             <v-text-field
                 v-validate="checkDate"
@@ -37,7 +39,8 @@
                 append-icon="event"
                 class="az-date-date-input"
                 @click:append="openMenuDate"
-                @keyup="validateAndParseDate(dateFormatted)">
+                @keyup="validateAndParseDate(dateFormatted)"
+            >
                 <template v-slot:label v-if="this.$slots['label-date']">
                     <slot name="label-date" />
                 </template>
@@ -63,14 +66,16 @@
                 offset-y
                 max-width="290px"
                 min-width="290px"
-                v-if="!isDisabled">
+                v-if="!isDisabled"
+            >
                 <v-time-picker
                     v-if="dialogTime"
                     v-model="time"
                     :locale="currentLanguage"
                     @change="changeTimeEvent(), updateModelTime($event)"
                     format="24hr"
-                    class="az-date"/>
+                    class="az-date"
+                />
             </v-dialog>
             <v-text-field
                 v-validate="{ required: isRequired }"
@@ -84,7 +89,8 @@
                 class="az-date-time-input"
                 @click:append="openMenuTime"
                 @focus="selectContentInputHour"
-                @blur="validateTimeEvent(), updateModelTime(time)"/>
+                @blur="validateTimeEvent(), updateModelTime(time)"
+            />
         </div>
     </div>
 </template>
@@ -95,60 +101,56 @@ export default {
         dateFormat: {
             type: String,
             default: 'DD/MM/YYYY',
-            validator: function(value) {
+            validator: function (value) {
                 return ['DD/MM/YYYY', 'MM/DD/YYYY'].indexOf(value) !== -1
-            }
-        },
-        dateMask: {
-            type: String,
-            default: '##/##/####'
+            },
         },
         limparData: {
             type: Boolean,
-            default: false
+            default: false,
         },
         dateTime: {
             type: Boolean,
-            default: false
+            default: false,
         },
         value: {
             type: String,
-            default: ''
+            default: '',
         },
         label: {
             type: String,
-            default: ''
+            default: '',
         },
         isRequired: {
             type: Boolean,
-            default: false
+            default: false,
         },
         nameDate: {
             type: String,
-            default: ''
+            default: '',
         },
         placeholderDate: {
             type: String,
-            default: 'DD/MM/YYYY'
+            default: 'DD/MM/YYYY',
         },
         nameHour: {
             type: String,
-            default: ''
+            default: '',
         },
         placeholderHour: {
             type: String,
-            default: 'HH:mm'
+            default: 'HH:mm',
         },
         isDisabled: {
             type: Boolean,
-            default: false
+            default: false,
         },
         minDate: {
-            type: String
+            type: String,
         },
         maxDate: {
-            type: String
-        }
+            type: String,
+        },
     },
     inject: ['$validator'],
     data() {
@@ -162,9 +164,9 @@ export default {
             dialogTime: false,
             reverseDateFormatObj: {
                 'DD/MM/YYYY': 'YYYY-MM-DD',
-                'MM/DD/YYYY': 'YYYY-DD-MM'
+                'MM/DD/YYYY': 'YYYY-DD-MM',
             },
-            focus: false
+            focus: false,
         }
     },
     computed: {
@@ -178,33 +180,29 @@ export default {
             return {
                 required: this.isRequired,
                 date_format: this.dateFormat === 'DD/MM/YYYY' ? 'dd/MM/yyyy' : 'MM/dd/yyyy',
-                ...this.validateDate
+                ...this.validateDate,
             }
         },
         validateDate() {
             const validationDate = {}
 
-            if(this.isRequired) {
+            if (this.isRequired) {
                 validationDate.required = true
             }
 
-            if(this.dateFormatted && this.dateFormatted.length === 10) {
+            if (this.dateFormatted && this.dateFormatted.length === 10) {
                 validationDate.date_format = this.dateFormat === 'DD/MM/YYYY' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'
 
-                if(this.maxDate) {
-                    validationDate.before = this.moment(this.maxDate)
-                        .add(1, 'days')
-                        .format(this.dateFormat)
+                if (this.maxDate) {
+                    validationDate.before = this.moment(this.maxDate).add(1, 'days').format(this.dateFormat)
                 }
 
-                if(this.minDate) {
-                    validationDate.after = this.moment(this.minDate)
-                        .subtract(1, 'days')
-                        .format(this.dateFormat)
+                if (this.minDate) {
+                    validationDate.after = this.moment(this.minDate).subtract(1, 'days').format(this.dateFormat)
                 }
             }
             return validationDate
-        }
+        },
     },
     watch: {
         value: {
@@ -212,13 +210,13 @@ export default {
                 this.updateDateTimeByModel(val)
                 this.updateValue(val)
             },
-            immediate: true
+            immediate: true,
         },
         limparData(val) {
             if (val) {
                 this.dateFormatted = null
             }
-        }
+        },
     },
     mounted() {
         this.alterTabIndexFromAppendButtons()
@@ -226,12 +224,12 @@ export default {
     methods: {
         getFormattedDate(day, month, year) {
             const getFnDateFormat = {
-                'DD/MM/YYYY': function() {
+                'DD/MM/YYYY': function () {
                     return `${day}/${month}/${year}`
                 },
-                'MM/DD/YYYY': function() {
+                'MM/DD/YYYY': function () {
                     return `${month}/${day}/${year}`
-                }
+                },
             }
 
             return getFnDateFormat[this.dateFormat]()
@@ -247,7 +245,7 @@ export default {
         },
         validateAndParseDate(date) {
             if (!date || !this.dateStringIsValid(date) || this.dateMaxIsAllowed(date) || this.dateMinIsAllowed(date)) {
-                if(date === null || date.length === 0) {
+                if (date === null || date.length === 0) {
                     this.date = null
                     this.dateFormatted = ''
                     this.$emit('input', null)
@@ -263,20 +261,20 @@ export default {
         getDayMonthYearFromDateString(date) {
             const dateFormated = date.replace(new RegExp('/', 'g'), '')
             const getFnDateFormat = {
-                'DD/MM/YYYY': function() {
+                'DD/MM/YYYY': function () {
                     return {
                         day: dateFormated.substring(0, 2),
                         month: dateFormated.substring(2, 4),
-                        year: dateFormated.substring(4, 8)
+                        year: dateFormated.substring(4, 8),
                     }
                 },
-                'MM/DD/YYYY': function() {
+                'MM/DD/YYYY': function () {
                     return {
                         day: dateFormated.substring(2, 4),
                         month: dateFormated.substring(0, 2),
-                        year: dateFormated.substring(4, 8)
+                        year: dateFormated.substring(4, 8),
                     }
-                }
+                },
             }
 
             return getFnDateFormat[this.dateFormat]()
@@ -442,9 +440,7 @@ export default {
             return dateTime + offset
         },
         getOffsetFromCurrentDateTime(dateTime) {
-            return this.moment(dateTime)
-                .tz(this.$store.state.loki.timezone)
-                .format('Z')
+            return this.moment(dateTime).tz(this.$store.state.loki.timezone).format('Z')
         },
         selectContentInputHour() {
             this.$nextTick(() => {
@@ -468,8 +464,9 @@ export default {
             if (this.minDate) {
                 const dateObj = this.getDayMonthYearFromDateString(date)
                 const minDateObj = this.getDayMonthYearFromDateString(this.moment(this.minDate).format('DD/MM/YYYY'))
-                return this.moment(this.moment(`${dateObj.year}-${dateObj.month}-${dateObj.day}`))
-                    .isBefore(this.moment(`${minDateObj.year}-${minDateObj.month}-${minDateObj.day}`))
+                return this.moment(this.moment(`${dateObj.year}-${dateObj.month}-${dateObj.day}`)).isBefore(
+                    this.moment(`${minDateObj.year}-${minDateObj.month}-${minDateObj.day}`)
+                )
             }
             return false
         },
@@ -477,18 +474,19 @@ export default {
             if (this.maxDate) {
                 const dateObj = this.getDayMonthYearFromDateString(date)
                 const maxDateObj = this.getDayMonthYearFromDateString(this.moment(this.maxDate).format('DD/MM/YYYY'))
-                return this.moment(`${dateObj.year}-${dateObj.month}-${dateObj.day}`)
-                    .isAfter(this.moment(`${maxDateObj.year}-${maxDateObj.month}-${maxDateObj.day}`))
+                return this.moment(`${dateObj.year}-${dateObj.month}-${dateObj.day}`).isAfter(
+                    this.moment(`${maxDateObj.year}-${maxDateObj.month}-${maxDateObj.day}`)
+                )
             }
             return false
         },
         alterTabIndexFromAppendButtons() {
             const bottonsDate = document.querySelectorAll('.az-date-date-input .v-input__append-inner .v-icon')
-            bottonsDate.forEach(btn => {
+            bottonsDate.forEach((btn) => {
                 btn.tabIndex = '-1'
             })
             const bottonsTime = document.querySelectorAll('.az-date-time-input .v-input__append-inner .v-icon')
-            bottonsTime.forEach(btn => {
+            bottonsTime.forEach((btn) => {
                 btn.tabIndex = '-1'
             })
         },
@@ -498,8 +496,8 @@ export default {
             } else if (event.type === 'blur') {
                 this.focus = false
             }
-        }
-    }
+        },
+    },
 }
 </script>
 

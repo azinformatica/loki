@@ -57,6 +57,7 @@ import AzSoundex from './utils/AzSoundex'
 import buildMenu from './utils/azBuildMenu'
 import hasPermissions from './utils/AzHasPermissions'
 import hasDomainPermissions from './utils/AzHasDomainPermissions'
+import AzDigitalSignature from './utils/AzDigitalSignature'
 
 Vue.use(accounting)
 Vue.use(money, {
@@ -65,7 +66,7 @@ Vue.use(money, {
     prefix: 'R$ ',
     suffix: '',
     precision: 2,
-    masked: true
+    masked: true,
 })
 Vue.prototype.moment = moment
 
@@ -126,11 +127,11 @@ const lokiPlugin = {
         if (router) {
             store.commit(mutationTypes.SET_MENU_ACTIONS, buildMenu(store, router))
 
-            router.afterEach(to => {
+            router.afterEach((to) => {
                 store.commit(mutationTypes.SET_CURRENT_PAGE, to)
             })
         }
-    }
+    },
 }
 
 const filters = {
@@ -142,8 +143,18 @@ const filters = {
     azEnum,
     azNumber,
     azPhone,
-    azTitleCase
+    azTitleCase,
 }
 
 export default lokiPlugin
-export { lokiPlugin, filters, AzCurrency, AzSearchUrlBuilder, AzSoundex, buildMenu, hasPermissions, hasDomainPermissions }
+export {
+    lokiPlugin,
+    filters,
+    AzCurrency,
+    AzSearchUrlBuilder,
+    AzSoundex,
+    buildMenu,
+    hasPermissions,
+    hasDomainPermissions,
+    AzDigitalSignature,
+}

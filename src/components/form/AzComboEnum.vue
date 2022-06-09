@@ -10,16 +10,17 @@
         v-validate="{ required: isRequired }"
         :name="name"
         :error-messages="errors.collect(`${name}`)"
-        :disabled="disabled">
+        :disabled="disabled"
+    >
         <template v-slot:label if="this.$slots['label']">
             <slot name="label" />
         </template>
         <template v-slot:append-outer v-if="this.$slots['append-outer']">
             <slot name="append-outer" />
         </template>
-        <template v-if="selectionSlot" v-slot:selection="{item,index}">
-            <v-chip v-if="index ===0">
-                <span>{{item.text}}</span>
+        <template v-if="selectionSlot" v-slot:selection="{ item, index }">
+            <v-chip v-if="index === 0">
+                <span>{{ item.text }}</span>
             </v-chip>
             <span v-if="index === 1" class="grey--text caption">(+{{ value.length - 1 }} others)</span>
         </template>
@@ -36,55 +37,55 @@ export default {
     props: {
         enumObject: {
             type: Object,
-            required: true
+            required: true,
         },
         orderBy: {
             type: String,
-            default: 'text'
+            default: 'text',
         },
         label: {
             type: String,
-            default: ''
+            default: '',
         },
         chips: {
-            default: false
+            default: false,
         },
         multiple: {
-            type:Boolean,
-            default: false
+            type: Boolean,
+            default: false,
         },
-        selectionSlot:{
-            type:Boolean,
-            default:false
+        selectionSlot: {
+            type: Boolean,
+            default: false,
         },
         name: {
             type: String,
-            default: ''
+            default: '',
         },
         placeholder: {
             type: String,
-            default: ''
+            default: '',
         },
         isRequired: {
             type: Boolean,
-            default: false
+            default: false,
         },
         value: {
-            required: true
+            required: true,
         },
         disabled: {
             type: Boolean,
-            default: false
+            default: false,
         },
         insertNullItem: {
             type: Boolean,
-            default: true
-        }
+            default: true,
+        },
     },
     inject: ['$validator'],
     data() {
         return {
-            combo: []
+            combo: [],
         }
     },
     beforeMount() {
@@ -108,7 +109,7 @@ export default {
             }
 
             return novoArray
-        }
-    }
+        },
+    },
 }
 </script>

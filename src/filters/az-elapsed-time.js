@@ -1,7 +1,7 @@
 import moment from 'moment-timezone'
 import { state } from '../store'
 
-const filter = date => {
+const filter = (date) => {
     if (!date) {
         return ''
     }
@@ -18,7 +18,9 @@ const filter = date => {
     } else if (isLessThanWeek(refDate, currentTime)) {
         return `${getElapsedTime(refDate, currentTime, 'days')} ${isOneDay(refDate, currentTime) ? 'dia' : 'dias'}`
     } else if (isLessThanMonth(refDate, currentTime)) {
-        return `${getElapsedTime(refDate, currentTime, 'weeks')} ${isOneWeek(refDate, currentTime) ? 'semana' : 'semanas'}`
+        return `${getElapsedTime(refDate, currentTime, 'weeks')} ${
+            isOneWeek(refDate, currentTime) ? 'semana' : 'semanas'
+        }`
     } else if (isLessThanYear(refDate, currentTime)) {
         return `${getElapsedTime(refDate, currentTime, 'months')} ${isOneMonth(refDate, currentTime) ? 'mês' : 'meses'}`
     } else {

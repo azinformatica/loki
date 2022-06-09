@@ -16,8 +16,8 @@ export default {
         },
         companyCopywrite() {
             return this.$store.state.loki.product.copywrite
-        }
-    }
+        },
+    },
 }
 </script>
 

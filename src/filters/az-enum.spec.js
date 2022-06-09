@@ -1,7 +1,7 @@
 import azEnum from './az-enum'
 const texto = {
     EM_ELABORACAO: 'Em Elaboração',
-    ABERTA: 'Aberta'
+    ABERTA: 'Aberta',
 }
 
 describe('azEnum', () => {

@@ -17,7 +17,7 @@ export default {
     name: 'AzAutoSave',
     data() {
         return {
-            formattedDate: null
+            formattedDate: null,
         }
     },
     computed: {
@@ -32,7 +32,7 @@ export default {
         },
         description() {
             return this.$store.state.loki.autoSave.autoSavedDescription.replace('${date}', this.formattedDate)
-        }
+        },
     },
     methods: {
         formatTime() {
@@ -44,8 +44,8 @@ export default {
             } else {
                 this.formattedDate = data
             }
-        }
-    }
+        },
+    },
 }
 </script>
 

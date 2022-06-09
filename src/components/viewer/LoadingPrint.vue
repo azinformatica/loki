@@ -1,9 +1,9 @@
 <template>
-    <v-dialog v-model="isPrinting" width="500">
+    <v-dialog :value="isPrinting" width="500">
         <v-card class="az-pdf-loading-print">
             <v-card-title class="az-pdf-loading-print__title">Gerando impressão...</v-card-title>
             <v-card-text>
-                <v-progress-linear v-model="printProgress" />
+                <v-progress-linear :value="printProgress" />
             </v-card-text>
             <v-card-actions>
                 <v-spacer />
@@ -20,13 +20,13 @@ export default {
     props: {
         isPrinting: {
             type: Boolean,
-            default: false
+            default: false,
         },
         printProgress: {
             type: Number || String,
-            default: 0
-        }
-    }
+            default: 0,
+        },
+    },
 }
 </script>
 

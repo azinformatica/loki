@@ -38,7 +38,7 @@ export default {
     [mutationTypes.SET_UPLOAD_FILE_PROGRESS](state, uploadProgress) {
         Vue.set(state.uploadFileProgress, uploadProgress.hashName, {
             filename: uploadProgress.filename,
-            progress: uploadProgress.progress
+            progress: uploadProgress.progress,
         })
     },
 
@@ -91,17 +91,28 @@ export default {
         }
     },
 
-    [mutationTypes.SHOW_ALERT](state, { message, type , hasButtom, style ,  styleButtom , iconColor, mensageButtom,timeOut,styleButtomClose}) {
-        state.alert = { message, type , hasButtom, style , styleButtom, iconColor , mensageButtom,timeOut,styleButtomClose}
+    [mutationTypes.SHOW_ALERT](
+        state,
+        { message, type, hasButtom, style, styleButtom, iconColor, mensageButtom, timeOut, styleButtomClose }
+    ) {
+        state.alert = {
+            message,
+            type,
+            hasButtom,
+            style,
+            styleButtom,
+            iconColor,
+            mensageButtom,
+            timeOut,
+            styleButtomClose,
+        }
     },
-    [mutationTypes.ROLLBACK_ACTION](state,rollback){
+    [mutationTypes.ROLLBACK_ACTION](state, rollback) {
         state.rollback = rollback
-        setTimeout(()=>{
-            state.rollback = false  
-        },2000)
-
-    }
-    ,
+        setTimeout(() => {
+            state.rollback = false
+        }, 2000)
+    },
     [mutationTypes.REMOVE_UPLOAD_FILE_PROGRESS](state, filename) {
         Vue.delete(state.uploadFileProgress, filename)
     },
@@ -112,9 +123,7 @@ export default {
 
     [mutationTypes.SET_TIMEZONE](state, timezone) {
         state.timezone = timezone
-        state.offset = moment()
-            .tz(timezone)
-            .format('Z')
+        state.offset = moment().tz(timezone).format('Z')
     },
 
     [mutationTypes.DOCUMENT.SET_PAGE_CONTAINER](state, { height, width }) {
@@ -173,5 +182,13 @@ export default {
 
     [mutationTypes.AUTO_SAVING.SET_AUTO_SAVED_DESCRIPTION](state, message) {
         state.autoSave.autoSavedMessage = message
-    }
+    },
+
+    [mutationTypes.FLOWBEE.SET_LACUNA_LICENSE](state, url) {
+        state.flowbee.license = url
+    },
+
+    [mutationTypes.FLOWBEE.SET_ACCESS_TOKEN](state, token) {
+        state.flowbee.accessToken = token
+    },
 }

@@ -6,40 +6,40 @@ export default {
         symbolLogo: '',
         version: '',
         copywrite: '',
-        logoutUrl: '/logout'
+        logoutUrl: '/logout',
     },
 
     page: {
         title: '',
-        subtitle: ''
+        subtitle: '',
     },
 
     user: {
         name: '',
         fullName: '',
-        photo: ''
+        photo: '',
     },
 
     asideClosed: false,
     asideHide: true,
     avatarActions: {
         1: { title: 'Profile', icon: 'person', path: '/profile' },
-        2: { title: 'Settings', icon: 'settings', path: '/settings' }
+        2: { title: 'Settings', icon: 'settings', path: '/settings' },
     },
     autoSave: {
         show: false,
         saving: false,
         savingMessage: '<i class="fas fa-redo fa-spin mr-1"></i> Salvando...',
         autoSavedMessage: '<i class="fas fa-check mr-1"></i> Salvo Automaticamente',
-        autoSavedDescription: 'Salvo ${date} atrás'
+        autoSavedDescription: 'Salvo ${date} atrás',
     },
     menuActions: [],
     alert: {},
-    rollback:false,
+    rollback: false,
 
     file: {
         api: '/public/arquivos',
-        maxSize: '16Mb'
+        maxSize: '16Mb',
     },
     uploadFileProgress: {},
     uploadedFiles: [],
@@ -64,24 +64,29 @@ export default {
         whenIcon: 'alarm',
         closeIcon: 'close',
         allowLoadingViewMore: false,
-        closeMenuOnVisit: false
+        closeMenuOnVisit: false,
     },
 
     document: {
         pageContainer: {
             height: 0,
-            width: 0
+            width: 0,
         },
         pages: [],
         paginator: {
             currentPageNum: '-',
-            totalPageNum: '-'
+            totalPageNum: '-',
         },
         renderedPages: [],
         scale: {
             current: 1.5,
             default: 1.0,
-            max: 3.0
-        }
-    }
+            max: 3.0,
+        },
+    },
+
+    flowbee: {
+        accessToken: null,
+        license: null,
+    },
 }

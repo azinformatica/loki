@@ -73,16 +73,16 @@ export default {
     props: {
         showMainAction: {
             type: Boolean,
-            default: false
+            default: false,
         },
         showMainHeader: {
             type: Boolean,
-            default: false
+            default: false,
         },
         showNotification: {
             type: Boolean,
-            default: false
-        }
+            default: false,
+        },
     },
     methods: {
         showAside() {
@@ -93,8 +93,8 @@ export default {
         },
         visitNotification(message) {
             this.$emit('visitNotification', message)
-        }
-    }
+        },
+    },
 }
 </script>
 

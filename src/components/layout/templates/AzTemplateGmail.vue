@@ -68,22 +68,22 @@ export default {
     props: {
         showMainAction: {
             type: Boolean,
-            default: true
+            default: true,
         },
         placeholderSearch: {
             type: String,
-            default: 'O que você procura?'
-        }
+            default: 'O que você procura?',
+        },
     },
     data() {
         return {
-            searchText: ''
+            searchText: '',
         }
     },
     computed: {
         logoMobile() {
             return this.$store.state.loki.product.logoMobile
-        }
+        },
     },
     methods: {
         removeNotification(message) {
@@ -94,8 +94,8 @@ export default {
         },
         visitNotification(message) {
             this.$emit('visitNotification', message)
-        }
-    }
+        },
+    },
 }
 </script>
 <style lang="stylus">

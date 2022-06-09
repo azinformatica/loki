@@ -21,8 +21,8 @@ export default {
     props: {
         width: {
             type: Number,
-            default: 500
-        }
-    }
+            default: 500,
+        },
+    },
 }
 </script>

@@ -11,7 +11,7 @@ export default {
     methods: {
         redirectToHome() {
             this.$router.push({ path: '/' })
-        }
+        },
     },
     computed: {
         asideClosed() {
@@ -22,8 +22,8 @@ export default {
         },
         symbolLogo() {
             return this.$store.state.loki.product.symbolLogo
-        }
-    }
+        },
+    },
 }
 </script>
 
