@@ -72,7 +72,8 @@
                     v-if="dialogTime"
                     v-model="time"
                     :locale="currentLanguage"
-                    @change="changeTimeEvent(), updateModelTime($event)"
+                    @click:hour="changeHour($event)"
+                    @click:minute="changeMinute($event)"
                     format="24hr"
                     class="az-date"
                 />
@@ -83,7 +84,7 @@
                 :error-messages="errors.collect(`${nameHour}`)"
                 :disabled="isDisabled"
                 v-model="timeFormatted"
-                mask="time"
+                v-mask="'##:##'"
                 :placeholder="placeholderHour"
                 append-icon="access_time"
                 class="az-date-time-input"
@@ -158,6 +159,8 @@ export default {
             date: null,
             dateFormatted: null,
             dateInvalid: false,
+            hour: null,
+            minute: null,
             time: null,
             timeFormatted: null,
             dialogDate: false,
@@ -302,10 +305,10 @@ export default {
             return this.dayIsValidForMonthAndYear(Number(dateObj.day), Number(dateObj.month), Number(dateObj.year))
         },
         timeStringIsValid() {
-            if (!this.timeFormatted || this.timeFormatted.length < 4) return false
+            if (!this.timeFormatted || this.timeFormatted.length < 5) return false
 
             const firstTimeDigit = Number(this.timeFormatted.substring(0, 2))
-            const secondTimeDigit = Number(this.timeFormatted.substring(2, 4))
+            const secondTimeDigit = Number(this.timeFormatted.substring(3, 5))
 
             return firstTimeDigit < 24 && secondTimeDigit < 60
         },
@@ -316,13 +319,22 @@ export default {
                 return
             }
 
-            const hour = this.timeFormatted.substring(0, 2)
-            const minute = this.timeFormatted.substring(2, 4)
+            this.hour = this.timeFormatted.substring(0, 2)
+            this.minute = this.timeFormatted.substring(3, 5)
 
-            this.time = hour + ':' + minute
+            this.time = this.hour + ':' + this.minute
+        },
+        changeHour(value) {
+            this.hour = value
+        },
+        changeMinute(value) {
+            this.minute = value
+            this.dialogTime = false
+            this.changeTimeEvent()
+            this.updateModelTime()
         },
         changeTimeEvent() {
-            this.timeFormatted = this.time.replace(':', '')
+            this.timeFormatted = this.time
             this.$refs.menu.save(this.time)
         },
         openMenuDate() {
@@ -360,7 +372,8 @@ export default {
                 this.selectContentInputHour()
             }
         },
-        updateModelTime(value) {
+        updateModelTime() {
+            const value = ('0' + this.hour).slice(-2) + ':' + ('0' + this.minute).slice(-2)
             if (this.date && value) {
                 const dateTimeWithTimezone = this.buildDateTimeWithTimezone(this.date, value)
                 const dateTimeTimezoneZero = this.getDateTimeZeroTimezone(dateTimeWithTimezone)
