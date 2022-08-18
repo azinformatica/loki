@@ -17,7 +17,7 @@
         </az-aside>
 
         <v-app-bar app height="60" class="toolbar">
-            <v-icon class="mobile_menu" @click="showAside()">dehaze</v-icon>
+            <v-icon v-if="$vuetify.breakpoint.xsOnly" class="mobile_menu" @click="showAside()">dehaze</v-icon>
             <img class="mobile" :src="logoMobile" />
             <div class="top-search">
                 <div class="input-search">
