@@ -9,8 +9,10 @@
             :disabled="disableButtons"
         >
             <v-tooltip bottom open-delay="800">
+                <template v-slot:activator="{on}">
+                    <v-icon v-on="on">zoom_out</v-icon>
+                </template>
                 <span>Zoom -</span>
-                <v-icon slot="activator">zoom_out</v-icon>
             </v-tooltip>
         </v-btn>
         <v-btn
@@ -21,11 +23,12 @@
             :disabled="disableButtons"
         >
             <v-tooltip bottom open-delay="800">
+                <template v-slot:activator="{on}">
+                    <v-icon v-if="scaleType === 'page-fit'" v-on="on">fullscreen</v-icon>
+                    <v-icon v-else v-on="on">fullscreen_exit</v-icon>
+                </template>
                 <span v-if="scaleType === 'page-fit'">Ajustar à largura</span>
                 <span v-else>Ajustar à altura</span>
-
-                <v-icon v-if="scaleType === 'page-fit'" slot="activator">fullscreen</v-icon>
-                <v-icon v-else slot="activator">fullscreen_exit</v-icon>
             </v-tooltip>
         </v-btn>
         <v-btn
@@ -36,8 +39,10 @@
             :disabled="disableButtons"
         >
             <v-tooltip bottom open-delay="800">
+                <template v-slot:activator="{on}">
+                    <v-icon v-on="on">zoom_in</v-icon>
+                </template>
                 <span>Zoom +</span>
-                <v-icon slot="activator">zoom_in</v-icon>
             </v-tooltip>
         </v-btn>
         <div class="az-pdf-toolbar__pagination" data-test="pagination">
@@ -54,8 +59,10 @@
                 :disabled="disableButtons"
             >
                 <v-tooltip bottom open-delay="800">
+                    <template v-slot:activator="{on}">
+                        <v-icon v-on="on">rotate_right</v-icon>
+                    </template>
                     <span>Girar</span>
-                    <v-icon slot="activator">rotate_right</v-icon>
                 </v-tooltip>
             </v-btn>
             <v-btn
@@ -67,8 +74,10 @@
                 :disabled="disableButtons"
             >
                 <v-tooltip bottom open-delay="800">
+                    <template v-slot:activator="{on}">
+                        <v-icon v-on="on">get_app</v-icon>
+                    </template>
                     <span>Download</span>
-                    <v-icon slot="activator">get_app</v-icon>
                 </v-tooltip>
             </v-btn>
             <v-btn
@@ -80,8 +89,10 @@
                 :disabled="disableButtons"
             >
                 <v-tooltip bottom open-delay="800">
+                    <template v-slot:activator="{on}">
+                        <v-icon v-on="on">print</v-icon>
+                    </template>
                     <span>Imprimir</span>
-                    <v-icon slot="activator">print</v-icon>
                 </v-tooltip>
             </v-btn>
             <v-btn

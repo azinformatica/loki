@@ -96,7 +96,7 @@ describe('Toolbar.spec.js', () => {
 
         it('Should have a changeScaleType button', () => {
             let changeScaleType = wrapper.find('[data-test="changeScaleType"]')
-            expect(changeScaleType.html()).toContain('fullscreen')
+            expect(changeScaleType.html()).toContain('Ajustar à largura')
 
             wrapper = shallowMount(Toolbar, {
                 localVue,
@@ -105,7 +105,7 @@ describe('Toolbar.spec.js', () => {
                 },
             })
             changeScaleType = wrapper.find('[data-test="changeScaleType"]')
-            expect(changeScaleType.html()).toContain('fullscreen_exit')
+            expect(changeScaleType.html()).toContain('Ajustar à altura')
         })
 
         it('Should disable the buttons', () => {
