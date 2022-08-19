@@ -12,7 +12,6 @@
                 <template v-slot:activator="{on}">
                     <v-icon v-on="on">zoom_out</v-icon>
                 </template>
-
                 <span>Zoom -</span>
             </v-tooltip>
         </v-btn>
@@ -24,12 +23,10 @@
             :disabled="disableButtons"
         >
             <v-tooltip bottom open-delay="800">
-
                 <template v-slot:activator="{on}">
                     <v-icon v-if="scaleType === 'page-fit'" v-on="on">fullscreen</v-icon>
                     <v-icon v-else v-on="on">fullscreen_exit</v-icon>
                 </template>
-
                 <span v-if="scaleType === 'page-fit'">Ajustar à largura</span>
                 <span v-else>Ajustar à altura</span>
             </v-tooltip>
