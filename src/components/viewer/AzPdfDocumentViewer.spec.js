@@ -9,6 +9,9 @@ import { createLocalVue, shallowMount } from '@vue/test-utils'
 
 jest.mock('pdfjs-dist/build/pdf', () => ({
     getDocument: jest.fn(() => Promise.resolve(true)),
+    PDFJS: {
+        workerSrc: jest.fn(),
+    },
 }))
 
 jest.mock('pdfjs-dist/web/pdf_viewer.js', () => ({
