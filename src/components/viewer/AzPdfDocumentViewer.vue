@@ -35,6 +35,9 @@ import LoadingPrint from './LoadingPrint'
 import PrintService from './PrintService'
 import PDFJSLib from 'pdfjs-dist/build/pdf'
 import { PDFJS as PDFJSViewer } from 'pdfjs-dist/web/pdf_viewer.js'
+import pdfWorker from 'pdfjs-dist/build/pdf.worker.js'
+
+PDFJSLib.PDFJS.workerSrc = pdfWorker
 export default {
     components: {
         Toolbar,
