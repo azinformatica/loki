@@ -17,6 +17,7 @@
   "author": "Charles Viegas",
   "license": "MIT",
   "dependencies": {
+    "interactjs": "~1.10.17",
     "accounting": "~0.4.1",
     "axios": "~0.27.2",
     "imagesloaded": "~4.1.4",
