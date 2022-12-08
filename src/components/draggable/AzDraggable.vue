@@ -29,7 +29,6 @@ export default {
     methods: {
         configureInteractor() {
             this.interactor = interact(`.${this.draggableName}`)
-            if (this.interactor.isSet()) return
             this.configureResizable()
             this.configureDraggable()
         },
