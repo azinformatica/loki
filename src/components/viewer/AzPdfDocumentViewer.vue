@@ -5,7 +5,7 @@
             :downloadButton="downloadButton"
             :pagination="pagination"
             :printButton="printButton"
-            :rotateButton="rotateButton"
+            :rotateButton="isRotateButtonVisible"
             :scaleType="scale.type"
             @changeScaleType="changeScaleType"
             @zoomIn="zoomIn"
@@ -14,14 +14,33 @@
             @download="download"
             @print="print"
             v-show="!loadingPlaceHolder"
+            @startCreateDraggable="startCreateDraggable"
         />
         <div
             id="az-pdf-viewer"
             class="Viewer"
-            :style="{ height: `calc(${height} - 62px)` }"
+            :style="azPdfViewerStyle"
             v-show="!loadingPlaceHolder"
         >
-            <div class="pdfViewer"></div>
+            <div class="pdfViewer">
+            </div>
+            <Draggable
+                ref="draggableRef"
+                :draggables="draggables"
+                :pages="pages"
+                :is-creating-draggable="isCreatingDraggable"
+                @create:draggable="handleCreateDraggable"
+                @update:draggable="handleUpdateDraggable"
+                @delete:draggable="handleDeleteDraggable"
+            >
+                <template v-slot:draggable-content="{ draggable }">
+                    <slot
+                        name="draggable-content"
+                        :draggable="draggable"
+                    >
+                    </slot>
+                </template>
+            </Draggable>
         </div>
         <LoadingPlaceHolder :loading="loadingPlaceHolder" />
         <LoadingPrint :isPrinting="isPrinting" :printProgress="printProgress" @cancel="cancelPrint" />
@@ -35,8 +54,10 @@ import LoadingPrint from './LoadingPrint'
 import PrintService from './PrintService'
 import PDFJSLib from 'pdfjs-dist/build/pdf'
 import { PDFJS as PDFJSViewer } from 'pdfjs-dist/web/pdf_viewer.js'
+import Draggable from "./Draggable";
 export default {
     components: {
+        Draggable,
         Toolbar,
         LoadingPlaceHolder,
         LoadingPrint,
@@ -45,7 +66,7 @@ export default {
         this.start()
         this.registerEventListener()
     },
-    destroyed() {
+    destroy() {
         this.removeEventListener()
     },
     watch: {
@@ -78,6 +99,7 @@ export default {
             eventBus.on('pagesinit', this.pagesInitEventHandler)
             eventBus.on('scalechange', this.scaleChangeEventHandler)
             eventBus.on('pagechange', this.pageChangeEventHandler)
+            eventBus.on('pagerendered', this.createPagesReferences)
             this.pdf.eventBus = eventBus
         },
         pagesInitEventHandler(e) {
@@ -91,6 +113,9 @@ export default {
         },
         pageChangeEventHandler(e) {
             this.pagination.current = e.pageNumber
+        },
+        createPagesReferences() {
+            this.pages = [...document.getElementsByClassName('page')]
         },
         createPdfLinkService() {
             this.pdf.linkService = new PDFJSViewer.PDFLinkService({
@@ -223,6 +248,23 @@ export default {
         stopLoadingPrint() {
             this.isPrinting = false
         },
+        startCreateDraggable() {
+            this.isCreatingDraggable = true
+            this.pdf.viewer.pagesRotation = 0
+        },
+        endCreateDraggable() {
+            this.isCreatingDraggable = false
+        },
+        handleCreateDraggable({ draggable }) {
+            this.endCreateDraggable()
+            this.$emit('create:draggable', { draggable })
+        },
+        handleUpdateDraggable({ draggable, draggableIndex }) {
+            this.$emit('update:draggable', { draggable, draggableIndex })
+        },
+        handleDeleteDraggable({ draggableIndex }) {
+            this.$emit('delete:draggable', { draggableIndex })
+        }
     },
     props: {
         src: {
@@ -261,6 +303,10 @@ export default {
             type: Boolean,
             default: false,
         },
+        draggables: {
+            type: Array,
+            default: () => []
+        }
     },
     computed: {
         customContainerClass() {
@@ -271,6 +317,29 @@ export default {
             }
             return classObject
         },
+        azPdfViewerStyle() {
+            return this.isCreatingDraggable
+                ? this.azPdfViewerCreatingDraggableStyle
+                : this.azPdfViewerDefaultStyle
+        },
+        azPdfViewerDefaultStyle() {
+            return {
+                height: `calc(${this.height} - 62px)`
+            }
+        },
+        azPdfViewerCreatingDraggableStyle() {
+            return {
+                position: 'absolute',
+                inset: 0,
+                cursor: 'crosshair',
+                backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                borderTop: '62px solid transparent',
+                zIndex: 9999
+            }
+        },
+        isRotateButtonVisible() {
+            return this.rotateButton && !this.draggables.length
+        }
     },
     data: () => ({
         isPrinting: false,
@@ -292,6 +361,8 @@ export default {
             current: null,
             type: '',
         },
+        pages: [],
+        isCreatingDraggable: false
     }),
 }
 </script>
@@ -305,6 +376,7 @@ export default {
     .Viewer
         width 100%
         position relative
+        z-index 0
         overflow scroll
         background-color #e4e4e4
 
@@ -316,6 +388,9 @@ export default {
             .canvasWrapper
                 -webkit-box-shadow 0 3px 6px -1px rgba(0, 0, 0, .2)
                 box-shadow 0 3px 6px -1px rgba(0, 0, 0, .2)
+
+.az-draggable-target-zone-item
+    margin 15px auto
 
 @media print
     body[data-pdf-printing] #app
