@@ -94,8 +94,8 @@ export default {
             const elementRect = element.getBoundingClientRect()
 
             return {
-                x: elementRect.left - relativeElementRect.left,
-                y: elementRect.top - relativeElementRect.top
+                x: Math.round(elementRect.left - relativeElementRect.left),
+                y: Math.round(elementRect.top - relativeElementRect.top)
             }
         },
         handleDraggableTargetZoneItemClick(event) {
