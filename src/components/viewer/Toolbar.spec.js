@@ -69,7 +69,7 @@ describe('Toolbar.spec.js', () => {
     })
 
     describe('Template', () => {
-        it('Shoud display pagination', () => {
+        it('Should display pagination', () => {
             let pagination = wrapper.find('[data-test="pagination"]')
             expect(pagination.html()).toContain('1 / 3')
         })
