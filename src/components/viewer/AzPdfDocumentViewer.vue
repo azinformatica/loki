@@ -115,7 +115,7 @@ export default {
             this.pagination.current = e.pageNumber
         },
         createPagesReferences() {
-            this.pages = [...document.getElementsByClassName('page')]
+            this.pages = Array.from(document.getElementsByClassName('page'))
         },
         createPdfLinkService() {
             this.pdf.linkService = new PDFJSViewer.PDFLinkService({

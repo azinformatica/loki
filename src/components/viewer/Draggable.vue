@@ -91,10 +91,10 @@ export default {
             return this.draggables.filter(draggable => !draggable.pageNumber || this.draggablePageIsLoaded(draggable))
         },
         formattedDraggables() {
-            return this.filteredDraggablesByLoadedPages.map(draggable => ({
-                ...draggable,
-                targetZoneRect: this.draggableTargetZoneRectPerLoadedPageNumber[draggable.pageNumber] || null
-            }))
+            return this.filteredDraggablesByLoadedPages.map(draggable => {
+                draggable.targetZoneRect = this.draggableTargetZoneRectPerLoadedPageNumber[draggable.pageNumber] || null
+                return draggable
+            })
         }
     },
     created() {

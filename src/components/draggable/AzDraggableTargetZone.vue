@@ -38,17 +38,17 @@ export default {
             draggableTargetZoneItem.classList.add(`${this.draggableTargetZoneName}--active`)
         },
         createDropzoneOnDragEnterEvent(event) {
-            this.$emit('draggableEnter', {
-                ...this.getDraggableTargetZoneItemEventData(event.target),
-                ...this.getDraggableItemEventData(event.relatedTarget),
-                ...this.getDraggableItemPositionRelativeToTargetZoneEventData(event.relatedTarget, event.target)
-            })
+            this.$emit('draggableEnter', Object.assign(
+                this.getDraggableTargetZoneItemEventData(event.target),
+                this.getDraggableItemEventData(event.relatedTarget),
+                this.getDraggableItemPositionRelativeToTargetZoneEventData(event.relatedTarget, event.target)
+            ))
         },
         createDropzoneOnDragLeaveEvent(event) {
-            this.$emit('draggableLeave', {
-                ...this.getDraggableTargetZoneItemEventData(event.target),
-                ...this.getDraggableItemEventData(event.relatedTarget)
-            })
+            this.$emit('draggableLeave', Object.assign(
+                this.getDraggableTargetZoneItemEventData(event.target),
+                this.getDraggableItemEventData(event.relatedTarget)
+            ))
         },
         createDropzoneOnDropDeactivateEvent(event) {
             const { draggableTargetZoneItem } = this.getDraggableTargetZoneItemEventData(event.target)
@@ -99,10 +99,10 @@ export default {
             }
         },
         handleDraggableTargetZoneItemClick(event) {
-            this.$emit('draggableTargetZoneItemClick', {
-                ...this.getDraggableTargetZoneItemEventData(event.target),
-                ...this.getDraggableTargetZoneItemClickEventData(event)
-            })
+            this.$emit('draggableTargetZoneItemClick', Object.assign(
+                this.getDraggableTargetZoneItemEventData(event.target),
+                this.getDraggableTargetZoneItemClickEventData(event)
+            ))
         },
         getDraggableTargetZoneItemClickEventData(event) {
             const draggableTargetZoneItem = event.target
