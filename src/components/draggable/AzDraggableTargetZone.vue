@@ -21,6 +21,7 @@ export default {
     methods: {
         configureInteractor() {
             this.interactor = interact(`.${this.draggableTargetZoneName}`)
+            if (this.interactor.isSet()) return
             this.configureDropzone()
         },
         configureDropzone() {
@@ -117,6 +118,9 @@ export default {
     },
     mounted() {
         this.configureInteractor()
+    },
+    destroyed() {
+        this.interactor.unset()
     },
     props: {
         draggableTargetZoneName: {

@@ -100,7 +100,7 @@ export default {
     created() {
         window.addEventListener('resize', this.updateScreenSize)
     },
-    destroy() {
+    destroyed() {
         window.removeEventListener('resize', this.updateScreenSize)
     },
     methods: {

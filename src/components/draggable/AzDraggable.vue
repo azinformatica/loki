@@ -29,6 +29,7 @@ export default {
     methods: {
         configureInteractor() {
             this.interactor = interact(`.${this.draggableName}`)
+            if (this.interactor.isSet()) return
             this.configureResizable()
             this.configureDraggable()
         },
@@ -139,6 +140,9 @@ export default {
     },
     mounted() {
         this.configureInteractor()
+    },
+    destroyed() {
+        this.interactor.unset()
     },
     props: {
         draggableName: {

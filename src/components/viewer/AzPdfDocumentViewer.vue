@@ -66,7 +66,7 @@ export default {
         this.start()
         this.registerEventListener()
     },
-    destroy() {
+    destroyed() {
         this.removeEventListener()
     },
     watch: {
