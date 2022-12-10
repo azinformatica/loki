@@ -332,7 +332,7 @@ export default {
                 position: 'absolute',
                 inset: 0,
                 cursor: 'crosshair',
-                backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
                 borderTop: '62px solid transparent',
                 zIndex: 9999
             }
