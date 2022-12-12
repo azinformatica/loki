@@ -1,9 +1,9 @@
 <template>
     <div
-        :class="`${$parent.$options.propsData.draggableTargetZoneName} az-draggable-target-zone-item`"
-        :style="draggableTargetZonePosition"
-        :draggable-target-zone-item-id="draggableTargetZoneItemId"
-        @click="$emit('draggableTargetZoneItemClick', $event)"
+        :class="`${className} az-draggable-target-zone-item`"
+        :style="getDraggableTargetZoneRectStyle"
+        :id="id"
+        @click="handleClick"
     >
         <slot>
         </slot>
@@ -14,29 +14,56 @@
 export default {
     name: "AzDraggableTargetZoneItem",
     props: {
-        draggableTargetZoneItemId: {
+        id: {
             type: String,
             required: true
         },
-        draggableTargetZoneItemRect: {
+        rect: {
             type: Object,
-            required: true
+            default: () => null
         }
     },
     computed: {
-        draggableTargetZonePosition() {
+        className() {
+            return `${this.$parent.$options.propsData.name}-item`
+        },
+        getDraggableTargetZoneRectStyle() {
+            return Object.assign(
+                {},
+                this.draggableTargetZoneItemTransform,
+                this.draggableTargetZoneItemWidth,
+                this.draggableTargetZoneItemHeight
+            )
+        },
+        draggableTargetZoneItemTransform() {
+            return this.rect ? { transform: `translate(${this.rect.x || 0}px, ${this.rect.y || 0}px)` } : {}
+        },
+        draggableTargetZoneItemWidth() {
+            return this.rect && this.rect.width ? { width: `${this.rect.width}px` } : {}
+        },
+        draggableTargetZoneItemHeight() {
+            return this.rect && this.rect.height ? { height: `${this.rect.height}px` } : {}
+        }
+    },
+    methods: {
+        handleClick(event) {
+            this.$emit('click', this.getClickEventData(event))
+        },
+        getClickEventData(event) {
+            const draggableTargetZoneItemElement = event.target
+            const draggableTargetZoneItemRect = draggableTargetZoneItemElement.getBoundingClientRect()
             return {
-                left: `${this.draggableTargetZoneItemRect.x}px`,
-                top: `${this.draggableTargetZoneItemRect.y}px`,
-                width: `${this.draggableTargetZoneItemRect.width}px`,
-                height: `${this.draggableTargetZoneItemRect.height}px`
+                draggableTargetZoneItemElement: draggableTargetZoneItemElement,
+                draggableTargetZoneItemId: this.getDraggableTargetZoneItemId(draggableTargetZoneItemElement),
+                mousePositionRelativeToTargetZone: {
+                    x: Math.round(event.clientX - draggableTargetZoneItemRect.x),
+                    y: Math.round(event.clientY - draggableTargetZoneItemRect.y)
+                }
             }
+        },
+        getDraggableTargetZoneItemId(draggableTargetZoneItemElement) {
+            return draggableTargetZoneItemElement.getAttribute('id')
         }
     }
 }
 </script>
-
-<style scoped lang="stylus">
-.az-draggable-target-zone-item
-    position absolute
-</style>

@@ -1,20 +1,7 @@
 <template>
-    <div class="az-draggable">
-        <az-draggable-item
-            v-for="(draggable, draggableIndex) of draggables"
-            :key="draggable.id"
-            :draggable-item-id="draggable.id"
-            :draggable-item-rect="draggable.rect"
-            :draggable-target-zone-item-rect="draggable.targetZoneRect"
-        >
-            <template v-slot:default>
-                <slot
-                    :draggable="draggable"
-                    :draggableIndex="draggableIndex"
-                >
-                </slot>
-            </template>
-        </az-draggable-item>
+    <div :class="`${this.name} az-draggable`">
+        <slot>
+        </slot>
     </div>
 </template>
 
@@ -26,9 +13,38 @@ export default {
     components: {
         AzDraggableItem
     },
+    props: {
+        name: {
+            type: String,
+            required: true
+        },
+        resizable: {
+            type: Boolean,
+            default: false
+        },
+        minWidth: {
+            type: Number,
+            default: 50
+        },
+        minHeight: {
+            type: Number,
+            default: 50
+        },
+        maxWidth: {
+            type: Number,
+            default: 1000
+        },
+        maxHeight: {
+            type: Number,
+            default: 1000
+        }
+    },
+    data: () => ({
+        interactor: null
+    }),
     methods: {
         configureInteractor() {
-            this.interactor = interact(`.${this.draggableName}`)
+            this.interactor = interact(`.${this.name}-item`)
             this.configureResizable()
             this.configureDraggable()
         },
@@ -44,7 +60,6 @@ export default {
         },
         configureDraggable() {
             this.interactor = this.interactor.draggable({
-                modifiers: this.createDraggableModifiers(),
                 listeners: this.createDraggableListeners(),
                 autoScroll: true,
                 inertia: true
@@ -68,23 +83,33 @@ export default {
         createResizableModifiers() {
             return [
                 interact.modifiers.restrictSize({
-                    min: { width: this.minWidth, height: this.minHeight }
+                    min: {
+                        width: this.minWidth,
+                        height: this.minHeight
+                    },
+                    max: {
+                        width: this.maxWidth,
+                        height: this.maxHeight
+                    }
                 })
             ]
         },
         createResizableListenersStartEvent(event) {
-            event.target.classList.add(`${this.draggableName}--resize`)
-            this.$emit('resizeStart', this.getEventData(event))
+            event.target.classList.add(`${this.name}-item--resize`)
+            const eventData = this.getEventData(event)
+            this.updateDraggableItemAttributes(eventData.draggableItemElement, eventData.draggableItemRect)
+            this.$emit('resize-start', eventData)
         },
         createResizableListenersMoveEvent(event) {
-            this.$emit('resize', this.getEventData(event))
+            const eventData = this.getEventData(event)
+            this.updateDraggableItemAttributes(eventData.draggableItemElement, eventData.draggableItemRect)
+            this.$emit('resize', eventData)
         },
         createResizableListenersEndEvent(event) {
-            event.target.classList.remove(`${this.draggableName}--resize`)
-            this.$emit('resizeEnd', this.getEventData(event))
-        },
-        createDraggableModifiers() {
-            return []
+            event.target.classList.remove(`${this.name}-item--resize`)
+            const eventData = this.getEventData(event)
+            this.updateDraggableItemAttributes(eventData.draggableItemElement, eventData.draggableItemRect)
+            this.$emit('resize-end', eventData)
         },
         createDraggableListeners() {
             return  {
@@ -94,30 +119,45 @@ export default {
             }
         },
         createDraggableListenersStart(event) {
-            event.target.classList.add(`${this.draggableName}--drag`)
-            this.$emit('dragStart', this.getEventData(event))
+            event.target.classList.add(`${this.name}-item--drag`)
+            const eventData = this.getEventData(event)
+            this.updateDraggableItemAttributes(eventData.draggableItemElement, eventData.draggableItemRect)
+            this.$emit('drag-start', eventData)
         },
         createDraggableListenersMove(event) {
-            this.$emit('drag', this.getEventData(event))
+            const eventData = this.getEventData(event)
+            this.updateDraggableItemAttributes(eventData.draggableItemElement, eventData.draggableItemRect)
+            this.$emit('drag', eventData)
         },
         createDraggableListenersEnd(event) {
-            event.target.classList.remove(`${this.draggableName}--drag`)
-            this.$emit('dragEnd', this.getEventData(event))
+            event.target.classList.remove(`${this.name}-item--drag`)
+            const eventData = this.getEventData(event)
+            this.updateDraggableItemAttributes(eventData.draggableItemElement, eventData.draggableItemRect)
+            this.$emit('drag-end', eventData)
         },
         getEventData(event) {
             return {
-                draggableItemId: event.target.getAttribute('draggable-item-id'),
-                draggableItemIndex: this.getElementIndex(event.target),
-                draggableItemRect: {
-                    x: this.getUpdatedDraggableItemRectX(event),
-                    y: this.getUpdatedDraggableItemRectY(event),
-                    width: event.rect.width,
-                    height: event.rect.height
-                },
-                draggableItem: event.target
+                draggableItemElement: event.target,
+                draggableItemId: this.getDraggableItemId(event.target),
+                draggableItemRect: this.getDraggableItemRect(event),
+                draggableTargetZoneItemId: this.getDraggableTargetZoneItemId(event.target)
             }
         },
-        getUpdatedDraggableItemRectX(event) {
+        getDraggableItemId(draggableItemElement) {
+            return draggableItemElement.getAttribute('id')
+        },
+        getDraggableItemRect(event) {
+            return {
+                x: this.getDraggableItemRectX(event),
+                y: this.getDraggableItemRectY(event),
+                width: this.getDraggableItemRectWidth(event),
+                height: this.getDraggableItemRectHeight(event)
+            }
+        },
+        getDraggableTargetZoneItemId(draggableItemElement) {
+            return draggableItemElement.getAttribute('target-zone-item-id') || ''
+        },
+        getDraggableItemRectX(event) {
             const dataX = event.target.getAttribute('data-x')
 
             const x = parseFloat(dataX) || 0
@@ -125,7 +165,7 @@ export default {
 
             return x + dx
         },
-        getUpdatedDraggableItemRectY(event) {
+        getDraggableItemRectY(event) {
             const dataY = event.target.getAttribute('data-y')
 
             const y = parseFloat(dataY) || 0
@@ -133,8 +173,17 @@ export default {
 
             return y + dy
         },
-        getElementIndex(element) {
-            return Array.from(element.parentElement.children).indexOf(element);
+        getDraggableItemRectWidth(event) {
+            return event.rect.width
+        },
+        getDraggableItemRectHeight(event) {
+            return event.rect.height
+        },
+        updateDraggableItemAttributes(draggableItemElement, rect) {
+            draggableItemElement.setAttribute('data-x', rect.x)
+            draggableItemElement.setAttribute('data-y', rect.y)
+            draggableItemElement.setAttribute('data-width', rect.width)
+            draggableItemElement.setAttribute('data-height', rect.height)
         }
     },
     mounted() {
@@ -142,39 +191,6 @@ export default {
     },
     destroyed() {
         this.interactor.unset()
-    },
-    props: {
-        draggableName: {
-            type: String,
-            required: true
-        },
-        draggables: {
-          type: Array,
-          default: () => []
-        },
-        resizable: {
-            type: Boolean,
-            default: false
-        },
-        minWidth: {
-            type: Number,
-            default: 50
-        },
-        minHeight: {
-            type: Number,
-            default: 50
-        }
-    },
-    data: () => ({
-        interactor: null
-    })
+    }
 }
 </script>
-
-<style scoped lang="stylus">
-.az-draggable
-    position absolute
-    top 15px
-    left 0
-    z-index 9999
-</style>

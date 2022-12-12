@@ -1,53 +1,71 @@
 <template>
     <div>
         <az-draggable-target-zone
-            draggable-target-zone-name="document-draggable-target-zone"
-            draggable-name="document-draggable"
-            :draggable-target-zones="draggableTargetZones"
-            @draggableEnter="handleDraggableEnter"
-            @draggableLeave="handleDraggableLeave"
-            @draggableTargetZoneItemClick="handleDraggableTargetZoneItemClick"
-        />
-        <az-draggable
-            draggable-name="document-draggable"
-            :draggables="formattedDraggables"
-            @dragStart="handleStartChangeDraggable"
-            @drag="handleChangeDraggable"
-            @dragEnd="handleEndChangeDraggable"
-            @resizeStart="handleStartChangeDraggable"
-            @resize="handleChangeDraggable"
-            @resizeEnd="handleEndChangeDraggable"
-            resizable
+            name="document-draggable-target-zone"
+            :accepted-draggable-names="['document-draggable']"
+            @draggable-enter="handleDraggableEnter"
+            @draggable-leave="handleDraggableLeave"
         >
-            <template v-slot:default="{ draggable }">
-                <div class="document-draggable__button-container">
-                    <button @click="handleDeleteDraggable(draggable)">
+            <az-draggable-target-zone-item
+                v-for="draggableTargetZone of draggableTargetZones"
+                :key="draggableTargetZone.id"
+                :id="draggableTargetZone.id"
+                :rect="draggableTargetZone.rect"
+                @click="handleDraggableTargetZoneItemClick"
+            />
+        </az-draggable-target-zone>
+        <az-draggable
+            name="document-draggable"
+            resizable
+            @drag-start="handleStartChangeDraggable"
+            @drag="handleChangeDraggable"
+            @drag-end="handleEndChangeDraggable"
+            @resize-start="handleStartChangeDraggable"
+            @resize="handleChangeDraggable"
+            @resize-end="handleEndChangeDraggable"
+        >
+            <az-draggable-item
+                v-for="draggable of formattedDraggables"
+                :key="draggable.id"
+                :id="draggable.id"
+                :rect="draggable.rect"
+                :target-zone-item-id="draggableTargetZoneIdPerLoadedPageNumber[draggable.pageNumber]"
+            >
+                <div class="document-draggable-item__button-container">
+                    <button
+                        @click="handleDeleteDraggable(draggable)"
+                        data-test="delete-draggable-button"
+                    >
                         <v-icon size="12">
                             close
                         </v-icon>
                     </button>
                 </div>
-                <div class="document-draggable__content">
+                <div class="document-draggable-item__content">
                     <slot
                         name="draggable-content"
                         :draggable="draggable"
                     >
                     </slot>
                 </div>
-            </template>
+            </az-draggable-item>
         </az-draggable>
     </div>
 </template>
 
 <script>
 import _ from 'lodash'
-import AzDraggable from "../draggable/AzDraggable";
 import AzDraggableTargetZone from "../draggable/AzDraggableTargetZone";
+import AzDraggableTargetZoneItem from "../draggable/AzDraggableTargetZoneItem";
+import AzDraggable from "../draggable/AzDraggable";
+import AzDraggableItem from "../draggable/AzDraggableItem";
 export default {
     name: "Draggable",
     components: {
         AzDraggableTargetZone,
-        AzDraggable
+        AzDraggableTargetZoneItem,
+        AzDraggable,
+        AzDraggableItem
     },
     props: {
         draggables: {
@@ -72,32 +90,32 @@ export default {
             return this.pages.filter(page => page.getAttribute('data-loaded'))
         },
         draggableTargetZones() {
-            return this.loadedPages.map((page, pageIndex) => ({
-                id: `dsadasd-${pageIndex}`,
+            return this.loadedPages.map(page => ({
+                id: this.generateUUID(),
                 rect: this.getElementCoordinatesRelativeToParent(page),
                 pageNumber: this.getPageNumberAsInt(page),
                 screenWidth: this.screenWidth,
                 screenHeight: this.screenHeight,
             }))
         },
-        draggableTargetZoneRectPerLoadedPageNumber() {
-            const draggableTargetZoneRectPerLoadedPageNumber = {}
+        draggableTargetZoneIdPerLoadedPageNumber() {
+            const draggableTargetZoneIdPerLoadedPageNumber = {}
             for (const draggableTargetZone of this.draggableTargetZones) {
-                draggableTargetZoneRectPerLoadedPageNumber[draggableTargetZone.pageNumber] = draggableTargetZone.rect
+                draggableTargetZoneIdPerLoadedPageNumber[draggableTargetZone.pageNumber] = draggableTargetZone.id
             }
-            return draggableTargetZoneRectPerLoadedPageNumber
+            return draggableTargetZoneIdPerLoadedPageNumber
         },
         filteredDraggablesByLoadedPages() {
             return this.draggables.filter(draggable => !draggable.pageNumber || this.draggablePageIsLoaded(draggable))
         },
         formattedDraggables() {
             return this.filteredDraggablesByLoadedPages.map(draggable => {
-                draggable.targetZoneRect = this.draggableTargetZoneRectPerLoadedPageNumber[draggable.pageNumber] || null
+                draggable.targetZoneItemId = this.draggableTargetZoneIdPerLoadedPageNumber[draggable.pageNumber] || ''
                 return draggable
             })
         }
     },
-    created() {
+    mounted() {
         window.addEventListener('resize', this.updateScreenSize)
     },
     destroyed() {
@@ -109,39 +127,40 @@ export default {
         },
         handleEndChangeDraggable(eventData) {
             const { draggable, draggableIndex } = this.findDraggableCloneAndIndex(eventData.draggableItemId)
+            draggable.rect = eventData.draggableItemRect
             if (!this.isDraggableValid(draggable)) {
-                draggable.rect = this.getLastValidRect(eventData.draggableItem)
-                draggable.pageNumber = this.getLastValidPageNumber(eventData.draggableItem)
-                this.$emit('update:draggable', { draggable, draggableIndex })
+                draggable.rect = this.getLastValidRect(eventData.draggableItemElement)
+                draggable.pageNumber = this.getLastValidPageNumber(eventData.draggableItemElement)
             }
+            this.$emit('update:draggable', { draggable, draggableIndex })
         },
         handleChangeDraggable(eventData) {
             const { draggable, draggableIndex } = this.findDraggableCloneAndIndex(eventData.draggableItemId)
             draggable.rect = eventData.draggableItemRect
             if (this.isDraggableValid(draggable)) {
-                this.setLastValidRect(eventData.draggableItem, draggable.rect)
-                this.setLastValidPageNumber(eventData.draggableItem, draggable.pageNumber)
+                this.setLastValidRect(eventData.draggableItemElement, draggable.rect)
+                this.setLastValidPageNumber(eventData.draggableItemElement, draggable.pageNumber)
             }
             this.$emit('update:draggable', { draggable, draggableIndex })
         },
         handleDraggableEnter(eventData) {
             const draggableTargetZone = this.findDraggableTargetZoneById(eventData.draggableTargetZoneItemId)
             const { draggable, draggableIndex } = this.findDraggableCloneAndIndex(eventData.draggableItemId)
-            draggable.rect.x = eventData.draggableItemPositionRelativeToTargetZone.x
-            draggable.rect.y = eventData.draggableItemPositionRelativeToTargetZone.y
+            draggable.rect.x = eventData.draggableItemRect.x
+            draggable.rect.y = eventData.draggableItemRect.y
             draggable.pageNumber = draggableTargetZone.pageNumber
             this.$emit('update:draggable', { draggable, draggableIndex })
         },
         handleDraggableLeave(eventData) {
             const { draggable, draggableIndex } = this.findDraggableCloneAndIndex(eventData.draggableItemId)
-            draggable.rect.x = eventData.draggableItemPositionRelativeToParent.x
-            draggable.rect.y = eventData.draggableItemPositionRelativeToParent.y
+            draggable.rect.x = eventData.draggableItemRect.x
+            draggable.rect.y = eventData.draggableItemRect.y
             draggable.pageNumber = null
             this.$emit('update:draggable', { draggable, draggableIndex })
         },
         handleDeleteDraggable(draggable) {
             const draggableIndex = this.findDraggableIndexById(draggable.id)
-            this.$emit('delete:draggable', { draggableIndex })
+            this.$emit('delete:draggable', { draggable, draggableIndex })
         },
         findDraggableCloneAndIndex(draggableId) {
             const draggableIndex = this.findDraggableIndexById(draggableId)
@@ -178,13 +197,14 @@ export default {
             return this.isDraggableRectValid(draggable) && !!draggable.pageNumber
         },
         isDraggableRectValid(draggable) {
-            const draggableTargetZoneRect = this.draggableTargetZoneRectPerLoadedPageNumber[draggable.pageNumber]
+            const draggableTargetZoneId = this.draggableTargetZoneIdPerLoadedPageNumber[draggable.pageNumber]
+            const draggableTargetZone = this.findDraggableTargetZoneById(draggableTargetZoneId)
             return (
-                draggableTargetZoneRect &&
+                draggableTargetZone &&
                 draggable.rect.x >= 0 &&
                 draggable.rect.y >= 0 &&
-                draggable.rect.x + draggable.rect.width <= draggableTargetZoneRect.width &&
-                draggable.rect.y + draggable.rect.height <= draggableTargetZoneRect.height
+                draggable.rect.x + draggable.rect.width <= draggableTargetZone.rect.width &&
+                draggable.rect.y + draggable.rect.height <= draggableTargetZone.rect.height
             )
         },
         setLastValidRect(draggableItem, lastValidRect) {
@@ -208,14 +228,14 @@ export default {
             return parseInt(draggableItem.getAttribute('last-valid-page-number') || null)
         },
         draggablePageIsLoaded(draggable) {
-            return !!this.draggableTargetZoneRectPerLoadedPageNumber[draggable.pageNumber]
+            return !!this.draggableTargetZoneIdPerLoadedPageNumber[draggable.pageNumber]
         },
         handleDraggableTargetZoneItemClick(eventData) {
             if (!this.isCreatingDraggable) return
-            const draggableTargetZone = this.draggableTargetZones[eventData.draggableTargetZoneItemIndex]
+            const draggableTargetZone = this.findDraggableTargetZoneById(eventData.draggableTargetZoneItemId)
             const draggable = this.createDraggable()
-            draggable.rect.x = eventData.mousePositionInsideTargetZone.x
-            draggable.rect.y = eventData.mousePositionInsideTargetZone.y
+            draggable.rect.x = eventData.mousePositionRelativeToTargetZone.x
+            draggable.rect.y = eventData.mousePositionRelativeToTargetZone.y
             draggable.pageNumber = draggableTargetZone.pageNumber
             if(this.isDraggableValid(draggable)) {
                 this.$emit('create:draggable', { draggable })
@@ -230,15 +250,22 @@ export default {
                     height: 50
                 },
                 pageNumber: null,
-                id: (new Date()).toISOString()
+                id: this.generateUUID()
             }
+        },
+        generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+                const r = Math.random() * 16 | 0
+                const v = c === 'x' ? r : (r&0x3|0x8)
+                return v.toString(16)
+            });
         }
     }
 }
 </script>
 
 <style scoped lang="stylus">
->>> .document-draggable
+>>> .document-draggable-item
     border-radius 4px
     border 2px dashed var(--v-accent-base)
     background-color var(--v-accent-lighten3)
@@ -278,15 +305,32 @@ export default {
                 height 100%
                 width 100%
 
-
     &:hover
         border 2px solid var(--v-primary-base)
         background-color transparent
 
-        .document-draggable__button-container
+        .document-draggable-item__button-container
             display flex
 
->>> .document-draggable-target-zone--active
-    border 4px dashed #8c8c8c
+>>> .document-draggable
+    position absolute
+    top 0
+    left 0
+    z-index 9999
+
+>>> .document-draggable-target-zone
+    position absolute
+    top 0
+    left 0
+    right 0
+    bottom 0
+    z-index 9998
+
+>>> .document-draggable-target-zone-item
+    position absolute
+    margin 15px auto
+
+    &--active
+        border 4px dashed #8c8c8c
 
 </style>

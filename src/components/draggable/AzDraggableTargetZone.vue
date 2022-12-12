@@ -1,12 +1,7 @@
 <template>
-    <div class="az-draggable-target-zone">
-        <az-draggable-target-zone-item
-            v-for="draggableTargetZone of draggableTargetZones"
-            :key="draggableTargetZone.id"
-            :draggable-target-zone-item-id="draggableTargetZone.id"
-            :draggable-target-zone-item-rect="draggableTargetZone.rect"
-            @draggableTargetZoneItemClick="handleDraggableTargetZoneItemClick"
-        />
+    <div :class="`${this.name} az-draggable-target-zone`">
+        <slot>
+        </slot>
     </div>
 </template>
 
@@ -18,121 +13,14 @@ export default {
     components: {
         AzDraggableTargetZoneItem
     },
-    methods: {
-        configureInteractor() {
-            this.interactor = interact(`.${this.draggableTargetZoneName}`)
-            this.configureDropzone()
-        },
-        configureDropzone() {
-            this.interactor = this.interactor.dropzone({
-                accept: `.${this.draggableName}`,
-                overlap: this.overlap,
-                ondropactivate: event => this.createDropzoneOnDropActivateEvent(event),
-                ondragenter: event => this.createDropzoneOnDragEnterEvent(event),
-                ondragleave: event => this.createDropzoneOnDragLeaveEvent(event),
-                ondropdeactivate: event => this.createDropzoneOnDropDeactivateEvent(event)
-            })
-        },
-        createDropzoneOnDropActivateEvent(event) {
-            const { draggableTargetZoneItem } = this.getDraggableTargetZoneItemEventData(event.target)
-            draggableTargetZoneItem.classList.add(`${this.draggableTargetZoneName}--active`)
-        },
-        createDropzoneOnDragEnterEvent(event) {
-            this.$emit('draggableEnter', Object.assign(
-                this.getDraggableTargetZoneItemEventData(event.target),
-                this.getDraggableItemEventData(event.relatedTarget),
-                this.getDraggableItemPositionRelativeToTargetZoneEventData(event.relatedTarget, event.target)
-            ))
-        },
-        createDropzoneOnDragLeaveEvent(event) {
-            this.$emit('draggableLeave', Object.assign(
-                this.getDraggableTargetZoneItemEventData(event.target),
-                this.getDraggableItemEventData(event.relatedTarget)
-            ))
-        },
-        createDropzoneOnDropDeactivateEvent(event) {
-            const { draggableTargetZoneItem } = this.getDraggableTargetZoneItemEventData(event.target)
-            draggableTargetZoneItem.classList.remove(`${this.draggableTargetZoneName}--active`)
-        },
-        getDraggableTargetZoneItemEventData(draggableTargetZoneItem) {
-            return {
-                draggableTargetZoneItem: draggableTargetZoneItem,
-                draggableTargetZoneItemId: this.getDraggableTargetZoneItemId(draggableTargetZoneItem),
-                draggableTargetZoneItemIndex: this.getElementIndex(draggableTargetZoneItem),
-            }
-        },
-        getDraggableItemEventData(draggableItem) {
-            return {
-                draggableItem: draggableItem,
-                draggableItemId: this.getDraggableItemId(draggableItem),
-                draggableItemIndex: this.getElementIndex(draggableItem),
-                draggableItemPositionRelativeToParent: this.getDraggableItemPositionRelativeToParent(draggableItem)
-            }
-        },
-        getDraggableItemPositionRelativeToTargetZoneEventData(draggableItem, draggableTargetZoneItem) {
-            return {
-                draggableItemPositionRelativeToTargetZone: this.getDraggableItemPositionRelativeToTargetZone(draggableItem, draggableTargetZoneItem)
-            }
-        },
-        getDraggableTargetZoneItemId(draggableTargetZoneItem) {
-            return draggableTargetZoneItem.getAttribute('draggable-target-zone-item-id')
-        },
-        getElementIndex(element) {
-            return Array.from(element.parentElement.children).indexOf(element);
-        },
-        getDraggableItemId(draggableItem) {
-            return draggableItem.getAttribute('draggable-item-id')
-        },
-        getDraggableItemPositionRelativeToTargetZone(draggableItem, draggableTargetZoneItem) {
-            return this.getElementPositionRelativeToAnotherElement(draggableItem, draggableTargetZoneItem)
-        },
-        getDraggableItemPositionRelativeToParent(draggableItem) {
-            return this.getElementPositionRelativeToAnotherElement(draggableItem, draggableItem.parentElement)
-        },
-        getElementPositionRelativeToAnotherElement(element, relativeElement) {
-            const relativeElementRect = relativeElement.getBoundingClientRect()
-            const elementRect = element.getBoundingClientRect()
-
-            return {
-                x: Math.round(elementRect.left - relativeElementRect.left),
-                y: Math.round(elementRect.top - relativeElementRect.top)
-            }
-        },
-        handleDraggableTargetZoneItemClick(event) {
-            this.$emit('draggableTargetZoneItemClick', Object.assign(
-                this.getDraggableTargetZoneItemEventData(event.target),
-                this.getDraggableTargetZoneItemClickEventData(event)
-            ))
-        },
-        getDraggableTargetZoneItemClickEventData(event) {
-            const draggableTargetZoneItem = event.target
-            const draggableTargetZoneItemRect = draggableTargetZoneItem.getBoundingClientRect()
-            return {
-                mousePositionInsideTargetZone: {
-                    x: Math.round(event.clientX - draggableTargetZoneItemRect.left),
-                    y: Math.round(event.clientY - draggableTargetZoneItemRect.top)
-                }
-            }
-        }
-    },
-    mounted() {
-        this.configureInteractor()
-    },
-    destroyed() {
-        this.interactor.unset()
-    },
     props: {
-        draggableTargetZoneName: {
+        name: {
             type: String,
             required: true
         },
-        draggableName: {
-            type: String,
-            required: true
-        },
-        draggableTargetZones: {
+        acceptedDraggableNames: {
             type: Array,
-            default: () => []
+            required: true
         },
         overlap: {
             type: Number,
@@ -141,16 +29,111 @@ export default {
     },
     data: () => ({
         interactor: null
-    })
+    }),
+    computed: {
+        acceptedDraggableNamesBetweenCommas() {
+            return this.acceptedDraggableNames.map(name => `.${name}-item`).join(', ')
+        }
+    },
+    mounted() {
+        this.configureInteractor()
+    },
+    destroyed() {
+        this.interactor.unset()
+    },
+    methods: {
+        configureInteractor() {
+            this.interactor = interact(`.${this.name}-item`)
+            this.configureDropzone()
+        },
+        configureDropzone() {
+            this.interactor = this.interactor.dropzone({
+                accept: this.acceptedDraggableNamesBetweenCommas,
+                overlap: this.overlap,
+                ondropactivate: event => this.createDropzoneOnDropActivateEvent(event),
+                ondragenter: event => this.createDropzoneOnDragEnterEvent(event),
+                ondragleave: event => this.createDropzoneOnDragLeaveEvent(event),
+                ondropdeactivate: event => this.createDropzoneOnDropDeactivateEvent(event)
+            })
+        },
+        createDropzoneOnDropActivateEvent(event) {
+            const draggableTargetZoneItemElement = event.target
+            draggableTargetZoneItemElement.classList.add(`${this.name}-item--active`)
+        },
+        createDropzoneOnDragEnterEvent(event) {
+            const eventData = Object.assign(
+                {},
+                this.getDraggableTargetZoneItemEventData(event.target),
+                this.getDraggableItemEventData(event.relatedTarget),
+                this.getDraggableItemRectEventData(event.relatedTarget, event.target)
+            )
+            this.updateDraggableItemAttributeTargetZoneItemId(event.relatedTarget, eventData.draggableTargetZoneItemId)
+            this.updateDraggableItemAttributeRect(event.relatedTarget, eventData.draggableItemRect)
+            this.$emit('draggable-enter', eventData)
+        },
+        createDropzoneOnDragLeaveEvent(event) {
+            const eventData = Object.assign(
+                {},
+                this.getDraggableTargetZoneItemEventData(event.target),
+                this.getDraggableItemEventData(event.relatedTarget),
+                this.getDraggableItemRectEventData(event.relatedTarget)
+            )
+            this.updateDraggableItemAttributeTargetZoneItemId(event.relatedTarget, '')
+            this.updateDraggableItemAttributeRect(event.relatedTarget, eventData.draggableItemRect)
+            this.$emit('draggable-leave', eventData)
+        },
+        createDropzoneOnDropDeactivateEvent(event) {
+            const draggableTargetZoneItemElement = event.target
+            draggableTargetZoneItemElement.classList.remove(`${this.name}-item--active`)
+        },
+        getDraggableTargetZoneItemEventData(draggableTargetZoneItemElement) {
+            return {
+                draggableTargetZoneItemElement: draggableTargetZoneItemElement,
+                draggableTargetZoneItemId: this.getDraggableTargetZoneItemId(draggableTargetZoneItemElement),
+            }
+        },
+        getDraggableItemEventData(draggableItemElement) {
+            return {
+                draggableItemElement: draggableItemElement,
+                draggableItemId: this.getDraggableItemId(draggableItemElement)
+            }
+        },
+        getDraggableItemRectEventData(draggableItemElement, draggableTargetZoneItemElement) {
+            return {
+                draggableItemRect: draggableTargetZoneItemElement
+                    ? this.getDraggableItemPositionRelativeToTargetZone(draggableItemElement, draggableTargetZoneItemElement)
+                    : this.getDraggableItemPositionRelativeToParent(draggableItemElement)
+            }
+        },
+        getDraggableTargetZoneItemId(draggableTargetZoneItemElement) {
+            return draggableTargetZoneItemElement.getAttribute('id')
+        },
+        getDraggableItemId(draggableItemElement) {
+            return draggableItemElement.getAttribute('id')
+        },
+        getDraggableItemPositionRelativeToTargetZone(draggableItemElement, draggableTargetZoneItemElement) {
+            return this.getElementPositionRelativeToAnotherElement(draggableItemElement, draggableTargetZoneItemElement)
+        },
+        getDraggableItemPositionRelativeToParent(draggableItemElement) {
+            return this.getElementPositionRelativeToAnotherElement(draggableItemElement, draggableItemElement.parentElement)
+        },
+        getElementPositionRelativeToAnotherElement(element, relativeElement) {
+            const relativeElementRect = relativeElement.getBoundingClientRect()
+            const elementRect = element.getBoundingClientRect()
+            return {
+                x: Math.round(elementRect.left - relativeElementRect.left),
+                y: Math.round(elementRect.top - relativeElementRect.top),
+                width: elementRect.width,
+                height: elementRect.height
+            }
+        },
+        updateDraggableItemAttributeRect(draggableItemElement, draggableItemRect) {
+            draggableItemElement.setAttribute('data-x', draggableItemRect.x)
+            draggableItemElement.setAttribute('data-y', draggableItemRect.y)
+        },
+        updateDraggableItemAttributeTargetZoneItemId(draggableItemElement, draggableTargetZoneItemId) {
+            draggableItemElement.setAttribute('target-zone-item-id', draggableTargetZoneItemId)
+        }
+    }
 }
 </script>
-
-<style scoped lang="stylus">
-.az-draggable-target-zone
-    position absolute
-    top 0
-    left 0
-    right 0
-    bottom 0
-    z-index 9998
-</style>

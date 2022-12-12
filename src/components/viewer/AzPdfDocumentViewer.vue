@@ -262,8 +262,8 @@ export default {
         handleUpdateDraggable({ draggable, draggableIndex }) {
             this.$emit('update:draggable', { draggable, draggableIndex })
         },
-        handleDeleteDraggable({ draggableIndex }) {
-            this.$emit('delete:draggable', { draggableIndex })
+        handleDeleteDraggable({ draggable, draggableIndex }) {
+            this.$emit('delete:draggable', { draggable, draggableIndex })
         }
     },
     props: {
@@ -372,6 +372,7 @@ export default {
 <style lang="stylus">
 .az-pdf-container
     background-color #e4e4e4
+    position relative
 
     .Viewer
         width 100%
@@ -388,9 +389,6 @@ export default {
             .canvasWrapper
                 -webkit-box-shadow 0 3px 6px -1px rgba(0, 0, 0, .2)
                 box-shadow 0 3px 6px -1px rgba(0, 0, 0, .2)
-
-.az-draggable-target-zone-item
-    margin 15px auto
 
 @media print
     body[data-pdf-printing] #app
