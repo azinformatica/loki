@@ -2,7 +2,7 @@
     <div>
         <az-draggable-target-zone
             name="document-draggable-target-zone"
-            :accepted-draggable-names="['document-draggable']"
+            :accepted-draggables-names="['document-draggable']"
             @draggable-enter="handleDraggableEnter"
             @draggable-leave="handleDraggableLeave"
         >
@@ -32,21 +32,12 @@
                 :target-zone-item-id="draggableTargetZoneIdPerLoadedPageNumber[draggable.pageNumber]"
             >
                 <div class="document-draggable-item__button-container">
-                    <button
-                        @click="handleDeleteDraggable(draggable)"
-                        data-test="delete-draggable-button"
-                    >
-                        <v-icon size="12">
-                            close
-                        </v-icon>
+                    <button @click="handleDeleteDraggable(draggable)" data-test="delete-draggable-button">
+                        <v-icon size="12"> close </v-icon>
                     </button>
                 </div>
                 <div class="document-draggable-item__content">
-                    <slot
-                        name="draggable-content"
-                        :draggable="draggable"
-                    >
-                    </slot>
+                    <slot name="draggable-content" :draggable="draggable"> </slot>
                 </div>
             </az-draggable-item>
         </az-draggable>
@@ -55,42 +46,43 @@
 
 <script>
 import _ from 'lodash'
-import AzDraggableTargetZone from "../draggable/AzDraggableTargetZone";
-import AzDraggableTargetZoneItem from "../draggable/AzDraggableTargetZoneItem";
-import AzDraggable from "../draggable/AzDraggable";
-import AzDraggableItem from "../draggable/AzDraggableItem";
+import AzDraggableTargetZone from '../draggable/AzDraggableTargetZone'
+import AzDraggableTargetZoneItem from '../draggable/AzDraggableTargetZoneItem'
+import AzDraggable from '../draggable/AzDraggable'
+import AzDraggableItem from '../draggable/AzDraggableItem'
+
 export default {
-    name: "Draggable",
+    name: 'Draggable',
     components: {
         AzDraggableTargetZone,
         AzDraggableTargetZoneItem,
         AzDraggable,
-        AzDraggableItem
+        AzDraggableItem,
     },
     props: {
         draggables: {
             type: Array,
-            default: () => []
+            default: () => [],
         },
         pages: {
             type: Array,
-            default: () => []
+            default: () => [],
         },
         isCreatingDraggable: {
             type: Boolean,
-            default: false
-        }
+            default: false,
+        },
     },
     data: () => ({
         screenWidth: window.innerWidth,
-        screenHeight: window.innerHeight
+        screenHeight: window.innerHeight,
     }),
     computed: {
         loadedPages() {
-            return this.pages.filter(page => page.getAttribute('data-loaded'))
+            return this.pages.filter((page) => page.getAttribute('data-loaded'))
         },
         draggableTargetZones() {
-            return this.loadedPages.map(page => ({
+            return this.loadedPages.map((page) => ({
                 id: this.generateUUID(),
                 rect: this.getElementCoordinatesRelativeToParent(page),
                 pageNumber: this.getPageNumberAsInt(page),
@@ -106,14 +98,11 @@ export default {
             return draggableTargetZoneIdPerLoadedPageNumber
         },
         filteredDraggablesByLoadedPages() {
-            return this.draggables.filter(draggable => !draggable.pageNumber || this.draggablePageIsLoaded(draggable))
+            return this.draggables.filter((draggable) => !draggable.pageNumber || this.draggablePageIsLoaded(draggable))
         },
         formattedDraggables() {
-            return this.filteredDraggablesByLoadedPages.map(draggable => {
-                draggable.targetZoneItemId = this.draggableTargetZoneIdPerLoadedPageNumber[draggable.pageNumber] || ''
-                return draggable
-            })
-        }
+            return this.filteredDraggablesByLoadedPages.map(this.assignTargetZoneItemIdToDraggable)
+        },
     },
     mounted() {
         window.addEventListener('resize', this.updateScreenSize)
@@ -168,10 +157,12 @@ export default {
             return { draggable, draggableIndex }
         },
         findDraggableIndexById(draggableId) {
-            return this.draggables.findIndex(draggable => draggable.id === draggableId)
+            return this.draggables.findIndex((draggable) => draggable.id === draggableId)
         },
         findDraggableTargetZoneById(draggableTargetZoneId) {
-            return this.draggableTargetZones.find(draggableTargetZone => draggableTargetZone.id === draggableTargetZoneId)
+            return this.draggableTargetZones.find((draggableTargetZone) => {
+                return draggableTargetZone.id === draggableTargetZoneId
+            })
         },
         updateScreenSize() {
             this.screenWidth = window.innerWidth
@@ -184,7 +175,7 @@ export default {
                 x: Math.round(elementRect.left - relativeElementRect.left),
                 y: Math.round(elementRect.top - relativeElementRect.top),
                 width: Math.round(elementRect.width),
-                height: Math.round(elementRect.height)
+                height: Math.round(elementRect.height),
             }
         },
         getElementCoordinatesRelativeToParent(element) {
@@ -218,7 +209,7 @@ export default {
                 x: parseInt(draggableItem.getAttribute('last-valid-x') || 0),
                 y: parseInt(draggableItem.getAttribute('last-valid-y') || 0),
                 width: parseInt(draggableItem.getAttribute('last-valid-width') || 0),
-                height: parseInt(draggableItem.getAttribute('last-valid-height') || 0)
+                height: parseInt(draggableItem.getAttribute('last-valid-height') || 0),
             }
         },
         setLastValidPageNumber(draggableItem, lastValidPageNumber) {
@@ -230,6 +221,12 @@ export default {
         draggablePageIsLoaded(draggable) {
             return !!this.draggableTargetZoneIdPerLoadedPageNumber[draggable.pageNumber]
         },
+        assignTargetZoneItemIdToDraggable(draggable) {
+            const targetObject = {
+                targetZoneItemId: this.draggableTargetZoneIdPerLoadedPageNumber[draggable.pageNumber] || '',
+            }
+            return Object.assign(targetObject, draggable)
+        },
         handleDraggableTargetZoneItemClick(eventData) {
             if (!this.isCreatingDraggable) return
             const draggableTargetZone = this.findDraggableTargetZoneById(eventData.draggableTargetZoneItemId)
@@ -237,7 +234,7 @@ export default {
             draggable.rect.x = eventData.mousePositionRelativeToTargetZone.x
             draggable.rect.y = eventData.mousePositionRelativeToTargetZone.y
             draggable.pageNumber = draggableTargetZone.pageNumber
-            if(this.isDraggableValid(draggable)) {
+            if (this.isDraggableValid(draggable)) {
                 this.$emit('create:draggable', { draggable })
             }
         },
@@ -247,20 +244,20 @@ export default {
                     x: 0,
                     y: 0,
                     width: 100,
-                    height: 50
+                    height: 50,
                 },
                 pageNumber: null,
-                id: this.generateUUID()
+                id: this.generateUUID(),
             }
         },
         generateUUID() {
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-                const r = Math.random() * 16 | 0
-                const v = c === 'x' ? r : (r&0x3|0x8)
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+                const r = (Math.random() * 16) | 0
+                const v = c === 'x' ? r : (r & 0x3) | 0x8
                 return v.toString(16)
-            });
-        }
-    }
+            })
+        },
+    },
 }
 </script>
 
@@ -332,5 +329,4 @@ export default {
 
     &--active
         border 4px dashed #8c8c8c
-
 </style>
