@@ -1,45 +1,42 @@
 <template>
     <div :class="`${this.name} az-draggable-target-zone`">
-        <slot>
-        </slot>
+        <slot> </slot>
     </div>
 </template>
 
 <script>
 import interact from 'interactjs'
-import AzDraggableTargetZoneItem from './AzDraggableTargetZoneItem'
 export default {
-    name: "AzDraggableTargetZone",
-    components: {
-        AzDraggableTargetZoneItem
-    },
+    name: 'AzDraggableTargetZone',
     props: {
         name: {
             type: String,
-            required: true
+            required: true,
         },
-        acceptedDraggableNames: {
+        acceptedDraggablesNames: {
             type: Array,
-            required: true
+            required: true,
+            validator: (value) => value.length,
         },
         overlap: {
             type: Number,
-            default: 1
-        }
+            default: 1,
+        },
     },
     data: () => ({
-        interactor: null
+        interactor: null,
     }),
     computed: {
-        acceptedDraggableNamesBetweenCommas() {
-            return this.acceptedDraggableNames.map(name => `.${name}-item`).join(', ')
-        }
+        acceptedDraggablesNamesBetweenCommas() {
+            return this.acceptedDraggablesNames.map((name) => `.${name}-item`).join(', ')
+        },
     },
     mounted() {
         this.configureInteractor()
     },
     destroyed() {
         this.interactor.unset()
+        this.interactor = null
     },
     methods: {
         configureInteractor() {
@@ -48,12 +45,12 @@ export default {
         },
         configureDropzone() {
             this.interactor = this.interactor.dropzone({
-                accept: this.acceptedDraggableNamesBetweenCommas,
+                accept: this.acceptedDraggablesNamesBetweenCommas,
                 overlap: this.overlap,
-                ondropactivate: event => this.createDropzoneOnDropActivateEvent(event),
-                ondragenter: event => this.createDropzoneOnDragEnterEvent(event),
-                ondragleave: event => this.createDropzoneOnDragLeaveEvent(event),
-                ondropdeactivate: event => this.createDropzoneOnDropDeactivateEvent(event)
+                ondropactivate: (event) => this.createDropzoneOnDropActivateEvent(event),
+                ondragenter: (event) => this.createDropzoneOnDragEnterEvent(event),
+                ondragleave: (event) => this.createDropzoneOnDragLeaveEvent(event),
+                ondropdeactivate: (event) => this.createDropzoneOnDropDeactivateEvent(event),
             })
         },
         createDropzoneOnDropActivateEvent(event) {
@@ -95,15 +92,22 @@ export default {
         getDraggableItemEventData(draggableItemElement) {
             return {
                 draggableItemElement: draggableItemElement,
-                draggableItemId: this.getDraggableItemId(draggableItemElement)
+                draggableItemId: this.getDraggableItemId(draggableItemElement),
             }
         },
         getDraggableItemRectEventData(draggableItemElement, draggableTargetZoneItemElement) {
             return {
-                draggableItemRect: draggableTargetZoneItemElement
-                    ? this.getDraggableItemPositionRelativeToTargetZone(draggableItemElement, draggableTargetZoneItemElement)
-                    : this.getDraggableItemPositionRelativeToParent(draggableItemElement)
+                draggableItemRect: this.getDraggableItemRect(draggableItemElement, draggableTargetZoneItemElement),
             }
+        },
+        getDraggableItemRect(draggableItemElement, draggableTargetZoneItemElement) {
+            if (draggableTargetZoneItemElement) {
+                return this.getDraggableItemPositionRelativeToTargetZone(
+                    draggableItemElement,
+                    draggableTargetZoneItemElement
+                )
+            }
+            return this.getDraggableItemPositionRelativeToParent(draggableItemElement)
         },
         getDraggableTargetZoneItemId(draggableTargetZoneItemElement) {
             return draggableTargetZoneItemElement.getAttribute('id')
@@ -115,7 +119,10 @@ export default {
             return this.getElementPositionRelativeToAnotherElement(draggableItemElement, draggableTargetZoneItemElement)
         },
         getDraggableItemPositionRelativeToParent(draggableItemElement) {
-            return this.getElementPositionRelativeToAnotherElement(draggableItemElement, draggableItemElement.parentElement)
+            return this.getElementPositionRelativeToAnotherElement(
+                draggableItemElement,
+                draggableItemElement.parentElement
+            )
         },
         getElementPositionRelativeToAnotherElement(element, relativeElement) {
             const relativeElementRect = relativeElement.getBoundingClientRect()
@@ -124,7 +131,7 @@ export default {
                 x: Math.round(elementRect.left - relativeElementRect.left),
                 y: Math.round(elementRect.top - relativeElementRect.top),
                 width: elementRect.width,
-                height: elementRect.height
+                height: elementRect.height,
             }
         },
         updateDraggableItemAttributeRect(draggableItemElement, draggableItemRect) {
@@ -133,7 +140,7 @@ export default {
         },
         updateDraggableItemAttributeTargetZoneItemId(draggableItemElement, draggableTargetZoneItemId) {
             draggableItemElement.setAttribute('target-zone-item-id', draggableTargetZoneItemId)
-        }
-    }
+        },
+    },
 }
 </script>
