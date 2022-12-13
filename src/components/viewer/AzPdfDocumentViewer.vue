@@ -16,14 +16,8 @@
             v-show="!loadingPlaceHolder"
             @startCreateDraggable="startCreateDraggable"
         />
-        <div
-            id="az-pdf-viewer"
-            class="Viewer"
-            :style="azPdfViewerStyle"
-            v-show="!loadingPlaceHolder"
-        >
-            <div class="pdfViewer">
-            </div>
+        <div id="az-pdf-viewer" class="Viewer" :style="azPdfViewerStyle" v-show="!loadingPlaceHolder">
+            <div class="pdfViewer"></div>
             <Draggable
                 ref="draggableRef"
                 :draggables="draggables"
@@ -34,11 +28,7 @@
                 @delete:draggable="handleDeleteDraggable"
             >
                 <template v-slot:draggable-content="{ draggable }">
-                    <slot
-                        name="draggable-content"
-                        :draggable="draggable"
-                    >
-                    </slot>
+                    <slot name="draggable-content" :draggable="draggable"> </slot>
                 </template>
             </Draggable>
         </div>
@@ -54,8 +44,9 @@ import LoadingPrint from './LoadingPrint'
 import PrintService from './PrintService'
 import PDFJSLib from 'pdfjs-dist/build/pdf'
 import { PDFJS as PDFJSViewer } from 'pdfjs-dist/web/pdf_viewer.js'
-import Draggable from "./Draggable";
+import Draggable from './Draggable'
 export default {
+    name: 'az-pdf-document-viewer',
     components: {
         Draggable,
         Toolbar,
@@ -205,10 +196,10 @@ export default {
             }
         },
         handleKeydownEvent(event) {
-            if (event.ctrlKey && event.keyCode == 187) {
+            if (event.ctrlKey && event.keyCode === 187) {
                 event.preventDefault()
                 this.zoomIn()
-            } else if (event.ctrlKey && event.keyCode == 189) {
+            } else if (event.ctrlKey && event.keyCode === 189) {
                 event.preventDefault()
                 this.zoomOut()
             }
@@ -264,7 +255,7 @@ export default {
         },
         handleDeleteDraggable({ draggable, draggableIndex }) {
             this.$emit('delete:draggable', { draggable, draggableIndex })
-        }
+        },
     },
     props: {
         src: {
@@ -305,8 +296,8 @@ export default {
         },
         draggables: {
             type: Array,
-            default: () => []
-        }
+            default: () => [],
+        },
     },
     computed: {
         customContainerClass() {
@@ -318,13 +309,11 @@ export default {
             return classObject
         },
         azPdfViewerStyle() {
-            return this.isCreatingDraggable
-                ? this.azPdfViewerCreatingDraggableStyle
-                : this.azPdfViewerDefaultStyle
+            return this.isCreatingDraggable ? this.azPdfViewerCreatingDraggableStyle : this.azPdfViewerDefaultStyle
         },
         azPdfViewerDefaultStyle() {
             return {
-                height: `calc(${this.height} - 62px)`
+                height: `calc(${this.height} - 62px)`,
             }
         },
         azPdfViewerCreatingDraggableStyle() {
@@ -334,12 +323,12 @@ export default {
                 cursor: 'crosshair',
                 backgroundColor: 'rgba(0, 0, 0, 0.5)',
                 borderTop: '62px solid transparent',
-                zIndex: 9999
+                zIndex: 9999,
             }
         },
         isRotateButtonVisible() {
             return this.rotateButton && !this.draggables.length
-        }
+        },
     },
     data: () => ({
         isPrinting: false,
@@ -362,7 +351,7 @@ export default {
             type: '',
         },
         pages: [],
-        isCreatingDraggable: false
+        isCreatingDraggable: false,
     }),
 }
 </script>
