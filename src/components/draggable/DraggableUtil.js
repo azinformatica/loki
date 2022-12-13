@@ -1,8 +1,12 @@
-export default class DraggableUtil {
-    static RECT_PREFIX = 'rect'
-    static RECT_PROPERTIES = ['x', 'y', 'width', 'height']
+class DraggableUtil {
+    constructor() {
+        this.RECT_PROPERTIES = ['x', 'y', 'width', 'height']
+        this.RECT_ATTRIBUTES = ['rect-x', 'rect-y', 'rect-width', 'rect-height']
 
-    static getElementRectRelativeToAnotherElementRect(element, relativeElement) {
+        this.TARGET_ZONE_ITEM_ID_ATTRIBUTE = 'target-zone-item-id'
+    }
+
+    getElementRectRelativeToAnotherElementRect(element, relativeElement) {
         const relativeElementRect = relativeElement.getBoundingClientRect()
         const elementRect = element.getBoundingClientRect()
         return {
@@ -13,40 +17,45 @@ export default class DraggableUtil {
         }
     }
 
-    static getElementRectRelativeToParentRect(element) {
-        return this.getElementRectRelativeToAnotherElementRect(element, element.parentElement)
-    }
-
-    static getAttributeAsInt(element, attributeName) {
+    getAttributeAsInt(element, attributeName) {
         return parseInt(element.getAttribute(attributeName) || 0)
     }
 
-    static getAttributeName(property) {
-        return `${this.RECT_PREFIX}-${property}`
-    }
-
-    static saveRectAsElementAttributes(element, rect) {
-        for (const property of this.RECT_PROPERTIES) {
-            const attributeName = this.getAttributeName(property)
+    saveRectAsElementAttributes(element, rect) {
+        if (!rect) return
+        this.RECT_ATTRIBUTES.forEach((attribute, attributeIndex) => {
+            const property = this.RECT_PROPERTIES[attributeIndex]
             const value = rect[property]
-            if (!value) {
-                element.removeAttribute(attributeName)
-            } else {
-                element.setAttribute(attributeName, value)
-            }
+            this.saveAttributeIfExists(element, attribute, value)
+        })
+    }
+
+    saveTargetZoneItemIdAsElementAttribute(element, targetZoneItemId) {
+        this.saveAttributeIfExists(element, this.TARGET_ZONE_ITEM_ID_ATTRIBUTE, targetZoneItemId)
+    }
+
+    getTargetZoneItemIdFromElementAttribute(element) {
+        return element.getAttribute(this.TARGET_ZONE_ITEM_ID_ATTRIBUTE)
+    }
+
+    saveAttributeIfExists(element, attribute, value) {
+        if (value == null) {
+            element.removeAttribute(attribute)
+        } else {
+            element.setAttribute(attribute, value)
         }
     }
 
-    static getRectFromElementAttributes(element) {
+    getRectFromElementAttributes(element) {
         const rect = {}
-        for (const property of this.RECT_PROPERTIES) {
-            const attributeName = this.getAttributeName(property)
-            rect[property] = this.getAttributeAsInt(element, attributeName)
-        }
+        this.RECT_ATTRIBUTES.forEach((attribute, attributeIndex) => {
+            const property = this.RECT_PROPERTIES[attributeIndex]
+            rect[property] = this.getAttributeAsInt(element, attribute)
+        })
         return rect
     }
 
-    static generateUUID() {
+    generateUUID() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
             const r = (Math.random() * 16) | 0
             const v = c === 'x' ? r : (r & 0x3) | 0x8
@@ -54,7 +63,7 @@ export default class DraggableUtil {
         })
     }
 
-    static createDraggable() {
+    createDraggable() {
         return {
             rect: {
                 x: null,
@@ -67,14 +76,18 @@ export default class DraggableUtil {
         }
     }
 
-    static isDraggableElementInsideTargetZoneElement(draggableElement, targetZoneElement) {
-        const draggableElementRect = draggableElement.getBoundingClientRect()
-        const targetZoneElementRect = targetZoneElement.getBoundingClientRect()
+    isElementInsideAnotherElement(element, relativeElement) {
+        const elementRect = element.getBoundingClientRect()
+        const relativeElementRect = relativeElement.getBoundingClientRect()
+        console.log({ elementRect })
+        console.log({ relativeElementRect })
         return (
-            draggableElementRect.x >= 0 &&
-            draggableElementRect.y >= 0 &&
-            draggableElementRect.x + draggableElementRect.width <= targetZoneElementRect.width &&
-            draggableElementRect.y + draggableElementRect.height <= targetZoneElementRect.height
+            elementRect.x >= relativeElementRect.x &&
+            elementRect.y >= relativeElementRect.y &&
+            elementRect.x + elementRect.width <= relativeElementRect.x + relativeElementRect.width &&
+            elementRect.y + elementRect.height <= relativeElementRect.y + relativeElementRect.height
         )
     }
 }
+
+export default new DraggableUtil()
