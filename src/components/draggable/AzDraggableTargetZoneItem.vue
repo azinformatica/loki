@@ -1,33 +1,33 @@
 <template>
     <div
         :class="`${className} az-draggable-target-zone-item`"
-        :style="getDraggableTargetZoneRectStyle"
+        :style="draggableTargetZoneRectStyle"
         :id="id"
         @click="handleClick"
     >
-        <slot>
-        </slot>
+        <slot> </slot>
     </div>
 </template>
 
 <script>
 export default {
-    name: "AzDraggableTargetZoneItem",
+    name: 'AzDraggableTargetZoneItem',
     props: {
         id: {
             type: String,
-            required: true
+            required: true,
         },
         rect: {
             type: Object,
-            default: () => null
-        }
+            default: () => null,
+        },
     },
     computed: {
         className() {
+            if (!this.$parent.$options.propsData) return ''
             return `${this.$parent.$options.propsData.name}-item`
         },
-        getDraggableTargetZoneRectStyle() {
+        draggableTargetZoneRectStyle() {
             return Object.assign(
                 {},
                 this.draggableTargetZoneItemTransform,
@@ -43,7 +43,7 @@ export default {
         },
         draggableTargetZoneItemHeight() {
             return this.rect && this.rect.height ? { height: `${this.rect.height}px` } : {}
-        }
+        },
     },
     methods: {
         handleClick(event) {
@@ -53,17 +53,17 @@ export default {
             const draggableTargetZoneItemElement = event.target
             const draggableTargetZoneItemRect = draggableTargetZoneItemElement.getBoundingClientRect()
             return {
-                draggableTargetZoneItemElement: draggableTargetZoneItemElement,
+                draggableTargetZoneItemElement,
                 draggableTargetZoneItemId: this.getDraggableTargetZoneItemId(draggableTargetZoneItemElement),
                 mousePositionRelativeToTargetZone: {
                     x: Math.round(event.clientX - draggableTargetZoneItemRect.x),
-                    y: Math.round(event.clientY - draggableTargetZoneItemRect.y)
-                }
+                    y: Math.round(event.clientY - draggableTargetZoneItemRect.y),
+                },
             }
         },
         getDraggableTargetZoneItemId(draggableTargetZoneItemElement) {
             return draggableTargetZoneItemElement.getAttribute('id')
-        }
-    }
+        },
+    },
 }
 </script>
