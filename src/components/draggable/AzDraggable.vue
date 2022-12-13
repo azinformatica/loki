@@ -6,6 +6,7 @@
 
 <script>
 import interact from 'interactjs'
+import DraggableUtil from "./DraggableUtil";
 export default {
     name: 'AzDraggable',
     props: {
@@ -132,53 +133,40 @@ export default {
         getEventData(event) {
             return {
                 draggableItemElement: event.target,
-                draggableItemId: this.getDraggableItemId(event.target),
-                draggableItemRect: this.getDraggableItemRect(event),
-                draggableTargetZoneItemId: this.getDraggableTargetZoneItemId(event.target),
+                draggableItemId: event.target.id,
+                draggableItemRect: this.getUpdatedDraggableItemRect(event),
+                draggableTargetZoneItemId: DraggableUtil.getTargetZoneItemIdFromElementAttribute(event.target),
             }
         },
-        getDraggableItemId(draggableItemElement) {
-            return draggableItemElement.getAttribute('id')
-        },
-        getDraggableItemRect(event) {
+        getUpdatedDraggableItemRect(event) {
+            const currentRect = DraggableUtil.getRectFromElementAttributes(event.target)
             return {
-                x: this.getDraggableItemRectX(event),
-                y: this.getDraggableItemRectY(event),
-                width: this.getDraggableItemRectWidth(event),
-                height: this.getDraggableItemRectHeight(event),
+                x: this.getUpdatedDraggableItemRectX(event, currentRect.x),
+                y: this.getUpdatedDraggableItemRectY(event, currentRect.y),
+                width: this.getUpdatedDraggableItemRectWidth(event),
+                height: this.getUpdatedDraggableItemRectHeight(event),
             }
         },
-        getDraggableTargetZoneItemId(draggableItemElement) {
-            return draggableItemElement.getAttribute('target-zone-item-id') || ''
+        getUpdatedDraggableItemRectX(event, currentRectX) {
+            const dx = this.isResizeEvent(event) ? event.deltaRect.left : event.dx
+            return currentRectX + dx
         },
-        getDraggableItemRectX(event) {
-            const dataX = event.target.getAttribute('data-x')
-
-            const x = parseFloat(dataX) || 0
-            const dx = event.type.includes('resize') ? event.deltaRect.left : event.dx
-
-            return x + dx
+        getUpdatedDraggableItemRectY(event, currentRectY) {
+            const dy = this.isResizeEvent(event) ? event.deltaRect.top : event.dy
+            return currentRectY + dy
         },
-        getDraggableItemRectY(event) {
-            const dataY = event.target.getAttribute('data-y')
-
-            const y = parseFloat(dataY) || 0
-            const dy = event.type.includes('resize') ? event.deltaRect.top : event.dy
-
-            return y + dy
-        },
-        getDraggableItemRectWidth(event) {
+        getUpdatedDraggableItemRectWidth(event) {
             return event.rect.width
         },
-        getDraggableItemRectHeight(event) {
+        getUpdatedDraggableItemRectHeight(event) {
             return event.rect.height
         },
         updateDraggableItemAttributes(draggableItemElement, rect) {
-            draggableItemElement.setAttribute('data-x', rect.x)
-            draggableItemElement.setAttribute('data-y', rect.y)
-            draggableItemElement.setAttribute('data-width', rect.width)
-            draggableItemElement.setAttribute('data-height', rect.height)
+            DraggableUtil.saveRectAsElementAttributes(draggableItemElement, rect)
         },
+        isResizeEvent(event) {
+            return event.type.includes('resize')
+        }
     },
     mounted() {
         this.configureInteractor()

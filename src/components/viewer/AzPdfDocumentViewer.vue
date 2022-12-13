@@ -1,11 +1,11 @@
 <template>
     <div class="az-pdf-container" :class="customContainerClass" :style="{ height: height }">
         <Toolbar
-            :disableButtons="!src"
+            :disableButtons="!src || !!draggables.length"
             :downloadButton="downloadButton"
             :pagination="pagination"
             :printButton="printButton"
-            :rotateButton="isRotateButtonVisible"
+            :rotateButton="rotateButton"
             :scaleType="scale.type"
             @changeScaleType="changeScaleType"
             @zoomIn="zoomIn"
@@ -325,10 +325,7 @@ export default {
                 borderTop: '62px solid transparent',
                 zIndex: 9999,
             }
-        },
-        isRotateButtonVisible() {
-            return this.rotateButton && !this.draggables.length
-        },
+        }
     },
     data: () => ({
         isPrinting: false,

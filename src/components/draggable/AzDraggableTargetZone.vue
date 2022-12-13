@@ -6,6 +6,7 @@
 
 <script>
 import interact from 'interactjs'
+import DraggableUtil from "./DraggableUtil";
 export default {
     name: 'AzDraggableTargetZone',
     props: {
@@ -86,13 +87,13 @@ export default {
         getDraggableTargetZoneItemEventData(draggableTargetZoneItemElement) {
             return {
                 draggableTargetZoneItemElement: draggableTargetZoneItemElement,
-                draggableTargetZoneItemId: this.getDraggableTargetZoneItemId(draggableTargetZoneItemElement),
+                draggableTargetZoneItemId: draggableTargetZoneItemElement.id,
             }
         },
         getDraggableItemEventData(draggableItemElement) {
             return {
                 draggableItemElement: draggableItemElement,
-                draggableItemId: this.getDraggableItemId(draggableItemElement),
+                draggableItemId: draggableItemElement.id,
             }
         },
         getDraggableItemRectEventData(draggableItemElement, draggableTargetZoneItemElement) {
@@ -101,45 +102,14 @@ export default {
             }
         },
         getDraggableItemRect(draggableItemElement, draggableTargetZoneItemElement) {
-            if (draggableTargetZoneItemElement) {
-                return this.getDraggableItemPositionRelativeToTargetZone(
-                    draggableItemElement,
-                    draggableTargetZoneItemElement
-                )
-            }
-            return this.getDraggableItemPositionRelativeToParent(draggableItemElement)
-        },
-        getDraggableTargetZoneItemId(draggableTargetZoneItemElement) {
-            return draggableTargetZoneItemElement.getAttribute('id')
-        },
-        getDraggableItemId(draggableItemElement) {
-            return draggableItemElement.getAttribute('id')
-        },
-        getDraggableItemPositionRelativeToTargetZone(draggableItemElement, draggableTargetZoneItemElement) {
-            return this.getElementPositionRelativeToAnotherElement(draggableItemElement, draggableTargetZoneItemElement)
-        },
-        getDraggableItemPositionRelativeToParent(draggableItemElement) {
-            return this.getElementPositionRelativeToAnotherElement(
-                draggableItemElement,
-                draggableItemElement.parentElement
-            )
-        },
-        getElementPositionRelativeToAnotherElement(element, relativeElement) {
-            const relativeElementRect = relativeElement.getBoundingClientRect()
-            const elementRect = element.getBoundingClientRect()
-            return {
-                x: Math.round(elementRect.left - relativeElementRect.left),
-                y: Math.round(elementRect.top - relativeElementRect.top),
-                width: elementRect.width,
-                height: elementRect.height,
-            }
+            const relativeElement = draggableTargetZoneItemElement || draggableItemElement.parentElement
+            return DraggableUtil.getElementRectRelativeToAnotherElementRect(draggableItemElement, relativeElement)
         },
         updateDraggableItemAttributeRect(draggableItemElement, draggableItemRect) {
-            draggableItemElement.setAttribute('data-x', draggableItemRect.x)
-            draggableItemElement.setAttribute('data-y', draggableItemRect.y)
+            DraggableUtil.saveRectAsElementAttributes(draggableItemElement, draggableItemRect)
         },
         updateDraggableItemAttributeTargetZoneItemId(draggableItemElement, draggableTargetZoneItemId) {
-            draggableItemElement.setAttribute('target-zone-item-id', draggableTargetZoneItemId)
+            DraggableUtil.saveTargetZoneItemIdAsElementAttribute(draggableItemElement, draggableTargetZoneItemId)
         },
     },
 }

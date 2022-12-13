@@ -3,8 +3,6 @@
         <az-draggable-target-zone
             name="document-draggable-target-zone"
             :accepted-draggables-names="['document-draggable']"
-            @draggable-enter="handleDraggableEnter"
-            @draggable-leave="handleDraggableLeave"
         >
             <az-draggable-target-zone-item
                 v-for="draggableTargetZone of draggableTargetZones"
@@ -17,16 +15,13 @@
         <az-draggable
             name="document-draggable"
             resizable
-            @drag-start="handleStartChangeDraggable"
-            @drag="handleChangeDraggable"
             @drag-end="handleEndChangeDraggable"
-            @resize-start="handleStartChangeDraggable"
-            @resize="handleChangeDraggable"
             @resize-end="handleEndChangeDraggable"
         >
             <az-draggable-item
                 v-for="draggable of formattedDraggables"
                 :key="draggable.id"
+                :ref="draggable.id"
                 :id="draggable.id"
                 :rect="draggable.rect"
                 :target-zone-item-id="draggableTargetZoneIdPerLoadedPageNumber[draggable.pageNumber]"
@@ -50,6 +45,7 @@ import AzDraggableTargetZone from '../draggable/AzDraggableTargetZone'
 import AzDraggableTargetZoneItem from '../draggable/AzDraggableTargetZoneItem'
 import AzDraggable from '../draggable/AzDraggable'
 import AzDraggableItem from '../draggable/AzDraggableItem'
+import DraggableUtil from "../draggable/DraggableUtil";
 
 export default {
     name: 'Draggable',
@@ -72,6 +68,14 @@ export default {
             type: Boolean,
             default: false,
         },
+        initialDraggableWidth: {
+            type: Number,
+            default: 100
+        },
+        initialDraggableHeight: {
+            type: Number,
+            default: 100
+        }
     },
     data: () => ({
         screenWidth: window.innerWidth,
@@ -83,8 +87,8 @@ export default {
         },
         draggableTargetZones() {
             return this.loadedPages.map((page) => ({
-                id: this.generateUUID(),
-                rect: this.getElementCoordinatesRelativeToParent(page),
+                id: DraggableUtil.generateUUID(),
+                rect: DraggableUtil.getElementRectRelativeToAnotherElementRect(page, page.parentElement),
                 pageNumber: this.getPageNumberAsInt(page),
                 screenWidth: this.screenWidth,
                 screenHeight: this.screenHeight,
@@ -111,45 +115,32 @@ export default {
         window.removeEventListener('resize', this.updateScreenSize)
     },
     methods: {
-        handleStartChangeDraggable(eventData) {
-            this.handleChangeDraggable(eventData)
-        },
         handleEndChangeDraggable(eventData) {
-            const { draggable, draggableIndex } = this.findDraggableCloneAndIndex(eventData.draggableItemId)
-            draggable.rect = eventData.draggableItemRect
-            if (!this.isDraggableValid(draggable)) {
-                draggable.rect = this.getLastValidRect(eventData.draggableItemElement)
-                draggable.pageNumber = this.getLastValidPageNumber(eventData.draggableItemElement)
+            if (!this.isDraggableValidOnStopChanging(eventData)) {
+                return this.$refs[eventData.draggableItemId][0].updateElementAttributesWithProps()
             }
-            this.$emit('update:draggable', { draggable, draggableIndex })
-        },
-        handleChangeDraggable(eventData) {
-            const { draggable, draggableIndex } = this.findDraggableCloneAndIndex(eventData.draggableItemId)
-            draggable.rect = eventData.draggableItemRect
-            if (this.isDraggableValid(draggable)) {
-                this.setLastValidRect(eventData.draggableItemElement, draggable.rect)
-                this.setLastValidPageNumber(eventData.draggableItemElement, draggable.pageNumber)
-            }
-            this.$emit('update:draggable', { draggable, draggableIndex })
-        },
-        handleDraggableEnter(eventData) {
             const draggableTargetZone = this.findDraggableTargetZoneById(eventData.draggableTargetZoneItemId)
             const { draggable, draggableIndex } = this.findDraggableCloneAndIndex(eventData.draggableItemId)
-            draggable.rect.x = eventData.draggableItemRect.x
-            draggable.rect.y = eventData.draggableItemRect.y
-            draggable.pageNumber = draggableTargetZone.pageNumber
-            this.$emit('update:draggable', { draggable, draggableIndex })
-        },
-        handleDraggableLeave(eventData) {
-            const { draggable, draggableIndex } = this.findDraggableCloneAndIndex(eventData.draggableItemId)
-            draggable.rect.x = eventData.draggableItemRect.x
-            draggable.rect.y = eventData.draggableItemRect.y
-            draggable.pageNumber = null
+            draggable.rect = eventData.draggableItemRect
+            draggable.pageNumber = draggableTargetZone.pageNumber || null
             this.$emit('update:draggable', { draggable, draggableIndex })
         },
         handleDeleteDraggable(draggable) {
             const draggableIndex = this.findDraggableIndexById(draggable.id)
             this.$emit('delete:draggable', { draggable, draggableIndex })
+        },
+        handleDraggableTargetZoneItemClick(eventData) {
+            if (!this.isCreatingDraggable) return
+            const draggableTargetZone = this.findDraggableTargetZoneById(eventData.draggableTargetZoneItemId)
+            const draggable = DraggableUtil.createDraggable()
+            draggable.rect.x = eventData.mousePositionRelativeToTargetZone.x
+            draggable.rect.y = eventData.mousePositionRelativeToTargetZone.y
+            draggable.rect.width = this.initialDraggableWidth
+            draggable.rect.height = this.initialDraggableHeight
+            draggable.pageNumber = draggableTargetZone.pageNumber
+            if (this.isDraggableValidOnCreate(draggable, draggableTargetZone)) {
+                this.$emit('create:draggable', { draggable })
+            }
         },
         findDraggableCloneAndIndex(draggableId) {
             const draggableIndex = this.findDraggableIndexById(draggableId)
@@ -168,55 +159,8 @@ export default {
             this.screenWidth = window.innerWidth
             this.screenHeight = window.innerHeight
         },
-        getElementCoordinatesRelativeToElement(element, relativeElement) {
-            const relativeElementRect = relativeElement.getBoundingClientRect()
-            const elementRect = element.getBoundingClientRect()
-            return {
-                x: Math.round(elementRect.left - relativeElementRect.left),
-                y: Math.round(elementRect.top - relativeElementRect.top),
-                width: Math.round(elementRect.width),
-                height: Math.round(elementRect.height),
-            }
-        },
-        getElementCoordinatesRelativeToParent(element) {
-            return this.getElementCoordinatesRelativeToElement(element, element.parentElement)
-        },
         getPageNumberAsInt(page) {
             return parseInt(page.getAttribute('data-page-number'))
-        },
-        isDraggableValid(draggable) {
-            return this.isDraggableRectValid(draggable) && !!draggable.pageNumber
-        },
-        isDraggableRectValid(draggable) {
-            const draggableTargetZoneId = this.draggableTargetZoneIdPerLoadedPageNumber[draggable.pageNumber]
-            const draggableTargetZone = this.findDraggableTargetZoneById(draggableTargetZoneId)
-            return (
-                draggableTargetZone &&
-                draggable.rect.x >= 0 &&
-                draggable.rect.y >= 0 &&
-                draggable.rect.x + draggable.rect.width <= draggableTargetZone.rect.width &&
-                draggable.rect.y + draggable.rect.height <= draggableTargetZone.rect.height
-            )
-        },
-        setLastValidRect(draggableItem, lastValidRect) {
-            draggableItem.setAttribute('last-valid-x', lastValidRect.x)
-            draggableItem.setAttribute('last-valid-y', lastValidRect.y)
-            draggableItem.setAttribute('last-valid-width', lastValidRect.width)
-            draggableItem.setAttribute('last-valid-height', lastValidRect.height)
-        },
-        getLastValidRect(draggableItem) {
-            return {
-                x: parseInt(draggableItem.getAttribute('last-valid-x') || 0),
-                y: parseInt(draggableItem.getAttribute('last-valid-y') || 0),
-                width: parseInt(draggableItem.getAttribute('last-valid-width') || 0),
-                height: parseInt(draggableItem.getAttribute('last-valid-height') || 0),
-            }
-        },
-        setLastValidPageNumber(draggableItem, lastValidPageNumber) {
-            draggableItem.setAttribute('last-valid-page-number', lastValidPageNumber)
-        },
-        getLastValidPageNumber(draggableItem) {
-            return parseInt(draggableItem.getAttribute('last-valid-page-number') || null)
         },
         draggablePageIsLoaded(draggable) {
             return !!this.draggableTargetZoneIdPerLoadedPageNumber[draggable.pageNumber]
@@ -227,36 +171,19 @@ export default {
             }
             return Object.assign(targetObject, draggable)
         },
-        handleDraggableTargetZoneItemClick(eventData) {
-            if (!this.isCreatingDraggable) return
-            const draggableTargetZone = this.findDraggableTargetZoneById(eventData.draggableTargetZoneItemId)
-            const draggable = this.createDraggable()
-            draggable.rect.x = eventData.mousePositionRelativeToTargetZone.x
-            draggable.rect.y = eventData.mousePositionRelativeToTargetZone.y
-            draggable.pageNumber = draggableTargetZone.pageNumber
-            if (this.isDraggableValid(draggable)) {
-                this.$emit('create:draggable', { draggable })
+        isDraggableValidOnStopChanging(eventData) {
+            if (!eventData.draggableTargetZoneItemId) {
+                return false
             }
+            const draggableTargetZoneItemElement = document.getElementById(eventData.draggableTargetZoneItemId)
+            const draggableItemElement = eventData.draggableItemElement
+            return DraggableUtil.isElementInsideAnotherElement(draggableItemElement, draggableTargetZoneItemElement)
         },
-        createDraggable() {
-            return {
-                rect: {
-                    x: 0,
-                    y: 0,
-                    width: 100,
-                    height: 50,
-                },
-                pageNumber: null,
-                id: this.generateUUID(),
-            }
-        },
-        generateUUID() {
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-                const r = (Math.random() * 16) | 0
-                const v = c === 'x' ? r : (r & 0x3) | 0x8
-                return v.toString(16)
-            })
-        },
+        isDraggableValidOnCreate(draggable, draggableTargetZone) {
+            const maxX = draggableTargetZone.rect.width - draggable.rect.width
+            const maxY = draggableTargetZone.rect.height - draggable.rect.height
+            return draggable.rect.x <= maxX && draggable.rect.y <= maxY
+        }
     },
 }
 </script>
@@ -276,12 +203,14 @@ export default {
         display none
         position absolute
         background-color var(--v-primary-base)
-        right -2px
-        top -2px
+        right 0
+        top 0
         flex-direction column
         align-items center
         justify-content center
-        border-radius 4px
+        border-bottom-left-radius 4px
+        padding-left 1px
+        padding-bottom 1px
 
         button
             display flex
@@ -289,14 +218,12 @@ export default {
             justify-content center
             width 16px
             height 16px
-            border-radius 4px
-            margin 0 2px 2px 2px
-
-            &:first-of-type
-                margin-top 2px
+            border-radius 2px
+            margin: 2px
 
             &:hover
-                background-color var(--v-primary-darken1)
+                i
+                    color var(--v-primary-darken2)
 
             i
                 height 100%

@@ -54,16 +54,13 @@ export default {
             const draggableTargetZoneItemRect = draggableTargetZoneItemElement.getBoundingClientRect()
             return {
                 draggableTargetZoneItemElement,
-                draggableTargetZoneItemId: this.getDraggableTargetZoneItemId(draggableTargetZoneItemElement),
+                draggableTargetZoneItemId: draggableTargetZoneItemElement.id,
                 mousePositionRelativeToTargetZone: {
                     x: Math.round(event.clientX - draggableTargetZoneItemRect.x),
                     y: Math.round(event.clientY - draggableTargetZoneItemRect.y),
                 },
             }
-        },
-        getDraggableTargetZoneItemId(draggableTargetZoneItemElement) {
-            return draggableTargetZoneItemElement.getAttribute('id')
-        },
+        }
     },
 }
 </script>

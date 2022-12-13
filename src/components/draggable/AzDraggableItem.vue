@@ -5,6 +5,8 @@
 </template>
 
 <script>
+import DraggableUtil from "./DraggableUtil";
+
 export default {
     name: 'AzDraggableItem',
     props: {
@@ -35,8 +37,7 @@ export default {
     mounted() {
         this.configureMutationObserver()
         this.configureResizeObserver()
-        this.configureAttributeElementTargetZoneItemId()
-        this.configureElementRect()
+        this.updateElementAttributesWithProps()
         this.getDraggableTargetZoneItemElement()
     },
     destroyed() {
@@ -45,15 +46,19 @@ export default {
     },
     watch: {
         targetZoneItemId() {
-            this.configureAttributeElementTargetZoneItemId()
+            this.updateElementTargetZoneItemId()
         },
         rect() {
-            this.configureElementRect()
+            this.updateElementRect()
         },
     },
     methods: {
-        configureAttributeElementTargetZoneItemId() {
-            this.$el.setAttribute('target-zone-item-id', this.targetZoneItemId)
+        updateElementAttributesWithProps() {
+            this.updateElementTargetZoneItemId()
+            this.updateElementRect()
+        },
+        updateElementTargetZoneItemId() {
+            DraggableUtil.saveTargetZoneItemIdAsElementAttribute(this.$el, this.targetZoneItemId)
         },
         configureMutationObserver() {
             this.observeCurrentElementAttributesChanges()
@@ -74,7 +79,7 @@ export default {
         observeCurrentElementAttributesChanges() {
             this.getMutationObserver().observe(this.$el, {
                 attributes: true,
-                attributeFilter: ['data-x', 'data-y', 'data-width', 'data-height', 'target-zone-item-id'],
+                attributeFilter: DraggableUtil.RECT_ATTRIBUTES.concat([DraggableUtil.TARGET_ZONE_ITEM_ID_ATTRIBUTE])
             })
         },
         observeCurrentElementParentElementChildListChange() {
@@ -92,6 +97,7 @@ export default {
         },
         observeCurrentElementParentElementResize() {
             this.getResizeObserver().observe(document.documentElement)
+            this.getResizeObserver().observe(this.$parent.$el)
         },
         observeTargetZoneElementResize() {
             if (!this.draggableTargetZoneItemElement) return
@@ -106,45 +112,28 @@ export default {
         },
         getDraggableTargetZoneItemElement() {
             this.unobserveTargetZoneElementResize()
-            const targetZoneItemId = this.$el.getAttribute('target-zone-item-id')
-            const selectors = `[id="${targetZoneItemId}"]`
-            this.draggableTargetZoneItemElement = document.querySelector(selectors)
+            const targetZoneItemId = DraggableUtil.getTargetZoneItemIdFromElementAttribute(this.$el)
+            this.draggableTargetZoneItemElement = targetZoneItemId ? document.getElementById(targetZoneItemId) : null
             this.observeTargetZoneElementResize()
         },
-        configureElementRect() {
-            if (!this.rect) return
-            this.configureElementAttribute('data-x', this.rect.x)
-            this.configureElementAttribute('data-y', this.rect.y)
-            this.configureElementAttribute('data-width', this.rect.width)
-            this.configureElementAttribute('data-height', this.rect.height)
-        },
-        configureElementAttribute(rectAttributeName, rectAttributeValue) {
-            if (rectAttributeValue == null) return
-            this.$el.setAttribute(rectAttributeName, rectAttributeValue)
-        },
-        getElementAttributeValueAsInt(rectAttributeName) {
-            return parseInt(this.$el.getAttribute(rectAttributeName)) || 0
-        },
-        updateElementStyleWidth() {
-            const rectWidth = this.getElementAttributeValueAsInt('data-width')
-            this.$el.style.width = rectWidth ? `${rectWidth}px` : ''
-        },
-        updateElementStyleHeight() {
-            const rectHeight = this.getElementAttributeValueAsInt('data-height')
-            this.$el.style.height = rectHeight ? `${rectHeight}px` : ''
+        updateElementRect() {
+            DraggableUtil.saveRectAsElementAttributes(this.$el, this.rect)
         },
         updateElementStyle() {
-            this.updateElementStyleTransform()
-            this.updateElementStyleWidth()
-            this.updateElementStyleHeight()
+            const rect = DraggableUtil.getRectFromElementAttributes(this.$el)
+            this.updateElementStyleTransform(rect)
+            this.updateElementStyleWidth(rect)
+            this.updateElementStyleHeight(rect)
         },
-        updateElementStyleTransform() {
+        updateElementStyleWidth(rect) {
+            this.$el.style.width = rect.width ? `${rect.width}px` : ''
+        },
+        updateElementStyleHeight(rect) {
+            this.$el.style.height = rect.height ? `${rect.height}px` : ''
+        },
+        updateElementStyleTransform(rect) {
             const origin = this.getOriginPosition()
             const destination = this.getDestinationPosition()
-            const rect = {
-                x: this.getElementAttributeValueAsInt('data-x'),
-                y: this.getElementAttributeValueAsInt('data-y'),
-            }
 
             const translateX = destination.x - origin.x + rect.x
             const translateY = destination.y - origin.y + rect.y
@@ -154,25 +143,14 @@ export default {
         getOriginPosition() {
             const transform = this.$el.style.transform
             this.$el.style.transform = ''
-            const elementRect = this.$el.getBoundingClientRect()
-            const parentElementRect = this.$parent.$el.getBoundingClientRect()
+            const originRect = DraggableUtil.getElementRectRelativeToAnotherElementRect(this.$el, this.$parent.$el)
             this.$el.style.transform = transform
-            return {
-                x: elementRect.x - parentElementRect.x,
-                y: elementRect.y - parentElementRect.y,
-            }
+            return originRect
         },
         getDestinationPosition() {
-            const parentElementRect = this.$parent.$el.getBoundingClientRect()
-            if (this.draggableTargetZoneItemElement) {
-                const draggableTargetZoneElementRect = this.draggableTargetZoneItemElement.getBoundingClientRect()
-                return {
-                    x: draggableTargetZoneElementRect.x - parentElementRect.x,
-                    y: draggableTargetZoneElementRect.y - parentElementRect.y,
-                }
-            }
-            return { x: 0, y: 0 }
-        },
+            const destinationElement = this.draggableTargetZoneItemElement || this.$parent.$el
+            return DraggableUtil.getElementRectRelativeToAnotherElementRect(destinationElement, this.$parent.$el)
+        }
     },
 }
 </script>
