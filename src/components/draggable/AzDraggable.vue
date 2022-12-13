@@ -1,46 +1,41 @@
 <template>
     <div :class="`${this.name} az-draggable`">
-        <slot>
-        </slot>
+        <slot> </slot>
     </div>
 </template>
 
 <script>
 import interact from 'interactjs'
-import AzDraggableItem from './AzDraggableItem'
 export default {
-    name: "AzDraggable",
-    components: {
-        AzDraggableItem
-    },
+    name: 'AzDraggable',
     props: {
         name: {
             type: String,
-            required: true
+            required: true,
         },
         resizable: {
             type: Boolean,
-            default: false
+            default: false,
         },
         minWidth: {
             type: Number,
-            default: 50
+            default: 50,
         },
         minHeight: {
             type: Number,
-            default: 50
+            default: 50,
         },
         maxWidth: {
             type: Number,
-            default: 1000
+            default: 1000,
         },
         maxHeight: {
             type: Number,
-            default: 1000
-        }
+            default: 1000,
+        },
     },
     data: () => ({
-        interactor: null
+        interactor: null,
     }),
     methods: {
         configureInteractor() {
@@ -49,20 +44,19 @@ export default {
             this.configureDraggable()
         },
         configureResizable() {
-            this.interactor = !this.resizable
-                ? this.interactor
-                : this.interactor.resizable({
-                    edges: this.createResizableEdges(),
-                    listeners: this.createResizableListeners(),
-                    modifiers: this.createResizableModifiers(),
-                    inertia: true
-                })
+            if (!this.resizable) return
+            this.interactor.resizable({
+                edges: this.createResizableEdges(),
+                listeners: this.createResizableListeners(),
+                modifiers: this.createResizableModifiers(),
+                inertia: true,
+            })
         },
         configureDraggable() {
-            this.interactor = this.interactor.draggable({
+            this.interactor.draggable({
                 listeners: this.createDraggableListeners(),
                 autoScroll: true,
-                inertia: true
+                inertia: true,
             })
         },
         createResizableEdges() {
@@ -70,14 +64,14 @@ export default {
                 left: true,
                 right: true,
                 bottom: true,
-                top: true
+                top: true,
             }
         },
         createResizableListeners() {
             return {
-                start: event => this.createResizableListenersStartEvent(event),
-                move: event => this.createResizableListenersMoveEvent(event),
-                end: event => this.createResizableListenersEndEvent(event)
+                start: (event) => this.createResizableListenersStartEvent(event),
+                move: (event) => this.createResizableListenersMoveEvent(event),
+                end: (event) => this.createResizableListenersEndEvent(event),
             }
         },
         createResizableModifiers() {
@@ -85,13 +79,13 @@ export default {
                 interact.modifiers.restrictSize({
                     min: {
                         width: this.minWidth,
-                        height: this.minHeight
+                        height: this.minHeight,
                     },
                     max: {
                         width: this.maxWidth,
-                        height: this.maxHeight
-                    }
-                })
+                        height: this.maxHeight,
+                    },
+                }),
             ]
         },
         createResizableListenersStartEvent(event) {
@@ -112,10 +106,10 @@ export default {
             this.$emit('resize-end', eventData)
         },
         createDraggableListeners() {
-            return  {
-                start: event => this.createDraggableListenersStart(event),
-                move: event => this.createDraggableListenersMove(event),
-                end: event => this.createDraggableListenersEnd(event)
+            return {
+                start: (event) => this.createDraggableListenersStart(event),
+                move: (event) => this.createDraggableListenersMove(event),
+                end: (event) => this.createDraggableListenersEnd(event),
             }
         },
         createDraggableListenersStart(event) {
@@ -140,7 +134,7 @@ export default {
                 draggableItemElement: event.target,
                 draggableItemId: this.getDraggableItemId(event.target),
                 draggableItemRect: this.getDraggableItemRect(event),
-                draggableTargetZoneItemId: this.getDraggableTargetZoneItemId(event.target)
+                draggableTargetZoneItemId: this.getDraggableTargetZoneItemId(event.target),
             }
         },
         getDraggableItemId(draggableItemElement) {
@@ -151,7 +145,7 @@ export default {
                 x: this.getDraggableItemRectX(event),
                 y: this.getDraggableItemRectY(event),
                 width: this.getDraggableItemRectWidth(event),
-                height: this.getDraggableItemRectHeight(event)
+                height: this.getDraggableItemRectHeight(event),
             }
         },
         getDraggableTargetZoneItemId(draggableItemElement) {
@@ -184,13 +178,14 @@ export default {
             draggableItemElement.setAttribute('data-y', rect.y)
             draggableItemElement.setAttribute('data-width', rect.width)
             draggableItemElement.setAttribute('data-height', rect.height)
-        }
+        },
     },
     mounted() {
         this.configureInteractor()
     },
     destroyed() {
         this.interactor.unset()
-    }
+        this.interactor = null
+    },
 }
 </script>
