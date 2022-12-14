@@ -48,6 +48,7 @@ import PrintService from './PrintService'
 import PDFJSLib from 'pdfjs-dist/build/pdf'
 import { PDFJS as PDFJSViewer } from 'pdfjs-dist/web/pdf_viewer.js'
 import Draggable from './Draggable'
+import _ from 'lodash'
 export default {
     name: 'az-pdf-document-viewer',
     components: {
@@ -93,7 +94,6 @@ export default {
             eventBus.on('pagesinit', this.pagesInitEventHandler)
             eventBus.on('scalechange', this.scaleChangeEventHandler)
             eventBus.on('pagechange', this.pageChangeEventHandler)
-            eventBus.on('pagerendered', this.createPagesReferences)
             this.pdf.eventBus = eventBus
         },
         pagesInitEventHandler(e) {
@@ -107,9 +107,6 @@ export default {
         },
         pageChangeEventHandler(e) {
             this.pagination.current = e.pageNumber
-        },
-        createPagesReferences() {
-            this.pages = Array.from(this.pdf.viewer.viewer.childNodes)
         },
         createPdfLinkService() {
             this.pdf.linkService = new PDFJSViewer.PDFLinkService({
@@ -334,7 +331,10 @@ export default {
                 borderTop: '62px solid transparent',
                 zIndex: 9999,
             }
-        }
+        },
+        pages() {
+            return Array.from(_.get(this.pdf, 'viewer.viewer.childNodes') || [])
+        },
     },
     data: () => ({
         isPrinting: false,
@@ -356,7 +356,6 @@ export default {
             current: null,
             type: '',
         },
-        pages: [],
         isCreatingDraggable: false,
     }),
 }
