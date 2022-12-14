@@ -164,7 +164,7 @@ describe('Draggable.spec.js', () => {
         it('Should register window resize event listener on mount', async () => {
             window.addEventListener = jest.fn()
 
-            wrapper = createWrapper()
+            wrapper = createWrapper({ propsData })
             await wrapper.vm.$nextTick()
 
             expect(window.addEventListener.mock.calls[0][0]).toEqual('resize')
@@ -173,7 +173,7 @@ describe('Draggable.spec.js', () => {
         it('Should unregister window resize event listener when destroyed', async () => {
             window.removeEventListener = jest.fn()
 
-            wrapper = createWrapper()
+            wrapper = createWrapper({ propsData })
             wrapper.destroy()
 
             expect(window.removeEventListener.mock.calls[0][0]).toEqual('resize')
