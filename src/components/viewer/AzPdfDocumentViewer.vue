@@ -24,6 +24,8 @@
                 :draggables="draggables"
                 :pages="pages"
                 :is-creating-draggable="isCreatingDraggable"
+                :initial-draggable-height="initialDraggableHeight"
+                :initial-draggable-width="initialDraggableWidth"
                 @create:draggable="handleCreateDraggable"
                 @update:draggable="handleUpdateDraggable"
                 @delete:draggable="handleDeleteDraggable"
@@ -298,6 +300,12 @@ export default {
         draggables: {
             type: Array,
             default: () => [],
+        },
+        initialDraggableWidth: {
+            type: Number,
+        },
+        initialDraggableHeight: {
+            type: Number,
         },
     },
     computed: {
