@@ -1,11 +1,11 @@
 <template>
     <div :class="`${className} az-draggable-item`" :id="id">
-        <slot> </slot>
+        <slot></slot>
     </div>
 </template>
 
 <script>
-import DraggableUtil from "./DraggableUtil";
+import DraggableUtil from './DraggableUtil'
 
 export default {
     name: 'AzDraggableItem',
@@ -79,7 +79,7 @@ export default {
         observeCurrentElementAttributesChanges() {
             this.getMutationObserver().observe(this.$el, {
                 attributes: true,
-                attributeFilter: DraggableUtil.RECT_ATTRIBUTES.concat([DraggableUtil.TARGET_ZONE_ITEM_ID_ATTRIBUTE])
+                attributeFilter: DraggableUtil.RECT_ATTRIBUTES.concat([DraggableUtil.TARGET_ZONE_ITEM_ID_ATTRIBUTE]),
             })
         },
         observeCurrentElementParentElementChildListChange() {
@@ -150,7 +150,7 @@ export default {
         getDestinationPosition() {
             const destinationElement = this.draggableTargetZoneItemElement || this.$parent.$el
             return DraggableUtil.getElementRectRelativeToAnotherElementRect(destinationElement, this.$parent.$el)
-        }
+        },
     },
 }
 </script>
