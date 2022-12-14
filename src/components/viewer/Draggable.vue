@@ -45,7 +45,7 @@ import AzDraggableTargetZone from '../draggable/AzDraggableTargetZone'
 import AzDraggableTargetZoneItem from '../draggable/AzDraggableTargetZoneItem'
 import AzDraggable from '../draggable/AzDraggable'
 import AzDraggableItem from '../draggable/AzDraggableItem'
-import DraggableUtil from "../draggable/DraggableUtil";
+import DraggableUtil from '../draggable/DraggableUtil'
 
 export default {
     name: 'Draggable',
@@ -70,12 +70,12 @@ export default {
         },
         initialDraggableWidth: {
             type: Number,
-            default: 100
+            default: 100,
         },
         initialDraggableHeight: {
             type: Number,
-            default: 100
-        }
+            default: 100,
+        },
     },
     data: () => ({
         screenWidth: window.innerWidth,
@@ -183,7 +183,7 @@ export default {
             const maxX = draggableTargetZone.rect.width - draggable.rect.width
             const maxY = draggableTargetZone.rect.height - draggable.rect.height
             return draggable.rect.x <= maxX && draggable.rect.y <= maxY
-        }
+        },
     },
 }
 </script>

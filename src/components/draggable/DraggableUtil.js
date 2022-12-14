@@ -79,8 +79,6 @@ class DraggableUtil {
     isElementInsideAnotherElement(element, relativeElement) {
         const elementRect = element.getBoundingClientRect()
         const relativeElementRect = relativeElement.getBoundingClientRect()
-        console.log({ elementRect })
-        console.log({ relativeElementRect })
         return (
             elementRect.x >= relativeElementRect.x &&
             elementRect.y >= relativeElementRect.y &&
