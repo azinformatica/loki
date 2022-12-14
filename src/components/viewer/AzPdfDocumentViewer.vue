@@ -94,6 +94,7 @@ export default {
             eventBus.on('pagesinit', this.pagesInitEventHandler)
             eventBus.on('scalechange', this.scaleChangeEventHandler)
             eventBus.on('pagechange', this.pageChangeEventHandler)
+            eventBus.on('pagerendered', this.createPagesReferences)
             this.pdf.eventBus = eventBus
         },
         pagesInitEventHandler(e) {
@@ -107,6 +108,9 @@ export default {
         },
         pageChangeEventHandler(e) {
             this.pagination.current = e.pageNumber
+        },
+        createPagesReferences() {
+            this.pages = Array.from(_.get(this.pdf, 'viewer.viewer.childNodes') || [])
         },
         createPdfLinkService() {
             this.pdf.linkService = new PDFJSViewer.PDFLinkService({
@@ -332,9 +336,6 @@ export default {
                 zIndex: 9999,
             }
         },
-        pages() {
-            return Array.from(_.get(this.pdf, 'viewer.viewer.childNodes') || [])
-        },
     },
     data: () => ({
         isPrinting: false,
@@ -357,6 +358,7 @@ export default {
             type: '',
         },
         isCreatingDraggable: false,
+        pages: [],
     }),
 }
 </script>
