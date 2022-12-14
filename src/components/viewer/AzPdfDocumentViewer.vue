@@ -19,6 +19,7 @@
         <div id="az-pdf-viewer" class="Viewer" :style="azPdfViewerStyle" v-show="!loadingPlaceHolder">
             <div class="pdfViewer"></div>
             <Draggable
+                data-test="draggable"
                 ref="draggableRef"
                 :draggables="draggables"
                 :pages="pages"
