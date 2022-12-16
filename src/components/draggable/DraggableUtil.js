@@ -86,6 +86,10 @@ class DraggableUtil {
             elementRect.y + elementRect.height <= relativeElementRect.y + relativeElementRect.height
         )
     }
+
+    round(number) {
+        return Math.round((number + Number.EPSILON) * 10000) / 10000
+    }
 }
 
 export default new DraggableUtil()
