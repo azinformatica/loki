@@ -6,14 +6,9 @@ import { createLocalVue, mount, shallowMount } from '@vue/test-utils'
 const localVue = createLocalVue()
 Vue.use(Vuetify)
 
-const createRect = (x, y, width, height) => {
-    return { x, y, width, height }
-}
-
 const createDefaultProps = () => {
     return {
-        id: 'draggable-target-zone-item-spec',
-        rect: createRect(0, 0, 100, 100),
+        id: 'draggable-target-zone-item-spec'
     }
 }
 
@@ -58,39 +53,6 @@ describe('AzDraggableTargetZoneItem.spec.js', () => {
             expect(wrapper.emitted('click')[0][0].mousePositionRelativeToTargetZone).toBeInstanceOf(Object)
             expect(wrapper.emitted('click')[0][0].mousePositionRelativeToTargetZone.x).toBeDefined()
             expect(wrapper.emitted('click')[0][0].mousePositionRelativeToTargetZone.y).toBeDefined()
-        })
-    })
-
-    describe('Computed', () => {
-        it('Should transform and apply styles according to rect properties', () => {
-            propsData.rect = createRect(5, 5, 100, 100)
-            wrapper = createWrapper({ propsData, shallow: false })
-            const expectedHeightString = `${propsData.rect.height}px`
-            const expectedWidthString = `${propsData.rect.width}px`
-            const expectedTransformString = `translate(${propsData.rect.x || 0}px, ${propsData.rect.y || 0}px)`
-            expect(wrapper.vm.draggableTargetZoneItemHeight.height).toEqual(expectedHeightString)
-            expect(wrapper.vm.draggableTargetZoneItemWidth.width).toEqual(expectedWidthString)
-            expect(wrapper.vm.draggableTargetZoneItemTransform.transform).toEqual(expectedTransformString)
-        })
-
-        it('Should not transform or apply styles if rect was not informed', () => {
-            propsData.rect = undefined
-            wrapper = createWrapper({ propsData, shallow: false })
-            expect(wrapper.vm.draggableTargetZoneItemTransform.transform).toBeUndefined()
-            expect(wrapper.vm.draggableTargetZoneItemTransform.height).toBeUndefined()
-            expect(wrapper.vm.draggableTargetZoneItemTransform.width).toBeUndefined()
-        })
-
-        it('Should not change width if rect width were not informed', () => {
-            propsData.rect = createRect(0, 0, null, 100)
-            wrapper = createWrapper({ propsData, shallow: false })
-            expect(wrapper.vm.draggableTargetZoneItemWidth.width).toBeUndefined()
-        })
-
-        it('Should not change height if rect height were not informed', () => {
-            propsData.rect = createRect(0, 0, 100, null)
-            wrapper = createWrapper({ propsData, shallow: false })
-            expect(wrapper.vm.draggableTargetZoneItemHeight.height).toBeUndefined()
         })
     })
 })
