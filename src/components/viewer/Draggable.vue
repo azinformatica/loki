@@ -8,7 +8,7 @@
                 v-for="draggableTargetZone of draggableTargetZones"
                 :key="draggableTargetZone.id"
                 :id="draggableTargetZone.id"
-                :rect="draggableTargetZone.rect"
+                :style="draggableTargetZone.style"
                 @click="handleDraggableTargetZoneItemClick"
             />
         </az-draggable-target-zone>
@@ -19,9 +19,9 @@
             @resize-end="handleEndChangeDraggable"
         >
             <az-draggable-item
+                ref="draggableItemRef"
                 v-for="draggable of formattedDraggables"
                 :key="draggable.id"
-                :ref="draggable.id"
                 :id="draggable.id"
                 :rect="draggable.rect"
                 :target-zone-item-id="draggableTargetZoneIdPerLoadedPageNumber[draggable.pageNumber]"
@@ -89,6 +89,7 @@ export default {
             return this.loadedPages.map((page) => ({
                 id: DraggableUtil.generateUUID(),
                 rect: DraggableUtil.getElementRectRelativeToAnotherElementRect(page, page.parentElement),
+                style: this.createDraggableTargetZoneItemStyle(page),
                 pageNumber: this.getPageNumberAsInt(page),
                 screenWidth: this.screenWidth,
                 screenHeight: this.screenHeight,
@@ -101,11 +102,13 @@ export default {
             }
             return draggableTargetZoneIdPerLoadedPageNumber
         },
-        filteredDraggablesByLoadedPages() {
-            return this.draggables.filter((draggable) => !draggable.pageNumber || this.draggablePageIsLoaded(draggable))
+        validDraggables() {
+            return this.draggables.filter((draggable) => {
+                return draggable.pageNumber && this.isDraggablePageLoaded(draggable)
+            })
         },
         formattedDraggables() {
-            return this.filteredDraggablesByLoadedPages.map(this.assignTargetZoneItemIdToDraggable)
+            return this.validDraggables.map(this.convertInputDraggable)
         },
     },
     mounted() {
@@ -116,30 +119,18 @@ export default {
     },
     methods: {
         handleEndChangeDraggable(eventData) {
-            if (!this.isDraggableValidOnStopChanging(eventData)) {
-                return this.$refs[eventData.draggableItemId][0].updateElementAttributesWithProps()
+            if (this.isDraggableValidOnStopChanging(eventData)) {
+                this.updateDraggable(eventData)
+            } else {
+                this.cancelDraggableChanges(eventData)
             }
-            const draggableTargetZone = this.findDraggableTargetZoneById(eventData.draggableTargetZoneItemId)
-            const { draggable, draggableIndex } = this.findDraggableCloneAndIndex(eventData.draggableItemId)
-            draggable.rect = eventData.draggableItemRect
-            draggable.pageNumber = draggableTargetZone.pageNumber || null
-            this.$emit('update:draggable', { draggable, draggableIndex })
         },
         handleDeleteDraggable(draggable) {
-            const draggableIndex = this.findDraggableIndexById(draggable.id)
-            this.$emit('delete:draggable', { draggable, draggableIndex })
+            this.deleteDraggable(draggable)
         },
         handleDraggableTargetZoneItemClick(eventData) {
-            if (!this.isCreatingDraggable) return
-            const draggableTargetZone = this.findDraggableTargetZoneById(eventData.draggableTargetZoneItemId)
-            const draggable = DraggableUtil.createDraggable()
-            draggable.rect.x = eventData.mousePositionRelativeToTargetZone.x
-            draggable.rect.y = eventData.mousePositionRelativeToTargetZone.y
-            draggable.rect.width = this.initialDraggableWidth
-            draggable.rect.height = this.initialDraggableHeight
-            draggable.pageNumber = draggableTargetZone.pageNumber
-            if (this.isDraggableValidOnCreate(draggable, draggableTargetZone)) {
-                this.$emit('create:draggable', { draggable })
+            if (this.isCreatingDraggable) {
+                this.createDraggable(eventData)
             }
         },
         findDraggableCloneAndIndex(draggableId) {
@@ -162,28 +153,105 @@ export default {
         getPageNumberAsInt(page) {
             return parseInt(page.getAttribute('data-page-number'))
         },
-        draggablePageIsLoaded(draggable) {
+        isDraggablePageLoaded(draggable) {
             return !!this.draggableTargetZoneIdPerLoadedPageNumber[draggable.pageNumber]
         },
-        assignTargetZoneItemIdToDraggable(draggable) {
-            const targetObject = {
-                targetZoneItemId: this.draggableTargetZoneIdPerLoadedPageNumber[draggable.pageNumber] || '',
+        convertInputDraggable(draggable) {
+            const draggableTargetZoneItemId = this.draggableTargetZoneIdPerLoadedPageNumber[draggable.pageNumber] || ''
+            const draggableTargetZone = this.findDraggableTargetZoneById(draggableTargetZoneItemId)
+
+            const targetZoneItemId = draggableTargetZoneItemId
+            const rect = {
+                x: Math.round(draggable.rect.x * draggableTargetZone.rect.width),
+                y: Math.round(draggable.rect.y * draggableTargetZone.rect.height),
+                width: Math.round(draggable.rect.width * draggableTargetZone.rect.width),
+                height: Math.round(draggable.rect.height * draggableTargetZone.rect.height)
             }
-            return Object.assign(targetObject, draggable)
+
+            return Object.assign({}, draggable,{ targetZoneItemId, rect })
+        },
+        convertOutputDraggable(draggable) {
+            const draggableTargetZoneItemId = this.draggableTargetZoneIdPerLoadedPageNumber[draggable.pageNumber] || ''
+            const draggableTargetZone = this.findDraggableTargetZoneById(draggableTargetZoneItemId)
+
+            const rect = {
+                x: DraggableUtil.round(draggable.rect.x / draggableTargetZone.rect.width),
+                y: DraggableUtil.round(draggable.rect.y / draggableTargetZone.rect.height),
+                width: DraggableUtil.round(draggable.rect.width / draggableTargetZone.rect.width),
+                height: DraggableUtil.round(draggable.rect.height / draggableTargetZone.rect.height)
+            }
+
+            return Object.assign({}, draggable, { rect })
         },
         isDraggableValidOnStopChanging(eventData) {
             if (!eventData.draggableTargetZoneItemId) {
                 return false
             }
+
             const draggableTargetZoneItemElement = document.getElementById(eventData.draggableTargetZoneItemId)
+            if (!draggableTargetZoneItemElement) {
+                return false
+            }
+
             const draggableItemElement = eventData.draggableItemElement
             return DraggableUtil.isElementInsideAnotherElement(draggableItemElement, draggableTargetZoneItemElement)
         },
-        isDraggableValidOnCreate(draggable, draggableTargetZone) {
-            const maxX = draggableTargetZone.rect.width - draggable.rect.width
-            const maxY = draggableTargetZone.rect.height - draggable.rect.height
-            return draggable.rect.x <= maxX && draggable.rect.y <= maxY
+        isDraggableValidOnCreate(draggable, draggableTargetZoneItemId) {
+            const draggableTargetZone = this.findDraggableTargetZoneById(draggableTargetZoneItemId)
+
+            const draggableAbsoluteX = draggable.rect.x * draggableTargetZone.rect.width
+            const draggableAbsoluteY = draggable.rect.y * draggableTargetZone.rect.height
+
+            const maxDraggableAbsoluteX = (1.0 - draggable.rect.width) * draggableTargetZone.rect.width
+            const maxDraggableAbsoluteY = (1.0 - draggable.rect.height) * draggableTargetZone.rect.height
+
+            return draggableAbsoluteX <= maxDraggableAbsoluteX && draggableAbsoluteY <= maxDraggableAbsoluteY
         },
+        cancelDraggableChanges(eventData) {
+            const draggableIndex = this.findDraggableIndexById(eventData.draggableItemId)
+            this.$refs.draggableItemRef[draggableIndex].updateElementAttributesWithProps()
+        },
+        updateDraggable(eventData) {
+            const { draggable, draggableIndex } = this.findDraggableCloneAndIndex(eventData.draggableItemId)
+            draggable.rect = eventData.draggableItemRect
+
+            const draggableTargetZone = this.findDraggableTargetZoneById(eventData.draggableTargetZoneItemId)
+            draggable.pageNumber = draggableTargetZone.pageNumber || null
+
+            const { rect } = this.convertOutputDraggable(draggable)
+            draggable.rect = rect
+
+            this.$emit('update:draggable', { draggable, draggableIndex })
+        },
+        createDraggable(eventData) {
+            const draggable = DraggableUtil.createDraggable()
+            draggable.rect.x = eventData.mousePositionRelativeToTargetZone.x
+            draggable.rect.y = eventData.mousePositionRelativeToTargetZone.y
+
+            const draggableTargetZone = this.findDraggableTargetZoneById(eventData.draggableTargetZoneItemId)
+            draggable.pageNumber = draggableTargetZone.pageNumber
+            draggable.rect.width = this.initialDraggableWidth
+            draggable.rect.height = this.initialDraggableHeight
+
+            const { rect } = this.convertOutputDraggable(draggable)
+            draggable.rect = rect
+
+            const isDraggableValid = this.isDraggableValidOnCreate(draggable, eventData.draggableTargetZoneItemId)
+            if (isDraggableValid) this.$emit('create:draggable', { draggable })
+        },
+        deleteDraggable(draggable) {
+            const draggableIndex = this.findDraggableIndexById(draggable.id)
+            this.$emit('delete:draggable', { draggable, draggableIndex })
+        },
+        createDraggableTargetZoneItemStyle(page) {
+            const pageRect = DraggableUtil.getElementRectRelativeToAnotherElementRect(page, page.parentElement)
+            return {
+                left: `${Math.round(pageRect.x)}px`,
+                top: `${Math.round(pageRect.y)}px`,
+                width: `${Math.round(pageRect.width)}px`,
+                height: `${Math.round(pageRect.height)}px`
+            }
+        }
     },
 }
 </script>
@@ -193,6 +261,11 @@ export default {
     border-radius 4px
     border 2px dashed var(--v-accent-base)
     background-color var(--v-accent-lighten3)
+    user-select none
+    -webkit-user-select none
+    -khtml-user-select none
+    -moz-user-select none
+    -ms-user-select none
 
     &__content
         width 100%
@@ -240,6 +313,8 @@ export default {
     position absolute
     top 0
     left 0
+    width 0
+    height 0
     z-index 9999
 
 >>> .document-draggable-target-zone
