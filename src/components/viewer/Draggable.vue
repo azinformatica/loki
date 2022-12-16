@@ -28,11 +28,11 @@
             >
                 <div class="document-draggable-item__button-container">
                     <button @click="handleDeleteDraggable(draggable)" data-test="delete-draggable-button">
-                        <v-icon size="12"> close </v-icon>
+                        <v-icon size="12"> close</v-icon>
                     </button>
                 </div>
                 <div class="document-draggable-item__content">
-                    <slot name="draggable-content" :draggable="draggable"> </slot>
+                    <slot name="draggable-content" :draggable="draggable"></slot>
                 </div>
             </az-draggable-item>
         </az-draggable>

@@ -1,12 +1,13 @@
 <template>
     <div :class="`${this.name} az-draggable-target-zone`">
-        <slot> </slot>
+        <slot></slot>
     </div>
 </template>
 
 <script>
 import interact from 'interactjs'
-import DraggableUtil from "./DraggableUtil";
+import DraggableUtil from './DraggableUtil'
+
 export default {
     name: 'AzDraggableTargetZone',
     props: {

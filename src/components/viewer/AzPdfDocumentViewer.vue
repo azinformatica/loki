@@ -31,7 +31,7 @@
                 @delete:draggable="handleDeleteDraggable"
             >
                 <template v-slot:draggable-content="{ draggable }">
-                    <slot name="draggable-content" :draggable="draggable"> </slot>
+                    <slot name="draggable-content" :draggable="draggable"></slot>
                 </template>
             </Draggable>
         </div>
@@ -49,6 +49,7 @@ import PDFJSLib from 'pdfjs-dist/build/pdf'
 import { PDFJS as PDFJSViewer } from 'pdfjs-dist/web/pdf_viewer.js'
 import Draggable from './Draggable'
 import _ from 'lodash'
+
 export default {
     name: 'az-pdf-document-viewer',
     components: {

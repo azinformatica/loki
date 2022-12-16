@@ -4,6 +4,7 @@
         :id="id"
         @click="handleClick"
     >
+        <slot></slot>
     </div>
 </template>
 
@@ -37,7 +38,7 @@ export default {
                     y: Math.round(event.clientY - draggableTargetZoneItemRect.y),
                 },
             }
-        }
+        },
     },
 }
 </script>
