@@ -1,11 +1,11 @@
 <template>
     <div class="az-pdf-container" :class="customContainerClass" :style="{ height: height }">
         <Toolbar
-            :disableButtons="!src || !!draggables.length"
+            :disableButtons="!src"
             :downloadButton="downloadButton"
             :pagination="pagination"
             :printButton="printButton"
-            :rotateButton="rotateButton"
+            :rotateButton="rotateButton && !draggables"
             :scaleType="scale.type"
             @changeScaleType="changeScaleType"
             @zoomIn="zoomIn"
