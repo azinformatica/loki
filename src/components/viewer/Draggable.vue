@@ -24,7 +24,7 @@
                 :key="draggable.id"
                 :id="draggable.id"
                 :rect="draggable.rect"
-                :target-zone-item-id="draggableTargetZoneIdPerLoadedPageNumber[draggable.pageNumber]"
+                :target-zone-item-id="draggable.targetZoneItemId"
             >
                 <div class="document-draggable-item__button-container">
                     <button @click="handleDeleteDraggable(draggable)" data-test="delete-draggable-button">
@@ -102,13 +102,13 @@ export default {
             }
             return draggableTargetZoneIdPerLoadedPageNumber
         },
-        validDraggables() {
+        loadedDraggables() {
             return this.draggables.filter((draggable) => {
                 return draggable.pageNumber && this.isDraggablePageLoaded(draggable)
             })
         },
         formattedDraggables() {
-            return this.validDraggables.map(this.convertInputDraggable)
+            return this.loadedDraggables.map(this.convertInputDraggable)
         },
     },
     mounted() {
@@ -119,7 +119,7 @@ export default {
     },
     methods: {
         handleEndChangeDraggable(eventData) {
-            if (this.isDraggableValidOnStopChanging(eventData)) {
+            if (this.areDraggableChangesValid(eventData)) {
                 this.updateDraggable(eventData)
             } else {
                 this.cancelDraggableChanges(eventData)
@@ -132,19 +132,6 @@ export default {
             if (this.isCreatingDraggable) {
                 this.createDraggable(eventData)
             }
-        },
-        findDraggableCloneAndIndex(draggableId) {
-            const draggableIndex = this.findDraggableIndexById(draggableId)
-            const draggable = _.cloneDeep(this.draggables[draggableIndex])
-            return { draggable, draggableIndex }
-        },
-        findDraggableIndexById(draggableId) {
-            return this.draggables.findIndex((draggable) => draggable.id === draggableId)
-        },
-        findDraggableTargetZoneById(draggableTargetZoneId) {
-            return this.draggableTargetZones.find((draggableTargetZone) => {
-                return draggableTargetZone.id === draggableTargetZoneId
-            })
         },
         updateScreenSize() {
             this.screenWidth = window.innerWidth
@@ -160,30 +147,113 @@ export default {
             const draggableTargetZoneItemId = this.draggableTargetZoneIdPerLoadedPageNumber[draggable.pageNumber] || ''
             const draggableTargetZone = this.findDraggableTargetZoneById(draggableTargetZoneItemId)
 
-            const targetZoneItemId = draggableTargetZoneItemId
-            const rect = {
-                x: Math.round(draggable.rect.x * draggableTargetZone.rect.width),
-                y: Math.round(draggable.rect.y * draggableTargetZone.rect.height),
-                width: Math.round(draggable.rect.width * draggableTargetZone.rect.width),
-                height: Math.round(draggable.rect.height * draggableTargetZone.rect.height)
-            }
+            const round = number => Math.round(number)
 
-            return Object.assign({}, draggable,{ targetZoneItemId, rect })
+            return{
+                id: draggable.id,
+                targetZoneItemId: draggableTargetZoneItemId,
+                rect: {
+                    x: round(draggable.percentX * draggableTargetZone.rect.width),
+                    y: round(draggable.percentY * draggableTargetZone.rect.height),
+                    width: round(draggable.percentWidth * draggableTargetZone.rect.width),
+                    height: round(draggable.percentHeight * draggableTargetZone.rect.height)
+                },
+                content: draggable.content
+            }
         },
         convertOutputDraggable(draggable) {
-            const draggableTargetZoneItemId = this.draggableTargetZoneIdPerLoadedPageNumber[draggable.pageNumber] || ''
-            const draggableTargetZone = this.findDraggableTargetZoneById(draggableTargetZoneItemId)
+            const draggableTargetZone = this.findDraggableTargetZoneById(draggable.targetZoneItemId)
 
-            const rect = {
-                x: DraggableUtil.round(draggable.rect.x / draggableTargetZone.rect.width),
-                y: DraggableUtil.round(draggable.rect.y / draggableTargetZone.rect.height),
-                width: DraggableUtil.round(draggable.rect.width / draggableTargetZone.rect.width),
-                height: DraggableUtil.round(draggable.rect.height / draggableTargetZone.rect.height)
+            const round = number => DraggableUtil.round(number)
+
+            return {
+                id: draggable.id,
+                pageNumber: draggableTargetZone.pageNumber,
+                percentX: round(draggable.rect.x / draggableTargetZone.rect.width),
+                percentY: round(draggable.rect.y / draggableTargetZone.rect.height),
+                percentWidth: round(draggable.rect.width / draggableTargetZone.rect.width),
+                percentHeight: round(draggable.rect.height / draggableTargetZone.rect.height)
+            }
+        },
+        cancelDraggableChanges(eventData) {
+            const { draggableItemId } = eventData
+            const draggableIndex = this.findFormattedDraggableIndexById(draggableItemId)
+            const draggableItemRef = this.getDraggableItemRefByIndex(draggableIndex)
+            draggableItemRef.updateElementAttributesWithProps()
+        },
+        getDraggableItemRefByIndex(draggableIndex) {
+            return this.$refs.draggableItemRef[draggableIndex]
+        },
+        findFormattedDraggableIndexById(draggableItemId) {
+            return this.formattedDraggables.findIndex((draggable) => draggable.id === draggableItemId)
+        },
+        updateDraggable(eventData) {
+            const draggableIndex = this.findDraggableIndexById(eventData.draggableItemId)
+
+            const outputDraggable = this.convertOutputDraggable({
+                rect: eventData.draggableItemRect,
+                targetZoneItemId: eventData.draggableTargetZoneItemId,
+                id: eventData.draggableItemId
+            })
+
+            this.$emit('update:draggable', { draggable: outputDraggable, draggableIndex })
+        },
+        createDraggable(eventData) {
+            const outputDraggable = this.convertOutputDraggable({
+                rect: {
+                    x: eventData.mousePositionRelativeToTargetZone.x,
+                    y: eventData.mousePositionRelativeToTargetZone.y,
+                    width: this.initialDraggableWidth,
+                    height: this.initialDraggableHeight
+                },
+                targetZoneItemId: eventData.draggableTargetZoneItemId,
+                id: DraggableUtil.generateUUID()
+            })
+
+            this.validateOutputDraggable(outputDraggable)
+
+            this.$emit('create:draggable', { draggable: outputDraggable })
+        },
+        deleteDraggable(draggable) {
+            const draggableIndex = this.findDraggableIndexById(draggable.id)
+            const outputDraggable = this.convertOutputDraggable(draggable)
+            this.$emit('delete:draggable', { draggable: outputDraggable, draggableIndex })
+        },
+        createDraggableTargetZoneItemStyle(page) {
+            const pageRect = DraggableUtil.getElementRectRelativeToAnotherElementRect(page, page.parentElement)
+            return {
+                left: `${Math.round(pageRect.x)}px`,
+                top: `${Math.round(pageRect.y)}px`,
+                width: `${Math.round(pageRect.width)}px`,
+                height: `${Math.round(pageRect.height)}px`
+            }
+        },
+        findDraggableIndexById(draggableId) {
+            return this.draggables.findIndex((draggable) => draggable.id === draggableId)
+        },
+        findDraggableTargetZoneById(draggableTargetZoneId) {
+            return this.draggableTargetZones.find((draggableTargetZone) => {
+                return draggableTargetZone.id === draggableTargetZoneId
+            })
+        },
+        validateOutputDraggable(draggable) {
+            if (draggable.percentX < 0.0) {
+                throw new Error('Extrapolou o limite esquerdo da página.')
             }
 
-            return Object.assign({}, draggable, { rect })
+            if (draggable.percentY < 0.0) {
+                throw new Error('Extrapolou o limite superior da página.')
+            }
+
+            if (draggable.percentX + draggable.percentWidth > 1.0) {
+                throw new Error('Extrapolou o limite direito da página.')
+            }
+
+            if (draggable.percentY + draggable.percentHeight > 1.0) {
+                throw new Error('Extrapolou o limite inferior da página.')
+            }
         },
-        isDraggableValidOnStopChanging(eventData) {
+        areDraggableChangesValid(eventData) {
             if (!eventData.draggableTargetZoneItemId) {
                 return false
             }
@@ -196,62 +266,6 @@ export default {
             const draggableItemElement = eventData.draggableItemElement
             return DraggableUtil.isElementInsideAnotherElement(draggableItemElement, draggableTargetZoneItemElement)
         },
-        isDraggableValidOnCreate(draggable, draggableTargetZoneItemId) {
-            const draggableTargetZone = this.findDraggableTargetZoneById(draggableTargetZoneItemId)
-
-            const draggableAbsoluteX = draggable.rect.x * draggableTargetZone.rect.width
-            const draggableAbsoluteY = draggable.rect.y * draggableTargetZone.rect.height
-
-            const maxDraggableAbsoluteX = (1.0 - draggable.rect.width) * draggableTargetZone.rect.width
-            const maxDraggableAbsoluteY = (1.0 - draggable.rect.height) * draggableTargetZone.rect.height
-
-            return draggableAbsoluteX <= maxDraggableAbsoluteX && draggableAbsoluteY <= maxDraggableAbsoluteY
-        },
-        cancelDraggableChanges(eventData) {
-            const draggableIndex = this.findDraggableIndexById(eventData.draggableItemId)
-            this.$refs.draggableItemRef[draggableIndex].updateElementAttributesWithProps()
-        },
-        updateDraggable(eventData) {
-            const { draggable, draggableIndex } = this.findDraggableCloneAndIndex(eventData.draggableItemId)
-            draggable.rect = eventData.draggableItemRect
-
-            const draggableTargetZone = this.findDraggableTargetZoneById(eventData.draggableTargetZoneItemId)
-            draggable.pageNumber = draggableTargetZone.pageNumber || null
-
-            const { rect } = this.convertOutputDraggable(draggable)
-            draggable.rect = rect
-
-            this.$emit('update:draggable', { draggable, draggableIndex })
-        },
-        createDraggable(eventData) {
-            const draggable = DraggableUtil.createDraggable()
-            draggable.rect.x = eventData.mousePositionRelativeToTargetZone.x
-            draggable.rect.y = eventData.mousePositionRelativeToTargetZone.y
-
-            const draggableTargetZone = this.findDraggableTargetZoneById(eventData.draggableTargetZoneItemId)
-            draggable.pageNumber = draggableTargetZone.pageNumber
-            draggable.rect.width = this.initialDraggableWidth
-            draggable.rect.height = this.initialDraggableHeight
-
-            const { rect } = this.convertOutputDraggable(draggable)
-            draggable.rect = rect
-
-            const isDraggableValid = this.isDraggableValidOnCreate(draggable, eventData.draggableTargetZoneItemId)
-            if (isDraggableValid) this.$emit('create:draggable', { draggable })
-        },
-        deleteDraggable(draggable) {
-            const draggableIndex = this.findDraggableIndexById(draggable.id)
-            this.$emit('delete:draggable', { draggable, draggableIndex })
-        },
-        createDraggableTargetZoneItemStyle(page) {
-            const pageRect = DraggableUtil.getElementRectRelativeToAnotherElementRect(page, page.parentElement)
-            return {
-                left: `${Math.round(pageRect.x)}px`,
-                top: `${Math.round(pageRect.y)}px`,
-                width: `${Math.round(pageRect.width)}px`,
-                height: `${Math.round(pageRect.height)}px`
-            }
-        }
     },
 }
 </script>

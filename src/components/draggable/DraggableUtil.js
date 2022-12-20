@@ -63,19 +63,6 @@ class DraggableUtil {
         })
     }
 
-    createDraggable() {
-        return {
-            rect: {
-                x: null,
-                y: null,
-                width: null,
-                height: null,
-            },
-            pageNumber: null,
-            id: this.generateUUID(),
-        }
-    }
-
     isElementInsideAnotherElement(element, relativeElement) {
         const elementRect = element.getBoundingClientRect()
         const relativeElementRect = relativeElement.getBoundingClientRect()
