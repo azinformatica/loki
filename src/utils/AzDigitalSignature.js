@@ -88,14 +88,14 @@ export default class AzDigitalSignature {
         this.pki.redirectToInstallPage()
     }
 
-    async _finishSign(documentId, signHash, paramsToSign, rubricBase64, participation, draggables) {
+    async _finishSign(documentId, signHash, paramsToSign, rubricBase64, participation, visualPositionings) {
         return await this.store.dispatch(actionTypes.SIGNATURE.DIGITAL.FINISH, {
             documentId,
             signHash,
             temporarySubscription: paramsToSign.assinaturaTemporariaId,
             rubricBase64,
             participation,
-            draggables
+            visualPositionings
         })
     }
 
