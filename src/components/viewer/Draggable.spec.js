@@ -14,8 +14,8 @@ const createDraggableMock = (draggableId, pageNumber) => {
     draggable.rect = {}
     draggable.rect.x = 0
     draggable.rect.y = 0
-    draggable.rect.width = 100
-    draggable.rect.height = 100
+    draggable.rect.width = 0.1
+    draggable.rect.height = 0.1
     return draggable
 }
 
@@ -59,6 +59,18 @@ const mockDraggableTargetZoneClickEventData = () => {
         mousePositionRelativeToTargetZone: {
             x: 50,
             y: 50,
+        },
+    }
+}
+
+const mockDraggableTargetZone = () => {
+    return {
+        pageNumber: 1,
+        rect: {
+            x: 5,
+            y: 5,
+            height: 10,
+            width: 10,
         },
     }
 }
@@ -196,7 +208,7 @@ describe('Draggable.spec.js', () => {
         it('Should emit update:draggable when end dragging draggable', async () => {
             const eventData = mockDraggableEventData(propsData.draggables[0])
             wrapper.vm.isDraggableValidOnStopChanging = jest.fn(() => true)
-            wrapper.vm.findDraggableTargetZoneById = jest.fn(() => ({ pageNumber: 1 }))
+            wrapper.vm.findDraggableTargetZoneById = jest.fn(() => mockDraggableTargetZone())
             wrapper.find('.az-draggable').vm.$emit('drag-end', eventData)
             expect(wrapper.emitted('update:draggable')[0][0]['draggable'].id).toEqual(eventData.draggableItemId)
         })
@@ -204,13 +216,13 @@ describe('Draggable.spec.js', () => {
         it('Should emit update:draggable when end resizing draggable', async () => {
             const eventData = mockDraggableEventData(propsData.draggables[0])
             wrapper.vm.isDraggableValidOnStopChanging = jest.fn(() => true)
-            wrapper.vm.findDraggableTargetZoneById = jest.fn(() => ({ pageNumber: 1 }))
+            wrapper.vm.findDraggableTargetZoneById = jest.fn(() => mockDraggableTargetZone())
             wrapper.find('.az-draggable').vm.$emit('resize-end', eventData)
             expect(wrapper.emitted('update:draggable')[0][0]['draggable'].id).toEqual(eventData.draggableItemId)
         })
 
         it('Should emit create:draggable on click page while isCreatingDraggable', () => {
-            wrapper.vm.findDraggableTargetZoneById = jest.fn(() => ({ pageNumber: 1 }))
+            wrapper.vm.findDraggableTargetZoneById = jest.fn(() => mockDraggableTargetZone())
             wrapper.vm.isDraggableValidOnCreate = jest.fn(() => true)
             DraggableUtil.createDraggable = jest.fn(() => createDraggableMock('draggable-id-spec', 1))
             const azDraggable = wrapper.find('.document-draggable-target-zone-item')
@@ -222,7 +234,8 @@ describe('Draggable.spec.js', () => {
         it('Should emit create:draggable with correct initial width', () => {
             propsData.initialDraggableWidth = 500
             wrapper = createWrapper({ propsData, shallow: false })
-            wrapper.vm.findDraggableTargetZoneById = jest.fn(() => ({ pageNumber: 1 }))
+            const draggableTargetZone = mockDraggableTargetZone()
+            wrapper.vm.findDraggableTargetZoneById = jest.fn(() => draggableTargetZone)
             wrapper.vm.isDraggableValidOnCreate = jest.fn(() => true)
             DraggableUtil.createDraggable = jest.fn(() => createDraggableMock('draggable-id-spec', 1))
             const azDraggable = wrapper.find('.document-draggable-target-zone-item')
@@ -231,13 +244,14 @@ describe('Draggable.spec.js', () => {
             const createDraggableEventEmitted = wrapper.emitted('create:draggable')
             const createdDraggableRect = createDraggableEventEmitted[0][0].draggable.rect
             expect(createDraggableEventEmitted).toBeTruthy()
-            expect(createdDraggableRect.width).toBe(propsData.initialDraggableWidth)
+            expect(createdDraggableRect.width * draggableTargetZone.rect.width).toBe(propsData.initialDraggableWidth)
         })
 
         it('Should emit create:draggable with correct initial height', () => {
             propsData.initialDraggableWidth = 120
             wrapper = createWrapper({ propsData, shallow: false })
-            wrapper.vm.findDraggableTargetZoneById = jest.fn(() => ({ pageNumber: 1 }))
+            const draggableTargetZone = mockDraggableTargetZone()
+            wrapper.vm.findDraggableTargetZoneById = jest.fn(() => draggableTargetZone)
             wrapper.vm.isDraggableValidOnCreate = jest.fn(() => true)
             DraggableUtil.createDraggable = jest.fn(() => createDraggableMock('draggable-id-spec', 1))
             const azDraggable = wrapper.find('.document-draggable-target-zone-item')
@@ -246,15 +260,16 @@ describe('Draggable.spec.js', () => {
             const createDraggableEventEmitted = wrapper.emitted('create:draggable')
             const createdDraggableRect = createDraggableEventEmitted[0][0].draggable.rect
             expect(createDraggableEventEmitted).toBeTruthy()
-            expect(createdDraggableRect.height).toBe(propsData.initialDraggableHeight)
+            expect(createdDraggableRect.height * draggableTargetZone.rect.height).toBe(propsData.initialDraggableHeight)
         })
 
         it('Should not emit create:draggable if draggable is not valid', () => {
-            wrapper.vm.findDraggableTargetZoneById = jest.fn(() => ({ pageNumber: 1 }))
+            wrapper.vm.findDraggableTargetZoneById = jest.fn(() => mockDraggableTargetZone())
             wrapper.vm.isDraggableValidOnCreate = jest.fn(() => false)
             DraggableUtil.createDraggable = jest.fn(() => createDraggableMock('draggable-id-spec', 1))
             const azDraggable = wrapper.find('.document-draggable-target-zone-item')
-            azDraggable.vm.$emit('click')
+            const eventData = mockDraggableTargetZoneClickEventData()
+            azDraggable.vm.$emit('click', eventData)
             expect(wrapper.emitted('create:draggable')).toBeFalsy()
         })
 
@@ -262,7 +277,8 @@ describe('Draggable.spec.js', () => {
             propsData.isCreatingDraggable = false
             wrapper = createWrapper({ propsData, shallow: false })
             const azDraggable = wrapper.find('.document-draggable-target-zone-item')
-            azDraggable.vm.$emit('click')
+            const eventData = mockDraggableTargetZoneClickEventData()
+            azDraggable.vm.$emit('click', eventData)
             expect(wrapper.emitted('create:draggable')).toBeFalsy()
         })
     })
