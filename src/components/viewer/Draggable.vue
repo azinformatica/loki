@@ -40,7 +40,6 @@
 </template>
 
 <script>
-import _ from 'lodash'
 import AzDraggableTargetZone from '../draggable/AzDraggableTargetZone'
 import AzDraggableTargetZoneItem from '../draggable/AzDraggableTargetZoneItem'
 import AzDraggable from '../draggable/AzDraggable'
@@ -147,24 +146,24 @@ export default {
             const draggableTargetZoneItemId = this.draggableTargetZoneIdPerLoadedPageNumber[draggable.pageNumber] || ''
             const draggableTargetZone = this.findDraggableTargetZoneById(draggableTargetZoneItemId)
 
-            const round = number => Math.round(number)
+            const round = (number) => Math.round(number)
 
-            return{
+            return {
                 id: draggable.id,
                 targetZoneItemId: draggableTargetZoneItemId,
                 rect: {
                     x: round(draggable.percentX * draggableTargetZone.rect.width),
                     y: round(draggable.percentY * draggableTargetZone.rect.height),
                     width: round(draggable.percentWidth * draggableTargetZone.rect.width),
-                    height: round(draggable.percentHeight * draggableTargetZone.rect.height)
+                    height: round(draggable.percentHeight * draggableTargetZone.rect.height),
                 },
-                content: draggable.content
+                content: draggable.content,
             }
         },
         convertOutputDraggable(draggable) {
             const draggableTargetZone = this.findDraggableTargetZoneById(draggable.targetZoneItemId)
 
-            const round = number => DraggableUtil.round(number)
+            const round = (number) => DraggableUtil.round(number)
 
             return {
                 id: draggable.id,
@@ -172,7 +171,7 @@ export default {
                 percentX: round(draggable.rect.x / draggableTargetZone.rect.width),
                 percentY: round(draggable.rect.y / draggableTargetZone.rect.height),
                 percentWidth: round(draggable.rect.width / draggableTargetZone.rect.width),
-                percentHeight: round(draggable.rect.height / draggableTargetZone.rect.height)
+                percentHeight: round(draggable.rect.height / draggableTargetZone.rect.height),
             }
         },
         cancelDraggableChanges(eventData) {
@@ -193,7 +192,7 @@ export default {
             const outputDraggable = this.convertOutputDraggable({
                 rect: eventData.draggableItemRect,
                 targetZoneItemId: eventData.draggableTargetZoneItemId,
-                id: eventData.draggableItemId
+                id: eventData.draggableItemId,
             })
 
             this.$emit('update:draggable', { draggable: outputDraggable, draggableIndex })
@@ -204,10 +203,10 @@ export default {
                     x: eventData.mousePositionRelativeToTargetZone.x,
                     y: eventData.mousePositionRelativeToTargetZone.y,
                     width: this.initialDraggableWidth,
-                    height: this.initialDraggableHeight
+                    height: this.initialDraggableHeight,
                 },
                 targetZoneItemId: eventData.draggableTargetZoneItemId,
-                id: DraggableUtil.generateUUID()
+                id: DraggableUtil.generateUUID(),
             })
 
             this.validateOutputDraggable(outputDraggable)
@@ -225,7 +224,7 @@ export default {
                 left: `${Math.round(pageRect.x)}px`,
                 top: `${Math.round(pageRect.y)}px`,
                 width: `${Math.round(pageRect.width)}px`,
-                height: `${Math.round(pageRect.height)}px`
+                height: `${Math.round(pageRect.height)}px`,
             }
         },
         findDraggableIndexById(draggableId) {
