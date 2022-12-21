@@ -115,3 +115,11 @@ export default {
     },
 }
 </script>
+
+<style scoped lang="stylus">
+.az-draggable-target-zone
+    pointer-events none
+
+    > *
+        pointer-events auto
+</style>

@@ -178,3 +178,11 @@ export default {
     },
 }
 </script>
+
+<style scoped lang="stylus">
+.az-draggable
+    pointer-events none
+
+    > *
+        pointer-events auto
+</style>
