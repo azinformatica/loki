@@ -28,7 +28,7 @@
             >
                 <div class="document-draggable-item__button-container">
                     <button @click="handleDeleteDraggable(draggable)" data-test="delete-draggable-button">
-                        <v-icon size="12"> close</v-icon>
+                        <v-icon size="12">close</v-icon>
                     </button>
                 </div>
                 <div class="document-draggable-item__content">
@@ -175,7 +175,7 @@ export default {
             }
         },
         cancelDraggableChanges(eventData) {
-            const { draggableItemId } = eventData
+            const {draggableItemId} = eventData
             const draggableIndex = this.findFormattedDraggableIndexById(draggableItemId)
             const draggableItemRef = this.getDraggableItemRefByIndex(draggableIndex)
             draggableItemRef.updateElementAttributesWithProps()
@@ -195,7 +195,7 @@ export default {
                 id: eventData.draggableItemId,
             })
 
-            this.$emit('update:draggable', { draggable: outputDraggable, draggableIndex })
+            this.$emit('update:draggable', {draggable: outputDraggable, draggableIndex})
         },
         createDraggable(eventData) {
             const outputDraggable = this.convertOutputDraggable({
@@ -211,12 +211,12 @@ export default {
 
             this.validateOutputDraggable(outputDraggable)
 
-            this.$emit('create:draggable', { draggable: outputDraggable })
+            this.$emit('create:draggable', {draggable: outputDraggable})
         },
         deleteDraggable(draggable) {
             const draggableIndex = this.findDraggableIndexById(draggable.id)
             const outputDraggable = this.convertOutputDraggable(draggable)
-            this.$emit('delete:draggable', { draggable: outputDraggable, draggableIndex })
+            this.$emit('delete:draggable', {draggable: outputDraggable, draggableIndex})
         },
         createDraggableTargetZoneItemStyle(page) {
             const pageRect = DraggableUtil.getElementRectRelativeToAnotherElementRect(page, page.parentElement)
@@ -288,7 +288,7 @@ export default {
     &__button-container
         display none
         position absolute
-        background-color var(--v-primary-base)
+        background-color var(--v-accent-base)
         right 0
         top 0
         flex-direction column
@@ -308,15 +308,18 @@ export default {
             margin: 2px
 
             &:hover
+                background-color var(--v-accent-darken2)
+
                 i
-                    color var(--v-primary-darken2)
+                    color var(--v-accent-lighten2)
 
             i
                 height 100%
                 width 100%
+                color var(--v-accent-darken4)
 
     &:hover
-        border 2px solid var(--v-primary-base)
+        border 2px solid var(--v-accent-base)
         background-color transparent
 
         .document-draggable-item__button-container
