@@ -61,7 +61,6 @@ export default {
             DraggableUtil.saveTargetZoneItemIdAsElementAttribute(this.$el, this.targetZoneItemId)
         },
         configureMutationObserver() {
-            this.observeCurrentElementAttributesChanges()
             this.observeCurrentElementParentElementChildListChange()
         },
         getMutationObserver() {
@@ -76,18 +75,15 @@ export default {
             }
             return this.resizeObserver
         },
-        observeCurrentElementAttributesChanges() {
-            this.getMutationObserver().observe(this.$el, {
-                attributes: true,
-                attributeFilter: [].concat(
-                    DraggableUtil.RECT_ATTRIBUTES,
-                    [DraggableUtil.TARGET_ZONE_ITEM_ID_ATTRIBUTE]
-                )
-            })
-        },
         observeCurrentElementParentElementChildListChange() {
             this.getMutationObserver().observe(this.$parent.$el, {
                 childList: true,
+                subtree: true,
+                attributes: true,
+                attributeFilter: [].concat(
+                    DraggableUtil.RECT_ATTRIBUTES,
+                    DraggableUtil.TARGET_ZONE_ITEM_ID_ATTRIBUTE
+                )
             })
         },
         mutationObserverCallback() {
