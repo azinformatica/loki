@@ -31,6 +31,8 @@
                         <v-icon size="12">close</v-icon>
                     </button>
                 </div>
+                <div class="document-draggable-item__background">
+                </div>
                 <div class="document-draggable-item__content">
                     <slot name="draggable-content" :draggable="draggable"></slot>
                 </div>
@@ -272,8 +274,7 @@ export default {
 <style scoped lang="stylus">
 >>> .document-draggable-item
     border-radius 4px
-    border 2px dashed var(--v-accent-base)
-    background-color var(--v-accent-lighten3)
+    border 2px dashed var(--v-accent-lighten1)
     user-select none
     -webkit-user-select none
     -khtml-user-select none
@@ -284,6 +285,13 @@ export default {
         width 100%
         height 100%
         overflow hidden
+
+    &__background
+        position absolute
+        inset 0
+        opacity 0.2
+        background-color var(--v-accent-base)
+        z-index -1
 
     &__button-container
         display none
@@ -308,10 +316,8 @@ export default {
             margin: 2px
 
             &:hover
-                background-color var(--v-accent-darken2)
-
                 i
-                    color var(--v-accent-lighten2)
+                    color var(--v-accent-lighten4)
 
             i
                 height 100%
