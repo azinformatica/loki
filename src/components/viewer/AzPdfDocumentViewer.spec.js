@@ -63,7 +63,16 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         downloadButton = true
         progressBar = true
         rotateButton = true
-        draggables = [{ rect: { x: 5, y: 5, height: 10, width: 10 }, pageNumber: 1, id: 'draggable-item-spec' }]
+        draggables = [
+            {
+                percentX: 5,
+                percentY: 5,
+                percentHeight: 10,
+                percentWidth: 10,
+                pageNumber: 1,
+                id: 'draggable-id',
+            },
+        ]
         initialDraggableWidth = 200
         initialDraggableHeight = 200
         wrapper = shallowMount(AzPdfDocumentViewer, {
@@ -421,7 +430,10 @@ describe('AzPdfDocumentViewer.spec.js', () => {
 
         it('Should emit create:draggable and turn isCreatingDraggable to false', () => {
             const draggable = {
-                rect: { x: 0, y: 0, width: 10, height: 10 },
+                percentX: 0,
+                percentY: 0,
+                percentWidth: 0.5,
+                percentHeight: 0.5,
                 pageNumber: 1,
                 id: 'draggable-item-spec-2',
             }

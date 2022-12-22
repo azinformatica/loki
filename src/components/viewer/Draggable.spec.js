@@ -10,11 +10,10 @@ const createDraggableMock = (draggableId, pageNumber) => {
     const draggable = {}
     draggable.id = draggableId
     draggable.pageNumber = pageNumber
-    draggable.rect = {}
-    draggable.rect.x = 0
-    draggable.rect.y = 0
-    draggable.rect.width = 0.1
-    draggable.rect.height = 0.1
+    draggable.percentX = 0
+    draggable.percentY = 0
+    draggable.percentWidth = 0.1
+    draggable.percentHeight = 0.1
     return draggable
 }
 
@@ -41,10 +40,10 @@ const mockDraggableEventData = (draggable) => {
     return {
         draggableItemId: draggable.id,
         draggableItemRect: {
-            x: draggable.rect.x,
-            y: draggable.rect.y,
-            width: draggable.rect.width,
-            height: draggable.rect.height,
+            x: draggable.percentX * 100,
+            y: draggable.percentY * 100,
+            width: draggable.percentWidth * 100,
+            height: draggable.percentHeight * 100,
         },
         draggableItemElement: document.createElement('div'),
         draggableTargetZoneItemId: 'draggable-target-zone-item-1',
