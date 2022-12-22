@@ -1,0 +1,356 @@
+<template>
+    <div>
+        <az-draggable-target-zone
+            name="document-draggable-target-zone"
+            :accepted-draggables-names="['document-draggable']"
+        >
+            <az-draggable-target-zone-item
+                v-for="draggableTargetZone of draggableTargetZones"
+                :key="draggableTargetZone.id"
+                :id="draggableTargetZone.id"
+                :style="draggableTargetZone.style"
+                @click="handleDraggableTargetZoneItemClick"
+            />
+        </az-draggable-target-zone>
+        <az-draggable
+            name="document-draggable"
+            resizable
+            @drag-end="handleEndChangeDraggable"
+            @resize-end="handleEndChangeDraggable"
+        >
+            <az-draggable-item
+                ref="draggableItemRef"
+                v-for="draggable of formattedDraggables"
+                :key="draggable.id"
+                :id="draggable.id"
+                :rect="draggable.rect"
+                :target-zone-item-id="draggable.targetZoneItemId"
+            >
+                <div class="document-draggable-item__button-container">
+                    <button @click="handleDeleteDraggable(draggable)" data-test="delete-draggable-button">
+                        <v-icon size="12">close</v-icon>
+                    </button>
+                </div>
+                <div class="document-draggable-item__background">
+                </div>
+                <div class="document-draggable-item__content">
+                    <slot name="draggable-content" :draggable="draggable"></slot>
+                </div>
+            </az-draggable-item>
+        </az-draggable>
+    </div>
+</template>
+
+<script>
+import AzDraggableTargetZone from '../draggable/AzDraggableTargetZone'
+import AzDraggableTargetZoneItem from '../draggable/AzDraggableTargetZoneItem'
+import AzDraggable from '../draggable/AzDraggable'
+import AzDraggableItem from '../draggable/AzDraggableItem'
+import DraggableUtil from '../draggable/DraggableUtil'
+
+export default {
+    name: 'Draggable',
+    components: {
+        AzDraggableTargetZone,
+        AzDraggableTargetZoneItem,
+        AzDraggable,
+        AzDraggableItem,
+    },
+    props: {
+        draggables: {
+            type: Array,
+            default: () => [],
+        },
+        pages: {
+            type: Array,
+            default: () => [],
+        },
+        isCreatingDraggable: {
+            type: Boolean,
+            default: false,
+        },
+        initialDraggableWidth: {
+            type: Number,
+            default: 100,
+        },
+        initialDraggableHeight: {
+            type: Number,
+            default: 100,
+        },
+    },
+    data: () => ({
+        screenWidth: window.innerWidth,
+        screenHeight: window.innerHeight,
+    }),
+    computed: {
+        loadedPages() {
+            return this.pages.filter((page) => page.getAttribute('data-loaded'))
+        },
+        draggableTargetZones() {
+            return this.loadedPages.map((page) => ({
+                id: DraggableUtil.generateUUID(),
+                rect: DraggableUtil.getElementRectRelativeToAnotherElementRect(page, page.parentElement),
+                style: this.createDraggableTargetZoneItemStyle(page),
+                pageNumber: this.getPageNumberAsInt(page),
+                screenWidth: this.screenWidth,
+                screenHeight: this.screenHeight,
+            }))
+        },
+        draggableTargetZoneIdPerLoadedPageNumber() {
+            const draggableTargetZoneIdPerLoadedPageNumber = {}
+            for (const draggableTargetZone of this.draggableTargetZones) {
+                draggableTargetZoneIdPerLoadedPageNumber[draggableTargetZone.pageNumber] = draggableTargetZone.id
+            }
+            return draggableTargetZoneIdPerLoadedPageNumber
+        },
+        loadedDraggables() {
+            return this.draggables.filter((draggable) => {
+                return draggable.pageNumber && this.isDraggablePageLoaded(draggable)
+            })
+        },
+        formattedDraggables() {
+            return this.loadedDraggables.map(this.convertInputDraggable)
+        },
+    },
+    mounted() {
+        window.addEventListener('resize', this.updateScreenSize)
+    },
+    destroyed() {
+        window.removeEventListener('resize', this.updateScreenSize)
+    },
+    methods: {
+        handleEndChangeDraggable(eventData) {
+            if (this.areDraggableChangesValid(eventData)) {
+                this.updateDraggable(eventData)
+            } else {
+                this.cancelDraggableChanges(eventData)
+            }
+        },
+        handleDeleteDraggable(draggable) {
+            this.deleteDraggable(draggable)
+        },
+        handleDraggableTargetZoneItemClick(eventData) {
+            if (this.isCreatingDraggable) {
+                this.createDraggable(eventData)
+            }
+        },
+        updateScreenSize() {
+            this.screenWidth = window.innerWidth
+            this.screenHeight = window.innerHeight
+        },
+        getPageNumberAsInt(page) {
+            return parseInt(page.getAttribute('data-page-number'))
+        },
+        isDraggablePageLoaded(draggable) {
+            return !!this.draggableTargetZoneIdPerLoadedPageNumber[draggable.pageNumber]
+        },
+        convertInputDraggable(draggable) {
+            const draggableTargetZoneItemId = this.draggableTargetZoneIdPerLoadedPageNumber[draggable.pageNumber] || ''
+            const draggableTargetZone = this.findDraggableTargetZoneById(draggableTargetZoneItemId)
+
+            const round = (number) => Math.round(number)
+
+            return {
+                id: draggable.id,
+                targetZoneItemId: draggableTargetZoneItemId,
+                rect: {
+                    x: round(draggable.percentX * draggableTargetZone.rect.width),
+                    y: round(draggable.percentY * draggableTargetZone.rect.height),
+                    width: round(draggable.percentWidth * draggableTargetZone.rect.width),
+                    height: round(draggable.percentHeight * draggableTargetZone.rect.height),
+                },
+                content: draggable.content,
+            }
+        },
+        convertOutputDraggable(draggable) {
+            const draggableTargetZone = this.findDraggableTargetZoneById(draggable.targetZoneItemId)
+
+            const round = (number) => DraggableUtil.round(number)
+
+            return {
+                id: draggable.id,
+                pageNumber: draggableTargetZone.pageNumber,
+                percentX: round(draggable.rect.x / draggableTargetZone.rect.width),
+                percentY: round(draggable.rect.y / draggableTargetZone.rect.height),
+                percentWidth: round(draggable.rect.width / draggableTargetZone.rect.width),
+                percentHeight: round(draggable.rect.height / draggableTargetZone.rect.height),
+            }
+        },
+        cancelDraggableChanges(eventData) {
+            const {draggableItemId} = eventData
+            const draggableIndex = this.findFormattedDraggableIndexById(draggableItemId)
+            const draggableItemRef = this.getDraggableItemRefByIndex(draggableIndex)
+            draggableItemRef.updateElementAttributesWithProps()
+        },
+        getDraggableItemRefByIndex(draggableIndex) {
+            return this.$refs.draggableItemRef[draggableIndex]
+        },
+        findFormattedDraggableIndexById(draggableItemId) {
+            return this.formattedDraggables.findIndex((draggable) => draggable.id === draggableItemId)
+        },
+        updateDraggable(eventData) {
+            const draggableIndex = this.findDraggableIndexById(eventData.draggableItemId)
+
+            const outputDraggable = this.convertOutputDraggable({
+                rect: eventData.draggableItemRect,
+                targetZoneItemId: eventData.draggableTargetZoneItemId,
+                id: eventData.draggableItemId,
+            })
+
+            this.$emit('update:draggable', {draggable: outputDraggable, draggableIndex})
+        },
+        createDraggable(eventData) {
+            const outputDraggable = this.convertOutputDraggable({
+                rect: {
+                    x: eventData.mousePositionRelativeToTargetZone.x,
+                    y: eventData.mousePositionRelativeToTargetZone.y,
+                    width: this.initialDraggableWidth,
+                    height: this.initialDraggableHeight,
+                },
+                targetZoneItemId: eventData.draggableTargetZoneItemId,
+                id: DraggableUtil.generateUUID(),
+            })
+
+            this.validateOutputDraggable(outputDraggable)
+
+            this.$emit('create:draggable', {draggable: outputDraggable})
+        },
+        deleteDraggable(draggable) {
+            const draggableIndex = this.findDraggableIndexById(draggable.id)
+            const outputDraggable = this.convertOutputDraggable(draggable)
+            this.$emit('delete:draggable', {draggable: outputDraggable, draggableIndex})
+        },
+        createDraggableTargetZoneItemStyle(page) {
+            const pageRect = DraggableUtil.getElementRectRelativeToAnotherElementRect(page, page.parentElement)
+            return {
+                left: `${Math.round(pageRect.x)}px`,
+                top: `${Math.round(pageRect.y)}px`,
+                width: `${Math.round(pageRect.width)}px`,
+                height: `${Math.round(pageRect.height)}px`,
+            }
+        },
+        findDraggableIndexById(draggableId) {
+            return this.draggables.findIndex((draggable) => draggable.id === draggableId)
+        },
+        findDraggableTargetZoneById(draggableTargetZoneId) {
+            return this.draggableTargetZones.find((draggableTargetZone) => {
+                return draggableTargetZone.id === draggableTargetZoneId
+            })
+        },
+        validateOutputDraggable(draggable) {
+            if (draggable.percentX < 0.0) {
+                throw new Error('Extrapolou o limite esquerdo da página.')
+            }
+
+            if (draggable.percentY < 0.0) {
+                throw new Error('Extrapolou o limite superior da página.')
+            }
+
+            if (draggable.percentX + draggable.percentWidth > 1.0) {
+                throw new Error('Extrapolou o limite direito da página.')
+            }
+
+            if (draggable.percentY + draggable.percentHeight > 1.0) {
+                throw new Error('Extrapolou o limite inferior da página.')
+            }
+        },
+        areDraggableChangesValid(eventData) {
+            if (!eventData.draggableTargetZoneItemId) {
+                return false
+            }
+
+            const draggableTargetZoneItemElement = document.getElementById(eventData.draggableTargetZoneItemId)
+            if (!draggableTargetZoneItemElement) {
+                return false
+            }
+
+            const draggableItemElement = eventData.draggableItemElement
+            return DraggableUtil.isElementInsideAnotherElement(draggableItemElement, draggableTargetZoneItemElement)
+        },
+    },
+}
+</script>
+
+<style scoped lang="stylus">
+>>> .document-draggable-item
+    border-radius 4px
+    border 2px dashed var(--v-accent-lighten1)
+    user-select none
+    -webkit-user-select none
+    -khtml-user-select none
+    -moz-user-select none
+    -ms-user-select none
+
+    &__content
+        width 100%
+        height 100%
+        overflow hidden
+
+    &__background
+        position absolute
+        inset 0
+        opacity 0.2
+        background-color var(--v-accent-base)
+        z-index -1
+
+    &__button-container
+        display none
+        position absolute
+        background-color var(--v-accent-base)
+        right 0
+        top 0
+        flex-direction column
+        align-items center
+        justify-content center
+        border-bottom-left-radius 4px
+        padding-left 1px
+        padding-bottom 1px
+
+        button
+            display flex
+            align-items center
+            justify-content center
+            width 16px
+            height 16px
+            border-radius 2px
+            margin: 2px
+
+            &:hover
+                i
+                    color var(--v-accent-lighten4)
+
+            i
+                height 100%
+                width 100%
+                color var(--v-accent-darken4)
+
+    &:hover
+        border 2px solid var(--v-accent-base)
+        background-color transparent
+
+        .document-draggable-item__button-container
+            display flex
+
+>>> .document-draggable
+    position absolute
+    top 0
+    left 0
+    width 0
+    height 0
+    z-index 9999
+
+>>> .document-draggable-target-zone
+    position absolute
+    top 0
+    left 0
+    right 0
+    bottom 0
+    z-index 9998
+
+>>> .document-draggable-target-zone-item
+    position absolute
+    margin 15px auto
+
+    &--active
+        border 4px dashed #8c8c8c
+</style>
