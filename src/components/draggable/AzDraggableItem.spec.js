@@ -87,7 +87,9 @@ describe('AzDraggableItem.spec.js', () => {
     describe('Computed', () => {
         it('Should transform and apply styles according to rect properties', () => {
             wrapper = createWrapper({ propsData, shallow: false })
+
             wrapper.vm.updateElementStyle()
+
             const expectedHeightString = `${propsData.rect.height}px`
             const expectedWidthString = `${propsData.rect.width}px`
             const rect = getRectFromElementAttributes(wrapper.vm.$el)
@@ -102,7 +104,9 @@ describe('AzDraggableItem.spec.js', () => {
         it('Should not transform or apply styles if rect was not informed', () => {
             propsData.rect = undefined
             wrapper = createWrapper({ propsData, shallow: false })
+
             wrapper.vm.updateElementStyle()
+
             DraggableUtil.RECT_ATTRIBUTES.forEach((attribute) => {
                 expect(wrapper.vm.$el.getAttribute(attribute)).toBeNull()
             })
@@ -118,7 +122,9 @@ describe('AzDraggableItem.spec.js', () => {
         it('Should not change width if rect width were not informed', () => {
             propsData.rect = createRect(5, 5, null, 100)
             wrapper = createWrapper({ propsData, shallow: false })
+
             wrapper.vm.updateElementStyle()
+
             const expectedHeightString = `${propsData.rect.height}px`
             const rect = getRectFromElementAttributes(wrapper.vm.$el)
             expect(rect.x).toBe(propsData.rect.x)
@@ -132,7 +138,9 @@ describe('AzDraggableItem.spec.js', () => {
         it('Should not change height if rect height were not informed', () => {
             propsData.rect = createRect(5, 5, 100, null)
             wrapper = createWrapper({ propsData, shallow: false })
+
             wrapper.vm.updateElementStyle()
+
             const expectedWidthString = `${propsData.rect.width}px`
             const rect = getRectFromElementAttributes(wrapper.vm.$el)
             expect(rect.x).toBe(propsData.rect.x)

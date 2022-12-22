@@ -1,9 +1,5 @@
 <template>
-    <div
-        :class="`${className} az-draggable-target-zone-item`"
-        :id="id"
-        @click="handleClick"
-    >
+    <div :class="`${className} az-draggable-target-zone-item`" :id="id" @click="handleClick">
         <slot></slot>
     </div>
 </template>
@@ -15,13 +11,13 @@ export default {
         id: {
             type: String,
             required: true,
-        }
+        },
     },
     computed: {
         className() {
             if (!this.$parent.$options.propsData) return ''
             return `${this.$parent.$options.propsData.name}-item`
-        }
+        },
     },
     methods: {
         handleClick(event) {

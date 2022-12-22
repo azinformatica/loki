@@ -5,7 +5,7 @@
             :downloadButton="downloadButton"
             :pagination="pagination"
             :printButton="printButton"
-            :rotateButton="rotateButton && !draggables"
+            :rotateButton="rotateButton && draggables.length === 0"
             :scaleType="scale.type"
             @changeScaleType="changeScaleType"
             @zoomIn="zoomIn"
@@ -14,7 +14,6 @@
             @download="download"
             @print="print"
             v-show="!loadingPlaceHolder"
-            @startCreateDraggable="startCreateDraggable"
         />
         <div id="az-pdf-viewer" class="Viewer" :style="azPdfViewerStyle" v-show="!loadingPlaceHolder">
             <div class="pdfViewer"></div>
@@ -51,7 +50,6 @@ import Draggable from './Draggable'
 import _ from 'lodash'
 
 export default {
-    name: 'az-pdf-document-viewer',
     components: {
         Draggable,
         Toolbar,

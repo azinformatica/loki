@@ -201,6 +201,7 @@ describe('Draggable.spec.js', () => {
             const deleteDraggableButton = buttonContainer.find('button')
             await deleteDraggableButton.trigger('click')
             await wrapper.vm.$nextTick()
+
             expect(wrapper.emitted('delete:draggable')[0][0]['draggableIndex']).toBe(0)
         })
 
@@ -209,6 +210,7 @@ describe('Draggable.spec.js', () => {
             wrapper.vm.areDraggableChangesValid = jest.fn(() => true)
             wrapper.vm.findDraggableTargetZoneById = jest.fn(() => mockDraggableTargetZone())
             wrapper.find('.az-draggable').vm.$emit('drag-end', eventData)
+
             expect(wrapper.emitted('update:draggable')[0][0]['draggable'].id).toEqual(eventData.draggableItemId)
         })
 
@@ -217,6 +219,7 @@ describe('Draggable.spec.js', () => {
             wrapper.vm.areDraggableChangesValid = jest.fn(() => true)
             wrapper.vm.findDraggableTargetZoneById = jest.fn(() => mockDraggableTargetZone())
             wrapper.find('.az-draggable').vm.$emit('resize-end', eventData)
+
             expect(wrapper.emitted('update:draggable')[0][0]['draggable'].id).toEqual(eventData.draggableItemId)
         })
 
@@ -226,6 +229,7 @@ describe('Draggable.spec.js', () => {
             const azDraggable = wrapper.find('.document-draggable-target-zone-item')
             const eventData = mockDraggableTargetZoneClickEventData()
             azDraggable.vm.$emit('click', eventData)
+
             expect(wrapper.emitted('create:draggable')[0][0]['draggable'].id).toBeTruthy()
         })
 
@@ -240,6 +244,7 @@ describe('Draggable.spec.js', () => {
             azDraggable.vm.$emit('click', eventData)
             const createDraggableEventEmitted = wrapper.emitted('create:draggable')
             const percentWidth = createDraggableEventEmitted[0][0].draggable.percentWidth
+
             expect(createDraggableEventEmitted).toBeTruthy()
             expect(percentWidth * draggableTargetZone.rect.width).toBe(propsData.initialDraggableWidth)
         })
@@ -255,6 +260,7 @@ describe('Draggable.spec.js', () => {
             azDraggable.vm.$emit('click', eventData)
             const createDraggableEventEmitted = wrapper.emitted('create:draggable')
             const percentHeight = createDraggableEventEmitted[0][0].draggable.percentHeight
+
             expect(createDraggableEventEmitted).toBeTruthy()
             expect(percentHeight * draggableTargetZone.rect.height).toBe(propsData.initialDraggableHeight)
         })
@@ -268,7 +274,9 @@ describe('Draggable.spec.js', () => {
             })
             const azDraggable = wrapper.find('.document-draggable-target-zone-item')
             const eventData = mockDraggableTargetZoneClickEventData()
+
             azDraggable.vm.$emit('click', eventData)
+
             expect(wrapper.vm.validateOutputDraggable).toThrow(Error)
             expect(wrapper.emitted('create:draggable')).toBeFalsy()
             console.error = consoleError
@@ -279,7 +287,9 @@ describe('Draggable.spec.js', () => {
             wrapper = createWrapper({ propsData, shallow: false })
             const azDraggable = wrapper.find('.document-draggable-target-zone-item')
             const eventData = mockDraggableTargetZoneClickEventData()
+
             azDraggable.vm.$emit('click', eventData)
+
             expect(wrapper.emitted('create:draggable')).toBeFalsy()
         })
     })

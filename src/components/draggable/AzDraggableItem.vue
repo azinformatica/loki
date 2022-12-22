@@ -80,10 +80,7 @@ export default {
                 childList: true,
                 subtree: true,
                 attributes: true,
-                attributeFilter: [].concat(
-                    DraggableUtil.RECT_ATTRIBUTES,
-                    DraggableUtil.TARGET_ZONE_ITEM_ID_ATTRIBUTE
-                )
+                attributeFilter: [].concat(DraggableUtil.RECT_ATTRIBUTES, DraggableUtil.TARGET_ZONE_ITEM_ID_ATTRIBUTE),
             })
         },
         mutationObserverCallback() {

@@ -414,6 +414,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
     describe('Draggable', () => {
         it('Should start creating draggable on call method startCreateDraggable and reset page configuration', () => {
             wrapper.vm.startCreateDraggable()
+
             expect(wrapper.vm.isCreatingDraggable).toBeTruthy()
             expect(wrapper.vm.pdf.viewer.pagesRotation).toBe(0)
         })
@@ -425,7 +426,9 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 id: 'draggable-item-spec-2',
             }
             const draggableWrapper = wrapper.find('[data-test="draggable"]')
+
             draggableWrapper.vm.$emit('create:draggable', { draggable })
+
             expect(wrapper.emitted('create:draggable')).toBeTruthy()
             expect(wrapper.emitted('create:draggable')[0][0].draggable).toEqual(draggable)
             expect(wrapper.vm.isCreatingDraggable).toBeFalsy()
@@ -435,7 +438,9 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             const draggableIndex = 0
             const draggable = draggables[draggableIndex]
             const draggableWrapper = wrapper.find('[data-test="draggable"]')
+
             draggableWrapper.vm.$emit('update:draggable', { draggable, draggableIndex })
+
             expect(wrapper.emitted('update:draggable')).toBeTruthy()
             expect(wrapper.emitted('update:draggable')[0][0].draggable).toEqual(draggable)
             expect(wrapper.emitted('update:draggable')[0][0].draggableIndex).toEqual(draggableIndex)
@@ -445,7 +450,9 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             const draggableIndex = 0
             const draggable = draggables[draggableIndex]
             const draggableWrapper = wrapper.find('[data-test="draggable"]')
+
             draggableWrapper.vm.$emit('delete:draggable', { draggable, draggableIndex })
+
             expect(wrapper.emitted('delete:draggable')).toBeTruthy()
             expect(wrapper.emitted('delete:draggable')[0][0].draggable).toEqual(draggable)
             expect(wrapper.emitted('delete:draggable')[0][0].draggableIndex).toEqual(draggableIndex)
