@@ -50,7 +50,15 @@ Vue.use(Vuetify)
 Vue.use(Vuex)
 
 describe('AzPdfDocumentViewer.spec.js', () => {
-    let src, httpHeader, downloadButton, progressBar, rotateButton, wrapper
+    let src,
+        httpHeader,
+        downloadButton,
+        progressBar,
+        rotateButton,
+        draggables,
+        initialDraggableWidth,
+        initialDraggableHeight,
+        wrapper
 
     beforeEach(() => {
         src = 'document/url'
@@ -58,7 +66,18 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         downloadButton = true
         progressBar = true
         rotateButton = true
-
+        draggables = [
+            {
+                percentX: 5,
+                percentY: 5,
+                percentHeight: 10,
+                percentWidth: 10,
+                pageNumber: 1,
+                id: 'draggable-id',
+            },
+        ]
+        initialDraggableWidth = 200
+        initialDraggableHeight = 200
         wrapper = shallowMount(AzPdfDocumentViewer, {
             localVue,
             propsData: {
@@ -67,6 +86,9 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 downloadButton,
                 progressBar,
                 rotateButton,
+                draggables,
+                initialDraggableWidth,
+                initialDraggableHeight,
             },
             attachTo: document.body,
         })
@@ -100,6 +122,24 @@ describe('AzPdfDocumentViewer.spec.js', () => {
 
         it('Should receive props rotateButton', () => {
             expect(wrapper.props().rotateButton).toBeTruthy()
+        })
+
+        it('Should receive props draggables', () => {
+            expect(wrapper.props().draggables).toEqual(draggables)
+        })
+        it('Should have default value to draggables', () => {
+            wrapper = shallowMount(AzPdfDocumentViewer, {
+                localVue,
+                propsData: { src, downloadButton },
+                attachTo: document.body,
+            })
+            expect(wrapper.props().draggables).toEqual([])
+        })
+        it('Should receive props initialDraggableWidth', () => {
+            expect(wrapper.props().initialDraggableWidth).toBe(initialDraggableWidth)
+        })
+        it('Should receive props initialDraggableHeight', () => {
+            expect(wrapper.props().initialDraggableHeight).toBe(initialDraggableHeight)
         })
     })
 
@@ -377,6 +417,47 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             wrapper.find('button').trigger('click')
 
             expect(wrapper.emitted().download).toBeTruthy()
+        })
+    })
+
+    describe('Draggable', () => {
+        it('Should start creating draggable on call method startCreateDraggable and reset page configuration', () => {
+            wrapper.vm.startCreateDraggable()
+            expect(wrapper.vm.isCreatingDraggable).toBeTruthy()
+            expect(wrapper.vm.pdf.viewer.pagesRotation).toBe(0)
+        })
+        it('Should emit create:draggable and turn isCreatingDraggable to false', () => {
+            const draggable = {
+                percentX: 0,
+                percentY: 0,
+                percentWidth: 0.5,
+                percentHeight: 0.5,
+                pageNumber: 1,
+                id: 'draggable-item-spec-2',
+            }
+            const draggableWrapper = wrapper.find('[data-test="draggable"]')
+            draggableWrapper.vm.$emit('create:draggable', { draggable })
+            expect(wrapper.emitted('create:draggable')).toBeTruthy()
+            expect(wrapper.emitted('create:draggable')[0][0].draggable).toEqual(draggable)
+            expect(wrapper.vm.isCreatingDraggable).toBeFalsy()
+        })
+        it('Should emit update:draggable', () => {
+            const draggableIndex = 0
+            const draggable = draggables[draggableIndex]
+            const draggableWrapper = wrapper.find('[data-test="draggable"]')
+            draggableWrapper.vm.$emit('update:draggable', { draggable, draggableIndex })
+            expect(wrapper.emitted('update:draggable')).toBeTruthy()
+            expect(wrapper.emitted('update:draggable')[0][0].draggable).toEqual(draggable)
+            expect(wrapper.emitted('update:draggable')[0][0].draggableIndex).toEqual(draggableIndex)
+        })
+        it('Should emit delete:draggable', () => {
+            const draggableIndex = 0
+            const draggable = draggables[draggableIndex]
+            const draggableWrapper = wrapper.find('[data-test="draggable"]')
+            draggableWrapper.vm.$emit('delete:draggable', { draggable, draggableIndex })
+            expect(wrapper.emitted('delete:draggable')).toBeTruthy()
+            expect(wrapper.emitted('delete:draggable')[0][0].draggable).toEqual(draggable)
+            expect(wrapper.emitted('delete:draggable')[0][0].draggableIndex).toEqual(draggableIndex)
         })
     })
 })
