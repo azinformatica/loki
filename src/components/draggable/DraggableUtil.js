@@ -9,16 +9,6 @@ class DraggableUtil {
             height: Math.round(elementRect.height),
         }
     }
-
-    getRectFromElementAttributes(element) {
-        const rect = {}
-        this.RECT_ATTRIBUTES.forEach((attribute, attributeIndex) => {
-            const property = this.RECT_PROPERTIES[attributeIndex]
-            rect[property] = this.getAttributeAsInt(element, attribute)
-        })
-        return rect
-    }
-
     generateUUID() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
             const r = (Math.random() * 16) | 0

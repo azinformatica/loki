@@ -38,8 +38,7 @@
                         <v-icon size="12">close</v-icon>
                     </button>
                 </div>
-                <div class="document-draggable-item__background">
-                </div>
+                <div class="document-draggable-item__background"></div>
                 <div class="document-draggable-item__content">
                     <slot name="draggable-content" :draggable="draggable"></slot>
                 </div>
@@ -89,7 +88,7 @@ export default {
     data: () => ({
         screenWidth: window.innerWidth,
         screenHeight: window.innerHeight,
-        activeDraggable: null
+        activeDraggable: null,
     }),
     computed: {
         loadedPages() {
@@ -117,7 +116,7 @@ export default {
         },
         formattedDraggables() {
             return this.loadedDraggables.map(this.formattedDraggableMapper)
-        }
+        },
     },
     mounted() {
         window.addEventListener('resize', this.updateScreenSize)
@@ -133,7 +132,7 @@ export default {
             return this.isBeingModified(draggable) ? this.activeDraggable : this.convertInputDraggable(draggable)
         },
         setActiveDraggable(draggableItemId) {
-            const draggable = this.formattedDraggables.find(draggable => draggable.id === draggableItemId)
+            const draggable = this.formattedDraggables.find((draggable) => draggable.id === draggableItemId)
             this.activeDraggable = _.cloneDeep(draggable)
         },
         updateActiveDraggable(eventData) {
@@ -158,7 +157,7 @@ export default {
             const draggableIndex = this.findDraggableIndexById(this.activeDraggable.id)
             const outputDraggable = this.convertOutputDraggable(this.activeDraggable)
 
-            this.$emit('update:draggable', {draggable: outputDraggable, draggableIndex})
+            this.$emit('update:draggable', { draggable: outputDraggable, draggableIndex })
         },
         handleChangeDraggable(eventData) {
             this.updateActiveDraggable(eventData)
@@ -235,12 +234,12 @@ export default {
 
             this.validateOutputDraggable(outputDraggable)
 
-            this.$emit('create:draggable', {draggable: outputDraggable})
+            this.$emit('create:draggable', { draggable: outputDraggable })
         },
         deleteDraggable(draggable) {
             const draggableIndex = this.findDraggableIndexById(draggable.id)
             const outputDraggable = this.convertOutputDraggable(draggable)
-            this.$emit('delete:draggable', {draggable: outputDraggable, draggableIndex})
+            this.$emit('delete:draggable', { draggable: outputDraggable, draggableIndex })
         },
         createDraggableTargetZoneItemStyle(page) {
             const pageRect = DraggableUtil.getElementRectRelativeToAnotherElementRect(page, page.parentElement)
@@ -294,7 +293,7 @@ export default {
         },
         hasValidPageNumber(draggable) {
             return draggable.pageNumber && draggable.pageNumber > 0
-        }
+        },
     },
 }
 </script>
