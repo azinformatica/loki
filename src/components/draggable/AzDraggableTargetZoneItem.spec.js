@@ -8,7 +8,7 @@ Vue.use(Vuetify)
 
 const createDefaultProps = () => {
     return {
-        id: 'draggable-target-zone-item-spec'
+        id: 'draggable-target-zone-item-spec',
     }
 }
 
