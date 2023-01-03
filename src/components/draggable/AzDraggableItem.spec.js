@@ -2,14 +2,9 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import AzDraggableItem from './AzDraggableItem'
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils'
-import DraggableUtil from '@/components/draggable/DraggableUtil'
 
 const localVue = createLocalVue()
 Vue.use(Vuetify)
-
-const getRectFromElementAttributes = (element) => {
-    return DraggableUtil.getRectFromElementAttributes(element)
-}
 
 const createRect = (x, y, width, height) => {
     return { x, y, width, height }
@@ -31,24 +26,6 @@ const createWrapper = ({ propsData = {}, shallow = true }) => {
     const mountingFunction = shallow ? shallowMount : mount
     return mountingFunction(AzDraggableItem, options)
 }
-
-const configureMutationObserver = () => {
-    global.MutationObserver = jest.fn(function MutationObserver() {
-        this.observe = jest.fn()
-        this.disconnect = jest.fn()
-    })
-}
-
-const configureResizeObserver = () => {
-    global.ResizeObserver = jest.fn(function ResizeObserver() {
-        this.observe = jest.fn()
-        this.unobserve = jest.fn()
-        this.disconnect = jest.fn()
-    })
-}
-
-configureMutationObserver()
-configureResizeObserver()
 
 describe('AzDraggableItem.spec.js', () => {
     let propsData, wrapper
@@ -84,19 +61,18 @@ describe('AzDraggableItem.spec.js', () => {
         })
     })
 
-    describe('Computed', () => {
+    describe('Style', () => {
         it('Should transform and apply styles according to rect properties', () => {
             wrapper = createWrapper({ propsData, shallow: false })
 
+            wrapper.vm.getOriginPosition = jest.fn(() => ({ x: 1, y: 1 }))
+            wrapper.vm.getTargetZonePosition = jest.fn(() => ({ x: 1, y: 1 }))
             wrapper.vm.updateElementStyle()
 
             const expectedHeightString = `${propsData.rect.height}px`
             const expectedWidthString = `${propsData.rect.width}px`
-            const rect = getRectFromElementAttributes(wrapper.vm.$el)
-            expect(rect.x).toBe(propsData.rect.x)
-            expect(rect.y).toBe(propsData.rect.y)
-            expect(rect.width).toBe(propsData.rect.width)
-            expect(rect.height).toBe(propsData.rect.height)
+            const expectedTransformString = `translate(${propsData.rect.x}px, ${propsData.rect.y}px)`
+            expect(wrapper.vm.$el.style.transform).toEqual(expectedTransformString)
             expect(wrapper.vm.$el.style.height).toEqual(expectedHeightString)
             expect(wrapper.vm.$el.style.width).toEqual(expectedWidthString)
         })
@@ -105,16 +81,12 @@ describe('AzDraggableItem.spec.js', () => {
             propsData.rect = undefined
             wrapper = createWrapper({ propsData, shallow: false })
 
+            wrapper.vm.getOriginPosition = jest.fn(() => ({ x: 1, y: 1 }))
+            wrapper.vm.getTargetZonePosition = jest.fn(() => ({ x: 1, y: 1 }))
             wrapper.vm.updateElementStyle()
 
-            DraggableUtil.RECT_ATTRIBUTES.forEach((attribute) => {
-                expect(wrapper.vm.$el.getAttribute(attribute)).toBeNull()
-            })
-            const rect = getRectFromElementAttributes(wrapper.vm.$el)
-            expect(rect.x).toBe(0)
-            expect(rect.y).toBe(0)
-            expect(rect.width).toBe(0)
-            expect(rect.height).toBe(0)
+            const expectedTransformString = 'translate(0px, 0px)'
+            expect(wrapper.vm.$el.style.transform).toEqual(expectedTransformString)
             expect(wrapper.vm.$el.style.height).toEqual('')
             expect(wrapper.vm.$el.style.width).toEqual('')
         })
@@ -123,14 +95,13 @@ describe('AzDraggableItem.spec.js', () => {
             propsData.rect = createRect(5, 5, null, 100)
             wrapper = createWrapper({ propsData, shallow: false })
 
+            wrapper.vm.getOriginPosition = jest.fn(() => ({ x: 1, y: 1 }))
+            wrapper.vm.getTargetZonePosition = jest.fn(() => ({ x: 1, y: 1 }))
             wrapper.vm.updateElementStyle()
 
             const expectedHeightString = `${propsData.rect.height}px`
-            const rect = getRectFromElementAttributes(wrapper.vm.$el)
-            expect(rect.x).toBe(propsData.rect.x)
-            expect(rect.y).toBe(propsData.rect.y)
-            expect(rect.width).toBe(0)
-            expect(rect.height).toBe(propsData.rect.height)
+            const expectedTransformString = `translate(${propsData.rect.x}px, ${propsData.rect.y}px)`
+            expect(wrapper.vm.$el.style.transform).toEqual(expectedTransformString)
             expect(wrapper.vm.$el.style.height).toEqual(expectedHeightString)
             expect(wrapper.vm.$el.style.width).toEqual('')
         })
@@ -139,14 +110,13 @@ describe('AzDraggableItem.spec.js', () => {
             propsData.rect = createRect(5, 5, 100, null)
             wrapper = createWrapper({ propsData, shallow: false })
 
+            wrapper.vm.getOriginPosition = jest.fn(() => ({ x: 1, y: 1 }))
+            wrapper.vm.getTargetZonePosition = jest.fn(() => ({ x: 1, y: 1 }))
             wrapper.vm.updateElementStyle()
 
             const expectedWidthString = `${propsData.rect.width}px`
-            const rect = getRectFromElementAttributes(wrapper.vm.$el)
-            expect(rect.x).toBe(propsData.rect.x)
-            expect(rect.y).toBe(propsData.rect.y)
-            expect(rect.width).toBe(propsData.rect.width)
-            expect(rect.height).toBe(0)
+            const expectedTransformString = `translate(${propsData.rect.x}px, ${propsData.rect.y}px)`
+            expect(wrapper.vm.$el.style.transform).toEqual(expectedTransformString)
             expect(wrapper.vm.$el.style.height).toEqual('')
             expect(wrapper.vm.$el.style.width).toEqual(expectedWidthString)
         })

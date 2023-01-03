@@ -6,7 +6,6 @@
 
 <script>
 import interact from 'interactjs'
-import DraggableUtil from './DraggableUtil'
 export default {
     name: 'AzDraggable',
     props: {
@@ -92,18 +91,15 @@ export default {
         createResizableListenersStartEvent(event) {
             event.target.classList.add(`${this.name}-item--resize`)
             const eventData = this.getEventData(event)
-            this.updateDraggableItemAttributes(eventData.draggableItemElement, eventData.draggableItemRect)
             this.$emit('resize-start', eventData)
         },
         createResizableListenersMoveEvent(event) {
             const eventData = this.getEventData(event)
-            this.updateDraggableItemAttributes(eventData.draggableItemElement, eventData.draggableItemRect)
             this.$emit('resize', eventData)
         },
         createResizableListenersEndEvent(event) {
             event.target.classList.remove(`${this.name}-item--resize`)
             const eventData = this.getEventData(event)
-            this.updateDraggableItemAttributes(eventData.draggableItemElement, eventData.draggableItemRect)
             this.$emit('resize-end', eventData)
         },
         createDraggableListeners() {
@@ -116,30 +112,28 @@ export default {
         createDraggableListenersStart(event) {
             event.target.classList.add(`${this.name}-item--drag`)
             const eventData = this.getEventData(event)
-            this.updateDraggableItemAttributes(eventData.draggableItemElement, eventData.draggableItemRect)
             this.$emit('drag-start', eventData)
         },
         createDraggableListenersMove(event) {
             const eventData = this.getEventData(event)
-            this.updateDraggableItemAttributes(eventData.draggableItemElement, eventData.draggableItemRect)
             this.$emit('drag', eventData)
         },
         createDraggableListenersEnd(event) {
             event.target.classList.remove(`${this.name}-item--drag`)
             const eventData = this.getEventData(event)
-            this.updateDraggableItemAttributes(eventData.draggableItemElement, eventData.draggableItemRect)
             this.$emit('drag-end', eventData)
         },
         getEventData(event) {
+            const draggableItem = this.findChildById(event.target.id)
+            const propsData = draggableItem.$options.propsData
             return {
                 draggableItemElement: event.target,
                 draggableItemId: event.target.id,
-                draggableItemRect: this.getUpdatedDraggableItemRect(event),
-                draggableTargetZoneItemId: DraggableUtil.getTargetZoneItemIdFromElementAttribute(event.target),
+                draggableItemRect: this.getUpdatedDraggableItemRect(event, propsData.rect),
+                draggableTargetZoneItemId: propsData.targetZoneItemId,
             }
         },
-        getUpdatedDraggableItemRect(event) {
-            const currentRect = DraggableUtil.getRectFromElementAttributes(event.target)
+        getUpdatedDraggableItemRect(event, currentRect) {
             return {
                 x: this.getUpdatedDraggableItemRectX(event, currentRect.x),
                 y: this.getUpdatedDraggableItemRectY(event, currentRect.y),
@@ -161,17 +155,17 @@ export default {
         getUpdatedDraggableItemRectHeight(event) {
             return event.rect.height
         },
-        updateDraggableItemAttributes(draggableItemElement, rect) {
-            DraggableUtil.saveRectAsElementAttributes(draggableItemElement, rect)
-        },
         isResizeEvent(event) {
             return event.type.includes('resize')
+        },
+        findChildById(id) {
+            return this.$children.find((child) => child.$el.id === id)
         },
     },
     mounted() {
         this.configureInteractor()
     },
-    destroyed() {
+    beforeDestroy() {
         this.interactor.unset()
         this.interactor = null
     },

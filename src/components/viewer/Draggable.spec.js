@@ -92,24 +92,6 @@ const createWrapper = ({ propsData = {}, shallow = true }) => {
     return mountingFunction(Draggable, options)
 }
 
-const configureMutationObserver = () => {
-    global.MutationObserver = jest.fn(function MutationObserver() {
-        this.observe = jest.fn()
-        this.disconnect = jest.fn()
-    })
-}
-
-const configureResizeObserver = () => {
-    global.ResizeObserver = jest.fn(function ResizeObserver() {
-        this.observe = jest.fn()
-        this.unobserve = jest.fn()
-        this.disconnect = jest.fn()
-    })
-}
-
-configureMutationObserver()
-configureResizeObserver()
-
 describe('Draggable.spec.js', () => {
     let propsData, wrapper
 
@@ -208,6 +190,7 @@ describe('Draggable.spec.js', () => {
             const eventData = mockDraggableEventData(propsData.draggables[0])
             wrapper.vm.areDraggableChangesValid = jest.fn(() => true)
             wrapper.vm.findDraggableTargetZoneById = jest.fn(() => mockDraggableTargetZone())
+            wrapper.vm.setActiveDraggable(propsData.draggables[0].id)
             wrapper.find('.az-draggable').vm.$emit('drag-end', eventData)
 
             expect(wrapper.emitted('update:draggable')[0][0]['draggable'].id).toEqual(eventData.draggableItemId)
@@ -217,6 +200,7 @@ describe('Draggable.spec.js', () => {
             const eventData = mockDraggableEventData(propsData.draggables[0])
             wrapper.vm.areDraggableChangesValid = jest.fn(() => true)
             wrapper.vm.findDraggableTargetZoneById = jest.fn(() => mockDraggableTargetZone())
+            wrapper.vm.setActiveDraggable(propsData.draggables[0].id)
             wrapper.find('.az-draggable').vm.$emit('resize-end', eventData)
 
             expect(wrapper.emitted('update:draggable')[0][0]['draggable'].id).toEqual(eventData.draggableItemId)

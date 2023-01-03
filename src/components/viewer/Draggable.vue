@@ -3,6 +3,8 @@
         <az-draggable-target-zone
             name="document-draggable-target-zone"
             :accepted-draggables-names="['document-draggable']"
+            @draggable-enter="handleDraggableEnter"
+            @draggable-leave="handleDraggableLeave"
         >
             <az-draggable-target-zone-item
                 v-for="draggableTargetZone of draggableTargetZones"
@@ -13,8 +15,13 @@
             />
         </az-draggable-target-zone>
         <az-draggable
+            ref="azDraggable"
             name="document-draggable"
             resizable
+            @drag-start="handleStartChangeDraggable"
+            @resize-start="handleStartChangeDraggable"
+            @resize="handleChangeDraggable"
+            @drag="handleChangeDraggable"
             @drag-end="handleEndChangeDraggable"
             @resize-end="handleEndChangeDraggable"
         >
@@ -31,8 +38,7 @@
                         <v-icon size="12">close</v-icon>
                     </button>
                 </div>
-                <div class="document-draggable-item__background">
-                </div>
+                <div class="document-draggable-item__background"></div>
                 <div class="document-draggable-item__content">
                     <slot name="draggable-content" :draggable="draggable"></slot>
                 </div>
@@ -47,6 +53,7 @@ import AzDraggableTargetZoneItem from '../draggable/AzDraggableTargetZoneItem'
 import AzDraggable from '../draggable/AzDraggable'
 import AzDraggableItem from '../draggable/AzDraggableItem'
 import DraggableUtil from '../draggable/DraggableUtil'
+import _ from 'lodash'
 export default {
     name: 'Draggable',
     components: {
@@ -80,6 +87,7 @@ export default {
     data: () => ({
         screenWidth: window.innerWidth,
         screenHeight: window.innerHeight,
+        activeDraggable: null,
     }),
     computed: {
         loadedPages() {
@@ -103,12 +111,10 @@ export default {
             return draggableTargetZoneIdPerLoadedPageNumber
         },
         loadedDraggables() {
-            return this.draggables.filter((draggable) => {
-                return draggable.pageNumber && this.isDraggablePageLoaded(draggable)
-            })
+            return this.draggables.filter(this.loadedDraggablesFilter)
         },
         formattedDraggables() {
-            return this.loadedDraggables.map(this.convertInputDraggable)
+            return this.loadedDraggables.map(this.formattedDraggableMapper)
         },
     },
     mounted() {
@@ -118,12 +124,40 @@ export default {
         window.removeEventListener('resize', this.updateScreenSize)
     },
     methods: {
+        loadedDraggablesFilter(draggable) {
+            return this.hasValidPageNumber(draggable) && this.isDraggablePageLoaded(draggable)
+        },
+        formattedDraggableMapper(draggable) {
+            return this.isBeingModified(draggable) ? this.activeDraggable : this.convertInputDraggable(draggable)
+        },
+        setActiveDraggable(draggableItemId) {
+            const draggable = this.formattedDraggables.find((draggable) => draggable.id === draggableItemId)
+            this.activeDraggable = _.cloneDeep(draggable)
+        },
+        updateActiveDraggable(eventData) {
+            this.activeDraggable.rect = eventData.draggableItemRect
+            this.activeDraggable.targetZoneItemId = eventData.draggableTargetZoneItemId
+        },
+        resetActiveDraggable() {
+            this.activeDraggable = null
+        },
+        handleStartChangeDraggable(eventData) {
+            this.setActiveDraggable(eventData.draggableItemId)
+        },
         handleEndChangeDraggable(eventData) {
             if (this.areDraggableChangesValid(eventData)) {
-                this.updateDraggable(eventData)
-            } else {
-                this.cancelDraggableChanges(eventData)
+                this.updateActiveDraggable(eventData)
+                this.emitUpdatedDraggable()
             }
+            this.resetActiveDraggable()
+        },
+        emitUpdatedDraggable() {
+            const draggableIndex = this.findDraggableIndexById(this.activeDraggable.id)
+            const outputDraggable = this.convertOutputDraggable(this.activeDraggable)
+            this.$emit('update:draggable', { draggable: outputDraggable, draggableIndex })
+        },
+        handleChangeDraggable(eventData) {
+            this.updateActiveDraggable(eventData)
         },
         handleDeleteDraggable(draggable) {
             this.deleteDraggable(draggable)
@@ -132,6 +166,14 @@ export default {
             if (this.isCreatingDraggable) {
                 this.createDraggable(eventData)
             }
+        },
+        handleDraggableLeave(eventData) {
+            eventData.draggableTargetZoneItemId = null
+            eventData.draggableTargetZoneItemElement = eventData.draggableTargetZoneItemElement.parentElement
+            this.updateActiveDraggable(eventData)
+        },
+        handleDraggableEnter(eventData) {
+            this.updateActiveDraggable(eventData)
         },
         updateScreenSize() {
             this.screenWidth = window.innerWidth
@@ -171,27 +213,6 @@ export default {
                 percentHeight: round(draggable.rect.height / draggableTargetZone.rect.height),
             }
         },
-        cancelDraggableChanges(eventData) {
-            const {draggableItemId} = eventData
-            const draggableIndex = this.findFormattedDraggableIndexById(draggableItemId)
-            const draggableItemRef = this.getDraggableItemRefByIndex(draggableIndex)
-            draggableItemRef.updateElementAttributesWithProps()
-        },
-        getDraggableItemRefByIndex(draggableIndex) {
-            return this.$refs.draggableItemRef[draggableIndex]
-        },
-        findFormattedDraggableIndexById(draggableItemId) {
-            return this.formattedDraggables.findIndex((draggable) => draggable.id === draggableItemId)
-        },
-        updateDraggable(eventData) {
-            const draggableIndex = this.findDraggableIndexById(eventData.draggableItemId)
-            const outputDraggable = this.convertOutputDraggable({
-                rect: eventData.draggableItemRect,
-                targetZoneItemId: eventData.draggableTargetZoneItemId,
-                id: eventData.draggableItemId,
-            })
-            this.$emit('update:draggable', {draggable: outputDraggable, draggableIndex})
-        },
         createDraggable(eventData) {
             const outputDraggable = this.convertOutputDraggable({
                 rect: {
@@ -204,12 +225,12 @@ export default {
                 id: DraggableUtil.generateUUID(),
             })
             this.validateOutputDraggable(outputDraggable)
-            this.$emit('create:draggable', {draggable: outputDraggable})
+            this.$emit('create:draggable', { draggable: outputDraggable })
         },
         deleteDraggable(draggable) {
             const draggableIndex = this.findDraggableIndexById(draggable.id)
             const outputDraggable = this.convertOutputDraggable(draggable)
-            this.$emit('delete:draggable', {draggable: outputDraggable, draggableIndex})
+            this.$emit('delete:draggable', { draggable: outputDraggable, draggableIndex })
         },
         createDraggableTargetZoneItemStyle(page) {
             const pageRect = DraggableUtil.getElementRectRelativeToAnotherElementRect(page, page.parentElement)
@@ -253,12 +274,21 @@ export default {
             const draggableItemElement = eventData.draggableItemElement
             return DraggableUtil.isElementInsideAnotherElement(draggableItemElement, draggableTargetZoneItemElement)
         },
+        isBeingModified(draggable) {
+            return this.activeDraggable && draggable.id === this.activeDraggable.id
+        },
+        hasValidPageNumber(draggable) {
+            return draggable.pageNumber && draggable.pageNumber > 0
+        },
     },
 }
 </script>
 
 <style scoped lang="stylus">
 >>> .document-draggable-item
+    position absolute
+    top 0
+    left 0
     border-radius 4px
     border 2px dashed var(--v-accent-lighten1)
     user-select none
