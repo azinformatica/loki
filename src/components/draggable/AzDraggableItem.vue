@@ -24,8 +24,6 @@ export default {
         },
     },
     data: () => ({
-        mutationObserver: null,
-        resizeObserver: null,
         draggableTargetZoneItemElement: null,
     }),
     computed: {
@@ -34,104 +32,41 @@ export default {
             return `${this.$parent.$options.propsData.name}-item`
         },
     },
-    mounted() {
-        this.configureMutationObserver()
-        this.configureResizeObserver()
-        this.updateElementAttributesWithProps()
-        this.getDraggableTargetZoneItemElement()
-    },
-    destroyed() {
-        this.getMutationObserver().disconnect()
-        this.getResizeObserver().disconnect()
-    },
     watch: {
         targetZoneItemId() {
-            this.updateElementTargetZoneItemId()
-        },
-        rect() {
-            this.updateElementRect()
-        },
-    },
-    methods: {
-        updateElementAttributesWithProps() {
-            this.updateElementTargetZoneItemId()
-            this.updateElementRect()
-        },
-        updateElementTargetZoneItemId() {
-            DraggableUtil.saveTargetZoneItemIdAsElementAttribute(this.$el, this.targetZoneItemId)
-        },
-        configureMutationObserver() {
-            this.observeCurrentElementParentElementChildListChange()
-        },
-        getMutationObserver() {
-            if (!this.mutationObserver) {
-                this.mutationObserver = new MutationObserver(this.mutationObserverCallback)
-            }
-            return this.mutationObserver
-        },
-        getResizeObserver() {
-            if (!this.resizeObserver) {
-                this.resizeObserver = new ResizeObserver(this.resizeObserverCallback)
-            }
-            return this.resizeObserver
-        },
-        observeCurrentElementParentElementChildListChange() {
-            this.getMutationObserver().observe(this.$parent.$el, {
-                childList: true,
-                subtree: true,
-                attributes: true,
-                attributeFilter: [].concat(DraggableUtil.RECT_ATTRIBUTES, DraggableUtil.TARGET_ZONE_ITEM_ID_ATTRIBUTE),
-            })
-        },
-        mutationObserverCallback() {
             this.getDraggableTargetZoneItemElement()
             this.updateElementStyle()
         },
-        configureResizeObserver() {
-            this.observeCurrentElementParentElementResize()
-            this.observeTargetZoneElementResize()
-        },
-        observeCurrentElementParentElementResize() {
-            this.getResizeObserver().observe(document.documentElement)
-            this.getResizeObserver().observe(this.$parent.$el)
-        },
-        observeTargetZoneElementResize() {
-            if (this.draggableTargetZoneItemElement) {
-                this.getResizeObserver().observe(this.draggableTargetZoneItemElement)
-            }
-        },
-        unobserveTargetZoneElementResize() {
-            if (this.draggableTargetZoneItemElement) {
-                this.getResizeObserver().unobserve(this.draggableTargetZoneItemElement)
-            }
-        },
-        resizeObserverCallback() {
+        rect() {
             this.updateElementStyle()
-        },
+        }
+    },
+    mounted() {
+        this.getDraggableTargetZoneItemElement()
+        this.updateElementStyle()
+    },
+    methods: {
         getDraggableTargetZoneItemElement() {
-            this.unobserveTargetZoneElementResize()
-            const targetZoneItemId = DraggableUtil.getTargetZoneItemIdFromElementAttribute(this.$el)
-            this.draggableTargetZoneItemElement = targetZoneItemId ? document.getElementById(targetZoneItemId) : null
-            this.observeTargetZoneElementResize()
-        },
-        updateElementRect() {
-            DraggableUtil.saveRectAsElementAttributes(this.$el, this.rect)
+            this.draggableTargetZoneItemElement = this.targetZoneItemId ? document.getElementById(this.targetZoneItemId) : null
         },
         updateElementStyle() {
-            const rect = DraggableUtil.getRectFromElementAttributes(this.$el)
-            this.updateElementStyleTransform(rect)
-            this.updateElementStyleWidth(rect)
-            this.updateElementStyleHeight(rect)
+            this.updateElementStyleTransform()
+            this.updateElementStyleWidth()
+            this.updateElementStyleHeight()
         },
-        updateElementStyleWidth(rect) {
-            this.$el.style.width = rect.width ? `${rect.width}px` : ''
+        updateElementStyleWidth() {
+            this.$el.style.width = this.rect && this.rect.width ? `${this.rect.width}px` : ''
         },
-        updateElementStyleHeight(rect) {
-            this.$el.style.height = rect.height ? `${rect.height}px` : ''
+        updateElementStyleHeight() {
+            this.$el.style.height = this.rect && this.rect.height ? `${this.rect.height}px` : ''
         },
-        updateElementStyleTransform(rect) {
+        updateElementStyleTransform() {
             const origin = this.getOriginPosition()
             const targetZone = this.getTargetZonePosition()
+            const rect = {
+                x: (this.rect && this.rect.x) || 0,
+                y: (this.rect && this.rect.y) || 0
+            }
 
             const translateX = Math.round(targetZone.x - origin.x + rect.x)
             const translateY = Math.round(targetZone.y - origin.y + rect.y)
