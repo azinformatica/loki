@@ -35,7 +35,7 @@ export default {
     mounted() {
         this.configureInteractor()
     },
-    destroyed() {
+    beforeDestroy() {
         this.interactor.unset()
         this.interactor = null
     },
@@ -65,8 +65,6 @@ export default {
                 this.getDraggableItemEventData(event.relatedTarget),
                 this.getDraggableItemRectEventData(event.relatedTarget, event.target)
             )
-            this.updateDraggableItemAttributeTargetZoneItemId(event.relatedTarget, eventData.draggableTargetZoneItemId)
-            this.updateDraggableItemAttributeRect(event.relatedTarget, eventData.draggableItemRect)
             this.$emit('draggable-enter', eventData)
         },
         createDropzoneOnDragLeaveEvent(event) {
@@ -76,8 +74,6 @@ export default {
                 this.getDraggableItemEventData(event.relatedTarget),
                 this.getDraggableItemRectEventData(event.relatedTarget)
             )
-            this.updateDraggableItemAttributeTargetZoneItemId(event.relatedTarget, '')
-            this.updateDraggableItemAttributeRect(event.relatedTarget, eventData.draggableItemRect)
             this.$emit('draggable-leave', eventData)
         },
         createDropzoneOnDropDeactivateEvent(event) {
@@ -104,12 +100,6 @@ export default {
         getDraggableItemRect(draggableItemElement, draggableTargetZoneItemElement) {
             const relativeElement = draggableTargetZoneItemElement || draggableItemElement.parentElement
             return DraggableUtil.getElementRectRelativeToAnotherElementRect(draggableItemElement, relativeElement)
-        },
-        updateDraggableItemAttributeRect(draggableItemElement, draggableItemRect) {
-            DraggableUtil.saveRectAsElementAttributes(draggableItemElement, draggableItemRect)
-        },
-        updateDraggableItemAttributeTargetZoneItemId(draggableItemElement, draggableTargetZoneItemId) {
-            DraggableUtil.saveTargetZoneItemIdAsElementAttribute(draggableItemElement, draggableTargetZoneItemId)
         },
     },
 }
