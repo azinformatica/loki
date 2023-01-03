@@ -55,17 +55,21 @@ export default {
             this.updateElementStyleHeight()
         },
         updateElementStyleWidth() {
-            this.$el.style.width = this.rect.width ? `${this.rect.width}px` : ''
+            this.$el.style.width = this.rect && this.rect.width ? `${this.rect.width}px` : ''
         },
         updateElementStyleHeight() {
-            this.$el.style.height = this.rect.height ? `${this.rect.height}px` : ''
+            this.$el.style.height = this.rect && this.rect.height ? `${this.rect.height}px` : ''
         },
         updateElementStyleTransform() {
             const origin = this.getOriginPosition()
             const targetZone = this.getTargetZonePosition()
+            const rect = {
+                x: (this.rect && this.rect.x) || 0,
+                y: (this.rect && this.rect.y) || 0
+            }
 
-            const translateX = Math.round(targetZone.x - origin.x + this.rect.x)
-            const translateY = Math.round(targetZone.y - origin.y + this.rect.y)
+            const translateX = Math.round(targetZone.x - origin.x + rect.x)
+            const translateY = Math.round(targetZone.y - origin.y + rect.y)
 
             this.$el.style.transform = `translate(${translateX}px, ${translateY}px)`
         },
