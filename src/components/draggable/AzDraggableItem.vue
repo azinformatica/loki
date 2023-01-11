@@ -31,6 +31,10 @@ export default {
             return `${this.$parent.$options.propsData.name}-item`
         },
     },
+    mounted() {
+        this.getDraggableTargetZoneItemElement()
+        this.updateElementStyle()
+    },
     watch: {
         targetZoneItemId() {
             this.getDraggableTargetZoneItemElement()
