@@ -1,6 +1,6 @@
 {
   "name": "@azinformatica/loki",
-  "version": "2.11.1",
+  "version": "2.11.2",
   "description": "Biblioteca de componentes visuais compartilhados construidos usando vuejs.",
   "main": "src/index.js",
   "private": false,

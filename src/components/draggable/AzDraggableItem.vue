@@ -40,6 +40,10 @@ export default {
             this.updateElementStyle()
         },
     },
+    mounted() {
+        this.getDraggableTargetZoneItemElement()
+        this.updateElementStyle()
+    },
     methods: {
         getDraggableTargetZoneItemElement() {
             this.draggableTargetZoneItemElement = this.targetZoneItemId
