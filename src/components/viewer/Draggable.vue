@@ -91,6 +91,9 @@ export default {
         activeDraggable: null,
     }),
     computed: {
+        totalPages() {
+            return this.pages.length
+        },
         loadedPages() {
             return this.pages.filter((page) => page.getAttribute('data-loaded'))
         },
