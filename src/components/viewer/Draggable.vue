@@ -273,6 +273,7 @@ export default {
                     height: this.initialDraggableHeight,
                 },
                 targetZoneItemId: eventData.draggableTargetZoneItemId,
+                groupId: null,
                 id: DraggableUtil.generateUUID(),
             })
 
