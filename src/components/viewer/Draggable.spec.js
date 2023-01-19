@@ -205,7 +205,10 @@ describe('Draggable.spec.js', () => {
             expect(wrapper.emitted('delete:draggable')).toHaveLength(1)
         })
 
-        it('Should emit update:draggable when end dragging draggable', async () => {
+        it('Should emit update:draggable to entire group when end dragging draggable', async () => {
+            propsData.draggables[0].groupId = 'group-1'
+            wrapper = createWrapper({ propsData, shallow: false })
+
             const eventData = mockDraggableEventData(propsData.draggables[0])
             wrapper.vm.areDraggableChangesValid = jest.fn(() => true)
             wrapper.vm.findDraggableTargetZoneById = jest.fn(() => mockDraggableTargetZone())
@@ -213,9 +216,24 @@ describe('Draggable.spec.js', () => {
             wrapper.find('.az-draggable').vm.$emit('drag-end', eventData)
 
             expect(wrapper.emitted('update:draggable')[0][0]['draggable'].id).toEqual(eventData.draggableItemId)
+            expect(wrapper.emitted('update:draggable')).toHaveLength(propsData.draggables.length)
         })
 
-        it('Should emit update:draggable when end resizing draggable', async () => {
+        it('Should emit update:draggable only to itself when end dragging draggable', async () => {
+            const eventData = mockDraggableEventData(propsData.draggables[0])
+            wrapper.vm.areDraggableChangesValid = jest.fn(() => true)
+            wrapper.vm.findDraggableTargetZoneById = jest.fn(() => mockDraggableTargetZone())
+            wrapper.vm.setActiveDraggable(propsData.draggables[0].id)
+            wrapper.find('.az-draggable').vm.$emit('drag-end', eventData)
+
+            expect(wrapper.emitted('update:draggable')[0][0]['draggable'].id).toEqual(eventData.draggableItemId)
+            expect(wrapper.emitted('update:draggable')).toHaveLength(1)
+        })
+
+        it('Should emit update:draggable to entire group when end resizing draggable', async () => {
+            propsData.draggables[0].groupId = 'group-1'
+            wrapper = createWrapper({ propsData, shallow: false })
+
             const eventData = mockDraggableEventData(propsData.draggables[0])
             wrapper.vm.areDraggableChangesValid = jest.fn(() => true)
             wrapper.vm.findDraggableTargetZoneById = jest.fn(() => mockDraggableTargetZone())
@@ -223,6 +241,18 @@ describe('Draggable.spec.js', () => {
             wrapper.find('.az-draggable').vm.$emit('resize-end', eventData)
 
             expect(wrapper.emitted('update:draggable')[0][0]['draggable'].id).toEqual(eventData.draggableItemId)
+            expect(wrapper.emitted('update:draggable')).toHaveLength(propsData.draggables.length)
+        })
+
+        it('Should emit update:draggable only to itself when end resizing draggable', async () => {
+            const eventData = mockDraggableEventData(propsData.draggables[0])
+            wrapper.vm.areDraggableChangesValid = jest.fn(() => true)
+            wrapper.vm.findDraggableTargetZoneById = jest.fn(() => mockDraggableTargetZone())
+            wrapper.vm.setActiveDraggable(propsData.draggables[0].id)
+            wrapper.find('.az-draggable').vm.$emit('resize-end', eventData)
+
+            expect(wrapper.emitted('update:draggable')[0][0]['draggable'].id).toEqual(eventData.draggableItemId)
+            expect(wrapper.emitted('update:draggable')).toHaveLength(1)
         })
 
         it('Should emit create:draggable on click page while isCreatingDraggable', () => {
