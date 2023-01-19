@@ -469,5 +469,29 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             expect(wrapper.emitted('delete:draggable')[0][0].draggable).toEqual(draggable)
             expect(wrapper.emitted('delete:draggable')[0][0].draggableIndex).toEqual(draggableIndex)
         })
+
+        it('Should emit link:draggable', () => {
+            const draggableIndex = 0
+            const draggable = draggables[draggableIndex]
+            const draggableWrapper = wrapper.find('[data-test="draggable"]')
+
+            draggableWrapper.vm.$emit('link:draggable', { draggable, draggableIndex })
+
+            expect(wrapper.emitted('link:draggable')).toBeTruthy()
+            expect(wrapper.emitted('link:draggable')[0][0].draggable).toEqual(draggable)
+            expect(wrapper.emitted('link:draggable')[0][0].draggableIndex).toEqual(draggableIndex)
+        })
+
+        it('Should emit unlink:draggable', () => {
+            const draggableIndex = 0
+            const draggable = draggables[draggableIndex]
+            const draggableWrapper = wrapper.find('[data-test="draggable"]')
+
+            draggableWrapper.vm.$emit('unlink:draggable', { draggable, draggableIndex })
+
+            expect(wrapper.emitted('unlink:draggable')).toBeTruthy()
+            expect(wrapper.emitted('unlink:draggable')[0][0].draggable).toEqual(draggable)
+            expect(wrapper.emitted('unlink:draggable')[0][0].draggableIndex).toEqual(draggableIndex)
+        })
     })
 })
