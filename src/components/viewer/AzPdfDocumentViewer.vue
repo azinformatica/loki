@@ -36,8 +36,8 @@
                 </template>
             </Draggable>
         </div>
-        <LoadingPlaceHolder :loading="loadingPlaceHolder"/>
-        <LoadingPrint :isPrinting="isPrinting" :printProgress="printProgress" @cancel="cancelPrint"/>
+        <LoadingPlaceHolder :loading="loadingPlaceHolder" />
+        <LoadingPrint :isPrinting="isPrinting" :printProgress="printProgress" @cancel="cancelPrint" />
     </div>
 </template>
 
@@ -47,7 +47,7 @@ import LoadingPlaceHolder from './LoadingPlaceHolder'
 import LoadingPrint from './LoadingPrint'
 import PrintService from './PrintService'
 import PDFJSLib from 'pdfjs-dist/build/pdf'
-import {PDFJS as PDFJSViewer} from 'pdfjs-dist/web/pdf_viewer.js'
+import { PDFJS as PDFJSViewer } from 'pdfjs-dist/web/pdf_viewer.js'
 import Draggable from './Draggable'
 import _ from 'lodash'
 
@@ -259,56 +259,56 @@ export default {
         },
         validatePageIntervalCallback(pageIntervalCallback) {
             if (!pageIntervalCallback) {
-                throw new Error(`O parâmetro 'pageIntervalCallback' é obrigatório.`)
+                throw new Error('O parâmetro "pageIntervalCallback" é obrigatório.')
             }
 
             if (typeof pageIntervalCallback !== 'function') {
-                throw new Error(`O parâmetro 'pageIntervalCallback' deve ser uma função.`)
+                throw new Error('O parâmetro "pageIntervalCallback" deve ser uma função.')
             }
 
             const pageInterval = pageIntervalCallback(this.pagination)
             if (!pageInterval) {
-                throw new Error(`O parâmetro 'pageIntervalCallback' deve retornar um objeto { startDate, endDate }.`)
+                throw new Error('O parâmetro "pageIntervalCallback" deve retornar um objeto { startDate, endDate }.')
             }
 
             return pageInterval
         },
         validatePageInterval(pageInterval) {
             if (pageInterval.startPage == null) {
-                throw new Error(`O parâmetro 'pageInterval.startPage' é obrigatório.`)
+                throw new Error('O parâmetro "pageInterval.startPage" é obrigatório.')
             }
 
             if (pageInterval.endPage == null) {
-                throw new Error(`O parâmetro 'pageInterval.endPage' é obrigatório.`)
+                throw new Error('O parâmetro "pageInterval.endPage" é obrigatório.')
             }
 
             if (pageInterval.startPage < 1 || pageInterval.startPage > this.pagination.total) {
-                throw new Error(`O número da página inicial deve estar entre 1 e ${this.pagination.total}`)
+                throw new Error(`O número da página inicial deve estar entre 1 e ${this.pagination.total}.`)
             }
 
             if (pageInterval.endPage < 1 || pageInterval.endPage > this.pagination.total) {
-                throw new Error(`O número da página final deve estar entre 1 e ${this.pagination.total}`)
+                throw new Error(`O número da página final deve estar entre 1 e ${this.pagination.total}.`)
             }
 
             if (pageInterval.startPage > pageInterval.endPage) {
                 throw new Error('O número da página inicial não deve ser maior que a página final.')
             }
         },
-        handleLinkDraggable({draggable, draggableIndex}) {
-            this.$emit('link:draggable', {draggable, draggableIndex})
+        handleLinkDraggable({ draggable, draggableIndex }) {
+            this.$emit('link:draggable', { draggable, draggableIndex })
         },
-        handleUnlinkDraggable({draggable, draggableIndex}) {
-            this.$emit('unlink:draggable', {draggable, draggableIndex})
+        handleUnlinkDraggable({ draggable, draggableIndex }) {
+            this.$emit('unlink:draggable', { draggable, draggableIndex })
         },
-        handleCreateDraggable({draggable}) {
+        handleCreateDraggable({ draggable }) {
             this.endCreateDraggable()
-            this.$emit('create:draggable', {draggable})
+            this.$emit('create:draggable', { draggable })
         },
-        handleUpdateDraggable({draggable, draggableIndex}) {
-            this.$emit('update:draggable', {draggable, draggableIndex})
+        handleUpdateDraggable({ draggable, draggableIndex }) {
+            this.$emit('update:draggable', { draggable, draggableIndex })
         },
-        handleDeleteDraggable({draggable, draggableIndex}) {
-            this.$emit('delete:draggable', {draggable, draggableIndex})
+        handleDeleteDraggable({ draggable, draggableIndex }) {
+            this.$emit('delete:draggable', { draggable, draggableIndex })
         },
     },
     props: {
