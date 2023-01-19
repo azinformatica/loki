@@ -324,5 +324,26 @@ describe('Draggable.spec.js', () => {
 
             expect(wrapper.emitted('create:draggable')).toBeFalsy()
         })
+
+        it('Should emit link:draggable on click draggable link button', async () => {
+            const buttonContainer = wrapper.find('[data-test="link-draggable-button"]')
+            const linkDraggableButton = buttonContainer.find('button')
+            await linkDraggableButton.trigger('click')
+            await wrapper.vm.$nextTick()
+
+            expect(wrapper.emitted('link:draggable')[0][0]['draggableIndex']).toBe(0)
+        })
+
+        it('Should emit unlink:draggable on click draggable unlink button', async () => {
+            propsData.draggables[0].groupId = 'group-1'
+            wrapper = createWrapper({ propsData, shallow: false })
+
+            const buttonContainer = wrapper.find('[data-test="unlink-draggable-button"]')
+            const unlinkDraggableButton = buttonContainer.find('button')
+            await unlinkDraggableButton.trigger('click')
+            await wrapper.vm.$nextTick()
+
+            expect(wrapper.emitted('unlink:draggable')[0][0]['draggableIndex']).toBe(0)
+        })
     })
 })
