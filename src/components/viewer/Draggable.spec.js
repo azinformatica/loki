@@ -182,13 +182,27 @@ describe('Draggable.spec.js', () => {
             wrapper = createWrapper({ propsData, shallow: false })
         })
 
-        it('Should emit delete:draggable on click draggable delete button', async () => {
+        it('Should emit delete:draggable on click draggable delete button to all group', async () => {
+            propsData.draggables[0].groupId = 'group-1'
+            wrapper = createWrapper({ propsData, shallow: false })
+
             const buttonContainer = wrapper.find('[data-test="delete-draggable-button"]')
             const deleteDraggableButton = buttonContainer.find('button')
             await deleteDraggableButton.trigger('click')
             await wrapper.vm.$nextTick()
 
             expect(wrapper.emitted('delete:draggable')[0][0]['draggableIndex']).toBe(0)
+            expect(wrapper.emitted('delete:draggable')).toHaveLength(propsData.draggables.length)
+        })
+
+        it('Should emit delete:draggable on click draggable delete button to only to itself', async () => {
+            const buttonContainer = wrapper.find('[data-test="delete-draggable-button"]')
+            const deleteDraggableButton = buttonContainer.find('button')
+            await deleteDraggableButton.trigger('click')
+            await wrapper.vm.$nextTick()
+
+            expect(wrapper.emitted('delete:draggable')[0][0]['draggableIndex']).toBe(0)
+            expect(wrapper.emitted('delete:draggable')).toHaveLength(1)
         })
 
         it('Should emit update:draggable when end dragging draggable', async () => {
