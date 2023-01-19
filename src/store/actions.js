@@ -66,6 +66,7 @@ export default {
                 porcentagemEmY: visualPositioning.percentY,
                 porcentagemLargura: visualPositioning.percentWidth,
                 porcentagemAltura: visualPositioning.percentHeight,
+                indiceDadoExtra: visualPositioning.indexExtraData,
                 pagina: visualPositioning.pageNumber,
                 tipo: visualPositioning.type,
             }))
