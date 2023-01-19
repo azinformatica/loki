@@ -6,9 +6,10 @@ import { createLocalVue, mount, shallowMount } from '@vue/test-utils'
 const localVue = createLocalVue()
 Vue.use(Vuetify)
 
-const createDraggableMock = (draggableId, pageNumber) => {
+const createDraggableMock = (draggableId, pageNumber, groupId = null) => {
     const draggable = {}
     draggable.id = draggableId
+    draggable.groupId = groupId
     draggable.pageNumber = pageNumber
     draggable.percentX = 0
     draggable.percentY = 0
@@ -18,7 +19,11 @@ const createDraggableMock = (draggableId, pageNumber) => {
 }
 
 const createDraggablesMock = () => {
-    return [createDraggableMock('draggable-item-1', 1)]
+    return [
+        createDraggableMock('draggable-item-1', 1, null),
+        createDraggableMock('draggable-item-2', 1, 'group-1'),
+        createDraggableMock('draggable-item-3', 2, 'group-1'),
+    ]
 }
 
 const createPageMock = (pageContainer) => {
