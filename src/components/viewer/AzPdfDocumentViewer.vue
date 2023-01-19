@@ -36,8 +36,8 @@
                 </template>
             </Draggable>
         </div>
-        <LoadingPlaceHolder :loading="loadingPlaceHolder" />
-        <LoadingPrint :isPrinting="isPrinting" :printProgress="printProgress" @cancel="cancelPrint" />
+        <LoadingPlaceHolder :loading="loadingPlaceHolder"/>
+        <LoadingPrint :isPrinting="isPrinting" :printProgress="printProgress" @cancel="cancelPrint"/>
     </div>
 </template>
 
@@ -47,10 +47,9 @@ import LoadingPlaceHolder from './LoadingPlaceHolder'
 import LoadingPrint from './LoadingPrint'
 import PrintService from './PrintService'
 import PDFJSLib from 'pdfjs-dist/build/pdf'
-import { PDFJS as PDFJSViewer } from 'pdfjs-dist/web/pdf_viewer.js'
+import {PDFJS as PDFJSViewer} from 'pdfjs-dist/web/pdf_viewer.js'
 import Draggable from './Draggable'
 import _ from 'lodash'
-import DraggableUtil from "../draggable/DraggableUtil";
 
 export default {
     components: {
@@ -295,21 +294,21 @@ export default {
                 throw new Error('O número da página inicial não deve ser maior que a página final.')
             }
         },
-        handleLinkDraggable({ draggable, draggableIndex }) {
-            this.$emit('link:draggable', { draggable, draggableIndex })
+        handleLinkDraggable({draggable, draggableIndex}) {
+            this.$emit('link:draggable', {draggable, draggableIndex})
         },
-        handleUnlinkDraggable({ draggable, draggableIndex }) {
-            this.$emit('unlink:draggable', { draggable, draggableIndex })
+        handleUnlinkDraggable({draggable, draggableIndex}) {
+            this.$emit('unlink:draggable', {draggable, draggableIndex})
         },
-        handleCreateDraggable({ draggable }) {
+        handleCreateDraggable({draggable}) {
             this.endCreateDraggable()
-            this.$emit('create:draggable', { draggable })
+            this.$emit('create:draggable', {draggable})
         },
-        handleUpdateDraggable({ draggable, draggableIndex }) {
-            this.$emit('update:draggable', { draggable, draggableIndex })
+        handleUpdateDraggable({draggable, draggableIndex}) {
+            this.$emit('update:draggable', {draggable, draggableIndex})
         },
-        handleDeleteDraggable({ draggable, draggableIndex }) {
-            this.$emit('delete:draggable', { draggable, draggableIndex })
+        handleDeleteDraggable({draggable, draggableIndex}) {
+            this.$emit('delete:draggable', {draggable, draggableIndex})
         },
     },
     props: {
