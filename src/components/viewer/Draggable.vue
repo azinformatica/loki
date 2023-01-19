@@ -174,7 +174,9 @@ export default {
             this.updateActiveDraggable(eventData)
         },
         handleDeleteDraggable(draggable) {
-            this.deleteDraggable(draggable)
+            this.setActiveDraggable(draggable.id)
+            this.deleteAllDraggablesByGroupId(draggable.groupId)
+            this.resetActiveDraggable()
         },
         handleDraggableTargetZoneItemClick(eventData) {
             if (this.isCreatingDraggable) {
@@ -281,10 +283,14 @@ export default {
 
             this.$emit('create:draggable', { draggable: outputDraggable })
         },
+        deleteAllDraggablesByGroupId(groupId) {
+            this.draggables
+                .filter(draggable => this.belongsToGroup(draggable, groupId) || this.isBeingModified(draggable))
+                .forEach(this.deleteDraggable)
+        },
         deleteDraggable(draggable) {
             const draggableIndex = this.findDraggableIndexById(draggable.id)
-            const outputDraggable = this.convertOutputDraggable(draggable)
-            this.$emit('delete:draggable', { draggable: outputDraggable, draggableIndex })
+            this.$emit('delete:draggable', {draggable, draggableIndex})
         },
         createDraggableTargetZoneItemStyle(page) {
             const pageRect = DraggableUtil.getElementRectRelativeToAnotherElementRect(page, page.parentElement)
