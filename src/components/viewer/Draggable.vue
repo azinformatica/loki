@@ -293,6 +293,9 @@ export default {
             const draggableItemElement = eventData.draggableItemElement
             return DraggableUtil.isElementInsideAnotherElement(draggableItemElement, draggableTargetZoneItemElement)
         },
+        belongsToGroup(draggable, groupId) {
+            return groupId && draggable.groupId === groupId
+        },
         isBeingModified(draggable) {
             return this.activeDraggable && draggable.id === this.activeDraggable.id
         },
