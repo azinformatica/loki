@@ -290,6 +290,13 @@ export default {
                 return false
             }
 
+            const draggableIndex = this.findDraggableIndexById(eventData.draggableItemId)
+            const draggable = this.draggables[draggableIndex]
+            const draggableTargetZone = this.findDraggableTargetZoneById(eventData.draggableTargetZoneItemId)
+            if (draggable.groupId && draggableTargetZone.pageNumber !== draggable.pageNumber) {
+                return false
+            }
+
             const draggableItemElement = eventData.draggableItemElement
             return DraggableUtil.isElementInsideAnotherElement(draggableItemElement, draggableTargetZoneItemElement)
         },
