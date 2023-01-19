@@ -96,7 +96,7 @@ export default {
     data: () => ({
         screenWidth: window.innerWidth,
         screenHeight: window.innerHeight,
-        activeDraggable: null,
+        activeDraggable: null
     }),
     computed: {
         totalPages() {
@@ -175,20 +175,20 @@ export default {
             const draggableIndex = this.findDraggableIndexById(this.activeDraggable.id)
             const updatedDraggable = this.convertOutputDraggable(this.activeDraggable)
 
-            this.$emit('update:draggable', { draggable: updatedDraggable, draggableIndex })
+            this.$emit('update:draggable', {draggable: updatedDraggable, draggableIndex})
         },
         emitUpdatedLinkedDraggables() {
             this.draggables.forEach(this.emitUpdatedLinkedDraggable)
         },
         emitUpdatedLinkedDraggable(draggable, draggableIndex) {
-            const { groupId } = this.activeDraggable
+            const {groupId} = this.activeDraggable
             if (this.belongsToGroup(draggable, groupId)) {
                 const updatedDraggable = this.convertOutputDraggable(this.activeDraggable)
 
                 updatedDraggable.id = draggable.id
                 updatedDraggable.pageNumber = draggable.pageNumber
 
-                this.$emit('update:draggable', { draggable: updatedDraggable, draggableIndex })
+                this.$emit('update:draggable', {draggable: updatedDraggable, draggableIndex})
             }
         },
         handleChangeDraggable(eventData) {
@@ -207,6 +207,7 @@ export default {
         handleDraggableLeave(eventData) {
             eventData.draggableTargetZoneItemId = null
             eventData.draggableTargetZoneItemElement = eventData.draggableTargetZoneItemElement.parentElement
+
             this.updateActiveDraggable(eventData)
         },
         handleDraggableEnter(eventData) {
@@ -234,14 +235,14 @@ export default {
             }
 
             const draggableIndex = this.findDraggableIndexById(draggable.id)
-            this.$emit('update:draggable', { draggable, draggableIndex })
+            this.$emit('update:draggable', {draggable, draggableIndex})
         },
         linkDraggable(draggable, page) {
             const linkedDraggable = _.cloneDeep(draggable)
             linkedDraggable.id = DraggableUtil.generateUUID()
             linkedDraggable.pageNumber = page
 
-            this.$emit('create:draggable', { draggable: linkedDraggable })
+            this.$emit('create:draggable', {draggable: linkedDraggable})
         },
         updateScreenSize() {
             this.screenWidth = window.innerWidth
@@ -302,7 +303,7 @@ export default {
 
             this.validateOutputDraggable(outputDraggable)
 
-            this.$emit('create:draggable', { draggable: outputDraggable })
+            this.$emit('create:draggable', {draggable: outputDraggable})
         },
         deleteAllDraggablesByGroupId(groupId) {
             this.draggables
