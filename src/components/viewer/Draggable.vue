@@ -34,6 +34,16 @@
                 :target-zone-item-id="draggable.targetZoneItemId"
             >
                 <div class="document-draggable-item__button-container">
+                    <button
+                        v-if="!draggable.groupId"
+                        @click="handleLinkDraggable(draggable)"
+                        data-test="link-draggable-button"
+                    >
+                        <v-icon size="12">link</v-icon>
+                    </button>
+                    <button v-else @click="handleUnlinkDraggable(draggable)" data-test="unlink-draggable-button">
+                        <v-icon size="12">link_off</v-icon>
+                    </button>
                     <button @click="handleDeleteDraggable(draggable)" data-test="delete-draggable-button">
                         <v-icon size="12">close</v-icon>
                     </button>
@@ -91,6 +101,9 @@ export default {
         activeDraggable: null,
     }),
     computed: {
+        totalPages() {
+            return this.pages.length
+        },
         loadedPages() {
             return this.pages.filter((page) => page.getAttribute('data-loaded'))
         },
@@ -148,22 +161,45 @@ export default {
         handleEndChangeDraggable(eventData) {
             if (this.areDraggableChangesValid(eventData)) {
                 this.updateActiveDraggable(eventData)
-                this.emitUpdatedDraggable()
+                this.emitUpdatedDraggables()
             }
 
             this.resetActiveDraggable()
         },
-        emitUpdatedDraggable() {
+        emitUpdatedDraggables() {
+            if (!this.activeDraggable.groupId) {
+                this.emitUpdatedUnlinkedDraggable()
+            } else {
+                this.emitUpdatedLinkedDraggables()
+            }
+        },
+        emitUpdatedUnlinkedDraggable() {
             const draggableIndex = this.findDraggableIndexById(this.activeDraggable.id)
-            const outputDraggable = this.convertOutputDraggable(this.activeDraggable)
+            const updatedDraggable = this.convertOutputDraggable(this.activeDraggable)
 
-            this.$emit('update:draggable', { draggable: outputDraggable, draggableIndex })
+            this.$emit('update:draggable', { draggable: updatedDraggable, draggableIndex })
+        },
+        emitUpdatedLinkedDraggables() {
+            this.draggables.forEach(this.emitUpdatedLinkedDraggable)
+        },
+        emitUpdatedLinkedDraggable(draggable, draggableIndex) {
+            const { groupId } = this.activeDraggable
+            if (this.belongsToGroup(draggable, groupId)) {
+                const updatedDraggable = this.convertOutputDraggable(this.activeDraggable)
+
+                updatedDraggable.id = draggable.id
+                updatedDraggable.pageNumber = draggable.pageNumber
+
+                this.$emit('update:draggable', { draggable: updatedDraggable, draggableIndex })
+            }
         },
         handleChangeDraggable(eventData) {
             this.updateActiveDraggable(eventData)
         },
         handleDeleteDraggable(draggable) {
-            this.deleteDraggable(draggable)
+            this.setActiveDraggable(draggable.id)
+            this.deleteAllDraggablesByGroupId(draggable.groupId)
+            this.resetActiveDraggable()
         },
         handleDraggableTargetZoneItemClick(eventData) {
             if (this.isCreatingDraggable) {
@@ -173,10 +209,42 @@ export default {
         handleDraggableLeave(eventData) {
             eventData.draggableTargetZoneItemId = null
             eventData.draggableTargetZoneItemElement = eventData.draggableTargetZoneItemElement.parentElement
+
             this.updateActiveDraggable(eventData)
         },
         handleDraggableEnter(eventData) {
             this.updateActiveDraggable(eventData)
+        },
+        handleLinkDraggable(draggable) {
+            const draggableIndex = this.findDraggableIndexById(draggable.id)
+            const outputDraggable = this.convertOutputDraggable(draggable)
+
+            this.$emit('link:draggable', { draggable: outputDraggable, draggableIndex })
+        },
+        handleUnlinkDraggable(draggable) {
+            const draggableIndex = this.findDraggableIndexById(draggable.id)
+            const outputDraggable = this.convertOutputDraggable(draggable)
+
+            this.$emit('unlink:draggable', { draggable: outputDraggable, draggableIndex })
+        },
+        linkDraggablesByPageInterval(draggable, pageInterval) {
+            draggable.groupId = DraggableUtil.generateUUID()
+
+            for (let page = pageInterval.startPage; page <= pageInterval.endPage; page++) {
+                if (draggable.pageNumber !== page) {
+                    this.linkDraggable(draggable, page)
+                }
+            }
+
+            const draggableIndex = this.findDraggableIndexById(draggable.id)
+            this.$emit('update:draggable', { draggable, draggableIndex })
+        },
+        linkDraggable(draggable, page) {
+            const linkedDraggable = _.cloneDeep(draggable)
+            linkedDraggable.id = DraggableUtil.generateUUID()
+            linkedDraggable.pageNumber = page
+
+            this.$emit('create:draggable', { draggable: linkedDraggable })
         },
         updateScreenSize() {
             this.screenWidth = window.innerWidth
@@ -196,6 +264,7 @@ export default {
 
             return {
                 id: draggable.id,
+                groupId: draggable.groupId,
                 targetZoneItemId: draggableTargetZoneItemId,
                 rect: {
                     x: round(draggable.percentX * draggableTargetZone.rect.width),
@@ -213,6 +282,7 @@ export default {
 
             return {
                 id: draggable.id,
+                groupId: draggable.groupId,
                 pageNumber: draggableTargetZone.pageNumber,
                 percentX: round(draggable.rect.x / draggableTargetZone.rect.width),
                 percentY: round(draggable.rect.y / draggableTargetZone.rect.height),
@@ -229,6 +299,7 @@ export default {
                     height: this.initialDraggableHeight,
                 },
                 targetZoneItemId: eventData.draggableTargetZoneItemId,
+                groupId: null,
                 id: DraggableUtil.generateUUID(),
             })
 
@@ -236,10 +307,14 @@ export default {
 
             this.$emit('create:draggable', { draggable: outputDraggable })
         },
+        deleteAllDraggablesByGroupId(groupId) {
+            this.draggables
+                .filter((draggable) => this.belongsToGroup(draggable, groupId) || this.isBeingModified(draggable))
+                .forEach(this.deleteDraggable)
+        },
         deleteDraggable(draggable) {
             const draggableIndex = this.findDraggableIndexById(draggable.id)
-            const outputDraggable = this.convertOutputDraggable(draggable)
-            this.$emit('delete:draggable', { draggable: outputDraggable, draggableIndex })
+            this.$emit('delete:draggable', { draggable, draggableIndex })
         },
         createDraggableTargetZoneItemStyle(page) {
             const pageRect = DraggableUtil.getElementRectRelativeToAnotherElementRect(page, page.parentElement)
@@ -285,8 +360,18 @@ export default {
                 return false
             }
 
+            const draggableIndex = this.findDraggableIndexById(eventData.draggableItemId)
+            const draggable = this.draggables[draggableIndex]
+            const draggableTargetZone = this.findDraggableTargetZoneById(eventData.draggableTargetZoneItemId)
+            if (draggable.groupId && draggableTargetZone.pageNumber !== draggable.pageNumber) {
+                return false
+            }
+
             const draggableItemElement = eventData.draggableItemElement
             return DraggableUtil.isElementInsideAnotherElement(draggableItemElement, draggableTargetZoneItemElement)
+        },
+        belongsToGroup(draggable, groupId) {
+            return groupId && draggable.groupId === groupId
         },
         isBeingModified(draggable) {
             return this.activeDraggable && draggable.id === this.activeDraggable.id
@@ -329,7 +414,7 @@ export default {
         background-color var(--v-accent-base)
         right 0
         top 0
-        flex-direction column
+        flex-direction row
         align-items center
         justify-content center
         border-bottom-left-radius 4px

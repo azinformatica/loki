@@ -28,6 +28,8 @@
                 @create:draggable="handleCreateDraggable"
                 @update:draggable="handleUpdateDraggable"
                 @delete:draggable="handleDeleteDraggable"
+                @link:draggable="handleLinkDraggable"
+                @unlink:draggable="handleUnlinkDraggable"
             >
                 <template v-slot:draggable-content="{ draggable }">
                     <slot name="draggable-content" :draggable="draggable"></slot>
@@ -248,6 +250,55 @@ export default {
         },
         endCreateDraggable() {
             this.isCreatingDraggable = false
+        },
+        linkDraggablesByPageInterval(draggable, pageIntervalCallback) {
+            const pageInterval = this.validatePageIntervalCallback(pageIntervalCallback)
+            this.validatePageInterval(pageInterval)
+
+            this.$refs.draggableRef.linkDraggablesByPageInterval(draggable, pageInterval)
+        },
+        validatePageIntervalCallback(pageIntervalCallback) {
+            if (!pageIntervalCallback) {
+                throw new Error('O parâmetro "pageIntervalCallback" é obrigatório.')
+            }
+
+            if (typeof pageIntervalCallback !== 'function') {
+                throw new Error('O parâmetro "pageIntervalCallback" deve ser uma função.')
+            }
+
+            const pageInterval = pageIntervalCallback(this.pagination)
+            if (!pageInterval) {
+                throw new Error('O parâmetro "pageIntervalCallback" deve retornar um objeto { startDate, endDate }.')
+            }
+
+            return pageInterval
+        },
+        validatePageInterval(pageInterval) {
+            if (pageInterval.startPage == null) {
+                throw new Error('O parâmetro "pageInterval.startPage" é obrigatório.')
+            }
+
+            if (pageInterval.endPage == null) {
+                throw new Error('O parâmetro "pageInterval.endPage" é obrigatório.')
+            }
+
+            if (pageInterval.startPage < 1 || pageInterval.startPage > this.pagination.total) {
+                throw new Error(`O número da página inicial deve estar entre 1 e ${this.pagination.total}.`)
+            }
+
+            if (pageInterval.endPage < 1 || pageInterval.endPage > this.pagination.total) {
+                throw new Error(`O número da página final deve estar entre 1 e ${this.pagination.total}.`)
+            }
+
+            if (pageInterval.startPage > pageInterval.endPage) {
+                throw new Error('O número da página inicial não deve ser maior que a página final.')
+            }
+        },
+        handleLinkDraggable({ draggable, draggableIndex }) {
+            this.$emit('link:draggable', { draggable, draggableIndex })
+        },
+        handleUnlinkDraggable({ draggable, draggableIndex }) {
+            this.$emit('unlink:draggable', { draggable, draggableIndex })
         },
         handleCreateDraggable({ draggable }) {
             this.endCreateDraggable()

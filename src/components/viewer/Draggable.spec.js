@@ -6,9 +6,10 @@ import { createLocalVue, mount, shallowMount } from '@vue/test-utils'
 const localVue = createLocalVue()
 Vue.use(Vuetify)
 
-const createDraggableMock = (draggableId, pageNumber) => {
+const createDraggableMock = (draggableId, pageNumber, groupId = null) => {
     const draggable = {}
     draggable.id = draggableId
+    draggable.groupId = groupId
     draggable.pageNumber = pageNumber
     draggable.percentX = 0
     draggable.percentY = 0
@@ -18,7 +19,11 @@ const createDraggableMock = (draggableId, pageNumber) => {
 }
 
 const createDraggablesMock = () => {
-    return [createDraggableMock('draggable-item-1', 1)]
+    return [
+        createDraggableMock('draggable-item-1', 1, null),
+        createDraggableMock('draggable-item-2', 1, 'group-1'),
+        createDraggableMock('draggable-item-3', 2, 'group-1'),
+    ]
 }
 
 const createPageMock = (pageContainer) => {
@@ -177,16 +182,33 @@ describe('Draggable.spec.js', () => {
             wrapper = createWrapper({ propsData, shallow: false })
         })
 
-        it('Should emit delete:draggable on click draggable delete button', async () => {
+        it('Should emit delete:draggable on click draggable delete button to all group', async () => {
+            propsData.draggables[0].groupId = 'group-1'
+            wrapper = createWrapper({ propsData, shallow: false })
+
             const buttonContainer = wrapper.find('[data-test="delete-draggable-button"]')
             const deleteDraggableButton = buttonContainer.find('button')
             await deleteDraggableButton.trigger('click')
             await wrapper.vm.$nextTick()
 
             expect(wrapper.emitted('delete:draggable')[0][0]['draggableIndex']).toBe(0)
+            expect(wrapper.emitted('delete:draggable')).toHaveLength(propsData.draggables.length)
         })
 
-        it('Should emit update:draggable when end dragging draggable', async () => {
+        it('Should emit delete:draggable on click draggable delete button to only to itself', async () => {
+            const buttonContainer = wrapper.find('[data-test="delete-draggable-button"]')
+            const deleteDraggableButton = buttonContainer.find('button')
+            await deleteDraggableButton.trigger('click')
+            await wrapper.vm.$nextTick()
+
+            expect(wrapper.emitted('delete:draggable')[0][0]['draggableIndex']).toBe(0)
+            expect(wrapper.emitted('delete:draggable')).toHaveLength(1)
+        })
+
+        it('Should emit update:draggable to entire group when end dragging draggable', async () => {
+            propsData.draggables[0].groupId = 'group-1'
+            wrapper = createWrapper({ propsData, shallow: false })
+
             const eventData = mockDraggableEventData(propsData.draggables[0])
             wrapper.vm.areDraggableChangesValid = jest.fn(() => true)
             wrapper.vm.findDraggableTargetZoneById = jest.fn(() => mockDraggableTargetZone())
@@ -194,9 +216,24 @@ describe('Draggable.spec.js', () => {
             wrapper.find('.az-draggable').vm.$emit('drag-end', eventData)
 
             expect(wrapper.emitted('update:draggable')[0][0]['draggable'].id).toEqual(eventData.draggableItemId)
+            expect(wrapper.emitted('update:draggable')).toHaveLength(propsData.draggables.length)
         })
 
-        it('Should emit update:draggable when end resizing draggable', async () => {
+        it('Should emit update:draggable only to itself when end dragging draggable', async () => {
+            const eventData = mockDraggableEventData(propsData.draggables[0])
+            wrapper.vm.areDraggableChangesValid = jest.fn(() => true)
+            wrapper.vm.findDraggableTargetZoneById = jest.fn(() => mockDraggableTargetZone())
+            wrapper.vm.setActiveDraggable(propsData.draggables[0].id)
+            wrapper.find('.az-draggable').vm.$emit('drag-end', eventData)
+
+            expect(wrapper.emitted('update:draggable')[0][0]['draggable'].id).toEqual(eventData.draggableItemId)
+            expect(wrapper.emitted('update:draggable')).toHaveLength(1)
+        })
+
+        it('Should emit update:draggable to entire group when end resizing draggable', async () => {
+            propsData.draggables[0].groupId = 'group-1'
+            wrapper = createWrapper({ propsData, shallow: false })
+
             const eventData = mockDraggableEventData(propsData.draggables[0])
             wrapper.vm.areDraggableChangesValid = jest.fn(() => true)
             wrapper.vm.findDraggableTargetZoneById = jest.fn(() => mockDraggableTargetZone())
@@ -204,6 +241,18 @@ describe('Draggable.spec.js', () => {
             wrapper.find('.az-draggable').vm.$emit('resize-end', eventData)
 
             expect(wrapper.emitted('update:draggable')[0][0]['draggable'].id).toEqual(eventData.draggableItemId)
+            expect(wrapper.emitted('update:draggable')).toHaveLength(propsData.draggables.length)
+        })
+
+        it('Should emit update:draggable only to itself when end resizing draggable', async () => {
+            const eventData = mockDraggableEventData(propsData.draggables[0])
+            wrapper.vm.areDraggableChangesValid = jest.fn(() => true)
+            wrapper.vm.findDraggableTargetZoneById = jest.fn(() => mockDraggableTargetZone())
+            wrapper.vm.setActiveDraggable(propsData.draggables[0].id)
+            wrapper.find('.az-draggable').vm.$emit('resize-end', eventData)
+
+            expect(wrapper.emitted('update:draggable')[0][0]['draggable'].id).toEqual(eventData.draggableItemId)
+            expect(wrapper.emitted('update:draggable')).toHaveLength(1)
         })
 
         it('Should emit create:draggable on click page while isCreatingDraggable', () => {
@@ -274,6 +323,27 @@ describe('Draggable.spec.js', () => {
             azDraggable.vm.$emit('click', eventData)
 
             expect(wrapper.emitted('create:draggable')).toBeFalsy()
+        })
+
+        it('Should emit link:draggable on click draggable link button', async () => {
+            const buttonContainer = wrapper.find('[data-test="link-draggable-button"]')
+            const linkDraggableButton = buttonContainer.find('button')
+            await linkDraggableButton.trigger('click')
+            await wrapper.vm.$nextTick()
+
+            expect(wrapper.emitted('link:draggable')[0][0]['draggableIndex']).toBe(0)
+        })
+
+        it('Should emit unlink:draggable on click draggable unlink button', async () => {
+            propsData.draggables[0].groupId = 'group-1'
+            wrapper = createWrapper({ propsData, shallow: false })
+
+            const buttonContainer = wrapper.find('[data-test="unlink-draggable-button"]')
+            const unlinkDraggableButton = buttonContainer.find('button')
+            await unlinkDraggableButton.trigger('click')
+            await wrapper.vm.$nextTick()
+
+            expect(wrapper.emitted('unlink:draggable')[0][0]['draggableIndex']).toBe(0)
         })
     })
 })
