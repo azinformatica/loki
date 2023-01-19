@@ -34,6 +34,14 @@
                 :target-zone-item-id="draggable.targetZoneItemId"
             >
                 <div class="document-draggable-item__button-container">
+                    <button v-if="!draggable.groupId" @click="handleLinkDraggable(draggable)"
+                            data-test="link-draggable-button">
+                        <v-icon size="12">link</v-icon>
+                    </button>
+                    <button v-else @click="handleUnlinkDraggable(draggable)"
+                            data-test="unlink-draggable-button">
+                        <v-icon size="12">link_off</v-icon>
+                    </button>
                     <button @click="handleDeleteDraggable(draggable)" data-test="delete-draggable-button">
                         <v-icon size="12">close</v-icon>
                     </button>
@@ -181,6 +189,37 @@ export default {
         handleDraggableEnter(eventData) {
             this.updateActiveDraggable(eventData)
         },
+        handleLinkDraggable(draggable) {
+            const draggableIndex = this.findDraggableIndexById(draggable.id)
+            const outputDraggable = this.convertOutputDraggable(draggable)
+
+            this.$emit('link:draggable', {draggable: outputDraggable, draggableIndex})
+        },
+        handleUnlinkDraggable(draggable) {
+            const draggableIndex = this.findDraggableIndexById(draggable.id)
+            const outputDraggable = this.convertOutputDraggable(draggable)
+
+            this.$emit('unlink:draggable', {draggable: outputDraggable, draggableIndex})
+        },
+        linkDraggablesByPageInterval(draggable, pageInterval) {
+            draggable.groupId = DraggableUtil.generateUUID()
+
+            for (let page = pageInterval.startPage; page <= pageInterval.endPage; page++) {
+                if (draggable.pageNumber !== page) {
+                    this.linkDraggable(draggable, page)
+                }
+            }
+
+            const draggableIndex = this.findDraggableIndexById(draggable.id)
+            this.$emit('update:draggable', { draggable, draggableIndex })
+        },
+        linkDraggable(draggable, page) {
+            const linkedDraggable = _.cloneDeep(draggable)
+            linkedDraggable.id = DraggableUtil.generateUUID()
+            linkedDraggable.pageNumber = page
+
+            this.$emit('create:draggable', { draggable: linkedDraggable })
+        },
         updateScreenSize() {
             this.screenWidth = window.innerWidth
             this.screenHeight = window.innerHeight
@@ -308,7 +347,7 @@ export default {
         },
         hasValidPageNumber(draggable) {
             return draggable.pageNumber && draggable.pageNumber > 0
-        },
+        }
     },
 }
 </script>
@@ -344,7 +383,7 @@ export default {
         background-color var(--v-accent-base)
         right 0
         top 0
-        flex-direction column
+        flex-direction row
         align-items center
         justify-content center
         border-bottom-left-radius 4px
