@@ -199,6 +199,7 @@ export default {
 
             return {
                 id: draggable.id,
+                groupId: draggable.groupId,
                 targetZoneItemId: draggableTargetZoneItemId,
                 rect: {
                     x: round(draggable.percentX * draggableTargetZone.rect.width),
@@ -216,6 +217,7 @@ export default {
 
             return {
                 id: draggable.id,
+                groupId: draggable.groupId,
                 pageNumber: draggableTargetZone.pageNumber,
                 percentX: round(draggable.rect.x / draggableTargetZone.rect.width),
                 percentY: round(draggable.rect.y / draggableTargetZone.rect.height),
