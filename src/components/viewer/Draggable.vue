@@ -159,16 +159,37 @@ export default {
         handleEndChangeDraggable(eventData) {
             if (this.areDraggableChangesValid(eventData)) {
                 this.updateActiveDraggable(eventData)
-                this.emitUpdatedDraggable()
+                this.emitUpdatedDraggables()
             }
 
             this.resetActiveDraggable()
         },
-        emitUpdatedDraggable() {
+        emitUpdatedDraggables() {
+            if (!this.activeDraggable.groupId) {
+                this.emitUpdatedUnlinkedDraggable()
+            } else {
+                this.emitUpdatedLinkedDraggables()
+            }
+        },
+        emitUpdatedUnlinkedDraggable() {
             const draggableIndex = this.findDraggableIndexById(this.activeDraggable.id)
-            const outputDraggable = this.convertOutputDraggable(this.activeDraggable)
+            const updatedDraggable = this.convertOutputDraggable(this.activeDraggable)
 
-            this.$emit('update:draggable', { draggable: outputDraggable, draggableIndex })
+            this.$emit('update:draggable', { draggable: updatedDraggable, draggableIndex })
+        },
+        emitUpdatedLinkedDraggables() {
+            this.draggables.forEach(this.emitUpdatedLinkedDraggable)
+        },
+        emitUpdatedLinkedDraggable(draggable, draggableIndex) {
+            const { groupId } = this.activeDraggable
+            if (this.belongsToGroup(draggable, groupId)) {
+                const updatedDraggable = this.convertOutputDraggable(this.activeDraggable)
+
+                updatedDraggable.id = draggable.id
+                updatedDraggable.pageNumber = draggable.pageNumber
+
+                this.$emit('update:draggable', { draggable: updatedDraggable, draggableIndex })
+            }
         },
         handleChangeDraggable(eventData) {
             this.updateActiveDraggable(eventData)
