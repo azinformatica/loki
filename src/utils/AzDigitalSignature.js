@@ -64,9 +64,12 @@ export default class AzDigitalSignature {
      * @param {String} documentId
      * @param {String} rubricBase64 (optional)
      * @param {String} participation (optional)
+     * @param {Array} visualPositionings (optional)
+     * @param {Array} extraDatas (optional)
      * @return {void}
      */
-    async sign(certificateThumbPrint, documentId, rubricBase64 = null, participation = null, visualPositionings = []) {
+    async sign(certificateThumbPrint, documentId, rubricBase64 = null, participation = null,
+               visualPositionings = null, extraDatas = null) {
         const certificateContent = await this._readCertificate(certificateThumbPrint)
 
         const paramsToSign = await this._preprareDocumentToSign(certificateContent, documentId)
@@ -77,7 +80,15 @@ export default class AzDigitalSignature {
             algorithm: paramsToSign.algoritmoHash,
         })
 
-        return await this._finishSign(documentId, signHash, paramsToSign, rubricBase64, participation, visualPositionings)
+        return await this._finishSign(
+            documentId,
+            signHash,
+            paramsToSign,
+            rubricBase64,
+            participation,
+            visualPositionings,
+            extraDatas
+        )
     }
 
     /**
@@ -88,14 +99,15 @@ export default class AzDigitalSignature {
         this.pki.redirectToInstallPage()
     }
 
-    async _finishSign(documentId, signHash, paramsToSign, rubricBase64, participation, visualPositionings) {
+    async _finishSign(documentId, signHash, paramsToSign, rubricBase64, participation, visualPositionings, extraDatas) {
         return await this.store.dispatch(actionTypes.SIGNATURE.DIGITAL.FINISH, {
             documentId,
             signHash,
             temporarySubscription: paramsToSign.assinaturaTemporariaId,
             rubricBase64,
             participation,
-            visualPositionings
+            visualPositionings,
+            extraDatas,
         })
     }
 
