@@ -25,6 +25,9 @@
                 :is-creating-draggable="isCreatingDraggable"
                 :initial-draggable-height="initialDraggableHeight"
                 :initial-draggable-width="initialDraggableWidth"
+                :draggable-link-tooltip="draggableLinkTooltip"
+                :draggable-unlink-tooltip="draggableUnlinkTooltip"
+                :draggable-delete-tooltip="draggableDeleteTooltip"
                 @create:draggable="handleCreateDraggable"
                 @update:draggable="handleUpdateDraggable"
                 @delete:draggable="handleDeleteDraggable"
@@ -51,7 +54,6 @@ import { PDFJS as PDFJSViewer } from 'pdfjs-dist/web/pdf_viewer.js'
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.js'
 import Draggable from './Draggable'
 import _ from 'lodash'
-
 PDFJSLib.PDFJS.workerSrc = pdfWorker
 export default {
     components: {
@@ -219,7 +221,6 @@ export default {
         },
         async print() {
             this.startLoadingPrint()
-
             await this.createPrinterService()
             this.pdf.printService.prepareLayout()
             await this.pdf.printService.renderPages((currentPage, pageCount) => {
@@ -227,7 +228,6 @@ export default {
             })
             window.print()
             this.pdf.printService.destroy()
-
             this.stopLoadingPrint()
         },
         cancelPrint() {
@@ -352,6 +352,15 @@ export default {
         initialDraggableHeight: {
             type: Number,
         },
+        draggableLinkTooltip: {
+            type: String,
+        },
+        draggableUnlinkTooltip: {
+            type: String,
+        },
+        draggableDeleteTooltip: {
+            type: String,
+        },
     },
     computed: {
         customContainerClass() {
@@ -413,35 +422,28 @@ export default {
 .az-pdf-container
     background-color #e4e4e4
     position relative
-
     .Viewer
         width 100%
         position relative
         z-index 0
         overflow scroll
         background-color #e4e4e4
-
         .page
             margin 15px auto
             border none
             border-image none
-
             .canvasWrapper
                 -webkit-box-shadow 0 3px 6px -1px rgba(0, 0, 0, .2)
                 box-shadow 0 3px 6px -1px rgba(0, 0, 0, .2)
-
 @media print
     body[data-pdf-printing] #app
         display none
-
     body[data-pdf-printing] #print-container
         display block
-
         img
             display block
             width 100%
             height 100%
-
     body[data-pdf-printing] #print-container:first-child
         position relative
         top 0
@@ -451,7 +453,6 @@ export default {
         overflow visible
         page-break-after always
         page-break-inside avoid
-
     body[data-pdf-printing] #print-container div
         page-break-after always
         page-break-inside avoid

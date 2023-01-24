@@ -58,6 +58,9 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         draggables,
         initialDraggableWidth,
         initialDraggableHeight,
+        draggableLinkTooltip,
+        draggableUnlinkTooltip,
+        draggableDeleteTooltip,
         wrapper
 
     beforeEach(() => {
@@ -78,6 +81,9 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         ]
         initialDraggableWidth = 200
         initialDraggableHeight = 200
+        draggableLinkTooltip = 'link'
+        draggableUnlinkTooltip = 'unlink'
+        draggableDeleteTooltip = 'delete'
         wrapper = shallowMount(AzPdfDocumentViewer, {
             localVue,
             propsData: {
@@ -89,6 +95,9 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 draggables,
                 initialDraggableWidth,
                 initialDraggableHeight,
+                draggableLinkTooltip,
+                draggableUnlinkTooltip,
+                draggableDeleteTooltip,
             },
             attachTo: document.body,
         })
@@ -127,6 +136,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         it('Should receive props draggables', () => {
             expect(wrapper.props().draggables).toEqual(draggables)
         })
+
         it('Should have default value to draggables', () => {
             wrapper = shallowMount(AzPdfDocumentViewer, {
                 localVue,
@@ -135,11 +145,25 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             })
             expect(wrapper.props().draggables).toEqual([])
         })
+
         it('Should receive props initialDraggableWidth', () => {
             expect(wrapper.props().initialDraggableWidth).toBe(initialDraggableWidth)
         })
+
         it('Should receive props initialDraggableHeight', () => {
             expect(wrapper.props().initialDraggableHeight).toBe(initialDraggableHeight)
+        })
+
+        it('Should receive draggableLinkTooltip', () => {
+            expect(wrapper.props().draggableLinkTooltip).toBe('link')
+        })
+
+        it('Should receive draggableUnlinkTooltip', () => {
+            expect(wrapper.props().draggableUnlinkTooltip).toBe('unlink')
+        })
+
+        it('Should receive draggableDeleteTooltip', () => {
+            expect(wrapper.props().draggableDeleteTooltip).toBe('delete')
         })
     })
 
@@ -423,9 +447,11 @@ describe('AzPdfDocumentViewer.spec.js', () => {
     describe('Draggable', () => {
         it('Should start creating draggable on call method startCreateDraggable and reset page configuration', () => {
             wrapper.vm.startCreateDraggable()
+
             expect(wrapper.vm.isCreatingDraggable).toBeTruthy()
             expect(wrapper.vm.pdf.viewer.pagesRotation).toBe(0)
         })
+
         it('Should emit create:draggable and turn isCreatingDraggable to false', () => {
             const draggable = {
                 percentX: 0,
@@ -436,25 +462,33 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 id: 'draggable-item-spec-2',
             }
             const draggableWrapper = wrapper.find('[data-test="draggable"]')
+
             draggableWrapper.vm.$emit('create:draggable', { draggable })
+
             expect(wrapper.emitted('create:draggable')).toBeTruthy()
             expect(wrapper.emitted('create:draggable')[0][0].draggable).toEqual(draggable)
             expect(wrapper.vm.isCreatingDraggable).toBeFalsy()
         })
+
         it('Should emit update:draggable', () => {
             const draggableIndex = 0
             const draggable = draggables[draggableIndex]
             const draggableWrapper = wrapper.find('[data-test="draggable"]')
+
             draggableWrapper.vm.$emit('update:draggable', { draggable, draggableIndex })
+
             expect(wrapper.emitted('update:draggable')).toBeTruthy()
             expect(wrapper.emitted('update:draggable')[0][0].draggable).toEqual(draggable)
             expect(wrapper.emitted('update:draggable')[0][0].draggableIndex).toEqual(draggableIndex)
         })
+
         it('Should emit delete:draggable', () => {
             const draggableIndex = 0
             const draggable = draggables[draggableIndex]
             const draggableWrapper = wrapper.find('[data-test="draggable"]')
+
             draggableWrapper.vm.$emit('delete:draggable', { draggable, draggableIndex })
+
             expect(wrapper.emitted('delete:draggable')).toBeTruthy()
             expect(wrapper.emitted('delete:draggable')[0][0].draggable).toEqual(draggable)
             expect(wrapper.emitted('delete:draggable')[0][0].draggableIndex).toEqual(draggableIndex)
