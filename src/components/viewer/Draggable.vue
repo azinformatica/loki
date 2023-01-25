@@ -34,19 +34,47 @@
                 :target-zone-item-id="draggable.targetZoneItemId"
             >
                 <div class="document-draggable-item__button-container">
-                    <button
-                        v-if="!draggable.groupId"
-                        @click="handleLinkDraggable(draggable)"
-                        data-test="link-draggable-button"
-                    >
-                        <v-icon size="12">link</v-icon>
-                    </button>
-                    <button v-else @click="handleUnlinkDraggable(draggable)" data-test="unlink-draggable-button">
-                        <v-icon size="12">link_off</v-icon>
-                    </button>
-                    <button @click="handleDeleteDraggable(draggable)" data-test="delete-draggable-button">
-                        <v-icon size="12">close</v-icon>
-                    </button>
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <button
+                                v-show="!draggable.groupId"
+                                @click="handleLinkDraggable(draggable)"
+                                data-test="link-draggable-button"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                <v-icon size="12">link</v-icon>
+                            </button>
+                        </template>
+                        <span>{{ draggableLinkTooltip }}</span>
+                    </v-tooltip>
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <button
+                                v-show="draggable.groupId"
+                                @click="handleUnlinkDraggable(draggable)"
+                                data-test="unlink-draggable-button"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                <v-icon size="12">link_off</v-icon>
+                            </button>
+                        </template>
+                        <span>{{ draggableUnlinkTooltip }}</span>
+                    </v-tooltip>
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <button
+                                @click="handleDeleteDraggable(draggable)"
+                                data-test="delete-draggable-button"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                <v-icon size="12">close</v-icon>
+                            </button>
+                        </template>
+                        <span>{{ draggableDeleteTooltip }}</span>
+                    </v-tooltip>
                 </div>
                 <div class="document-draggable-item__background"></div>
                 <div class="document-draggable-item__content">
@@ -92,6 +120,18 @@ export default {
         initialDraggableHeight: {
             type: Number,
             default: 100,
+        },
+        draggableLinkTooltip: {
+            type: String,
+            default: 'Vincular',
+        },
+        draggableUnlinkTooltip: {
+            type: String,
+            default: 'Desvincular',
+        },
+        draggableDeleteTooltip: {
+            type: String,
+            default: 'Remover',
         },
     },
     data: () => ({

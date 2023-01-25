@@ -1,8 +1,10 @@
+import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Draggable from './Draggable'
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils'
 
 const localVue = createLocalVue()
+Vue.use(Vuetify)
 
 const createDraggableMock = (draggableId, pageNumber, groupId = null) => {
     const draggable = {}
@@ -83,6 +85,9 @@ const createDefaultProps = () => {
         isCreatingDraggable: true,
         initialDraggableWidth: 50,
         initialDraggableHeight: 50,
+        draggableLinkTooltip: 'link',
+        draggableUnlinkTooltip: 'unlink',
+        draggableDeleteTooltip: 'delete',
     }
 }
 
@@ -153,6 +158,36 @@ describe('Draggable.spec.js', () => {
             propsData.initialDraggableHeight = undefined
             wrapper = createWrapper({ propsData })
             expect(wrapper.props().initialDraggableHeight).toBe(100)
+        })
+
+        it('Should receive draggableLinkTooltip', () => {
+            expect(wrapper.props().draggableLinkTooltip).toBe('link')
+        })
+
+        it('Should have a default value to draggableLinkTooltip', () => {
+            propsData.draggableLinkTooltip = undefined
+            wrapper = createWrapper({ propsData })
+            expect(wrapper.props().draggableLinkTooltip).toBe('Vincular')
+        })
+
+        it('Should receive draggableUnlinkTooltip', () => {
+            expect(wrapper.props().draggableUnlinkTooltip).toBe('unlink')
+        })
+
+        it('Should have a default value to draggableUnlinkTooltip', () => {
+            propsData.draggableUnlinkTooltip = undefined
+            wrapper = createWrapper({ propsData })
+            expect(wrapper.props().draggableUnlinkTooltip).toBe('Desvincular')
+        })
+
+        it('Should receive draggableDeleteTooltip', () => {
+            expect(wrapper.props().draggableDeleteTooltip).toBe('delete')
+        })
+
+        it('Should have a default value to draggableDeleteTooltip', () => {
+            propsData.draggableDeleteTooltip = undefined
+            wrapper = createWrapper({ propsData })
+            expect(wrapper.props().draggableDeleteTooltip).toBe('Remover')
         })
     })
 
