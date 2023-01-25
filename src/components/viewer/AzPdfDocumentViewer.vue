@@ -25,6 +25,9 @@
                 :is-creating-draggable="isCreatingDraggable"
                 :initial-draggable-height="initialDraggableHeight"
                 :initial-draggable-width="initialDraggableWidth"
+                :draggable-link-tooltip="draggableLinkTooltip"
+                :draggable-unlink-tooltip="draggableUnlinkTooltip"
+                :draggable-delete-tooltip="draggableDeleteTooltip"
                 @create:draggable="handleCreateDraggable"
                 @update:draggable="handleUpdateDraggable"
                 @delete:draggable="handleDeleteDraggable"
@@ -357,6 +360,15 @@ export default {
         },
         initialDraggableHeight: {
             type: Number,
+        },
+        draggableLinkTooltip: {
+            type: String,
+        },
+        draggableUnlinkTooltip: {
+            type: String,
+        },
+        draggableDeleteTooltip: {
+            type: String,
         },
     },
     computed: {

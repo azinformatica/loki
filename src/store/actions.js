@@ -49,7 +49,7 @@ export default {
 
     async [actionTypes.SIGNATURE.DIGITAL.FINISH](
         context,
-        { documentId, signHash, temporarySubscription, rubricBase64, participation, visualPositionings }
+        { documentId, signHash, temporarySubscription, rubricBase64, participation, visualPositionings, extraDatas }
     ) {
         const flowbeeAccessParams = getFlowbeeAccessParams(context.state.flowbee.accessToken)
         const url = `${flowbeeAccessParams.url}/${documentId}/assinaturas/digitais/finalizar`
@@ -61,15 +61,24 @@ export default {
             assinaturaTemporariaId: temporarySubscription,
             rubricaBase64: rubricBase64,
             participacao: participation,
-            posicionamentosVisuais: visualPositionings.map(visualPositioning => ({
-                porcentagemEmX: visualPositioning.percentX,
-                porcentagemEmY: visualPositioning.percentY,
-                porcentagemLargura: visualPositioning.percentWidth,
-                porcentagemAltura: visualPositioning.percentHeight,
-                indiceDadoExtra: visualPositioning.indexExtraData,
-                pagina: visualPositioning.pageNumber,
-                tipo: visualPositioning.type,
-            }))
+            dadosExtras: extraDatas && (
+                extraDatas.map(extraData => ({
+                    nome: extraData.name,
+                    valor: extraData.value,
+                    tipoDado: extraData.dataType,
+                }))
+            ),
+            posicionamentosVisuais: visualPositionings && (
+                visualPositionings.map(visualPositioning => ({
+                    porcentagemEmX: visualPositioning.percentX,
+                    porcentagemEmY: visualPositioning.percentY,
+                    porcentagemLargura: visualPositioning.percentWidth,
+                    porcentagemAltura: visualPositioning.percentHeight,
+                    indiceDadoExtra: visualPositioning.indexExtraData,
+                    pagina: visualPositioning.pageNumber,
+                    tipo: visualPositioning.type,
+                }))
+            )
         }
 
         const { data } = await axios.post(url, requestData, { headers })

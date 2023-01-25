@@ -55,6 +55,9 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         draggables,
         initialDraggableWidth,
         initialDraggableHeight,
+        draggableLinkTooltip,
+        draggableUnlinkTooltip,
+        draggableDeleteTooltip,
         wrapper
 
     beforeEach(() => {
@@ -75,6 +78,9 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         ]
         initialDraggableWidth = 200
         initialDraggableHeight = 200
+        draggableLinkTooltip = 'link'
+        draggableUnlinkTooltip = 'unlink'
+        draggableDeleteTooltip = 'delete'
         wrapper = shallowMount(AzPdfDocumentViewer, {
             localVue,
             propsData: {
@@ -86,6 +92,9 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 draggables,
                 initialDraggableWidth,
                 initialDraggableHeight,
+                draggableLinkTooltip,
+                draggableUnlinkTooltip,
+                draggableDeleteTooltip,
             },
             attachTo: document.body,
         })
@@ -140,6 +149,18 @@ describe('AzPdfDocumentViewer.spec.js', () => {
 
         it('Should receive props initialDraggableHeight', () => {
             expect(wrapper.props().initialDraggableHeight).toBe(initialDraggableHeight)
+        })
+
+        it('Should receive draggableLinkTooltip', () => {
+            expect(wrapper.props().draggableLinkTooltip).toBe('link')
+        })
+
+        it('Should receive draggableUnlinkTooltip', () => {
+            expect(wrapper.props().draggableUnlinkTooltip).toBe('unlink')
+        })
+
+        it('Should receive draggableDeleteTooltip', () => {
+            expect(wrapper.props().draggableDeleteTooltip).toBe('delete')
         })
     })
 
