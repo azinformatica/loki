@@ -23,7 +23,7 @@
     "imagesloaded": "~4.1.4",
     "lodash": "~4.17.21",
     "moment-timezone": "~0.5.34",
-    "pdfjs-dist": "~1.10.100",
+    "pdfjs-dist": "~2.10.377",
     "scrollmonitor": "1.2.4",
     "soundex": "~0.2.1",
     "string-mask": "~0.3.0",
@@ -42,7 +42,7 @@
     "babel-core": "~6.26.3",
     "babel-eslint": "~10.1.0",
     "babel-jest": "~24.9.0",
-    "babel-loader": "~8.2.5",
+    "babel-loader": "~9.1.2",
     "babel-preset-env": "~1.7.0",
     "babel-preset-stage-3": "~6.24.1",
     "cross-env": "~7.0.3",
@@ -60,13 +60,13 @@
     "vue-loader": "~17.0.0",
     "vue-router": "~3.5.4",
     "vue-template-compiler": "~2.6.14",
-    "webpack": "~4.46.0",
+    "webpack": "~5.46.0",
     "webpack-dev-server": "~4.9.1"
   },
   "peerDependencies": {
     "axios": "~0.27.2",
     "moment-timezone": "~0.5.34",
-    "pdfjs-dist": "~1.10.100",
+    "pdfjs-dist": "~2.10.377",
     "scrollmonitor": "1.2.4",
     "web-pki": "~2.14.8"
   },
