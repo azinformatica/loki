@@ -49,10 +49,13 @@ import Toolbar from './Toolbar'
 import LoadingPlaceHolder from './LoadingPlaceHolder'
 import LoadingPrint from './LoadingPrint'
 import PrintService from './PrintService'
-import PDFJSLib from 'pdfjs-dist/build/pdf'
-import { PDFJS as PDFJSViewer } from 'pdfjs-dist/web/pdf_viewer.js'
+import { getDocument, GlobalWorkerOptions, LinkTarget } from 'pdfjs-dist'
+import pdfWorker from 'pdfjs-dist/build/pdf.worker.entry.js'
+import { PDFViewer, EventBus, PDFLinkService } from 'pdfjs-dist/web/pdf_viewer.js'
 import Draggable from './Draggable'
 import _ from 'lodash'
+
+GlobalWorkerOptions.workerSrc = pdfWorker
 
 export default {
     components: {
@@ -94,10 +97,9 @@ export default {
             this.pdf.container = document.querySelector('#az-pdf-viewer')
         },
         createEventBus() {
-            const eventBus = new PDFJSViewer.EventBus()
+            const eventBus = new EventBus()
             eventBus.on('pagesinit', this.pagesInitEventHandler)
-            eventBus.on('scalechange', this.scaleChangeEventHandler)
-            eventBus.on('pagechange', this.pageChangeEventHandler)
+            eventBus.on('pagechanging', this.pageChangeEventHandler)
             eventBus.on('pagerendered', this.createPagesReferences)
             this.pdf.eventBus = eventBus
         },
@@ -106,10 +108,6 @@ export default {
             this.updateScaleType()
             this.setInitialScale(e.source)
         },
-        scaleChangeEventHandler(e) {
-            this.scale.current = e.scale
-            if (e.presetValue) this.scale.type = e.presetValue
-        },
         pageChangeEventHandler(e) {
             this.pagination.current = e.pageNumber
         },
@@ -117,14 +115,13 @@ export default {
             this.pages = Array.from(_.get(this.pdf, 'viewer.viewer.childNodes') || [])
         },
         createPdfLinkService() {
-            this.pdf.linkService = new PDFJSViewer.PDFLinkService({
+            this.pdf.linkService = new PDFLinkService({
                 eventBus: this.pdf.eventBus,
+                externalLinkTarget: LinkTarget.BLANK,
             })
-            PDFJSViewer.externalLinkTarget = PDFJSViewer.LinkTarget.BLANK
-            this.pdf.linkService.externalLinkTarget = PDFJSViewer.externalLinkTarget
         },
         createPdfViewer() {
-            this.pdf.viewer = new PDFJSViewer.PDFViewer({
+            this.pdf.viewer = new PDFViewer({
                 container: this.pdf.container,
                 eventBus: this.pdf.eventBus,
                 linkService: this.pdf.linkService,
@@ -132,12 +129,12 @@ export default {
         },
         renderDocument() {
             if (!this.src) return this.stopLoadingPlaceHolder()
-            PDFJSLib.getDocument({
+            getDocument({
                 url: this.src,
                 httpHeaders: this.httpHeader,
                 withCredentials: true,
             })
-                .then((pdf) => {
+                .promise.then((pdf) => {
                     this.pdf.linkService.setViewer(this.pdf.viewer)
                     this.pdf.linkService.setDocument(pdf, null)
                     this.pdf.viewer.setDocument(pdf)
@@ -161,8 +158,7 @@ export default {
         updateScaleType(scaleType) {
             if (scaleType && typeof scaleType === 'string') {
                 this.pdf.viewer.currentScaleValue = scaleType
-            } else if (this.scale.current !== this.scale.default) {
-                this.pdf.viewer.currentScale = this.scale.current
+                this.scale.type = scaleType
             } else if (this.defaultScaleType && typeof this.defaultScaleType === 'string') {
                 this.pdf.viewer.currentScaleValue = this.defaultScaleType
             } else if (this.isSmallScreen()) {
@@ -172,7 +168,6 @@ export default {
             }
         },
         setInitialScale(scale) {
-            this.scale.current = scale.currentScale
             this.scale.default = scale.currentScale
             this.scale.type = scale.currentScaleValue
         },
@@ -196,11 +191,11 @@ export default {
             }
         },
         zoomIn() {
-            this.pdf.viewer.currentScale = this.scale.current * 1.1
+            this.pdf.viewer.currentScale = this.pdf.viewer.currentScale * 1.1
         },
         zoomOut() {
-            if (this.scale.current > 0.2) {
-                this.pdf.viewer.currentScale = this.scale.current / 1.1
+            if (this.pdf.viewer.currentScale > 0.2) {
+                this.pdf.viewer.currentScale = this.pdf.viewer.currentScale / 1.1
             }
         },
         handleKeydownEvent(event) {
