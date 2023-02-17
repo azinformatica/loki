@@ -359,8 +359,6 @@ export default {
         createDraggableTargetZoneItemStyle(page) {
             const pageRect = DraggableUtil.getElementRectRelativeToAnotherElementRect(page, page.parentElement)
             return {
-                left: `${Math.round(pageRect.x)}px`,
-                top: `${Math.round(pageRect.y)}px`,
                 width: `${Math.round(pageRect.width)}px`,
                 height: `${Math.round(pageRect.height)}px`,
             }
@@ -501,6 +499,8 @@ export default {
     right 0
     bottom 0
     z-index 9998
+    display flex
+    justify-content center
 
 >>> .document-draggable-target-zone-item
     position absolute

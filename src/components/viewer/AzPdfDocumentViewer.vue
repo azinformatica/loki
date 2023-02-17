@@ -429,10 +429,15 @@ export default {
 
     .Viewer
         width 100%
-        position relative
+        position absolute
         z-index 0
         overflow scroll
         background-color #e4e4e4
+        display flex
+        justify-content center
+
+        .pdfViewer
+            position absolute
 
         .page
             margin 15px auto
