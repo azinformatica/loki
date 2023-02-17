@@ -433,11 +433,9 @@ export default {
         z-index 0
         overflow scroll
         background-color #e4e4e4
-        display flex
-        justify-content center
 
         .pdfViewer
-            position absolute
+            margin 0 auto
 
         .page
             margin 15px auto
