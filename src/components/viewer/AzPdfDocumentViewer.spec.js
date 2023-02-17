@@ -7,39 +7,41 @@ import 'pdfjs-dist/web/pdf_viewer.js'
 import AzPdfDocumentViewer from './AzPdfDocumentViewer'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 
-jest.mock('pdfjs-dist/build/pdf', () => ({
-    getDocument: jest.fn(() => Promise.resolve(true)),
+jest.mock('pdfjs-dist', () => ({
+    getDocument: jest.fn(() => ({
+        promise: Promise.resolve(true),
+    })),
+    GlobalWorkerOptions: jest.fn(() => ({
+        workerSrc: jest.fn(),
+    })),
+    LinkTarget: {
+        BLANK: 2,
+    },
 }))
 
 jest.mock('pdfjs-dist/web/pdf_viewer.js', () => ({
-    PDFJS: {
-        EventBus: jest.fn(() => ({
-            on: jest.fn().mockImplementation((e, cb) =>
-                cb({
-                    source: {
-                        currentPageNumber: 1,
-                        currentScale: 1,
-                        pagesCount: 10,
-                    },
-                    scale: 1,
-                    pageNumber: 2,
-                })
-            ),
-        })),
+    EventBus: jest.fn(() => ({
+        on: jest.fn().mockImplementation((e, cb) =>
+            cb({
+                source: {
+                    currentPageNumber: 1,
+                    currentScale: 1,
+                    pagesCount: 10,
+                },
+                scale: 1,
+                pageNumber: 2,
+            })
+        ),
+    })),
 
-        PDFViewer: jest.fn(() => ({
-            setDocument: jest.fn(),
-        })),
+    PDFViewer: jest.fn(() => ({
+        setDocument: jest.fn(),
+    })),
 
-        PDFLinkService: jest.fn(() => ({
-            setDocument: jest.fn(),
-            setViewer: jest.fn(),
-        })),
-
-        LinkTarget: {
-            BLANK: 2,
-        },
-    },
+    PDFLinkService: jest.fn(() => ({
+        setDocument: jest.fn(),
+        setViewer: jest.fn(),
+    })),
 }))
 
 const localVue = createLocalVue()
@@ -222,12 +224,10 @@ describe('AzPdfDocumentViewer.spec.js', () => {
 
         it('Should execute createEventBus', () => {
             wrapper.vm.pagesInitEventHandler = jest.fn()
-            wrapper.vm.scaleChangeEventHandler = jest.fn()
             wrapper.vm.pageChangeEventHandler = jest.fn()
             wrapper.vm.createEventBus()
 
             expect(wrapper.vm.pagesInitEventHandler).toHaveBeenCalled()
-            expect(wrapper.vm.scaleChangeEventHandler).toHaveBeenCalled()
             expect(wrapper.vm.pageChangeEventHandler).toHaveBeenCalled()
         })
 
@@ -243,7 +243,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
 
             expect(wrapper.vm.pagination).toEqual({ current: 1, total: 10 })
             expect(wrapper.vm.pdf.viewer.currentScaleValue).toEqual('page-width')
-            expect(wrapper.vm.scale).toEqual({ current: 1, default: 1 })
+            expect(wrapper.vm.scale).toEqual({ default: 1 })
         })
 
         it('Should execute pagesInitEventHandler to "non small screen"', () => {
@@ -258,13 +258,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
 
             expect(wrapper.vm.pagination).toEqual({ current: 1, total: 10 })
             expect(wrapper.vm.pdf.viewer.currentScaleValue).toEqual('page-fit')
-            expect(wrapper.vm.scale).toEqual({ current: 1, default: 1 })
-        })
-
-        it('Should execute scaleChangeEventHandler', () => {
-            wrapper.vm.scaleChangeEventHandler({ scale: 10 })
-
-            expect(wrapper.vm.scale.current).toEqual(10)
+            expect(wrapper.vm.scale).toEqual({ default: 1 })
         })
 
         it('Should execute pageChangeEventHandler', () => {
@@ -284,7 +278,6 @@ describe('AzPdfDocumentViewer.spec.js', () => {
 
             expect(typeof wrapper.vm.pdf.linkService.setDocument).toEqual('function')
             expect(typeof wrapper.vm.pdf.linkService.setViewer).toEqual('function')
-            expect(wrapper.vm.pdf.linkService.externalLinkTarget).toEqual(2)
         })
     })
 
@@ -298,9 +291,6 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 },
             })
             wrapper.setData({
-                scale: {
-                    current: 1,
-                },
                 pdf: {
                     viewer: {
                         currentScale: 1,
@@ -321,9 +311,6 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 },
             })
             wrapper.setData({
-                scale: {
-                    current: 1,
-                },
                 pdf: {
                     viewer: {
                         currentScale: 1,
@@ -344,9 +331,6 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 },
             })
             wrapper.setData({
-                scale: {
-                    current: 0.2,
-                },
                 pdf: {
                     viewer: {
                         currentScale: 0.2,

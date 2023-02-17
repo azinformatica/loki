@@ -411,7 +411,6 @@ export default {
         printProgress: 0,
         scale: {
             default: null,
-            current: null,
             type: '',
         },
         isCreatingDraggable: false,
