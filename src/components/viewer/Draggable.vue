@@ -363,6 +363,7 @@ export default {
                 top: `${Math.round(pageRect.y)}px`,
                 width: `${Math.round(pageRect.width)}px`,
                 height: `${Math.round(pageRect.height)}px`,
+                pointerEvents: this.isCreatingDraggable ? 'auto' : 'none'
             }
         },
         findDraggableIndexById(draggableId) {
