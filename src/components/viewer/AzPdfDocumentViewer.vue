@@ -49,9 +49,9 @@ import Toolbar from './Toolbar'
 import LoadingPlaceHolder from './LoadingPlaceHolder'
 import LoadingPrint from './LoadingPrint'
 import PrintService from './PrintService'
-import { getDocument, GlobalWorkerOptions, LinkTarget } from 'pdfjs-dist'
-import pdfWorker from 'pdfjs-dist/build/pdf.worker.entry.js'
-import { PDFViewer, EventBus, PDFLinkService } from 'pdfjs-dist/web/pdf_viewer.js'
+import { getDocument, GlobalWorkerOptions, LinkTarget } from '@azinformatica/pdfjs-dist'
+import pdfWorker from '@azinformatica/pdfjs-dist/build/pdf.worker.entry.js'
+import { EventBus, PDFLinkService, PDFViewer } from '@azinformatica/pdfjs-dist/web/pdf_viewer.js'
 import Draggable from './Draggable'
 import _ from 'lodash'
 
@@ -419,7 +419,7 @@ export default {
 }
 </script>
 
-<style src="pdfjs-dist/web/pdf_viewer.css"></style>
+<style src="@azinformatica/pdfjs-dist/web/pdf_viewer.css"></style>
 
 <style lang="stylus">
 .az-pdf-container

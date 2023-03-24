@@ -1,6 +1,6 @@
 {
   "name": "@azinformatica/loki",
-  "version": "1.13.0",
+  "version": "1.13.1",
   "description": "Biblioteca de componentes visuais compartilhados construidos usando vuejs.",
   "main": "src/index.js",
   "private": false,
@@ -17,13 +17,13 @@
   "author": "Charles Viegas",
   "license": "MIT",
   "dependencies": {
-    "interactjs": "~1.10.17",
+    "@azinformatica/pdfjs-dist": "~2.10.380",
     "accounting": "~0.4.1",
     "axios": "~0.27.2",
     "imagesloaded": "~4.1.4",
+    "interactjs": "~1.10.17",
     "lodash": "~4.17.21",
     "moment-timezone": "~0.5.34",
-    "pdfjs-dist": "~2.10.377",
     "scrollmonitor": "1.2.4",
     "soundex": "~0.2.1",
     "string-mask": "~0.3.0",
@@ -66,7 +66,7 @@
   "peerDependencies": {
     "axios": "~0.27.2",
     "moment-timezone": "~0.5.34",
-    "pdfjs-dist": "~2.10.377",
+    "@azinformatica/pdfjs-dist": "~2.10.377",
     "scrollmonitor": "1.2.4",
     "web-pki": "~2.14.8"
   },
