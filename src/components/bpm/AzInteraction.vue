@@ -1,27 +1,14 @@
 <template>
 	<div>
-		<slot>
+		<slot
+			name="default"
+			:bpmDisabled="bpmDisabled"
+		>
 		</slot>
 	</div>
 </template>
 
 <script>
-const HTML_TAGS_BPM = [
-	// 'input',
-	// 'select',
-	'zicona'
-]
-
-const VUETIFY_TAGS_BPM = [
-	'v-input',
-	'v-select',
-	'v-radio-button'
-]
-
-const EXTRA_TAGS_BPM = [
-	'mascara-campo-texto'
-]
-
 export default {
 	name: 'AzInteraction',
 	props: {
@@ -50,56 +37,57 @@ export default {
 			type: Boolean
 		}
 	},
+	data() {
+		return {
+			revokedPermissions: "ComprasPreparacao.Processo,ComprasPreparacao.Modelo"
+		}
+	},
 	methods: {
-		buscarElementosListadosNoBPM(elemento) {
-			return elemento.querySelectorAll(HTML_TAGS_BPM)
+		temPermissao() {
+			const { user } = this.$store.state.loki
+			const authoritiesNames = user.authorities
+				.filter(authority => authority.hasAccess)
+				.map(authority => authority.name)
+
+			return this.authoritiesFormatted.some(authority => {
+				return authoritiesNames.includes(authority) && !this.revokedPermissionsFormatted.includes(authority)
+			})
 		},
-		desabilitarElementos(elementos) {
-			for (const elemento of elementos) {
-				elemento.disabled = true
-			}
-		},
-		buscarComponentesListadosNoBPM(componente) {
-			if (this.ehComponenteListadoNoBPM(componente)) {
-				return [ componente ]
+		converterStringParaArray(texto) {
+			if (!texto) {
+				return []
 			}
 
-			return this.getFilhosDoComponente(componente).reduce((filhosListadosNoBPM, filho) => {
-				return [].concat(
-					filhosListadosNoBPM,
-					this.buscarComponentesListadosNoBPM(filho)
-				)
-			}, [])
-		},
-
-		ehComponenteListadoNoBPM(componente) {
-			const tag = this.getTagDoComponente(componente)
-			return [].concat(VUETIFY_TAGS_BPM, EXTRA_TAGS_BPM).includes(tag)
-		},
-		getTagDoComponente(componente) {
-			return componente.$vnode.componentOptions.tag
-		},
-		getFilhosDoComponente(componente) {
-			return (componente && componente.$children) || []
-		},
-		desabilitarComponentes(componentes) {
-			for (const componente of componentes) {
-				componente.$attrs.disabled = true
+			if (typeof texto === 'string') {
+				return texto.split(',')
 			}
+
+			if (Array.isArray(texto)) {
+				return texto
+			}
+
+			return []
 		},
-		getTagElemento(elemento) {
+		logica() {
+			return true
+		}
+	},
+	computed: {
+		checkTemPermissao() {
+			return this.temPermissao()
 		},
-		desabilitarElemento(elemento) {
-			// elemento.
+		revokedPermissionsFormatted() {
+			return this.converterStringParaArray(this.revokedPermissions)
+		},
+		authoritiesFormatted() {
+			return this.converterStringParaArray(this.azAuthorities)
+		},
+		bpmDisabled() {
+			return this.azDisabled || this.logica()
 		}
 	},
 	mounted() {
-		const elementos = this.buscarElementosListadosNoBPM(this.$el)
-		this.desabilitarElementos(elementos)
 
-		const componentes = this.buscarComponentesListadosNoBPM(this)
-		this.desabilitarComponentes(componentes)
-		console.log(componentes)
 	}
 }
 </script>
