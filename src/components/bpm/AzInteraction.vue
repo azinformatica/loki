@@ -17,8 +17,8 @@ export default {
 			required: true
 		},
 		azAuthorities: {
-			default: '',
-			type: [ String, Array ]
+			default: [],
+			type: Array
 		},
 		azBusinessKey: {
 			default: '',
@@ -43,47 +43,40 @@ export default {
 		}
 	},
 	methods: {
-		temPermissao() {
-			const { user } = this.$store.state.loki
-			const authoritiesNames = user.authorities
-				.filter(authority => authority.hasAccess)
-				.map(authority => authority.name)
-
-			return this.authoritiesFormatted.some(authority => {
-				return authoritiesNames.includes(authority) && !this.revokedPermissionsFormatted.includes(authority)
-			})
+		isAuthorityRevoked(authorityName) {
+			return this.revokedPermissions.includes(authorityName)
 		},
-		converterStringParaArray(texto) {
-			if (!texto) {
-				return []
-			}
-
-			if (typeof texto === 'string') {
-				return texto.split(',')
-			}
-
-			if (Array.isArray(texto)) {
-				return texto
-			}
-
-			return []
+		isAuthorityWithAccess(authorityName) {
+			return this.azAuthorities.includes(authorityName)
 		},
 		logica() {
 			return true
+		},
+		removeWhitespace(text) {
+			return text.replace(/\s+/g, '')
+		},
+		splitStringCommasToArray(text) {
+			return text.split(',')
 		}
 	},
 	computed: {
-		checkTemPermissao() {
-			return this.temPermissao()
+		user() {
+			return this.$store.state.loki.user
 		},
-		revokedPermissionsFormatted() {
-			return this.converterStringParaArray(this.revokedPermissions)
+		userAuthorities() {
+			return this.user.authorities || []
 		},
-		authoritiesFormatted() {
-			return this.converterStringParaArray(this.azAuthorities)
+		userAuthoritiesWithAccess() {
+			return this.userAuthorities.filter(authority => authority.hasAccess)
+		},
+		hasAuthority() {
+			return this.userAuthoritiesWithAccess.some(authority =>
+				this.isAuthorityWithAccess(authority.name) &&
+				!this.isAuthorityRevoked(authority.name)
+			)
 		},
 		bpmDisabled() {
-			return this.azDisabled || this.logica()
+			return this.azDisabled || this.hasAuthority
 		}
 	},
 	mounted() {
