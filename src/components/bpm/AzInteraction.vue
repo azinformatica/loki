@@ -3,12 +3,16 @@
 		<slot
 			name="default"
 			:bpmDisabled="bpmDisabled"
+			:processInstance="processInstance"
 		>
 		</slot>
 	</div>
 </template>
 
 <script>
+import _ from 'lodash'
+import {actionTypes} from "../../store"
+
 export default {
 	name: 'AzInteraction',
 	props: {
@@ -17,20 +21,18 @@ export default {
 			required: true
 		},
 		azAuthorities: {
-			default: [],
+			default: () => [],
 			type: Array
 		},
 		azBusinessKey: {
 			default: '',
-			type: String
+			type: String,
+			required: true
 		},
 		azProcessKey: {
 			default: '',
-			type: String
-		},
-		azIgnoreBpm: {
-			default: false,
-			type: Boolean
+			type: String,
+			required: true
 		},
 		azDisabled: {
 			default: false,
@@ -39,24 +41,21 @@ export default {
 	},
 	data() {
 		return {
-			revokedPermissions: "ComprasPreparacao.Processo,ComprasPreparacao.Modelo"
+			processInstance: null
 		}
 	},
 	methods: {
 		isAuthorityRevoked(authorityName) {
-			return this.revokedPermissions.includes(authorityName)
+			return this.revokedAuthorities.length && this.revokedAuthorities.includes(authorityName)
 		},
-		isAuthorityWithAccess(authorityName) {
-			return this.azAuthorities.includes(authorityName)
+		isAuthorityPresentInProps(authorityName) {
+			return !this.azAuthorities.length || this.azAuthorities.includes(authorityName)
 		},
-		logica() {
-			return true
-		},
-		removeWhitespace(text) {
-			return text.replace(/\s+/g, '')
-		},
-		splitStringCommasToArray(text) {
-			return text.split(',')
+		async getProcessInstance(processKey, businessKey) {
+			return this.$store.dispatch(actionTypes.BPM.PROCESS_INSTANCE, {
+				processKey,
+				businessKey,
+			})
 		}
 	},
 	computed: {
@@ -69,18 +68,28 @@ export default {
 		userAuthoritiesWithAccess() {
 			return this.userAuthorities.filter(authority => authority.hasAccess)
 		},
-		hasAuthority() {
-			return this.userAuthoritiesWithAccess.some(authority =>
-				this.isAuthorityWithAccess(authority.name) &&
-				!this.isAuthorityRevoked(authority.name)
-			)
+		revokedAuthorities() {
+			return _
+				.get(this.processInstance, 'currentTask.revokedPermissions', '')
+				.replaceAll(/\s+/g, '')
+				.split(',')
+				.filter(Boolean)
+		},
+		hasSomeRevokedAuthority() {
+			return this.userAuthoritiesWithAccess.some(authority => this.isAuthorityRevoked(authority.name))
+		},
+		hasSomeAuthorityPresentInProps() {
+			return this.userAuthoritiesWithAccess.some(authority => this.isAuthorityPresentInProps(authority.name))
+		},
+		hasAuthorityToInteraction() {
+			return !this.hasSomeRevokedAuthority && this.hasSomeAuthorityPresentInProps
 		},
 		bpmDisabled() {
-			return this.azDisabled || this.hasAuthority
+			return this.azDisabled || !this.hasAuthorityToInteraction
 		}
 	},
-	mounted() {
-
+	async mounted() {
+		this.processInstance = await this.getProcessInstance(this.azProcessKey, this.azBusinessKey)
 	}
 }
 </script>
