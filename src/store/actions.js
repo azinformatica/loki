@@ -85,6 +85,11 @@ export default {
 
         return data
     },
+
+	async [actionTypes.BPM.PROCESS_INSTANCE](context, { processKey, businessKey }) {
+		const response = await axios.get('api/bpm/getInstance/' + processKey+ '/' + businessKey)
+		return response.data
+	},
 }
 
 function getFlowbeeAccessParams(accessToken) {
