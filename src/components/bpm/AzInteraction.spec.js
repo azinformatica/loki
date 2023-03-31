@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import AzInteraction from './AzInteraction'
+import AzInteraction from './AzBpmInteraction'
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils'
 import Vuex from 'vuex'
 import { actionTypes } from '@/store'

@@ -9,7 +9,7 @@ import { actionTypes } from "../../store"
 import bpmConstants from "./bpm-constants"
 
 export default {
-    name: 'AzInteraction',
+    name: 'AzBpmInteraction',
     props: {
         id: {
             type: String,
@@ -70,8 +70,14 @@ export default {
         userAuthoritiesWithAccess() {
             return this.userAuthorities.filter((authority) => authority.hasAccess)
         },
+		userAuthoritiesPresentInProps() {
+			return this.userAuthoritiesWithAccess.filter((authority) => this.isAuthorityPresentInProps(authority.name))
+		},
 		currentTask() {
 			return (this.processInstance && this.processInstance.currentTask) || {}
+		},
+		nextTasks() {
+			return (this.processInstance && this.processInstance.nextTasks) || []
 		},
         revokedAuthorities() {
 			return this.splitCommaSeparatedTextToArray(this.currentTask.revokedPermissions || '')
@@ -87,6 +93,13 @@ export default {
 		},
 		assignee() {
 			return this.currentTask.assignee || null
+		},
+		tasksOptions() {
+			return this.nextTasks.map(task => ({
+				text: task.taskName,
+				value: task.taskId,
+
+			}))
 		},
 		isStatusInstanceEnded() {
 			return this.statusInstance === bpmConstants.STATUS_INSTANCE.ENDED
@@ -106,17 +119,17 @@ export default {
 		isStatusInstanceActiveWithoutAssignee() {
 			return this.isStatusInstanceActive && !this.assignee
 		},
+		hasSomeAuthorityPresentInProps() {
+			return this.userAuthoritiesPresentInProps.length > 0
+		},
         hasSomeRevokedAuthority() {
-            return this.userAuthoritiesWithAccess.some((authority) => this.isAuthorityRevoked(authority.name))
-        },
-        hasSomeAuthorityPresentInProps() {
-            return this.userAuthoritiesWithAccess.some((authority) => this.isAuthorityPresentInProps(authority.name))
+            return this.userAuthoritiesPresentInProps.some((authority) => this.isAuthorityRevoked(authority.name))
         },
 		hasAuthorityToBpmRule() {
 			return !this.isStatusInstanceEnded && !this.isStatusInstanceActiveWithoutAssignee && this.isUserCandidate
 		},
         hasAuthorityToInteraction() {
-            return !this.hasSomeRevokedAuthority && this.hasAuthorityToBpmRule && this.hasSomeAuthorityPresentInProps
+            return !this.hasSomeRevokedAuthority && this.hasSomeAuthorityPresentInProps && this.hasAuthorityToBpmRule
         },
         hasAuthority() {
             return !this.disabled && this.hasAuthorityToInteraction
