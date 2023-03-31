@@ -90,6 +90,26 @@ export default {
 		const response = await axios.get('api/bpm/getInstance/' + processKey+ '/' + businessKey)
 		return response.data
 	},
+
+	async [actionTypes.BPM.CLAIM](context, { taskId }) {
+		const response = await axios.get('api/bpm/claim/' + taskId)
+		return response.data
+	},
+
+	async [actionTypes.BPM.UNCLAIM](context, { taskId }) {
+		const response = await axios.get('api/bpm/unclaim/' + taskId)
+		return response.data
+	},
+
+	async [actionTypes.BPM.COMPLETE](context, { taskId }) {
+		const response = await axios.get('api/bpm/complete/' + taskId)
+		return response.data
+	},
+
+	async [actionTypes.BPM.UNCOMPLETE](context, { taskId }) {
+		const response = await axios.get('api/bpm/uncomplete/' + taskId)
+		return response.data
+	},
 }
 
 function getFlowbeeAccessParams(accessToken) {
