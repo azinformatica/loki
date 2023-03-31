@@ -5,9 +5,8 @@
 </template>
 
 <script>
-import _ from 'lodash'
-import { actionTypes } from '../../store'
-import bpmConstants from './bpm-constants'
+import { actionTypes } from "../../store"
+import bpmConstants from "./bpm-constants"
 
 export default {
     name: 'AzInteraction',
@@ -60,7 +59,7 @@ export default {
     },
     computed: {
         user() {
-            return _.get(this.$store, 'state.loki.user', {})
+			return this.$store.state.loki.user
         },
         userAuthorities() {
             return this.user.authorities || []
@@ -84,7 +83,7 @@ export default {
 			return this.currentTask.candidateGroups || []
 		},
 		statusInstance() {
-			return this.processInstance.statusInstance || bpmConstants.STATUS_INSTANCE.ENDED
+			return (this.processInstance && this.processInstance.statusInstance) || bpmConstants.STATUS_INSTANCE.ENDED
 		},
 		assignee() {
 			return this.currentTask.assignee || null
