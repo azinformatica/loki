@@ -7,6 +7,7 @@
 <script>
 import _ from 'lodash'
 import { actionTypes } from '../../store'
+import bpmConstants from './bpm-constants'
 
 export default {
     name: 'AzInteraction',
@@ -34,7 +35,7 @@ export default {
     },
     data() {
         return {
-            processInstance: null,
+            processInstance: null
         }
     },
     methods: {
@@ -50,6 +51,12 @@ export default {
                 businessKey,
             })
         },
+		splitCommaSeparatedTextToArray(text) {
+			return text
+				.replaceAll(/\s+/g, '')
+				.split(',')
+				.filter(Boolean)
+		}
     },
     computed: {
         user() {
@@ -58,27 +65,63 @@ export default {
         userAuthorities() {
             return this.user.authorities || []
         },
+		userRoles() {
+			return this.user.roles || []
+		},
         userAuthoritiesWithAccess() {
             return this.userAuthorities.filter((authority) => authority.hasAccess)
         },
+		currentTask() {
+			return (this.processInstance && this.processInstance.currentTask) || {}
+		},
         revokedAuthorities() {
-            return _.get(this.processInstance, 'currentTask.revokedPermissions', '')
-                .replaceAll(/\s+/g, '')
-                .split(',')
-                .filter(Boolean)
+			return this.splitCommaSeparatedTextToArray(this.currentTask.revokedPermissions || '')
         },
+		candidateUsers() {
+			return this.currentTask.candidateUsers || []
+		},
+		candidateGroups() {
+			return this.currentTask.candidateGroups || []
+		},
+		statusInstance() {
+			return this.processInstance.statusInstance || bpmConstants.STATUS_INSTANCE.ENDED
+		},
+		assignee() {
+			return this.currentTask.assignee || null
+		},
+		isStatusInstanceEnded() {
+			return this.statusInstance === bpmConstants.STATUS_INSTANCE.ENDED
+		},
+		isStatusInstanceActive() {
+			return this.statusInstance === bpmConstants.STATUS_INSTANCE.ACTIVE
+		},
+		isUserInCandidateUsers() {
+			return this.candidateUsers.includes(this.user.name)
+		},
+		isUserInCandidateGroups() {
+			return this.userRoles.some(role => this.candidateGroups.includes(role))
+		},
+		isUserCandidate() {
+			return this.isUserInCandidateUsers || this.isUserInCandidateGroups
+		},
+		isStatusInstanceActiveWithoutAssignee() {
+			return this.isStatusInstanceActive && !this.assignee
+		},
         hasSomeRevokedAuthority() {
             return this.userAuthoritiesWithAccess.some((authority) => this.isAuthorityRevoked(authority.name))
         },
         hasSomeAuthorityPresentInProps() {
             return this.userAuthoritiesWithAccess.some((authority) => this.isAuthorityPresentInProps(authority.name))
         },
+		hasAuthorityToBpmRule() {
+			return !this.isStatusInstanceEnded && !this.isStatusInstanceActiveWithoutAssignee && this.isUserCandidate
+		},
         hasAuthorityToInteraction() {
-            return !this.hasSomeRevokedAuthority && this.hasSomeAuthorityPresentInProps
+            return !this.hasSomeRevokedAuthority && this.hasAuthorityToBpmRule && this.hasSomeAuthorityPresentInProps
         },
         hasAuthority() {
             return !this.disabled && this.hasAuthorityToInteraction
-        },
+		},
     },
     mounted() {
         this.getProcessInstance(this.processKey, this.businessKey).then((processInstance) => {
