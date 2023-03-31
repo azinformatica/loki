@@ -17,7 +17,7 @@ export default {
             FINISH: 'finishDigitalSignature',
         },
     },
-	BPM: {
-		PROCESS_INSTANCE: 'getProcessInstance'
-	}
+    BPM: {
+        PROCESS_INSTANCE: 'getProcessInstance',
+    },
 }
