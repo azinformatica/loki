@@ -1,11 +1,17 @@
 <template>
-    <div>
-        <slot name="default" :hasAuthority="hasAuthority" :processInstance="processInstance"> </slot>
-    </div>
+	<div>
+    	<slot
+			name="default"
+			:hasAuthority="hasAuthority"
+			:components="components"
+			:processInstance="processInstance"
+		> </slot>
+	</div>
 </template>
 
 <script>
-import { actionTypes } from "../../store"
+import _ from "lodash"
+import { actionTypes, mutationTypes } from "../../store"
 import bpmConstants from "./bpm-constants"
 
 export default {
@@ -32,11 +38,6 @@ export default {
             type: Boolean,
         },
     },
-    data() {
-        return {
-            processInstance: null
-        }
-    },
     methods: {
         isAuthorityRevoked(authorityName) {
             return this.revokedAuthorities.length && this.revokedAuthorities.includes(authorityName)
@@ -44,12 +45,18 @@ export default {
         isAuthorityPresentInProps(authorityName) {
             return !this.authorities.length || this.authorities.includes(authorityName)
         },
-        getProcessInstance(processKey, businessKey) {
-            return this.$store.dispatch(actionTypes.BPM.PROCESS_INSTANCE, {
-                processKey,
-                businessKey,
-            })
+        getProcessInstance() {
+            return this.$store.dispatch(actionTypes.BPM.GET_PROCESS_INSTANCE, this.processInstanceParams)
         },
+		initializeProcessInstance() {
+			return this.$store.commit(mutationTypes.BPM.INITIALIZE_PROCESS_INSTANCE, this.processInstanceParams)
+		},
+		dispatchBpmAction(actionType, { taskId, bpmParameter }) {
+			return this.$store.dispatch(actionType, { taskId, bpmParameter })
+		},
+		dispatchBpmActionThenReloadProcessInstance(actionType, taskId, bpmParameter = {}) {
+			return this.dispatchBpmAction(actionType, { taskId, bpmParameter }).then(() => this.getProcessInstance())
+		},
 		splitCommaSeparatedTextToArray(text) {
 			return text
 				.replaceAll(/\s+/g, '')
@@ -58,6 +65,24 @@ export default {
 		}
     },
     computed: {
+		processInstanceParams() {
+			return {
+				processKey: this.processKey,
+				businessKey: this.businessKey
+			}
+		},
+		bpm() {
+			return this.$store.state.loki.bpm
+		},
+		bpmAtProcessKey() {
+			return this.bpm[this.processKey] || {}
+		},
+		bpmAtProcessKeyAtBusinessKey() {
+			return this.bpmAtProcessKey[this.businessKey] || {}
+		},
+		processInstance() {
+			return this.bpmAtProcessKeyAtBusinessKey.processInstance || null
+		},
         user() {
 			return this.$store.state.loki.user
         },
@@ -76,8 +101,17 @@ export default {
 		currentTask() {
 			return (this.processInstance && this.processInstance.currentTask) || {}
 		},
+		previousTask() {
+			return (this.processInstance && this.processInstance.previousTask) || {}
+		},
 		nextTasks() {
 			return (this.processInstance && this.processInstance.nextTasks) || []
+		},
+		hasNextTasks() {
+			return this.nextTasks.length > 0
+		},
+		hasHumanDecisionInAllNextTasks() {
+			return this.nextTasks.every(task => task.flowExpression && task.flowExpression.includes('humanDecision'))
 		},
         revokedAuthorities() {
 			return this.splitCommaSeparatedTextToArray(this.currentTask.revokedPermissions || '')
@@ -88,18 +122,155 @@ export default {
 		candidateGroups() {
 			return this.currentTask.candidateGroups || []
 		},
+		previousTaskCandidateGroups() {
+			return this.previousTask.candidateGroups || []
+		},
+		previousTaskAssignee() {
+			return this.previousTask.assignee || null
+		},
 		statusInstance() {
 			return (this.processInstance && this.processInstance.statusInstance) || bpmConstants.STATUS_INSTANCE.ENDED
 		},
 		assignee() {
 			return this.currentTask.assignee || null
 		},
-		tasksOptions() {
+		components() {
+			return {
+				select: this.select,
+				button: {
+					claim: this.buttonClaim,
+					unclaim: this.buttonUnclaim,
+					complete: this.buttonComplete,
+					uncomplete: this.buttonUncomplete
+				}
+			}
+		},
+		select() {
+			return {
+				show: this.selectShow,
+				disabled: this.selectDisabled,
+				items: this.selectItems
+			}
+		},
+		buttonClaim() {
+			return {
+				show: this.buttonClaimShow,
+				disabled: this.buttonClaimDisabled,
+				label: this.buttonClaimLabel,
+				action: this.buttonClaimAction
+			}
+		},
+		buttonUnclaim() {
+			return {
+				show: this.buttonUnclaimShow,
+				disabled: this.buttonUnclaimDisabled,
+				label: this.buttonUnclaimLabel,
+				action: this.buttonUnclaimAction
+			}
+		},
+		buttonComplete() {
+			return {
+				show: this.buttonCompleteShow,
+				disabled: this.buttonCompleteDisabled,
+				label: this.buttonCompleteLabel,
+				action: this.buttonCompleteAction
+			}
+		},
+		buttonUncomplete() {
+			return {
+				show: this.buttonUncompleteShow,
+				disabled: this.buttonUncompleteDisabled,
+				label: this.buttonUncompleteLabel,
+				action: this.buttonUncompleteAction
+			}
+		},
+		selectShow() {
+			return Boolean(this.isStatusInstanceActive && this.assignee && this.hasNextTasks && this.hasHumanDecisionInAllNextTasks)
+		},
+		selectDisabled() {
+			return Boolean(this.isLoadingProcessInstance || !this.isUserCandidate)
+		},
+		selectItems() {
 			return this.nextTasks.map(task => ({
 				text: task.taskName,
-				value: task.taskId,
-
+				value: task.taskId
 			}))
+		},
+		buttonClaimShow() {
+			return Boolean(this.isStatusInstanceActive && !this.assignee)
+		},
+		buttonClaimDisabled() {
+			return Boolean(this.isLoadingProcessInstance || !this.isUserCandidate)
+		},
+		buttonClaimLabel() {
+			return 'Receber'
+		},
+		buttonClaimAction() {
+			return () => this.dispatchBpmActionThenReloadProcessInstance(
+				actionTypes.BPM.CLAIM,
+				this.currentTask.id
+			)
+		},
+		buttonUnclaimShow() {
+			return Boolean(this.isStatusInstanceActive && this.assignee)
+		},
+		buttonUnclaimDisabled() {
+			return Boolean(this.isLoadingProcessInstance || !this.isUserCandidate)
+		},
+		buttonUnclaimLabel() {
+			return 'Cancelar recebimento'
+		},
+		buttonUnclaimAction() {
+			return () => this.dispatchBpmActionThenReloadProcessInstance(
+				actionTypes.BPM.UNCLAIM,
+				this.currentTask.id
+			)
+		},
+		buttonCompleteShow() {
+			return Boolean(this.isStatusInstanceActive && this.assignee)
+		},
+		buttonCompleteDisabled() {
+			return Boolean(this.isLoadingProcessInstance || !this.isUserCandidate)
+		},
+		buttonCompleteLabel() {
+			return !this.hasNextTasks
+				? 'Finalizar'
+				: 'Encaminhar'
+		},
+		buttonCompleteAction() {
+			return (taskId, bpmParameter = {}) => {
+				const argumento = _.cloneDeep(bpmParameter)
+				if (taskId) {
+					argumento.humanDecision = taskId
+				}
+
+				return this.dispatchBpmActionThenReloadProcessInstance(
+					actionTypes.BPM.COMPLETE,
+					this.currentTask.id,
+					argumento
+				)
+			}
+		},
+		buttonUncompleteShow() {
+			return Boolean(this.isStatusInstanceActive && !this.assignee && !this.isFirstTask)
+		},
+		buttonUncompleteDisabled() {
+			return Boolean(this.isLoadingProcessInstance || !this.isUserCandidateInPreviousTask)
+		},
+		buttonUncompleteLabel() {
+			return 'Cancelar encaminhamento'
+		},
+		buttonUncompleteAction() {
+			return () => this.dispatchBpmActionThenReloadProcessInstance(
+				actionTypes.BPM.UNCOMPLETE,
+				this.currentTask.id
+			)
+		},
+		isFirstTask() {
+			return this.currentTask.firstTask || false
+		},
+		isLoadingProcessInstance() {
+			return this.bpmAtProcessKeyAtBusinessKey.isLoading || false
 		},
 		isStatusInstanceEnded() {
 			return this.statusInstance === bpmConstants.STATUS_INSTANCE.ENDED
@@ -115,6 +286,15 @@ export default {
 		},
 		isUserCandidate() {
 			return this.isUserInCandidateUsers || this.isUserInCandidateGroups
+		},
+		isUserInPreviousTaskCandidateUsers() {
+			return this.previousTaskAssignee === this.user.name
+		},
+		isUserInPreviousTaskCandidateGroups() {
+			return this.userRoles.some(role => this.previousTaskCandidateGroups.includes(role))
+		},
+		isUserCandidateInPreviousTask() {
+			return this.isUserInPreviousTaskCandidateUsers || this.isUserInPreviousTaskCandidateGroups
 		},
 		isStatusInstanceActiveWithoutAssignee() {
 			return this.isStatusInstanceActive && !this.assignee
@@ -132,13 +312,12 @@ export default {
             return !this.hasSomeRevokedAuthority && this.hasSomeAuthorityPresentInProps && this.hasAuthorityToBpmRule
         },
         hasAuthority() {
-            return !this.disabled && this.hasAuthorityToInteraction
+            return !this.disabled && !this.isLoadingProcessInstance && this.hasAuthorityToInteraction
 		},
     },
-    mounted() {
-        this.getProcessInstance(this.processKey, this.businessKey).then((processInstance) => {
-            this.processInstance = processInstance
-        })
+    async created() {
+		this.initializeProcessInstance()
+		await this.getProcessInstance()
     },
 }
 </script>

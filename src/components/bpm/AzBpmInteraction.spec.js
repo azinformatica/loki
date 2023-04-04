@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import AzInteraction from './AzBpmInteraction'
+import AzBpmInteraction from './AzBpmInteraction'
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils'
 import Vuex from 'vuex'
 import { actionTypes } from '@/store'
@@ -55,12 +55,12 @@ const createWrapper = ({ propsData = {}, store, shallow = true }) => {
         store,
     }
     const mountingFunction = shallow ? shallowMount : mount
-    const wrapper = mountingFunction(AzInteraction, options)
+    const wrapper = mountingFunction(AzBpmInteraction, options)
     wrapper.vm.getProcessInstance = jest.fn(() => createProcessInstanceMock())
     return wrapper
 }
 
-describe('AzInteraction.spec.js', () => {
+describe('AzBpmInteraction.spec.js', () => {
     let propsData, state, store, wrapper
 
     beforeEach(() => {
