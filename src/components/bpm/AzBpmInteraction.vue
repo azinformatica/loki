@@ -138,10 +138,10 @@ export default {
 			return {
 				select: this.select,
 				button: {
-					claim: this.buttonClaim,
-					unclaim: this.buttonUnclaim,
-					complete: this.buttonComplete,
-					uncomplete: this.buttonUncomplete
+					[bpmConstants.BUTTON_TYPES.CLAIM]: this.buttonClaim,
+					[bpmConstants.BUTTON_TYPES.UNCLAIM]: this.buttonUnclaim,
+					[bpmConstants.BUTTON_TYPES.COMPLETE]: this.buttonComplete,
+					[bpmConstants.BUTTON_TYPES.UNCOMPLETE]: this.buttonUncomplete
 				}
 			}
 		},

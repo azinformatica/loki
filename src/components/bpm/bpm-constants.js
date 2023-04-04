@@ -3,10 +3,10 @@ export default {
 		ACTIVE: 'ACTIVE',
 		ENDED: 'ENDED'
 	},
-	BUTTON_LABELS: {
-		CLAIM: 'Receber',
-		UNCLAIM: 'Cancelar recebimento',
-		COMPLETE: 'Encaminhar',
-		UNCOMPLETE: 'Cancelar encaminhar',
+	BUTTON_TYPES: {
+		CLAIM: 'claim',
+		UNCLAIM: 'unclaim',
+		COMPLETE: 'complete',
+		UNCOMPLETE: 'uncomplete'
 	}
 }

@@ -1,28 +1,28 @@
 <template>
 	<div class="d-flex justify-center align-center">
 		<v-select
-			class="pr-4"
+			v-bind="selectMergedAttrs"
 			v-model="selectedTask"
-			:selected="selectedTask"
 			:items="select.items"
 			:label="select.label"
 			v-show="select.show"
 			:disabled="select.disabled"
 		></v-select>
 		<v-btn
-			v-for="button in buttons"
-			min-width="100"
-			v-show="button.show"
-			:disabled="button.disabled"
-			@click="button.action(selectedTask, bpmParameter)"
+			v-for="buttonType of buttonTypes"
+			v-bind="buttonAttrs[buttonType]"
+			v-show="button[buttonType].show"
+			:disabled="button[buttonType].disabled"
+			@click="buttonActions[buttonType]"
 		>
-			{{ button.label }}
+			{{ button[buttonType].label }}
 		</v-btn>
 	</div>
 </template>
 
 <script>
 import AzBpmInteraction from "./AzBpmInteraction"
+import bpmConstants from "./bpm-constants"
 
 export default {
 	name: "AzBpmAction",
@@ -34,12 +34,51 @@ export default {
 		bpmParameter: {
 			default: () => ({}),
 			type: Object
+		},
+		selectAttrs: {
+			default: () => ({}),
+			type: Object
+		},
+		buttonsAttrs: {
+			default: () => ({}),
+			type: Object
+		},
+		buttonClaimAttrs: {
+			default: () => ({}),
+			type: Object
+		},
+		buttonUnclaimAttrs: {
+			default: () => ({}),
+			type: Object
+		},
+		buttonCompleteAttrs: {
+			default: () => ({}),
+			type: Object
+		},
+		buttonUncompleteAttrs: {
+			default: () => ({}),
+			type: Object
 		}
 	},
 	data() {
 		return {
 			selectedTask: '',
-			closestBpmInteraction: null
+			closestBpmInteraction: null,
+			selectDefaultAttrs: {},
+			buttonsDefaultAttrs: {
+				color: 'primary',
+				text: true,
+				class: 'ml-4'
+			},
+			buttonClaimDefaultAttrs: {},
+			buttonUnclaimDefaultAttrs: {
+				outlined: true
+			},
+			buttonCompleteDefaultAttrs: {},
+			buttonUncompleteDefaultAttrs: {
+				outlined: true
+			},
+			buttonTypes: bpmConstants.BUTTON_TYPES
 		}
 	},
 	methods: {
@@ -55,6 +94,20 @@ export default {
 			}
 
 			return this.findClosestBpmInteraction(vm.$parent)
+		},
+		mergeAttrs(...attrs) {
+			return Object.assign({}, ...attrs)
+		},
+		mergeButtonAttrs(...buttonAttrs) {
+			return this.mergeAttrs(
+				this.buttonsMergedAttrs,
+				...buttonAttrs
+			)
+		},
+		createButtonAction(buttonType, ...actionArgs) {
+			return {
+				[buttonType]: () => this.button[buttonType].action(...actionArgs)
+			}
 		}
 	},
 	watch: {
@@ -65,6 +118,40 @@ export default {
 		}
 	},
 	computed: {
+		selectMergedAttrs() {
+			return this.mergeAttrs(this.selectDefaultAttrs, this.selectAttrs)
+		},
+		buttonAttrs() {
+			return {
+				[bpmConstants.BUTTON_TYPES.CLAIM]: this.buttonClaimMergedAttrs,
+				[bpmConstants.BUTTON_TYPES.UNCLAIM]: this.buttonUnclaimMergedAttrs,
+				[bpmConstants.BUTTON_TYPES.COMPLETE]: this.buttonCompleteMergedAttrs,
+				[bpmConstants.BUTTON_TYPES.UNCOMPLETE]: this.buttonUncompleteMergedAttrs
+			}
+		},
+		buttonActions() {
+			return this.mergeAttrs(
+				this.createButtonAction(bpmConstants.BUTTON_TYPES.CLAIM),
+				this.createButtonAction(bpmConstants.BUTTON_TYPES.UNCLAIM),
+				this.createButtonAction(bpmConstants.BUTTON_TYPES.COMPLETE, this.selectedTask, this.bpmParameter),
+				this.createButtonAction(bpmConstants.BUTTON_TYPES.UNCOMPLETE),
+			)
+		},
+		buttonsMergedAttrs() {
+			return this.mergeAttrs(this.buttonsDefaultAttrs, this.buttonsAttrs)
+		},
+		buttonClaimMergedAttrs() {
+			return this.mergeButtonAttrs(this.buttonClaimDefaultAttrs, this.buttonClaimAttrs)
+		},
+		buttonUnclaimMergedAttrs() {
+			return this.mergeButtonAttrs(this.buttonUnclaimDefaultAttrs, this.buttonUnclaimAttrs)
+		},
+		buttonCompleteMergedAttrs() {
+			return this.mergeButtonAttrs(this.buttonCompleteDefaultAttrs, this.buttonCompleteAttrs)
+		},
+		buttonUncompleteMergedAttrs() {
+			return this.mergeButtonAttrs(this.buttonUncompleteDefaultAttrs, this.buttonUncompleteAttrs)
+		},
 		firstItem() {
 			return this.select.items[0] || {}
 		},
@@ -89,9 +176,9 @@ export default {
 		select() {
 			return this.components.select || {}
 		},
-		buttons() {
+		button() {
 			return this.components.button || {}
-		},
+		}
 	},
 	created() {
 		this.closestBpmInteraction = this.findClosestBpmInteraction(this.$parent)
