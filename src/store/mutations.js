@@ -191,4 +191,25 @@ export default {
     [mutationTypes.FLOWBEE.SET_ACCESS_TOKEN](state, token) {
         state.flowbee.accessToken = token
     },
+
+	[mutationTypes.BPM.INITIALIZE_PROCESS_INSTANCE](state, { processKey, businessKey }) {
+		if (!state.bpm[processKey]) {
+			Vue.set(state.bpm, processKey, {})
+		}
+
+		if (!state.bpm[processKey][businessKey]) {
+			Vue.set(state.bpm[processKey], businessKey, {
+				processInstance: null,
+				isLoading: false
+			})
+		}
+	},
+
+	[mutationTypes.BPM.SET_PROCESS_INSTANCE](state, { processKey, businessKey, processInstance }) {
+		state.bpm[processKey][businessKey].processInstance = processInstance
+	},
+
+	[mutationTypes.BPM.SET_IS_LOADING_PROCESS_INSTANCE](state, { processKey, businessKey, isLoading }) {
+		state.bpm[processKey][businessKey].isLoading = isLoading
+	},
 }
