@@ -18,7 +18,7 @@ export default {
         },
     },
     BPM: {
-		PROCESS_INSTANCE: 'getProcessInstance',
+		GET_PROCESS_INSTANCE: 'getProcessInstance',
 		CLAIM: 'getTaskAccess',
 		UNCLAIM: 'releaseTaskAccess',
 		COMPLETE: 'goToNextTask',
