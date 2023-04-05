@@ -46,18 +46,18 @@ export default {
         initializeProcessInstance() {
             return this.$store.commit(mutationTypes.BPM.INITIALIZE_PROCESS_INSTANCE, this.processInstanceParams)
         },
-        dispatchBpmActionOnCurrentTask(actionType, bpmVariables) {
-            const args = this.createBpmArgumentsOnCurrentTask(bpmVariables)
+        dispatchBpmActionOnCurrentTask(actionType, bpmParameters) {
+            const args = this.createBpmArgumentsOnCurrentTask(bpmParameters)
             return this.$store.dispatch(actionType, args).then(() => this.getProcessInstance())
         },
-        createBpmArgumentsOnCurrentTask(bpmVariables = {}) {
+        createBpmArgumentsOnCurrentTask(bpmParameters = {}) {
             return {
                 taskId: this.currentTask.id,
-                bpmVariables,
+                bpmParameters,
             }
         },
         splitCommaSeparatedTextToArray(text) {
-            return text.replaceAll(/\s+/g, '').split(',').filter(Boolean)
+            return text.replace(/\s+/g, '').split(',').filter(Boolean)
         },
     },
     computed: {
@@ -228,7 +228,7 @@ export default {
             return !this.hasNextTasks ? 'Finalizar' : 'Encaminhar'
         },
         buttonCompleteAction() {
-            return (bpmVariables) => this.dispatchBpmActionOnCurrentTask(actionTypes.BPM.COMPLETE, bpmVariables)
+            return (bpmParameters) => this.dispatchBpmActionOnCurrentTask(actionTypes.BPM.COMPLETE, bpmParameters)
         },
         buttonUncompleteShow() {
             return Boolean(this.isStatusInstanceActive && !this.assignee && !this.isFirstTask)
@@ -291,9 +291,9 @@ export default {
             return !this.disabled && !this.isLoadingProcessInstance && this.hasAuthorityToInteraction
         },
     },
-    async created() {
+    created() {
         this.initializeProcessInstance()
-        await this.getProcessInstance()
+        this.getProcessInstance()
     },
 }
 </script>

@@ -14,7 +14,7 @@
             v-bind="buttonAttrs[buttonType]"
             v-show="button[buttonType].show"
             :disabled="button[buttonType].disabled"
-            @click="button[buttonType].action(bpmMergedVariables)"
+            @click="button[buttonType].action(bpmMergedParameters)"
         >
             {{ button[buttonType].label }}
         </v-btn>
@@ -32,7 +32,7 @@ export default {
             default: false,
             type: Boolean,
         },
-        bpmVariables: {
+        bpmParameters: {
             default: () => ({}),
             type: Object,
         },
@@ -107,10 +107,10 @@ export default {
         },
     },
     computed: {
-        bpmMergedVariables() {
-            return this.mergeAttrs(this.bpmDefaultVariables, this.bpmVariables)
+        bpmMergedParameters() {
+            return this.mergeAttrs(this.bpmDefaultParameters, this.bpmParameters)
         },
-        bpmDefaultVariables() {
+        bpmDefaultParameters() {
             return {
                 humanDecision: this.selectedTask,
             }
