@@ -94,30 +94,30 @@ export default {
 		commitWithDefault(mutationTypes.BPM.SET_IS_LOADING_PROCESS_INSTANCE, { isLoading: true })
 
 		try {
-			const response = await axios.get('api/bpm/getInstance/' + processKey+ '/' + businessKey)
-			commitWithDefault(mutationTypes.BPM.SET_PROCESS_INSTANCE, { processInstance: response.data })
+			const response = await axios.get(`${context.state.bpm.api}/getInstance/${processKey}/${businessKey}`)
+			commitWithDefault(mutationTypes.BPM.SET_PROCESS_INSTANCE, { instance: response.data })
 		} finally {
 			commitWithDefault(mutationTypes.BPM.SET_IS_LOADING_PROCESS_INSTANCE, { isLoading: false })
 		}
 	},
 
 	async [actionTypes.BPM.CLAIM](context, { taskId }) {
-		const response = await axios.get('api/bpm/claim/' + taskId)
+		const response = await axios.get(`${context.state.bpm.api}/claim/${taskId}`)
 		return response.data
 	},
 
 	async [actionTypes.BPM.UNCLAIM](context, { taskId }) {
-		const response = await axios.get('api/bpm/unclaim/' + taskId)
+		const response = await axios.get(`${context.state.bpm.api}/unclaim/${taskId}`)
 		return response.data
 	},
 
-	async [actionTypes.BPM.COMPLETE](context, { taskId, bpmParameter }) {
-		const response = await axios.post('api/bpm/complete/' + taskId, bpmParameter)
+	async [actionTypes.BPM.COMPLETE](context, { taskId, bpmVariables }) {
+		const response = await axios.post(`${context.state.bpm.api}/complete/${taskId}`, bpmVariables)
 		return response.data
 	},
 
 	async [actionTypes.BPM.UNCOMPLETE](context, { taskId }) {
-		const response = await axios.get('api/bpm/uncomplete/' + taskId)
+		const response = await axios.get(`${context.state.bpm.api}/uncomplete/${taskId}`)
 		return response.data
 	},
 }

@@ -13,7 +13,7 @@
 			v-bind="buttonAttrs[buttonType]"
 			v-show="button[buttonType].show"
 			:disabled="button[buttonType].disabled"
-			@click="buttonActions[buttonType]"
+			@click="button[buttonType].action(bpmMergedVariables)"
 		>
 			{{ button[buttonType].label }}
 		</v-btn>
@@ -31,15 +31,11 @@ export default {
 			default: false,
 			type: Boolean
 		},
-		bpmParameter: {
+		bpmVariables: {
 			default: () => ({}),
 			type: Object
 		},
 		selectAttrs: {
-			default: () => ({}),
-			type: Object
-		},
-		buttonsAttrs: {
 			default: () => ({}),
 			type: Object
 		},
@@ -65,31 +61,31 @@ export default {
 			selectedTask: '',
 			closestBpmInteraction: null,
 			selectDefaultAttrs: {},
-			buttonsDefaultAttrs: {
+			buttonDefaultAttrs: {
 				color: 'primary',
-				text: true,
 				class: 'ml-4'
 			},
 			buttonClaimDefaultAttrs: {},
 			buttonUnclaimDefaultAttrs: {
-				outlined: true
+				text: true
 			},
 			buttonCompleteDefaultAttrs: {},
 			buttonUncompleteDefaultAttrs: {
-				outlined: true
+				text: true
 			},
 			buttonTypes: bpmConstants.BUTTON_TYPES
 		}
 	},
 	methods: {
+		isBpmInteraction(vm) {
+			return vm && vm.$options && vm.$options.name === AzBpmInteraction.name
+		},
 		findClosestBpmInteraction(vm) {
 			if (!vm) {
-				const error = new Error(`${this.$options.name} must be inside ${AzBpmInteraction.name}`)
-				console.error(error)
-				throw error
+				throw new Error(`${this.$options.name} must be inside ${AzBpmInteraction.name}`)
 			}
 
-			if (vm.$options.name === AzBpmInteraction.name) {
+			if (this.isBpmInteraction(vm)) {
 				return vm
 			}
 
@@ -99,15 +95,7 @@ export default {
 			return Object.assign({}, ...attrs)
 		},
 		mergeButtonAttrs(...buttonAttrs) {
-			return this.mergeAttrs(
-				this.buttonsMergedAttrs,
-				...buttonAttrs
-			)
-		},
-		createButtonAction(buttonType, ...actionArgs) {
-			return {
-				[buttonType]: () => this.button[buttonType].action(...actionArgs)
-			}
+			return this.mergeAttrs(this.buttonDefaultAttrs, ...buttonAttrs)
 		}
 	},
 	watch: {
@@ -118,6 +106,14 @@ export default {
 		}
 	},
 	computed: {
+		bpmMergedVariables() {
+			return this.mergeAttrs(this.bpmDefaultVariables, this.bpmVariables)
+		},
+		bpmDefaultVariables() {
+			return {
+				humanDecision: this.selectedTask
+			}
+		},
 		selectMergedAttrs() {
 			return this.mergeAttrs(this.selectDefaultAttrs, this.selectAttrs)
 		},
@@ -128,17 +124,6 @@ export default {
 				[bpmConstants.BUTTON_TYPES.COMPLETE]: this.buttonCompleteMergedAttrs,
 				[bpmConstants.BUTTON_TYPES.UNCOMPLETE]: this.buttonUncompleteMergedAttrs
 			}
-		},
-		buttonActions() {
-			return this.mergeAttrs(
-				this.createButtonAction(bpmConstants.BUTTON_TYPES.CLAIM),
-				this.createButtonAction(bpmConstants.BUTTON_TYPES.UNCLAIM),
-				this.createButtonAction(bpmConstants.BUTTON_TYPES.COMPLETE, this.selectedTask, this.bpmParameter),
-				this.createButtonAction(bpmConstants.BUTTON_TYPES.UNCOMPLETE),
-			)
-		},
-		buttonsMergedAttrs() {
-			return this.mergeAttrs(this.buttonsDefaultAttrs, this.buttonsAttrs)
 		},
 		buttonClaimMergedAttrs() {
 			return this.mergeButtonAttrs(this.buttonClaimDefaultAttrs, this.buttonClaimAttrs)

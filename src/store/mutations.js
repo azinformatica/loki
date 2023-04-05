@@ -193,23 +193,27 @@ export default {
     },
 
 	[mutationTypes.BPM.INITIALIZE_PROCESS_INSTANCE](state, { processKey, businessKey }) {
-		if (!state.bpm[processKey]) {
-			Vue.set(state.bpm, processKey, {})
+		if (!state.bpm.process[processKey]) {
+			Vue.set(state.bpm.process, processKey, {})
 		}
 
-		if (!state.bpm[processKey][businessKey]) {
-			Vue.set(state.bpm[processKey], businessKey, {
-				processInstance: null,
+		if (!state.bpm.process[processKey][businessKey]) {
+			Vue.set(state.bpm.process[processKey], businessKey, {
+				instance: null,
 				isLoading: false
 			})
 		}
 	},
 
-	[mutationTypes.BPM.SET_PROCESS_INSTANCE](state, { processKey, businessKey, processInstance }) {
-		state.bpm[processKey][businessKey].processInstance = processInstance
+	[mutationTypes.BPM.SET_PROCESS_INSTANCE](state, { processKey, businessKey, instance }) {
+		state.bpm.process[processKey][businessKey].instance = instance
 	},
 
 	[mutationTypes.BPM.SET_IS_LOADING_PROCESS_INSTANCE](state, { processKey, businessKey, isLoading }) {
-		state.bpm[processKey][businessKey].isLoading = isLoading
+		state.bpm.process[processKey][businessKey].isLoading = isLoading
+	},
+
+	[mutationTypes.BPM.SET_BPM_API_URL](state, { url }) {
+		state.bpm.api = url
 	},
 }

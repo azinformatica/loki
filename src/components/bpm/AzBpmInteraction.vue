@@ -51,11 +51,15 @@ export default {
 		initializeProcessInstance() {
 			return this.$store.commit(mutationTypes.BPM.INITIALIZE_PROCESS_INSTANCE, this.processInstanceParams)
 		},
-		dispatchBpmAction(actionType, { taskId, bpmParameter }) {
-			return this.$store.dispatch(actionType, { taskId, bpmParameter })
+		dispatchBpmActionOnCurrentTask(actionType, bpmVariables) {
+			const args = this.createBpmArgumentsOnCurrentTask(bpmVariables)
+			return this.$store.dispatch(actionType, args).then(() => this.getProcessInstance())
 		},
-		dispatchBpmActionThenReloadProcessInstance(actionType, taskId, bpmParameter = {}) {
-			return this.dispatchBpmAction(actionType, { taskId, bpmParameter }).then(() => this.getProcessInstance())
+		createBpmArgumentsOnCurrentTask(bpmVariables = {}) {
+			return {
+				taskId: this.currentTask.id,
+				bpmVariables
+			}
 		},
 		splitCommaSeparatedTextToArray(text) {
 			return text
@@ -75,13 +79,13 @@ export default {
 			return this.$store.state.loki.bpm
 		},
 		bpmAtProcessKey() {
-			return this.bpm[this.processKey] || {}
+			return this.bpm.process[this.processKey] || {}
 		},
 		bpmAtProcessKeyAtBusinessKey() {
 			return this.bpmAtProcessKey[this.businessKey] || {}
 		},
 		processInstance() {
-			return this.bpmAtProcessKeyAtBusinessKey.processInstance || null
+			return this.bpmAtProcessKeyAtBusinessKey.instance || null
 		},
         user() {
 			return this.$store.state.loki.user
@@ -206,10 +210,7 @@ export default {
 			return 'Receber'
 		},
 		buttonClaimAction() {
-			return () => this.dispatchBpmActionThenReloadProcessInstance(
-				actionTypes.BPM.CLAIM,
-				this.currentTask.id
-			)
+			return () => this.dispatchBpmActionOnCurrentTask(actionTypes.BPM.CLAIM)
 		},
 		buttonUnclaimShow() {
 			return Boolean(this.isStatusInstanceActive && this.assignee)
@@ -221,10 +222,7 @@ export default {
 			return 'Cancelar recebimento'
 		},
 		buttonUnclaimAction() {
-			return () => this.dispatchBpmActionThenReloadProcessInstance(
-				actionTypes.BPM.UNCLAIM,
-				this.currentTask.id
-			)
+			return () => this.dispatchBpmActionOnCurrentTask(actionTypes.BPM.UNCLAIM)
 		},
 		buttonCompleteShow() {
 			return Boolean(this.isStatusInstanceActive && this.assignee)
@@ -238,18 +236,7 @@ export default {
 				: 'Encaminhar'
 		},
 		buttonCompleteAction() {
-			return (taskId, bpmParameter = {}) => {
-				const argumento = _.cloneDeep(bpmParameter)
-				if (taskId) {
-					argumento.humanDecision = taskId
-				}
-
-				return this.dispatchBpmActionThenReloadProcessInstance(
-					actionTypes.BPM.COMPLETE,
-					this.currentTask.id,
-					argumento
-				)
-			}
+			return (bpmVariables) => this.dispatchBpmActionOnCurrentTask(actionTypes.BPM.COMPLETE, bpmVariables)
 		},
 		buttonUncompleteShow() {
 			return Boolean(this.isStatusInstanceActive && !this.assignee && !this.isFirstTask)
@@ -261,10 +248,7 @@ export default {
 			return 'Cancelar encaminhamento'
 		},
 		buttonUncompleteAction() {
-			return () => this.dispatchBpmActionThenReloadProcessInstance(
-				actionTypes.BPM.UNCOMPLETE,
-				this.currentTask.id
-			)
+			return () => this.dispatchBpmActionOnCurrentTask(actionTypes.BPM.UNCOMPLETE)
 		},
 		isFirstTask() {
 			return this.currentTask.firstTask || false
