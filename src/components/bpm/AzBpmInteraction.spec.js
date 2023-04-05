@@ -1,13 +1,11 @@
 import Vue from 'vue'
-import Vuetify from 'vuetify'
 import AzBpmInteraction from './AzBpmInteraction'
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils'
 import Vuex from 'vuex'
-import { actionTypes } from '@/store'
+import bpmConstants from './bpm-constants'
 
 const localVue = createLocalVue()
 Vue.use(Vuex)
-Vue.use(Vuetify)
 
 const createDefaultProps = () => {
     return {
@@ -19,32 +17,54 @@ const createDefaultProps = () => {
     }
 }
 
-const createStoreState = () => ({
+const createStoreState = ({ propsData }) => ({
     loki: {
         user: {
+            name: '',
             authorities: [],
+            roles: [],
+        },
+        bpm: {
+            api: 'api/bpm',
+            process: {
+                [propsData.processKey]: {
+                    [propsData.businessKey]: {
+                        instance: createProcessInstanceMock(),
+                        isLoading: false,
+                    },
+                },
+            },
         },
     },
 })
 
-const createStoreActions = () => ({
-    [actionTypes.BPM.PROCESS_INSTANCE]: jest.fn(),
-})
+const updateStateProcess = ({ state, propsData }, callback) => {
+    const process = state.loki.bpm.process[propsData.processKey][propsData.businessKey]
+    return callback(process)
+}
 
 const createStore = ({ state } = {}) => {
-    const actions = createStoreActions()
-
-    return new Vuex.Store({
+    const store = new Vuex.Store({
         state,
-        actions,
     })
+
+    store.dispatch = jest.fn()
+    store.commit = jest.fn()
+
+    return store
 }
 
 const createProcessInstanceMock = () => ({
+    statusInstance: bpmConstants.STATUS_INSTANCE.ACTIVE,
     currentTask: {
+        assignee: null,
         candidateGroups: [],
-        candidateUsers: ['admin'],
-        revokedPermissions: 'Permission.Mock1,Permission.Mock2',
+        candidateUsers: [],
+        revokedPermissions: '',
+    },
+    previousTask: {
+        candidateGroups: [],
+        assignee: null,
     },
 })
 
@@ -55,9 +75,7 @@ const createWrapper = ({ propsData = {}, store, shallow = true }) => {
         store,
     }
     const mountingFunction = shallow ? shallowMount : mount
-    const wrapper = mountingFunction(AzBpmInteraction, options)
-    wrapper.vm.getProcessInstance = jest.fn(() => createProcessInstanceMock())
-    return wrapper
+    return mountingFunction(AzBpmInteraction, options)
 }
 
 describe('AzBpmInteraction.spec.js', () => {
@@ -65,9 +83,9 @@ describe('AzBpmInteraction.spec.js', () => {
 
     beforeEach(() => {
         propsData = createDefaultProps()
-        state = createStoreState()
+        state = createStoreState({ propsData })
         store = createStore({ state })
-        wrapper = createWrapper({ propsData, store })
+        wrapper = createWrapper({ propsData, store, shallow: false })
     })
 
     describe('Props', () => {
@@ -89,20 +107,8 @@ describe('AzBpmInteraction.spec.js', () => {
             expect(wrapper.props().businessKey).toEqual(propsData.businessKey)
         })
 
-        it('Should throw error if businessKey is not provided', () => {
-            propsData.businessKey = undefined
-            wrapper = createWrapper({ propsData, store })
-            expect(wrapper.props().businessKey).toEqual('')
-        })
-
         it('Should receive processKey', () => {
             expect(wrapper.props().processKey).toEqual(propsData.processKey)
-        })
-
-        it('Should throw error if processKey is not provided', () => {
-            propsData.processKey = undefined
-            wrapper = createWrapper({ propsData, store })
-            expect(wrapper.props().processKey).toEqual('')
         })
 
         it('Should receive disabled', () => {
@@ -117,14 +123,153 @@ describe('AzBpmInteraction.spec.js', () => {
     })
 
     describe('hasAuthority', () => {
-        it('Should receive id', () => {
-            state = createStoreState()
-            state.loki.user.authorities = []
+        it('Should be false if bpm interaction is disabled', () => {
+            propsData.disabled = true
+            wrapper = createWrapper({ propsData, store })
 
+            expect(wrapper.vm.hasAuthority).toBe(false)
+        })
+
+        it('Should be false if process instance is loading', () => {
+            updateStateProcess({ state, propsData }, (process) => {
+                process.isLoading = true
+            })
             store = createStore({ state })
-            wrapper = createWrapper({ propsData, state })
+            wrapper = createWrapper({ propsData, store })
 
-            expect(wrapper.props().id).toEqual(propsData.id)
+            expect(wrapper.vm.hasAuthority).toBe(false)
+        })
+
+        it('Should be false if has some revoked authority', () => {
+            state.loki.user.roles = ['authority-example-01']
+            updateStateProcess({ state, propsData }, (process) => {
+                process.instance.currentTask.revokedPermissions = 'authority-example-01'
+            })
+            store = createStore({ state })
+            wrapper = createWrapper({ propsData, store })
+
+            expect(wrapper.vm.hasAuthority).toBe(false)
+        })
+
+        it('Should be false if there are authorities in props and user has no authority included in them', () => {
+            propsData.authorities = ['authority-example-01']
+            state.loki.user.authorities = [
+                {
+                    hasAccess: true,
+                    name: 'authority-example-02',
+                },
+            ]
+            store = createStore({ state })
+            wrapper = createWrapper({ propsData, store })
+
+            expect(wrapper.vm.hasAuthority).toBe(false)
+        })
+
+        it('Should be false if status instance is ended', () => {
+            propsData.authorities = ['authority-example-01']
+            state.loki.user.authorities = [
+                {
+                    hasAccess: true,
+                    name: 'authority-example-01',
+                },
+            ]
+            updateStateProcess({ state, propsData }, (process) => {
+                process.instance.statusInstance = bpmConstants.STATUS_INSTANCE.ENDED
+            })
+            store = createStore({ state })
+            wrapper = createWrapper({ propsData, store })
+
+            expect(wrapper.vm.hasAuthority).toBe(false)
+        })
+
+        it('Should be false if status instance is active without assignee', () => {
+            propsData.authorities = ['authority-example-01']
+            state.loki.user.authorities = [
+                {
+                    hasAccess: true,
+                    name: 'authority-example-01',
+                },
+            ]
+            updateStateProcess({ state, propsData }, (process) => {
+                process.instance.statusInstance = bpmConstants.STATUS_INSTANCE.ACTIVE
+                process.instance.currentTask.assignee = null
+            })
+            store = createStore({ state })
+            wrapper = createWrapper({ propsData, store })
+
+            expect(wrapper.vm.hasAuthority).toBe(false)
+        })
+
+        it('Should be false if user is not a candidate user and does not belong to candidate group', () => {
+            propsData.authorities = ['authority-example-01']
+            state.loki.user.name = 'user-name-example-01'
+            state.loki.user.roles = ['user-role-example-01']
+            state.loki.user.authorities = [
+                {
+                    hasAccess: true,
+                    name: 'authority-example-01',
+                },
+            ]
+            updateStateProcess({ state, propsData }, (process) => {
+                process.instance.statusInstance = bpmConstants.STATUS_INSTANCE.ACTIVE
+                process.instance.currentTask.assignee = {
+                    name: 'assignee-example-01',
+                }
+                process.instance.currentTask.candidateUsers = ['user-name-example-02']
+                process.instance.currentTask.candidateGroups = ['user-role-example-02']
+            })
+            store = createStore({ state })
+            wrapper = createWrapper({ propsData, store })
+
+            expect(wrapper.vm.hasAuthority).toBe(false)
+        })
+
+        it('Should be true if user is a candidate user', () => {
+            propsData.authorities = ['authority-example-01']
+            state.loki.user.name = 'user-name-example-01'
+            state.loki.user.roles = ['user-role-example-01']
+            state.loki.user.authorities = [
+                {
+                    hasAccess: true,
+                    name: 'authority-example-01',
+                },
+            ]
+            updateStateProcess({ state, propsData }, (process) => {
+                process.instance.statusInstance = bpmConstants.STATUS_INSTANCE.ACTIVE
+                process.instance.currentTask.assignee = {
+                    name: 'assignee-example-01',
+                }
+                process.instance.currentTask.candidateUsers = ['user-name-example-01']
+                process.instance.currentTask.candidateGroups = ['user-role-example-02']
+            })
+            store = createStore({ state })
+            wrapper = createWrapper({ propsData, store })
+
+            expect(wrapper.vm.hasAuthority).toBe(true)
+        })
+
+        it('Should be true if user belongs to candidate group', () => {
+            propsData.authorities = ['authority-example-01']
+            state.loki.user.name = 'user-name-example-01'
+            state.loki.user.roles = ['user-role-example-01']
+            state.loki.user.authorities = [
+                {
+                    hasAccess: true,
+                    name: 'authority-example-01',
+                },
+            ]
+            updateStateProcess({ state, propsData }, (process) => {
+                process.instance.statusInstance = bpmConstants.STATUS_INSTANCE.ACTIVE
+                process.instance.currentTask.assignee = {
+                    name: 'assignee-example-01',
+                }
+                process.instance.currentTask.candidateUsers = ['user-name-example-02']
+                process.instance.currentTask.candidateGroups = ['user-role-example-01']
+            })
+            store = createStore({ state })
+            wrapper = createWrapper({ propsData, store })
+
+            expect(wrapper.vm.hasAuthority).toBe(true)
         })
     })
 })
