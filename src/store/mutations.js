@@ -192,28 +192,28 @@ export default {
         state.flowbee.accessToken = token
     },
 
-	[mutationTypes.BPM.INITIALIZE_PROCESS_INSTANCE](state, { processKey, businessKey }) {
-		if (!state.bpm.process[processKey]) {
-			Vue.set(state.bpm.process, processKey, {})
-		}
+    [mutationTypes.BPM.INITIALIZE_PROCESS_INSTANCE](state, { processKey, businessKey }) {
+        if (!state.bpm.process[processKey]) {
+            Vue.set(state.bpm.process, processKey, {})
+        }
 
-		if (!state.bpm.process[processKey][businessKey]) {
-			Vue.set(state.bpm.process[processKey], businessKey, {
-				instance: null,
-				isLoading: false
-			})
-		}
-	},
+        if (!state.bpm.process[processKey][businessKey]) {
+            Vue.set(state.bpm.process[processKey], businessKey, {
+                instance: null,
+                isLoading: false,
+            })
+        }
+    },
 
-	[mutationTypes.BPM.SET_PROCESS_INSTANCE](state, { processKey, businessKey, instance }) {
-		state.bpm.process[processKey][businessKey].instance = instance
-	},
+    [mutationTypes.BPM.SET_PROCESS_INSTANCE](state, { processKey, businessKey, instance }) {
+        state.bpm.process[processKey][businessKey].instance = instance
+    },
 
-	[mutationTypes.BPM.SET_IS_LOADING_PROCESS_INSTANCE](state, { processKey, businessKey, isLoading }) {
-		state.bpm.process[processKey][businessKey].isLoading = isLoading
-	},
+    [mutationTypes.BPM.SET_IS_LOADING_PROCESS_INSTANCE](state, { processKey, businessKey, isLoading }) {
+        state.bpm.process[processKey][businessKey].isLoading = isLoading
+    },
 
-	[mutationTypes.BPM.SET_BPM_API_URL](state, { url }) {
-		state.bpm.api = url
-	},
+    [mutationTypes.BPM.SET_BPM_API_URL](state, { url }) {
+        state.bpm.api = url
+    },
 }

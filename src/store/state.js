@@ -90,8 +90,8 @@ export default {
         license: null,
     },
 
-	bpm: {
-		api: 'api/bpm',
-		process: {}
-	}
+    bpm: {
+        api: 'api/bpm',
+        process: {},
+    },
 }
