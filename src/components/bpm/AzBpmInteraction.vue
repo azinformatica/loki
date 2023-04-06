@@ -1,6 +1,6 @@
 <template>
     <div>
-        <slot name="default" :hasAuthority="hasAuthority" :components="components" :processInstance="processInstance">
+        <slot :hasAuthority="hasAuthority" :components="components" :processInstance="processInstance">
         </slot>
     </div>
 </template>
@@ -134,10 +134,10 @@ export default {
             return {
                 select: this.select,
                 button: {
-                    [bpmConstants.BUTTON_TYPES.CLAIM]: this.buttonClaim,
-                    [bpmConstants.BUTTON_TYPES.UNCLAIM]: this.buttonUnclaim,
-                    [bpmConstants.BUTTON_TYPES.COMPLETE]: this.buttonComplete,
-                    [bpmConstants.BUTTON_TYPES.UNCOMPLETE]: this.buttonUncomplete,
+                    claim: this.buttonClaim,
+                    unclaim: this.buttonUnclaim,
+                    complete: this.buttonComplete,
+                    uncomplete: this.buttonUncomplete,
                 },
             }
         },

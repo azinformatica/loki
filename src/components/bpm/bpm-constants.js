@@ -3,10 +3,4 @@ export default {
         ACTIVE: 'ACTIVE',
         ENDED: 'ENDED',
     },
-    BUTTON_TYPES: {
-        CLAIM: 'claim',
-        UNCLAIM: 'unclaim',
-        COMPLETE: 'complete',
-        UNCOMPLETE: 'uncomplete',
-    },
 }

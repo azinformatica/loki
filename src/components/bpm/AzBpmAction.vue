@@ -23,7 +23,6 @@
 
 <script>
 import AzBpmInteraction from './AzBpmInteraction'
-import bpmConstants from './bpm-constants'
 
 export default {
     name: 'AzBpmAction',
@@ -64,7 +63,7 @@ export default {
             selectDefaultAttrs: {},
             buttonDefaultAttrs: {
                 color: 'primary',
-                class: 'ml-4',
+                class: 'ml-4 text-none',
             },
             buttonClaimDefaultAttrs: {},
             buttonUnclaimDefaultAttrs: {
@@ -74,16 +73,18 @@ export default {
             buttonUncompleteDefaultAttrs: {
                 text: true,
             },
-            buttonTypes: bpmConstants.BUTTON_TYPES,
         }
     },
     methods: {
+        getComponentName(vm) {
+            return (vm && vm.$options && vm.$options.name) || ''
+        },
         isBpmInteraction(vm) {
-            return vm && vm.$options && vm.$options.name === AzBpmInteraction.name
+            return this.getComponentName(vm) === AzBpmInteraction.name
         },
         findClosestBpmInteraction(vm) {
             if (!vm) {
-                throw new Error(`${this.$options.name} must be inside ${AzBpmInteraction.name}`)
+                throw new Error(`${this.getComponentName(this)} must be inside ${AzBpmInteraction.name}`)
             }
 
             if (this.isBpmInteraction(vm)) {
@@ -120,10 +121,10 @@ export default {
         },
         buttonAttrs() {
             return {
-                [bpmConstants.BUTTON_TYPES.CLAIM]: this.buttonClaimMergedAttrs,
-                [bpmConstants.BUTTON_TYPES.UNCLAIM]: this.buttonUnclaimMergedAttrs,
-                [bpmConstants.BUTTON_TYPES.COMPLETE]: this.buttonCompleteMergedAttrs,
-                [bpmConstants.BUTTON_TYPES.UNCOMPLETE]: this.buttonUncompleteMergedAttrs,
+                claim: this.buttonClaimMergedAttrs,
+                unclaim: this.buttonUnclaimMergedAttrs,
+                complete: this.buttonCompleteMergedAttrs,
+                uncomplete: this.buttonUncompleteMergedAttrs,
             }
         },
         buttonClaimMergedAttrs() {
@@ -164,6 +165,9 @@ export default {
         },
         button() {
             return this.components.button || {}
+        },
+        buttonTypes() {
+            return Object.keys(this.button)
         },
     },
     created() {
