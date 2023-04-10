@@ -87,18 +87,15 @@ export default {
     },
 
     async [actionTypes.BPM.GET_PROCESS_INSTANCE]({ commit, state }, { processKey, businessKey }) {
-        const defaultData = { processKey, businessKey }
-        const assignToDefault = (data) => Object.assign(defaultData, data)
-        const commitWithDefault = (mutationType, data) => commit(mutationType, assignToDefault(data))
-
-        commitWithDefault(mutationTypes.BPM.SET_IS_LOADING_PROCESS_INSTANCE, { isLoading: true })
-
-        try {
-            const response = await axios.get(`${state.bpm.api}/getInstance/${processKey}/${businessKey}`)
-            commitWithDefault(mutationTypes.BPM.SET_PROCESS_INSTANCE, { instance: response.data })
-        } finally {
-            commitWithDefault(mutationTypes.BPM.SET_IS_LOADING_PROCESS_INSTANCE, { isLoading: false })
-        }
+		if (!state.bpm.process[processKey][businessKey].isLoading) {
+			try {
+				commit(mutationTypes.BPM.SET_IS_LOADING_PROCESS_INSTANCE, { processKey, businessKey, isLoading: true })
+				const response = await axios.get(`${state.bpm.api}/getInstance/${processKey}/${businessKey}`)
+				commit(mutationTypes.BPM.SET_PROCESS_INSTANCE, { processKey, businessKey, instance: response.data })
+			} finally {
+				commit(mutationTypes.BPM.SET_IS_LOADING_PROCESS_INSTANCE, { processKey, businessKey, isLoading: false })
+			}
+		}
     },
 
     async [actionTypes.BPM.CLAIM]({ state }, { taskId }) {
