@@ -11,7 +11,7 @@
         <v-btn
             v-for="buttonType of buttonTypes"
             :key="buttonType"
-            v-bind="buttonAttrs[buttonType]"
+            v-bind="buttonMergedAttrs[buttonType]"
             v-show="button[buttonType].show"
             :disabled="button[buttonType].disabled"
             @click="button[buttonType].action(bpmMergedParameters)"
@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import AzBpmInteraction from './AzBpmInteraction'
 
 export default {
@@ -39,21 +40,14 @@ export default {
             default: () => ({}),
             type: Object,
         },
-        buttonClaimAttrs: {
+        buttonAttrs: {
             default: () => ({}),
             type: Object,
-        },
-        buttonUnclaimAttrs: {
-            default: () => ({}),
-            type: Object,
-        },
-        buttonCompleteAttrs: {
-            default: () => ({}),
-            type: Object,
-        },
-        buttonUncompleteAttrs: {
-            default: () => ({}),
-            type: Object,
+            validator: (buttonAttrs) =>
+                ['claim', 'unclaim', 'complete', 'uncomplete'].every(
+                    (buttonType) =>
+                        !buttonAttrs.hasOwnProperty(buttonType) || typeof buttonAttrs[buttonType] === 'object'
+                ),
         },
     },
     data() {
@@ -62,16 +56,10 @@ export default {
             closestBpmInteraction: null,
             selectDefaultAttrs: {},
             buttonDefaultAttrs: {
-                color: 'primary',
-                class: 'ml-4 text-none',
-            },
-            buttonClaimDefaultAttrs: {},
-            buttonUnclaimDefaultAttrs: {
-                text: true,
-            },
-            buttonCompleteDefaultAttrs: {},
-            buttonUncompleteDefaultAttrs: {
-                text: true,
+                claim: {},
+                unclaim: {},
+                complete: {},
+                uncomplete: {},
             },
         }
     },
@@ -93,12 +81,6 @@ export default {
 
             return this.findClosestBpmInteraction(vm.$parent)
         },
-        mergeAttrs(...attrs) {
-            return Object.assign({}, ...attrs)
-        },
-        mergeButtonAttrs(...buttonAttrs) {
-            return this.mergeAttrs(this.buttonDefaultAttrs, ...buttonAttrs)
-        },
     },
     watch: {
         select() {
@@ -109,35 +91,12 @@ export default {
     },
     computed: {
         bpmMergedParameters() {
-            return this.mergeAttrs(this.bpmDefaultParameters, this.bpmParameters)
+            return _.merge({}, this.bpmDefaultParameters, this.bpmParameters)
         },
         bpmDefaultParameters() {
             return {
                 humanDecision: this.selectedTask,
             }
-        },
-        selectMergedAttrs() {
-            return this.mergeAttrs(this.selectDefaultAttrs, this.selectAttrs)
-        },
-        buttonAttrs() {
-            return {
-                claim: this.buttonClaimMergedAttrs,
-                unclaim: this.buttonUnclaimMergedAttrs,
-                complete: this.buttonCompleteMergedAttrs,
-                uncomplete: this.buttonUncompleteMergedAttrs,
-            }
-        },
-        buttonClaimMergedAttrs() {
-            return this.mergeButtonAttrs(this.buttonClaimDefaultAttrs, this.buttonClaimAttrs)
-        },
-        buttonUnclaimMergedAttrs() {
-            return this.mergeButtonAttrs(this.buttonUnclaimDefaultAttrs, this.buttonUnclaimAttrs)
-        },
-        buttonCompleteMergedAttrs() {
-            return this.mergeButtonAttrs(this.buttonCompleteDefaultAttrs, this.buttonCompleteAttrs)
-        },
-        buttonUncompleteMergedAttrs() {
-            return this.mergeButtonAttrs(this.buttonUncompleteDefaultAttrs, this.buttonUncompleteAttrs)
         },
         firstItem() {
             return this.select.items[0] || {}
@@ -163,11 +122,17 @@ export default {
         select() {
             return this.components.select || {}
         },
+        selectMergedAttrs() {
+            return _.merge({}, this.selectDefaultAttrs, this.selectAttrs)
+        },
         button() {
             return this.components.button || {}
         },
         buttonTypes() {
             return Object.keys(this.button)
+        },
+        buttonMergedAttrs() {
+            return _.merge({}, this.buttonDefaultAttrs, this.buttonAttrs)
         },
     },
     created() {
@@ -175,5 +140,3 @@ export default {
     },
 }
 </script>
-
-<style scoped></style>

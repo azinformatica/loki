@@ -10,7 +10,7 @@ Vue.use(Vuex)
 const createDefaultProps = () => {
     return {
         id: 'az-interaction-id-example',
-        authorities: [],
+        authorities: ['authority-example-01'],
         businessKey: 'business-key-example',
         processKey: 'process-key-example',
         disabled: false,
@@ -20,9 +20,14 @@ const createDefaultProps = () => {
 const createStoreState = ({ propsData }) => ({
     loki: {
         user: {
-            name: '',
-            authorities: [],
-            roles: [],
+            name: 'user-name-example-01',
+            authorities: [
+                {
+                    hasAccess: true,
+                    name: 'authority-example-01',
+                },
+            ],
+            roles: ['user-role-example-01'],
         },
         bpm: {
             api: 'api/bpm',
@@ -38,9 +43,8 @@ const createStoreState = ({ propsData }) => ({
     },
 })
 
-const updateStateProcess = ({ state, propsData }, callback) => {
-    const process = state.loki.bpm.process[propsData.processKey][propsData.businessKey]
-    return callback(process)
+const getProcess = ({ state, propsData }) => {
+    return state.loki.bpm.process[propsData.processKey][propsData.businessKey]
 }
 
 const createStore = ({ state } = {}) => {
@@ -57,33 +61,56 @@ const createStore = ({ state } = {}) => {
 const createProcessInstanceMock = () => ({
     statusInstance: bpmConstants.STATUS_INSTANCE.ACTIVE,
     currentTask: {
-        assignee: null,
-        candidateGroups: [],
-        candidateUsers: [],
+        assignee: {
+            name: 'user-name-example-01',
+        },
+        candidateGroups: ['user-role-example-01'],
+        candidateUsers: ['user-name-example-01'],
         revokedPermissions: '',
+        firstTask: false,
     },
+    nextTasks: [
+        {
+            taskId: 'next-user-task-01',
+            taskName: 'Next user task 01',
+            flowExpression: '${humanDecision == "next-user-task-01"}',
+        },
+    ],
     previousTask: {
-        candidateGroups: [],
-        assignee: null,
+        assignee: 'user-name-example-01',
+        candidateGroups: ['user-role-example-01'],
     },
 })
 
+const createScopedSlots = () => ({
+    default: `
+        <template>
+            {{ !!props.hasAuthority }}
+            {{ !!props.processInstance }}
+            {{ !!props.components }}
+        </template>
+    `,
+})
+
 const createWrapper = ({ propsData = {}, store, shallow = true }) => {
+    const scopedSlots = createScopedSlots()
     const options = {
         localVue,
         propsData,
         store,
+        scopedSlots,
     }
     const mountingFunction = shallow ? shallowMount : mount
     return mountingFunction(AzBpmInteraction, options)
 }
 
 describe('AzBpmInteraction.spec.js', () => {
-    let propsData, state, store, wrapper
+    let propsData, state, process, store, wrapper
 
     beforeEach(() => {
         propsData = createDefaultProps()
         state = createStoreState({ propsData })
+        process = getProcess({ state, propsData })
         store = createStore({ state })
         wrapper = createWrapper({ propsData, store, shallow: false })
     })
@@ -131,9 +158,7 @@ describe('AzBpmInteraction.spec.js', () => {
         })
 
         it('Should be false if process instance is loading', () => {
-            updateStateProcess({ state, propsData }, (process) => {
-                process.isLoading = true
-            })
+            process.isLoading = true
             store = createStore({ state })
             wrapper = createWrapper({ propsData, store })
 
@@ -141,10 +166,7 @@ describe('AzBpmInteraction.spec.js', () => {
         })
 
         it('Should be false if has some revoked authority', () => {
-            state.loki.user.roles = ['authority-example-01']
-            updateStateProcess({ state, propsData }, (process) => {
-                process.instance.currentTask.revokedPermissions = 'authority-example-01'
-            })
+            process.instance.currentTask.revokedPermissions = 'authority-example-01'
             store = createStore({ state })
             wrapper = createWrapper({ propsData, store })
 
@@ -152,30 +174,23 @@ describe('AzBpmInteraction.spec.js', () => {
         })
 
         it('Should be false if there are authorities in props and user has no authority included in them', () => {
-            propsData.authorities = ['authority-example-01']
-            state.loki.user.authorities = [
-                {
-                    hasAccess: true,
-                    name: 'authority-example-02',
-                },
-            ]
+            propsData.authorities = ['authority-example-02']
             store = createStore({ state })
             wrapper = createWrapper({ propsData, store })
 
             expect(wrapper.vm.hasAuthority).toBe(false)
         })
 
+        it('Should be true if authorities in props is empty', () => {
+            propsData.authorities = []
+            store = createStore({ state })
+            wrapper = createWrapper({ propsData, store })
+
+            expect(wrapper.vm.hasAuthority).toBe(true)
+        })
+
         it('Should be false if status instance is ended', () => {
-            propsData.authorities = ['authority-example-01']
-            state.loki.user.authorities = [
-                {
-                    hasAccess: true,
-                    name: 'authority-example-01',
-                },
-            ]
-            updateStateProcess({ state, propsData }, (process) => {
-                process.instance.statusInstance = bpmConstants.STATUS_INSTANCE.ENDED
-            })
+            process.instance.statusInstance = bpmConstants.STATUS_INSTANCE.ENDED
             store = createStore({ state })
             wrapper = createWrapper({ propsData, store })
 
@@ -183,17 +198,8 @@ describe('AzBpmInteraction.spec.js', () => {
         })
 
         it('Should be false if status instance is active without assignee', () => {
-            propsData.authorities = ['authority-example-01']
-            state.loki.user.authorities = [
-                {
-                    hasAccess: true,
-                    name: 'authority-example-01',
-                },
-            ]
-            updateStateProcess({ state, propsData }, (process) => {
-                process.instance.statusInstance = bpmConstants.STATUS_INSTANCE.ACTIVE
-                process.instance.currentTask.assignee = null
-            })
+            process.instance.statusInstance = bpmConstants.STATUS_INSTANCE.ACTIVE
+            process.instance.currentTask.assignee = null
             store = createStore({ state })
             wrapper = createWrapper({ propsData, store })
 
@@ -201,23 +207,8 @@ describe('AzBpmInteraction.spec.js', () => {
         })
 
         it('Should be false if user is not a candidate user and does not belong to candidate group', () => {
-            propsData.authorities = ['authority-example-01']
-            state.loki.user.name = 'user-name-example-01'
-            state.loki.user.roles = ['user-role-example-01']
-            state.loki.user.authorities = [
-                {
-                    hasAccess: true,
-                    name: 'authority-example-01',
-                },
-            ]
-            updateStateProcess({ state, propsData }, (process) => {
-                process.instance.statusInstance = bpmConstants.STATUS_INSTANCE.ACTIVE
-                process.instance.currentTask.assignee = {
-                    name: 'assignee-example-01',
-                }
-                process.instance.currentTask.candidateUsers = ['user-name-example-02']
-                process.instance.currentTask.candidateGroups = ['user-role-example-02']
-            })
+            process.instance.currentTask.candidateUsers = ['user-name-example-02']
+            process.instance.currentTask.candidateGroups = ['user-role-example-02']
             store = createStore({ state })
             wrapper = createWrapper({ propsData, store })
 
@@ -225,23 +216,7 @@ describe('AzBpmInteraction.spec.js', () => {
         })
 
         it('Should be true if user is a candidate user', () => {
-            propsData.authorities = ['authority-example-01']
-            state.loki.user.name = 'user-name-example-01'
-            state.loki.user.roles = ['user-role-example-01']
-            state.loki.user.authorities = [
-                {
-                    hasAccess: true,
-                    name: 'authority-example-01',
-                },
-            ]
-            updateStateProcess({ state, propsData }, (process) => {
-                process.instance.statusInstance = bpmConstants.STATUS_INSTANCE.ACTIVE
-                process.instance.currentTask.assignee = {
-                    name: 'assignee-example-01',
-                }
-                process.instance.currentTask.candidateUsers = ['user-name-example-01']
-                process.instance.currentTask.candidateGroups = ['user-role-example-02']
-            })
+            process.instance.currentTask.candidateGroups = ['user-role-example-02']
             store = createStore({ state })
             wrapper = createWrapper({ propsData, store })
 
@@ -249,27 +224,400 @@ describe('AzBpmInteraction.spec.js', () => {
         })
 
         it('Should be true if user belongs to candidate group', () => {
-            propsData.authorities = ['authority-example-01']
-            state.loki.user.name = 'user-name-example-01'
-            state.loki.user.roles = ['user-role-example-01']
-            state.loki.user.authorities = [
-                {
-                    hasAccess: true,
-                    name: 'authority-example-01',
-                },
-            ]
-            updateStateProcess({ state, propsData }, (process) => {
-                process.instance.statusInstance = bpmConstants.STATUS_INSTANCE.ACTIVE
-                process.instance.currentTask.assignee = {
-                    name: 'assignee-example-01',
-                }
-                process.instance.currentTask.candidateUsers = ['user-name-example-02']
-                process.instance.currentTask.candidateGroups = ['user-role-example-01']
-            })
+            process.instance.currentTask.candidateUsers = ['user-name-example-02']
             store = createStore({ state })
             wrapper = createWrapper({ propsData, store })
 
             expect(wrapper.vm.hasAuthority).toBe(true)
+        })
+    })
+
+    describe('Components', () => {
+        describe('Select', () => {
+            it('Should not show if status instance is not active', () => {
+                process.instance.statusInstance = bpmConstants.STATUS_INSTANCE.ENDED
+                store = createStore({ state })
+                wrapper = createWrapper({ propsData, store })
+
+                expect(wrapper.vm.components.select.show).toBe(false)
+            })
+
+            it('Should not show if has no assignee', () => {
+                process.instance.currentTask.assignee = null
+                store = createStore({ state })
+                wrapper = createWrapper({ propsData, store })
+
+                expect(wrapper.vm.components.select.show).toBe(false)
+            })
+
+            it('Should not show if has no next tasks', () => {
+                process.instance.nextTasks = []
+                store = createStore({ state })
+                wrapper = createWrapper({ propsData, store })
+
+                expect(wrapper.vm.components.select.show).toBe(false)
+            })
+
+            it('Should not show if some next task has no human decision', () => {
+                process.instance.nextTasks.push({
+                    taskId: 'next-user-task-02',
+                    taskName: 'Next user task 02',
+                    flowExpression: '${randomVariable == "randomValue"}',
+                })
+                store = createStore({ state })
+                wrapper = createWrapper({ propsData, store })
+
+                expect(wrapper.vm.components.select.show).toBe(false)
+            })
+
+            it('Should show if every next task has human decision', () => {
+                expect(wrapper.vm.components.select.show).toBe(true)
+            })
+
+            it('Should disable if is loading process instance', () => {
+                process.isLoading = true
+                store = createStore({ state })
+                wrapper = createWrapper({ propsData, store })
+
+                expect(wrapper.vm.components.select.disabled).toBe(true)
+            })
+
+            it('Should disable if user is not a candidate user and does not belong to candidate group', () => {
+                process.instance.currentTask.candidateUsers = ['user-name-example-02']
+                process.instance.currentTask.candidateGroups = ['user-role-example-02']
+                store = createStore({ state })
+                wrapper = createWrapper({ propsData, store })
+
+                expect(wrapper.vm.components.select.disabled).toBe(true)
+            })
+
+            it('Should not disable if user is a candidate user', () => {
+                process.instance.currentTask.candidateGroups = ['user-role-example-02']
+                store = createStore({ state })
+                wrapper = createWrapper({ propsData, store })
+
+                expect(wrapper.vm.components.select.disabled).toBe(false)
+            })
+
+            it('Should not disable if user belongs to candidate group', () => {
+                process.instance.currentTask.candidateUsers = ['user-name-example-02']
+                store = createStore({ state })
+                wrapper = createWrapper({ propsData, store })
+
+                expect(wrapper.vm.components.select.disabled).toBe(false)
+            })
+
+            it('Should have items as array', () => {
+                expect(Array.isArray(wrapper.vm.components.select.items)).toBe(true)
+            })
+
+            it('Should have property "text" in every item of items array', () => {
+                for (const item of wrapper.vm.components.select.items) {
+                    expect(item.hasOwnProperty('text')).toBe(true)
+                }
+            })
+
+            it('Should have property "value" in every item of items array', () => {
+                for (const item of wrapper.vm.components.select.items) {
+                    expect(item.hasOwnProperty('value')).toBe(true)
+                }
+            })
+        })
+
+        describe('Button', () => {
+            let getButton, buttonType
+
+            beforeAll(() => {
+                getButton = () => wrapper.vm.components.button[buttonType]
+            })
+
+            describe('Claim', () => {
+                beforeAll(() => {
+                    buttonType = 'claim'
+                })
+
+                it('Should not show if status instance is not active', () => {
+                    process.instance.statusInstance = bpmConstants.STATUS_INSTANCE.ENDED
+                    store = createStore({ state })
+                    wrapper = createWrapper({ propsData, store })
+
+                    expect(getButton().show).toBe(false)
+                })
+
+                it('Should not show if has assignee', () => {
+                    expect(getButton().show).toBe(false)
+                })
+
+                it('Should show if status instance is active and has no assignee', () => {
+                    process.instance.currentTask.assignee = null
+                    store = createStore({ state })
+                    wrapper = createWrapper({ propsData, store })
+
+                    expect(getButton().show).toBe(true)
+                })
+
+                it('Should disable if is loading process instance', () => {
+                    process.isLoading = true
+                    store = createStore({ state })
+                    wrapper = createWrapper({ propsData, store })
+
+                    expect(getButton().disabled).toBe(true)
+                })
+
+                it('Should disable if user is not a candidate user and does not belong to candidate group', () => {
+                    process.instance.currentTask.candidateUsers = ['user-name-example-02']
+                    process.instance.currentTask.candidateGroups = ['user-role-example-02']
+                    store = createStore({ state })
+                    wrapper = createWrapper({ propsData, store })
+
+                    expect(getButton().disabled).toBe(true)
+                })
+
+                it('Should not disable if user is a candidate user', () => {
+                    process.instance.currentTask.candidateGroups = ['user-role-example-02']
+                    store = createStore({ state })
+                    wrapper = createWrapper({ propsData, store })
+
+                    expect(getButton().disabled).toBe(false)
+                })
+
+                it('Should not disable if user belongs to candidate group', () => {
+                    process.instance.currentTask.candidateUsers = ['user-name-example-02']
+                    store = createStore({ state })
+                    wrapper = createWrapper({ propsData, store })
+
+                    expect(getButton().disabled).toBe(false)
+                })
+
+                it('Should have label', () => {
+                    expect(getButton().hasOwnProperty('label')).toBe(true)
+                })
+
+                it('Should have action and action must be a function', () => {
+                    expect(getButton().hasOwnProperty('action')).toBe(true)
+                    expect(typeof getButton().action).toBe('function')
+                })
+            })
+
+            describe('Unclaim', () => {
+                beforeAll(() => {
+                    buttonType = 'unclaim'
+                })
+
+                it('Should not show if status instance is not active', () => {
+                    process.instance.statusInstance = bpmConstants.STATUS_INSTANCE.ENDED
+                    store = createStore({ state })
+                    wrapper = createWrapper({ propsData, store })
+
+                    expect(getButton().show).toBe(false)
+                })
+
+                it('Should not show if has no assignee', () => {
+                    process.instance.currentTask.assignee = null
+                    expect(getButton().show).toBe(false)
+                })
+
+                it('Should show if status instance is active and has assignee', () => {
+                    expect(getButton().show).toBe(true)
+                })
+
+                it('Should disable if is loading process instance', () => {
+                    process.isLoading = true
+                    store = createStore({ state })
+                    wrapper = createWrapper({ propsData, store })
+
+                    expect(getButton().disabled).toBe(true)
+                })
+
+                it('Should disable if user is not a candidate user and does not belong to candidate group', () => {
+                    process.instance.currentTask.candidateUsers = ['user-name-example-02']
+                    process.instance.currentTask.candidateGroups = ['user-role-example-02']
+                    store = createStore({ state })
+                    wrapper = createWrapper({ propsData, store })
+
+                    expect(getButton().disabled).toBe(true)
+                })
+
+                it('Should not disable if user is a candidate user', () => {
+                    process.instance.currentTask.candidateGroups = ['user-role-example-02']
+                    store = createStore({ state })
+                    wrapper = createWrapper({ propsData, store })
+
+                    expect(getButton().disabled).toBe(false)
+                })
+
+                it('Should not disable if user belongs to candidate group', () => {
+                    process.instance.currentTask.candidateUsers = ['user-name-example-02']
+                    store = createStore({ state })
+                    wrapper = createWrapper({ propsData, store })
+
+                    expect(getButton().disabled).toBe(false)
+                })
+
+                it('Should have label', () => {
+                    expect(getButton().hasOwnProperty('label')).toBe(true)
+                })
+
+                it('Should have action and action must be a function', () => {
+                    expect(getButton().hasOwnProperty('action')).toBe(true)
+                    expect(typeof getButton().action).toBe('function')
+                })
+            })
+
+            describe('Complete', () => {
+                beforeAll(() => {
+                    buttonType = 'complete'
+                })
+
+                it('Should not show if status instance is not active', () => {
+                    process.instance.statusInstance = bpmConstants.STATUS_INSTANCE.ENDED
+                    store = createStore({ state })
+                    wrapper = createWrapper({ propsData, store })
+
+                    expect(getButton().show).toBe(false)
+                })
+
+                it('Should not show if has no assignee', () => {
+                    process.instance.currentTask.assignee = null
+                    expect(getButton().show).toBe(false)
+                })
+
+                it('Should show if status instance is active and has assignee', () => {
+                    expect(getButton().show).toBe(true)
+                })
+
+                it('Should disable if is loading process instance', () => {
+                    process.isLoading = true
+                    store = createStore({ state })
+                    wrapper = createWrapper({ propsData, store })
+
+                    expect(getButton().disabled).toBe(true)
+                })
+
+                it('Should disable if user is not a candidate user and does not belong to candidate group', () => {
+                    process.instance.currentTask.candidateUsers = ['user-name-example-02']
+                    process.instance.currentTask.candidateGroups = ['user-role-example-02']
+                    store = createStore({ state })
+                    wrapper = createWrapper({ propsData, store })
+
+                    expect(getButton().disabled).toBe(true)
+                })
+
+                it('Should not disable if user is a candidate user', () => {
+                    process.instance.currentTask.candidateGroups = ['user-role-example-02']
+                    store = createStore({ state })
+                    wrapper = createWrapper({ propsData, store })
+
+                    expect(getButton().disabled).toBe(false)
+                })
+
+                it('Should not disable if user belongs to candidate group', () => {
+                    process.instance.currentTask.candidateUsers = ['user-name-example-02']
+                    store = createStore({ state })
+                    wrapper = createWrapper({ propsData, store })
+
+                    expect(getButton().disabled).toBe(false)
+                })
+
+                it('Should have label', () => {
+                    expect(getButton().hasOwnProperty('label')).toBe(true)
+                })
+
+                it('Should have action and action must be a function', () => {
+                    expect(getButton().hasOwnProperty('action')).toBe(true)
+                    expect(typeof getButton().action).toBe('function')
+                })
+            })
+
+            describe('Uncomplete', () => {
+                beforeAll(() => {
+                    buttonType = 'uncomplete'
+                })
+
+                it('Should not show if status instance is not active', () => {
+                    process.instance.statusInstance = bpmConstants.STATUS_INSTANCE.ENDED
+                    store = createStore({ state })
+                    wrapper = createWrapper({ propsData, store })
+
+                    expect(getButton().show).toBe(false)
+                })
+
+                it('Should not show if has assignee', () => {
+                    expect(getButton().show).toBe(false)
+                })
+
+                it('Should not show if is first task', () => {
+                    process.instance.currentTask.assignee = null
+                    process.instance.currentTask.firstTask = true
+                    store = createStore({ state })
+                    wrapper = createWrapper({ propsData, store })
+
+                    expect(getButton().show).toBe(false)
+                })
+
+                it('Should show if status instance is active and has no assignee and is not first task', () => {
+                    process.instance.currentTask.assignee = null
+                    store = createStore({ state })
+                    wrapper = createWrapper({ propsData, store })
+
+                    expect(getButton().show).toBe(true)
+                })
+
+                it('Should disable if is loading process instance', () => {
+                    process.isLoading = true
+                    store = createStore({ state })
+                    wrapper = createWrapper({ propsData, store })
+
+                    expect(getButton().disabled).toBe(true)
+                })
+
+                it(
+                    'Should disable if is not a candidate user' +
+                        'and does not belong to candidate group in previous task',
+                    () => {
+                        process.instance.previousTask.assignee = 'user-name-example-02'
+                        process.instance.previousTask.candidateGroups = ['user-role-example-02']
+                        store = createStore({ state })
+                        wrapper = createWrapper({ propsData, store })
+
+                        expect(getButton().disabled).toBe(true)
+                    }
+                )
+
+                it('Should not disable if user is a candidate user in previous task', () => {
+                    process.instance.currentTask.candidateGroups = ['user-role-example-02']
+                    store = createStore({ state })
+                    wrapper = createWrapper({ propsData, store })
+
+                    expect(getButton().disabled).toBe(false)
+                })
+
+                it('Should not disable if user belongs to candidate group', () => {
+                    process.instance.previousTask.assignee = 'user-name-example-02'
+                    store = createStore({ state })
+                    wrapper = createWrapper({ propsData, store })
+
+                    expect(getButton().disabled).toBe(false)
+                })
+
+                it('Should have label', () => {
+                    expect(getButton().hasOwnProperty('label')).toBe(true)
+                })
+
+                it('Should have action and action must be a function', () => {
+                    expect(getButton().hasOwnProperty('action')).toBe(true)
+                    expect(typeof getButton().action).toBe('function')
+                })
+            })
+        })
+    })
+
+    describe('Scoped slots', () => {
+        describe('Default', () => {
+            it('Should have the variables provided on scoped slot', () => {
+                const regex = /(.*true.*){3}/gs
+                expect(regex.test(wrapper.html())).toBe(true)
+            })
         })
     })
 })
