@@ -48,7 +48,7 @@ export default {
         dispatchButtonActionIfAllowed(buttonType, bpmParameters) {
             const button = this.components.button[buttonType]
             if (button.disabled || !button.show) {
-                throw Error('Não foi possível realizar essa ação.')
+                throw new Error('Não foi possível realizar essa ação.')
             }
 
             const actionName = buttonType.toUpperCase()
