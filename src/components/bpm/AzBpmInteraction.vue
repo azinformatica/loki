@@ -45,23 +45,23 @@ export default {
         initializeProcessInstance() {
             return this.$store.commit(mutationTypes.BPM.INITIALIZE_PROCESS_INSTANCE, this.processInstanceParams)
         },
-		dispatchButtonActionIfAllowed(buttonType, bpmParameters) {
-			const button = this.components.button[buttonType]
-			if (button.disabled || !button.show) {
-				throw Error('Não foi possível realizar essa ação.')
-			}
+        dispatchButtonActionIfAllowed(buttonType, bpmParameters) {
+            const button = this.components.button[buttonType]
+            if (button.disabled || !button.show) {
+                throw Error('Não foi possível realizar essa ação.')
+            }
 
-			const actionName = buttonType.toUpperCase()
-			const actionType = actionTypes.BPM[actionName]
-			const args = this.createBpmArgumentsOnCurrentTask(bpmParameters)
+            const actionName = buttonType.toUpperCase()
+            const actionType = actionTypes.BPM[actionName]
+            const args = this.createBpmArgumentsOnCurrentTask(bpmParameters)
 
-			return this.$store.dispatch(actionType, args)
-		},
+            return this.$store.dispatch(actionType, args)
+        },
         dispatchButtonActionOnCurrentTask(buttonType, bpmParameters) {
-			return this.getProcessInstance()
-				.then(() => this.$nextTick())
-				.then(() => this.dispatchButtonActionIfAllowed(buttonType, bpmParameters))
-            	.then(() => this.getProcessInstance())
+            return this.getProcessInstance()
+                .then(() => this.$nextTick())
+                .then(() => this.dispatchButtonActionIfAllowed(buttonType, bpmParameters))
+                .then(() => this.getProcessInstance())
         },
         createBpmArgumentsOnCurrentTask(bpmParameters = {}) {
             return {
@@ -253,7 +253,7 @@ export default {
             return 'Cancelar encaminhamento'
         },
         buttonUncompleteAction() {
-			return () => this.dispatchButtonActionOnCurrentTask('uncomplete')
+            return () => this.dispatchButtonActionOnCurrentTask('uncomplete')
         },
         isFirstTask() {
             return this.currentTask.firstTask || false
