@@ -1,7 +1,6 @@
 <template>
     <div>
-        <slot :hasAuthority="hasAuthority" :components="components" :processInstance="processInstance">
-        </slot>
+        <slot :hasAuthority="hasAuthority" :components="components" :processInstance="processInstance"> </slot>
     </div>
 </template>
 
@@ -285,7 +284,7 @@ export default {
             return !this.isStatusInstanceEnded && !this.isStatusInstanceActiveWithoutAssignee && this.isUserCandidate
         },
         hasAuthorityToInteraction() {
-            return !this.hasSomeRevokedAuthority && this.hasSomeAuthorityPresentInProps && this.hasAuthorityToBpmRule
+            return this.hasSomeAuthorityPresentInProps && !this.hasSomeRevokedAuthority && this.hasAuthorityToBpmRule
         },
         hasAuthority() {
             return !this.disabled && !this.isLoadingProcessInstance && this.hasAuthorityToInteraction
