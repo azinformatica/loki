@@ -46,9 +46,23 @@ export default {
         initializeProcessInstance() {
             return this.$store.commit(mutationTypes.BPM.INITIALIZE_PROCESS_INSTANCE, this.processInstanceParams)
         },
-        dispatchBpmActionOnCurrentTask(actionType, bpmParameters) {
-            const args = this.createBpmArgumentsOnCurrentTask(bpmParameters)
-            return this.$store.dispatch(actionType, args).then(() => this.getProcessInstance())
+		dispatchButtonActionIfAllowed(buttonType, bpmParameters) {
+			const button = this.components.button[buttonType]
+			if (button.disabled || !button.show) {
+				throw Error('Não foi possível realizar essa ação.')
+			}
+
+			const actionName = buttonType.toUpperCase()
+			const actionType = actionTypes.BPM[actionName]
+			const args = this.createBpmArgumentsOnCurrentTask(bpmParameters)
+
+			return this.$store.dispatch(actionType, args)
+		},
+        dispatchButtonActionOnCurrentTask(buttonType, bpmParameters) {
+			return this.getProcessInstance()
+				.then(() => this.$nextTick())
+				.then(() => this.dispatchButtonActionIfAllowed(buttonType, bpmParameters))
+            	.then(() => this.getProcessInstance())
         },
         createBpmArgumentsOnCurrentTask(bpmParameters = {}) {
             return {
@@ -204,7 +218,7 @@ export default {
             return 'Receber'
         },
         buttonClaimAction() {
-            return () => this.dispatchBpmActionOnCurrentTask(actionTypes.BPM.CLAIM)
+            return () => this.dispatchButtonActionOnCurrentTask('claim')
         },
         buttonUnclaimShow() {
             return Boolean(this.isStatusInstanceActive && this.assignee)
@@ -216,7 +230,7 @@ export default {
             return 'Cancelar recebimento'
         },
         buttonUnclaimAction() {
-            return () => this.dispatchBpmActionOnCurrentTask(actionTypes.BPM.UNCLAIM)
+            return () => this.dispatchButtonActionOnCurrentTask('unclaim')
         },
         buttonCompleteShow() {
             return Boolean(this.isStatusInstanceActive && this.assignee)
@@ -228,7 +242,7 @@ export default {
             return !this.hasNextTasks ? 'Finalizar' : 'Encaminhar'
         },
         buttonCompleteAction() {
-            return (bpmParameters) => this.dispatchBpmActionOnCurrentTask(actionTypes.BPM.COMPLETE, bpmParameters)
+            return (bpmParameters) => this.dispatchButtonActionOnCurrentTask('complete', bpmParameters)
         },
         buttonUncompleteShow() {
             return Boolean(this.isStatusInstanceActive && !this.assignee && !this.isFirstTask)
@@ -240,7 +254,7 @@ export default {
             return 'Cancelar encaminhamento'
         },
         buttonUncompleteAction() {
-            return () => this.dispatchBpmActionOnCurrentTask(actionTypes.BPM.UNCOMPLETE)
+			return () => this.dispatchButtonActionOnCurrentTask('uncomplete')
         },
         isFirstTask() {
             return this.currentTask.firstTask || false
