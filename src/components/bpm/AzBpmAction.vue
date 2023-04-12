@@ -6,14 +6,14 @@
             v-show="select.show"
             :items="select.items"
             :label="select.label"
-            :disabled="select.disabled"
+            :disabled="disabled || select.disabled"
         ></v-select>
         <v-btn
             v-for="buttonType of buttonTypes"
             :key="buttonType"
             v-bind="buttonMergedAttrs[buttonType]"
             v-show="button[buttonType].show"
-            :disabled="button[buttonType].disabled"
+            :disabled="disabled || button[buttonType].disabled"
             @click="button[buttonType].action(bpmMergedParameters)"
         >
             {{ button[buttonType].label }}
