@@ -1,19 +1,19 @@
 <template>
     <div class="d-flex justify-center align-center">
         <v-select
-            v-bind="selectMergedAttrs"
             v-model="selectedTask"
             v-show="select.show"
             :items="select.items"
             :label="select.label"
             :disabled="disabled || select.disabled"
+            v-bind="selectMergedAttrs"
         ></v-select>
         <v-btn
             v-for="buttonType of buttonTypes"
             :key="buttonType"
-            v-bind="buttonMergedAttrs[buttonType]"
             v-show="button[buttonType].show"
             :disabled="disabled || button[buttonType].disabled"
+            v-bind="buttonMergedAttrs[buttonType]"
             @click="button[buttonType].action(bpmMergedParameters)"
         >
             {{ button[buttonType].label }}
