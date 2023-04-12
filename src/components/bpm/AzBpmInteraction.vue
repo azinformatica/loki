@@ -69,6 +69,12 @@ export default {
                 bpmParameters,
             }
         },
+        selectItemsMapper(task) {
+            return {
+                text: task.taskName,
+                value: task.taskId,
+            }
+        },
         splitCommaSeparatedTextToArray(text) {
             return text.replace(/\s+/g, '').split(',').filter(Boolean)
         },
@@ -202,10 +208,7 @@ export default {
             return Boolean(this.isLoadingProcessInstance || !this.isUserCandidate)
         },
         selectItems() {
-            return this.nextTasks.map((task) => ({
-                text: task.taskName,
-                value: task.taskId,
-            }))
+            return this.hasHumanDecisionInAllNextTasks ? this.nextTasks.map(this.selectItemsMapper) : []
         },
         buttonClaimShow() {
             return Boolean(this.isStatusInstanceActive && !this.assignee)
