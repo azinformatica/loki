@@ -33,7 +33,7 @@ export default {
         },
         repository: {
             type: String,
-            default: ''
+            default: '',
         },
         thumbnail: {
             type: Boolean,
@@ -47,24 +47,24 @@ export default {
             type: Boolean,
             default: true,
         },
-		useCustomBehavior: {
-			type: Boolean,
-			default: false
-		}
+        useCustomBehavior: {
+            type: Boolean,
+            default: false,
+        },
     },
     data() {
         return {
             uploadFieldName: 'file',
         }
     },
-	watch: {
-		$props: {
-			immediate: true,
-			handler() {
-				this.validateProps()
-			}
-		}
-	},
+    watch: {
+        $props: {
+            immediate: true,
+            handler() {
+                this.validateProps()
+            },
+        },
+    },
     methods: {
         calcFileSize(bytes, unit) {
             const k = 1024
@@ -95,51 +95,51 @@ export default {
             return fileSize > maxSize
         },
         onDropFiles(dataTransferItemList) {
-			const eventItems = this.convertDataTransferItemListToEventItems(dataTransferItemList)
+            const eventItems = this.convertDataTransferItemListToEventItems(dataTransferItemList)
             const eventItemsContainingFiles = this.filterEventItemsContainingFiles(eventItems)
             const files = this.getFilesFromEventItems(eventItemsContainingFiles)
-			this.validateFiles(files)
-			this.emitFilesToUpload(files)
+            this.validateFiles(files)
+            this.emitFilesToUpload(files)
             this.uploadFilesIfUsingDefaultBehavior(files)
         },
         onSelectFiles(files) {
-			this.validateFiles(files)
-			this.emitFilesToUpload(files)
+            this.validateFiles(files)
+            this.emitFilesToUpload(files)
             this.uploadFilesIfUsingDefaultBehavior(files)
-			this.resetSelectedFiles()
+            this.resetSelectedFiles()
         },
         openFileSelector() {
             document.getElementById('azFileSelector').click()
         },
-		uploadFilesIfUsingDefaultBehavior(files) {
-			if (!this.useCustomBehavior) {
-				this.uploadFiles(files)
-			}
-		},
-		uploadFiles(files) {
-			files.forEach(file => this.upload(file))
+        uploadFilesIfUsingDefaultBehavior(files) {
+            if (!this.useCustomBehavior) {
+                this.uploadFiles(files)
+            }
         },
-		convertDataTransferItemListToEventItems(dataTransferItemList) {
-			return Array.from(dataTransferItemList)
-		},
-		filterEventItemsContainingFiles(eventItems) {
-			return eventItems.filter(eventItem => eventItem.kind === 'file')
-		},
-		getFilesFromEventItems(eventItems) {
-			return eventItems.map(eventItem => eventItem.getAsFile())
-		},
-		validateFiles(fileList) {
-			fileList.forEach((file) => this.validateFile(file))
-		},
-		validateFile(file) {
-			if (this.isFileBiggerThanExpected(file)) {
-				this.throwFileExceedMaxLimitSizeEvent(file)
-			}
-		},
-		upload(file) {
-			const payload = this.createPayload(file)
-			this.$store.dispatch('uploadFile', payload)
-		},
+        uploadFiles(files) {
+            files.forEach((file) => this.upload(file))
+        },
+        convertDataTransferItemListToEventItems(dataTransferItemList) {
+            return Array.from(dataTransferItemList)
+        },
+        filterEventItemsContainingFiles(eventItems) {
+            return eventItems.filter((eventItem) => eventItem.kind === 'file')
+        },
+        getFilesFromEventItems(eventItems) {
+            return eventItems.map((eventItem) => eventItem.getAsFile())
+        },
+        validateFiles(fileList) {
+            fileList.forEach((file) => this.validateFile(file))
+        },
+        validateFile(file) {
+            if (this.isFileBiggerThanExpected(file)) {
+                this.throwFileExceedMaxLimitSizeEvent(file)
+            }
+        },
+        upload(file) {
+            const payload = this.createPayload(file)
+            this.$store.dispatch('uploadFile', payload)
+        },
         resetSelectedFiles() {
             document.getElementById('azFileSelector').value = ''
         },
@@ -149,18 +149,18 @@ export default {
                 filename: file.name,
             })
         },
-		validateRepositoryIfNoCustomBehavior() {
-			if (!this.useCustomBehavior && !this.repository) {
-				throw new Error('Prop "repository" must be informed')
-			}
-		},
-		validateProps() {
-			this.validateRepositoryIfNoCustomBehavior()
-		},
-		emitFilesToUpload(files) {
-			this.$emit('upload-files', files)
-		}
-    }
+        validateRepositoryIfNoCustomBehavior() {
+            if (!this.useCustomBehavior && !this.repository) {
+                throw new Error('Prop "repository" must be informed')
+            }
+        },
+        validateProps() {
+            this.validateRepositoryIfNoCustomBehavior()
+        },
+        emitFilesToUpload(files) {
+            this.$emit('upload-files', files)
+        },
+    },
 }
 </script>
 
