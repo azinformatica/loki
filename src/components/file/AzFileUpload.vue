@@ -102,7 +102,8 @@ export default {
             this.emitFilesToUpload(files)
             this.uploadFilesIfUsingDefaultBehavior(files)
         },
-        onSelectFiles(files) {
+        onSelectFiles(fileList) {
+            const files = this.convertFileListToFiles(fileList)
             this.validateFiles(files)
             this.emitFilesToUpload(files)
             this.uploadFilesIfUsingDefaultBehavior(files)
@@ -118,6 +119,9 @@ export default {
         },
         uploadFiles(files) {
             files.forEach((file) => this.upload(file))
+        },
+        convertFileListToFiles(fileList) {
+            return Array.from(fileList)
         },
         convertDataTransferItemListToEventItems(dataTransferItemList) {
             return Array.from(dataTransferItemList)
