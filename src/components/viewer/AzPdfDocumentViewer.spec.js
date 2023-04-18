@@ -2,12 +2,12 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuex from 'vuex'
 import 'regenerator-runtime'
-import 'pdfjs-dist/build/pdf'
-import 'pdfjs-dist/web/pdf_viewer.js'
+import '@azinformatica/pdfjs-dist/build/pdf'
+import '@azinformatica/pdfjs-dist/web/pdf_viewer.js'
 import AzPdfDocumentViewer from './AzPdfDocumentViewer'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 
-jest.mock('pdfjs-dist', () => ({
+jest.mock('@azinformatica/pdfjs-dist', () => ({
     getDocument: jest.fn(() => ({
         promise: Promise.resolve(true),
     })),
@@ -19,7 +19,7 @@ jest.mock('pdfjs-dist', () => ({
     },
 }))
 
-jest.mock('pdfjs-dist/web/pdf_viewer.js', () => ({
+jest.mock('@azinformatica/pdfjs-dist/web/pdf_viewer.js', () => ({
     EventBus: jest.fn(() => ({
         on: jest.fn().mockImplementation((e, cb) =>
             cb({

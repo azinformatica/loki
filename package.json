@@ -18,15 +18,15 @@
   "author": "Charles Viegas",
   "license": "MIT",
   "dependencies": {
-    "interactjs": "~1.10.17",
+    "@azinformatica/pdfjs-dist": "~2.10.380",
     "accounting": "~0.4.1",
     "all-contributors-cli": "~6.20.0",
     "axios": "~0.27.2",
     "imagesloaded": "~4.1.4",
+    "interactjs": "~1.10.17",
     "lodash": "~4.17.21",
     "moment": "~2.29.3",
     "moment-timezone": "~0.5.34",
-    "pdfjs-dist": "~2.10.377",
     "sass": "~1.52.2",
     "sass-loader": "~12.2.0",
     "scrollmonitor": "1.2.4",
@@ -70,7 +70,7 @@
   "peerDependencies": {
     "axios": "~0.27.2",
     "moment-timezone": "~0.5.34",
-    "pdfjs-dist": "~2.10.377",
+    "@azinformatica/pdfjs-dist": "~2.10.377",
     "scrollmonitor": "1.2.4",
     "web-pki": "~2.14.8"
   },
