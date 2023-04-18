@@ -27,13 +27,7 @@
             </v-btn>
         </div>
 
-        <v-btn
-            class="btn-advanced-search"
-            depressed
-            color="primary"
-            @click="toggle()"
-            v-if="hasAdvancedSearchItems"
-        >
+        <v-btn class="btn-advanced-search" depressed color="primary" @click="toggle()" v-if="hasAdvancedSearchItems">
             <v-icon small>chevron_left</v-icon>Filtros
         </v-btn>
 
