@@ -1,5 +1,5 @@
 import AzSearch from './AzSearch'
-import { shallowMount, createLocalVue } from '@vue/test-utils'
+import { shallowMount, mount, createLocalVue } from '@vue/test-utils'
 import Vuetify from 'vuetify'
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -10,7 +10,7 @@ Vue.use(Vuetify)
 localVue.use(Vuex)
 
 describe('AzSearch.spec.js', () => {
-    let wrapper, store
+    let store, wrapper
 
     beforeEach(() => {
         store = new Vuex.Store({
@@ -35,8 +35,8 @@ describe('AzSearch.spec.js', () => {
     })
 
     it('Default Data is correct', () => {
-        expect(wrapper.vm.hasAdvancedSearchItems).toBeFalsy()
-        expect(wrapper.vm.isClosedAdvancedSearch).toBeFalsy()
+        expect(wrapper.vm.hasAdvancedSearchItems).toBe(false)
+        expect(wrapper.vm.isClosedAdvancedSearch).toBe(false)
         expect(wrapper.vm.isSimpleSearch).toBe(false)
         expect(wrapper.vm.searchTextSize).toBe(200)
     })
@@ -58,18 +58,17 @@ describe('AzSearch.spec.js', () => {
     })
 
     it('Search Button emits event', () => {
-        wrapper = shallowMount(AzSearch, {
+        // Full mount to render vuetify components correctly
+        let wrapperFull = mount(AzSearch, {
             localVue,
-            store,
             propsData: {
                 filter: {},
                 simpleSearchPlaceholder: 'Informe o objeto',
             },
         })
 
-        jest.spyOn(wrapper.vm, 'advancedSearch')
-        const btn = wrapper.find('.ad-search')
-        btn.vm.$emit('click')
-        expect(wrapper.vm.advancedSearch).toBeCalled()
+        jest.spyOn(wrapperFull.vm, 'advancedSearch')
+        wrapperFull.find('.ad-search').trigger('click.native')
+        expect(wrapperFull.vm.advancedSearch).toBeCalled()
     })
 })
