@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="az-drop-file-container" @click="openFileSelector" v-on="$listeners">
         <form enctype="multipart/form-data" novalidate>
             <div
                 class="az-drop-file"
@@ -9,6 +9,7 @@
             >
                 <input
                     id="azFileSelector"
+                    ref="azFileSelector"
                     type="file"
                     :multiple="multiple"
                     class="input-file"
@@ -132,8 +133,20 @@ export default {
         getFilesFromEventItems(eventItems) {
             return eventItems.map((eventItem) => eventItem.getAsFile())
         },
-        validateFiles(fileList) {
-            fileList.forEach((file) => this.validateFile(file))
+        allowsMultipleFiles() {
+            return this.multiple
+        },
+        hasSelectedMultipleFiles(files) {
+            return files.length && files.length > 1
+        },
+        validateIfMultipleFilesSelected(files) {
+            if (!this.allowsMultipleFiles() && this.hasSelectedMultipleFiles(files)) {
+                throw new Error('Selecione apenas um único arquivo.')
+            }
+        },
+        validateFiles(files) {
+            this.validateIfMultipleFilesSelected(files)
+            files.forEach((file) => this.validateFile(file))
         },
         validateFile(file) {
             if (this.isFileBiggerThanExpected(file)) {
@@ -169,6 +182,9 @@ export default {
 </script>
 
 <style scoped lang="stylus">
+.az-drop-file-container
+    cursor pointer
+
 .az-drop-file
     border: 2px dashed #ccc
     margin: 10px 0
