@@ -9,7 +9,7 @@
                         <div class="domain" v-if="userDomain">{{ userDomain }}</div>
                     </div>
                     <v-avatar v-if="userName" class="az-avatar__picture" size="32px">
-                        <v-icon medium v-if="!userPhoto" :color="color">mdi-account</v-icon>
+                        <v-icon medium v-if="!userPhoto" :color="color">mdi-account-circle</v-icon>
                         <img v-if="userPhoto" :src="userPhoto" alt="Foto do usuário" />
                     </v-avatar>
                     <v-icon right="right">keyboard_arrow_down</v-icon>
