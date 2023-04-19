@@ -6,7 +6,6 @@
 
 <script>
 import { actionTypes, mutationTypes } from '../../store'
-import bpmConstants from './bpm-constants'
 
 export default {
     name: 'AzBpmInteraction',
@@ -38,6 +37,16 @@ export default {
         },
         isAuthorityPresentInProps(authorityName) {
             return !this.authorities.length || this.authorities.includes(authorityName)
+        },
+        isAuthorityWithAccess(authority) {
+            return authority.hasAccess
+        },
+        isAuthorityValid(authority) {
+            return (
+                this.isAuthorityWithAccess(authority) &&
+                this.isAuthorityPresentInProps(authority.name) &&
+                !this.isAuthorityRevoked(authority.name)
+            )
         },
         getProcessInstance() {
             return this.$store.dispatch(actionTypes.BPM.GET_PROCESS_INSTANCE, this.processInstanceParams)
@@ -107,11 +116,8 @@ export default {
         userRoles() {
             return this.user.roles || []
         },
-        userAuthoritiesWithAccess() {
-            return this.userAuthorities.filter((authority) => authority.hasAccess)
-        },
-        userAuthoritiesPresentInProps() {
-            return this.userAuthoritiesWithAccess.filter((authority) => this.isAuthorityPresentInProps(authority.name))
+        validUserAuthorities() {
+            return this.userAuthorities.filter(this.isAuthorityValid.bind(this))
         },
         currentTask() {
             return (this.processInstance && this.processInstance.currentTask) || {}
@@ -144,7 +150,7 @@ export default {
             return this.previousTask.assignee || null
         },
         statusInstance() {
-            return (this.processInstance && this.processInstance.statusInstance) || bpmConstants.STATUS_INSTANCE.ENDED
+            return (this.processInstance && this.processInstance.statusInstance) || ''
         },
         assignee() {
             return this.currentTask.assignee || null
@@ -264,11 +270,8 @@ export default {
         isLoadingProcessInstance() {
             return this.bpmAtProcessKeyAtBusinessKey.isLoading || false
         },
-        isStatusInstanceEnded() {
-            return this.statusInstance === bpmConstants.STATUS_INSTANCE.ENDED
-        },
         isStatusInstanceActive() {
-            return this.statusInstance === bpmConstants.STATUS_INSTANCE.ACTIVE
+            return this.statusInstance === 'ACTIVE'
         },
         isUserInCandidateUsers() {
             return this.candidateUsers.includes(this.user.name)
@@ -288,23 +291,23 @@ export default {
         isUserCandidateInPreviousTask() {
             return this.isUserInPreviousTaskCandidateUsers || this.isUserInPreviousTaskCandidateGroups
         },
-        isStatusInstanceActiveWithoutAssignee() {
-            return this.isStatusInstanceActive && !this.assignee
+        hasAssignee() {
+            return Boolean(this.assignee)
         },
-        hasSomeAuthorityPresentInProps() {
-            return this.userAuthoritiesPresentInProps.length > 0
+        hasValidStatusInstance() {
+            return this.isStatusInstanceActive && this.hasAssignee
         },
-        hasSomeRevokedAuthority() {
-            return this.userAuthoritiesPresentInProps.some((authority) => this.isAuthorityRevoked(authority.name))
-        },
-        hasAuthorityToBpmRule() {
-            return !this.isStatusInstanceEnded && !this.isStatusInstanceActiveWithoutAssignee && this.isUserCandidate
-        },
-        hasAuthorityToInteraction() {
-            return this.hasSomeAuthorityPresentInProps && !this.hasSomeRevokedAuthority && this.hasAuthorityToBpmRule
+        hasSomeValidAuthority() {
+            return this.validUserAuthorities.length > 0
         },
         hasAuthority() {
-            return !this.disabled && !this.isLoadingProcessInstance && this.hasAuthorityToInteraction
+            return (
+                !this.disabled &&
+                !this.isLoadingProcessInstance &&
+                this.hasValidStatusInstance &&
+                this.hasSomeValidAuthority &&
+                this.isUserCandidate
+            )
         },
     },
     created() {
