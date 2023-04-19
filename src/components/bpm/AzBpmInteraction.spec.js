@@ -2,15 +2,13 @@ import Vue from 'vue'
 import AzBpmInteraction from './AzBpmInteraction'
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils'
 import Vuex from 'vuex'
-import bpmConstants from './bpm-constants'
-
 const localVue = createLocalVue()
 Vue.use(Vuex)
 
 const createDefaultProps = () => {
     return {
         id: 'az-interaction-id-example',
-        authorities: ['authority-example-01'],
+        authorities: ['authority-example-01', 'authority-example-02'],
         businessKey: 'business-key-example',
         processKey: 'process-key-example',
         disabled: false,
@@ -25,6 +23,10 @@ const createStoreState = ({ propsData }) => ({
                 {
                     hasAccess: true,
                     name: 'authority-example-01',
+                },
+                {
+                    hasAccess: true,
+                    name: 'authority-example-02',
                 },
             ],
             roles: ['user-role-example-01'],
@@ -59,7 +61,7 @@ const createStore = ({ state } = {}) => {
 }
 
 const createProcessInstanceMock = () => ({
-    statusInstance: bpmConstants.STATUS_INSTANCE.ACTIVE,
+    statusInstance: 'ACTIVE',
     currentTask: {
         assignee: {
             name: 'user-name-example-01',
@@ -165,16 +167,24 @@ describe('AzBpmInteraction.spec.js', () => {
             expect(wrapper.vm.hasAuthority).toBe(false)
         })
 
-        it('Should be false if has some revoked authority', () => {
-            process.instance.currentTask.revokedPermissions = 'authority-example-01'
+        it('Should be false if every authority was revoked', () => {
+            process.instance.currentTask.revokedPermissions = 'authority-example-01,authority-example-02'
             store = createStore({ state })
             wrapper = createWrapper({ propsData, store })
 
             expect(wrapper.vm.hasAuthority).toBe(false)
         })
 
+        it('Should be true if not every authority was revoked', () => {
+            process.instance.currentTask.revokedPermissions = 'authority-example-01'
+            store = createStore({ state })
+            wrapper = createWrapper({ propsData, store })
+
+            expect(wrapper.vm.hasAuthority).toBe(true)
+        })
+
         it('Should be false if there are authorities in props and user has no authority included in them', () => {
-            propsData.authorities = ['authority-example-02']
+            propsData.authorities = ['authority-example-03']
             store = createStore({ state })
             wrapper = createWrapper({ propsData, store })
 
@@ -190,7 +200,7 @@ describe('AzBpmInteraction.spec.js', () => {
         })
 
         it('Should be false if status instance is ended', () => {
-            process.instance.statusInstance = bpmConstants.STATUS_INSTANCE.ENDED
+            process.instance.statusInstance = 'ENDED'
             store = createStore({ state })
             wrapper = createWrapper({ propsData, store })
 
@@ -198,7 +208,7 @@ describe('AzBpmInteraction.spec.js', () => {
         })
 
         it('Should be false if status instance is active without assignee', () => {
-            process.instance.statusInstance = bpmConstants.STATUS_INSTANCE.ACTIVE
+            process.instance.statusInstance = 'ACTIVE'
             process.instance.currentTask.assignee = null
             store = createStore({ state })
             wrapper = createWrapper({ propsData, store })
@@ -235,7 +245,7 @@ describe('AzBpmInteraction.spec.js', () => {
     describe('Components', () => {
         describe('Select', () => {
             it('Should not show if status instance is not active', () => {
-                process.instance.statusInstance = bpmConstants.STATUS_INSTANCE.ENDED
+                process.instance.statusInstance = 'ENDED'
                 store = createStore({ state })
                 wrapper = createWrapper({ propsData, store })
 
@@ -337,7 +347,7 @@ describe('AzBpmInteraction.spec.js', () => {
                 })
 
                 it('Should not show if status instance is not active', () => {
-                    process.instance.statusInstance = bpmConstants.STATUS_INSTANCE.ENDED
+                    process.instance.statusInstance = 'ENDED'
                     store = createStore({ state })
                     wrapper = createWrapper({ propsData, store })
 
@@ -405,7 +415,7 @@ describe('AzBpmInteraction.spec.js', () => {
                 })
 
                 it('Should not show if status instance is not active', () => {
-                    process.instance.statusInstance = bpmConstants.STATUS_INSTANCE.ENDED
+                    process.instance.statusInstance = 'ENDED'
                     store = createStore({ state })
                     wrapper = createWrapper({ propsData, store })
 
@@ -470,7 +480,7 @@ describe('AzBpmInteraction.spec.js', () => {
                 })
 
                 it('Should not show if status instance is not active', () => {
-                    process.instance.statusInstance = bpmConstants.STATUS_INSTANCE.ENDED
+                    process.instance.statusInstance = 'ENDED'
                     store = createStore({ state })
                     wrapper = createWrapper({ propsData, store })
 
@@ -535,7 +545,7 @@ describe('AzBpmInteraction.spec.js', () => {
                 })
 
                 it('Should not show if status instance is not active', () => {
-                    process.instance.statusInstance = bpmConstants.STATUS_INSTANCE.ENDED
+                    process.instance.statusInstance = 'ENDED'
                     store = createStore({ state })
                     wrapper = createWrapper({ propsData, store })
 
