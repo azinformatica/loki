@@ -3,7 +3,7 @@
         <span :style="style">{{ text }}</span>
         <a v-if="hasButtom" @click="undoAction" :style="styleButtom">{{ mensageButtom }}</a>
         <v-btn dark text @click="show = false" :style="styleButtomClose">
-            <v-icon small :color="iconColor">close</v-icon>
+            <v-icon small :color="iconColor">mdi-close</v-icon>
         </v-btn>
     </v-snackbar>
 </template>

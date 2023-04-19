@@ -43,7 +43,7 @@
                                 v-bind="attrs"
                                 v-on="on"
                             >
-                                <v-icon size="12">link</v-icon>
+                                <v-icon size="12">mdi-link</v-icon>
                             </button>
                         </template>
                         <span>{{ draggableLinkTooltip }}</span>
@@ -57,7 +57,7 @@
                                 v-bind="attrs"
                                 v-on="on"
                             >
-                                <v-icon size="12">link_off</v-icon>
+                                <v-icon size="12">mdi-link-off</v-icon>
                             </button>
                         </template>
                         <span>{{ draggableUnlinkTooltip }}</span>
@@ -70,7 +70,7 @@
                                 v-bind="attrs"
                                 v-on="on"
                             >
-                                <v-icon size="12">close</v-icon>
+                                <v-icon size="12">mdi-close</v-icon>
                             </button>
                         </template>
                         <span>{{ draggableDeleteTooltip }}</span>

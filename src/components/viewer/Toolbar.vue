@@ -10,7 +10,7 @@
         >
             <v-tooltip bottom open-delay="800">
                 <template v-slot:activator="{on}">
-                    <v-icon v-on="on">zoom_out</v-icon>
+                    <v-icon v-on="on">mdi-magnify-minus-outline</v-icon>
                 </template>
                 <span>Zoom -</span>
             </v-tooltip>
@@ -24,8 +24,8 @@
         >
             <v-tooltip bottom open-delay="800">
                 <template v-slot:activator="{on}">
-                    <v-icon v-if="scaleType === 'page-fit'" v-on="on">fullscreen</v-icon>
-                    <v-icon v-else v-on="on">fullscreen_exit</v-icon>
+                    <v-icon v-if="scaleType === 'page-fit'" v-on="on">mdi-fullscreen</v-icon>
+                    <v-icon v-else v-on="on">mdi-fullscreen-exit</v-icon>
                 </template>
                 <span v-if="scaleType === 'page-fit'">Ajustar à largura</span>
                 <span v-else>Ajustar à altura</span>
@@ -40,7 +40,7 @@
         >
             <v-tooltip bottom open-delay="800">
                 <template v-slot:activator="{on}">
-                    <v-icon v-on="on">zoom_in</v-icon>
+                    <v-icon v-on="on">mdi-magnify-plus-outline</v-icon>
                 </template>
                 <span>Zoom +</span>
             </v-tooltip>
@@ -60,7 +60,7 @@
             >
                 <v-tooltip bottom open-delay="800">
                     <template v-slot:activator="{on}">
-                        <v-icon v-on="on">rotate_right</v-icon>
+                        <v-icon v-on="on">mdi-rotate-right</v-icon>
                     </template>
                     <span>Girar</span>
                 </v-tooltip>
@@ -75,7 +75,7 @@
             >
                 <v-tooltip bottom open-delay="800">
                     <template v-slot:activator="{on}">
-                        <v-icon v-on="on">get_app</v-icon>
+                        <v-icon v-on="on">mdi-download</v-icon>
                     </template>
                     <span>Download</span>
                 </v-tooltip>
@@ -90,7 +90,7 @@
             >
                 <v-tooltip bottom open-delay="800">
                     <template v-slot:activator="{on}">
-                        <v-icon v-on="on">print</v-icon>
+                        <v-icon v-on="on">mdi-printer</v-icon>
                     </template>
                     <span>Imprimir</span>
                 </v-tooltip>
@@ -101,7 +101,7 @@
                 @click="toggleToolbarActions"
                 icon
             >
-                <v-icon>more_vert</v-icon>
+                <v-icon>mdi-dots-vertical</v-icon>
             </v-btn>
         </div>
     </v-toolbar>

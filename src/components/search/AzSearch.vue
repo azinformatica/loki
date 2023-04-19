@@ -23,12 +23,12 @@
             </div>
 
             <v-btn class="icon-search" fab dark small depressed color="primary" @click="simpleSearch()">
-                <v-icon small>search</v-icon>
+                <v-icon small>mdi-magnify</v-icon>
             </v-btn>
         </div>
 
         <v-btn class="btn-advanced-search" depressed color="primary" @click="toggle()" v-if="hasAdvancedSearchItems">
-            <v-icon small>chevron_left</v-icon>Filtros
+            <v-icon small>mdi-chevron-left</v-icon>Filtros
         </v-btn>
 
         <v-navigation-drawer
@@ -42,7 +42,7 @@
         >
             <v-toolbar flat class="title" color="primary">
                 <v-btn class="btn-close" icon small @click.prevent="toggle()">
-                    <v-icon>close</v-icon>
+                    <v-icon>mdi-close</v-icon>
                 </v-btn>
                 Busca Avançada
             </v-toolbar>

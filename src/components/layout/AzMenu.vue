@@ -79,7 +79,7 @@
 
                     <v-list-item @click="logout()" class="item">
                         <v-list-item-action>
-                            <v-icon>exit_to_app</v-icon>
+                            <v-icon>mdi-exit-to-app</v-icon>
                         </v-list-item-action>
 
                         <v-list-item-content>

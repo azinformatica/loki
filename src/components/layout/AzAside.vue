@@ -14,7 +14,7 @@
         <div :class="{ 'arrow-opened': !asideClosed, 'arrow-closed': asideClosed }" class="no-mobile" @click="toogle()">
             <v-btn icon text>
                 <v-icon color="rgba(255, 255, 255, .3)"
-                    >fas {{ asideClosed ? 'fa-chevron-circle-right' : 'fa-chevron-circle-left' }}</v-icon
+                    >{{ asideClosed ? 'mdi mdi-chevron-right-circle' : 'mdi mdi-chevron-left-circle' }}</v-icon
                 >
             </v-btn>
 

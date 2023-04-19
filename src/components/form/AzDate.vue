@@ -49,7 +49,7 @@
                 </template>
                 <template v-slot:append v-if="this.$slots['append']">
                     <v-btn icon @click="openMenuDate">
-                        <v-icon small>event</v-icon>
+                        <v-icon small>mdi-calendar</v-icon>
                     </v-btn>
                     <slot name="append" />
                 </template>

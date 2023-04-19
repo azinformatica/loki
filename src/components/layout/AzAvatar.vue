@@ -9,7 +9,7 @@
                         <div class="domain" v-if="userDomain">{{ userDomain }}</div>
                     </div>
                     <v-avatar v-if="userName" class="az-avatar__picture" size="32px">
-                        <v-icon medium v-if="!userPhoto" :color="color">account_circle</v-icon>
+                        <v-icon medium v-if="!userPhoto" :color="color">mdi-account</v-icon>
                         <img v-if="userPhoto" :src="userPhoto" alt="Foto do usuário" />
                     </v-avatar>
                     <v-icon right="right">keyboard_arrow_down</v-icon>
@@ -32,7 +32,7 @@
 
                 <v-list-item @click="logout()" class="az-avatar__logout">
                     <v-list-item-action>
-                        <v-icon>exit_to_app</v-icon>
+                        <v-icon>mdi-exit-to-app</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
                         <v-list-item-title>Sair</v-list-item-title>
