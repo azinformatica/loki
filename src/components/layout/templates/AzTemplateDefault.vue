@@ -20,7 +20,7 @@
         </az-aside>
 
         <v-toolbar app height="60" class="toolbar">
-            <v-icon class="mobile_menu" @click="showAside()">dehaze</v-icon>
+            <v-icon class="mobile_menu" @click="showAside()">mdi-menu</v-icon>
             <az-title />
             <v-spacer></v-spacer>
             <div v-if="showMainHeader" class="action">

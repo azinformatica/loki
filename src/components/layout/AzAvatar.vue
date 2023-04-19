@@ -7,7 +7,7 @@
                     <div class="plan" v-if="plan">{{ plan }}</div>
                     <div class="domain" v-if="userDomain">{{ userDomain }}</div>
                 </div>
-                <v-icon right="right">keyboard_arrow_down</v-icon>
+                <v-icon right="right">mdi-chevron-down</v-icon>
             </v-btn>
             <v-list>
                 <v-list-tile
@@ -26,7 +26,7 @@
 
                 <v-list-tile @click="logout()" class="az-avatar__logout">
                     <v-list-tile-action>
-                        <v-icon>exit_to_app</v-icon>
+                        <v-icon>mdi-exit-to-app</v-icon>
                     </v-list-tile-action>
                     <v-list-tile-content>
                         <v-list-tile-title>Sair</v-list-tile-title>
@@ -35,7 +35,7 @@
             </v-list>
         </v-menu>
         <v-avatar v-if="userName" class="az-avatar__picture" size="32px">
-            <v-icon medium v-if="!userPhoto" :color="color">account_circle</v-icon>
+            <v-icon medium v-if="!userPhoto" :color="color">mdi-account-circle</v-icon>
             <img v-if="userPhoto" :src="userPhoto" alt="Foto do usuário" />
         </v-avatar>
     </v-toolbar-items>

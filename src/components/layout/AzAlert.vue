@@ -2,7 +2,7 @@
     <v-snackbar v-model="show" :color="color" right top>
         {{ text }}
         <v-btn dark flat @click="show = false">
-            <v-icon small>close</v-icon>
+            <v-icon small>mdi-close</v-icon>
         </v-btn>
     </v-snackbar>
 </template>
