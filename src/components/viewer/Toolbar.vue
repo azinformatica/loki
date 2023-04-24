@@ -9,7 +9,7 @@
             :disabled="disableButtons"
         >
             <v-tooltip bottom open-delay="800">
-                <template v-slot:activator="{on}">
+                <template v-slot:activator="{ on }">
                     <v-icon v-on="on">zoom_out</v-icon>
                 </template>
                 <span>Zoom -</span>
@@ -23,7 +23,7 @@
             :disabled="disableButtons"
         >
             <v-tooltip bottom open-delay="800">
-                <template v-slot:activator="{on}">
+                <template v-slot:activator="{ on }">
                     <v-icon v-if="scaleType === 'page-fit'" v-on="on">fullscreen</v-icon>
                     <v-icon v-else v-on="on">fullscreen_exit</v-icon>
                 </template>
@@ -39,7 +39,7 @@
             :disabled="disableButtons"
         >
             <v-tooltip bottom open-delay="800">
-                <template v-slot:activator="{on}">
+                <template v-slot:activator="{ on }">
                     <v-icon v-on="on">zoom_in</v-icon>
                 </template>
                 <span>Zoom +</span>
@@ -59,7 +59,7 @@
                 :disabled="disableButtons"
             >
                 <v-tooltip bottom open-delay="800">
-                    <template v-slot:activator="{on}">
+                    <template v-slot:activator="{ on }">
                         <v-icon v-on="on">rotate_right</v-icon>
                     </template>
                     <span>Girar</span>
@@ -74,7 +74,7 @@
                 :disabled="disableButtons"
             >
                 <v-tooltip bottom open-delay="800">
-                    <template v-slot:activator="{on}">
+                    <template v-slot:activator="{ on }">
                         <v-icon v-on="on">get_app</v-icon>
                     </template>
                     <span>Download</span>
@@ -89,7 +89,7 @@
                 :disabled="disableButtons"
             >
                 <v-tooltip bottom open-delay="800">
-                    <template v-slot:activator="{on}">
+                    <template v-slot:activator="{ on }">
                         <v-icon v-on="on">print</v-icon>
                     </template>
                     <span>Imprimir</span>
