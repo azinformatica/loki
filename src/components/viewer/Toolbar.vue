@@ -9,7 +9,7 @@
             :disabled="disableButtons"
         >
             <v-tooltip bottom open-delay="800">
-                <template v-slot:activator="{on}">
+                <template v-slot:activator="{ on }">
                     <v-icon v-on="on">mdi-magnify-minus-outline</v-icon>
                 </template>
                 <span>Zoom -</span>
@@ -23,7 +23,7 @@
             :disabled="disableButtons"
         >
             <v-tooltip bottom open-delay="800">
-                <template v-slot:activator="{on}">
+                <template v-slot:activator="{ on }">
                     <v-icon v-if="scaleType === 'page-fit'" v-on="on">mdi-fullscreen</v-icon>
                     <v-icon v-else v-on="on">mdi-fullscreen-exit</v-icon>
                 </template>
@@ -39,7 +39,7 @@
             :disabled="disableButtons"
         >
             <v-tooltip bottom open-delay="800">
-                <template v-slot:activator="{on}">
+                <template v-slot:activator="{ on }">
                     <v-icon v-on="on">mdi-magnify-plus-outline</v-icon>
                 </template>
                 <span>Zoom +</span>
@@ -59,7 +59,7 @@
                 :disabled="disableButtons"
             >
                 <v-tooltip bottom open-delay="800">
-                    <template v-slot:activator="{on}">
+                    <template v-slot:activator="{ on }">
                         <v-icon v-on="on">mdi-rotate-right</v-icon>
                     </template>
                     <span>Girar</span>
@@ -74,7 +74,7 @@
                 :disabled="disableButtons"
             >
                 <v-tooltip bottom open-delay="800">
-                    <template v-slot:activator="{on}">
+                    <template v-slot:activator="{ on }">
                         <v-icon v-on="on">mdi-download</v-icon>
                     </template>
                     <span>Download</span>
@@ -89,7 +89,7 @@
                 :disabled="disableButtons"
             >
                 <v-tooltip bottom open-delay="800">
-                    <template v-slot:activator="{on}">
+                    <template v-slot:activator="{ on }">
                         <v-icon v-on="on">mdi-printer</v-icon>
                     </template>
                     <span>Imprimir</span>

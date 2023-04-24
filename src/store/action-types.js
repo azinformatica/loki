@@ -17,4 +17,11 @@ export default {
             FINISH: 'finishDigitalSignature',
         },
     },
+    BPM: {
+        GET_PROCESS_INSTANCE: 'getProcessInstance',
+        CLAIM: 'getTaskAccess',
+        UNCLAIM: 'releaseTaskAccess',
+        COMPLETE: 'goToNextTask',
+        UNCOMPLETE: 'goToPreviousTask',
+    },
 }

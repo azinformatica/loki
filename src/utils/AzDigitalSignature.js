@@ -68,8 +68,14 @@ export default class AzDigitalSignature {
      * @param {Array} extraDatas (optional)
      * @return {void}
      */
-    async sign(certificateThumbPrint, documentId, rubricBase64 = null, participation = null,
-               visualPositionings = null, extraDatas = null) {
+    async sign(
+        certificateThumbPrint,
+        documentId,
+        rubricBase64 = null,
+        participation = null,
+        visualPositionings = null,
+        extraDatas = null
+    ) {
         const certificateContent = await this._readCertificate(certificateThumbPrint)
 
         const paramsToSign = await this._preprareDocumentToSign(certificateContent, documentId)

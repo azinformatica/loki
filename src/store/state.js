@@ -89,4 +89,9 @@ export default {
         accessToken: null,
         license: null,
     },
+
+    bpm: {
+        api: 'api/bpm',
+        process: {},
+    },
 }

@@ -15,7 +15,7 @@
                 </div>
             </div>
             <template v-slot:banner>
-              <slot name="bannerAside"></slot>
+                <slot name="bannerAside"></slot>
             </template>
         </az-aside>
 
