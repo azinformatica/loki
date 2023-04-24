@@ -78,7 +78,10 @@ class PrintService {
         const renderContext = {
             canvasContext: ctx,
             transform: [this._PRINT_UNITS, 0, 0, this._PRINT_UNITS, 0, 0],
-            viewport: pdfPage.getViewport(1, size.rotation),
+            viewport: pdfPage.getViewport({
+                scale: 1,
+                rotation: size.rotation,
+            }),
             intent: 'print',
         }
         await pdfPage.render(renderContext).promise

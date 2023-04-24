@@ -23,18 +23,12 @@
             </div>
 
             <v-btn class="icon-search" fab dark small depressed color="primary" @click="simpleSearch()">
-                <v-icon small>search</v-icon>
+                <v-icon small>mdi-magnify</v-icon>
             </v-btn>
         </div>
 
-        <v-btn
-            class="btn-advanced-search"
-            depressed
-            color="grey darken-1"
-            @click="toggle()"
-            v-if="hasAdvancedSearchItems"
-        >
-            <v-icon small>chevron_left</v-icon>Filtros
+        <v-btn class="btn-advanced-search" depressed color="primary" @click="toggle()" v-if="hasAdvancedSearchItems">
+            <v-icon small>mdi-chevron-left</v-icon>Filtros
         </v-btn>
 
         <v-navigation-drawer
@@ -48,7 +42,7 @@
         >
             <v-toolbar flat class="title" color="primary">
                 <v-btn class="btn-close" icon small @click.prevent="toggle()">
-                    <v-icon>close</v-icon>
+                    <v-icon>mdi-close</v-icon>
                 </v-btn>
                 Busca Avançada
             </v-toolbar>
@@ -58,7 +52,7 @@
             </div>
 
             <div class="actions">
-                <v-btn class="ad-search" depressed color="secondary" @click="advancedSearch()">Buscar</v-btn>
+                <v-btn class="ad-search" depressed color="primary" @click="advancedSearch()">Buscar</v-btn>
                 <a class="ad-clear" @click="clear()">Limpar</a>
             </div>
         </v-navigation-drawer>
@@ -256,16 +250,10 @@ export default {
             .ad-clear
                 width 30%
                 margin-left 10px
-                color #777
-                border 1px solid #777
+                color var(--v-primary-base)
                 text-align center
                 padding 5px
                 font-size 13px
-                border-radius 2px
-
-                &:hover
-                    background-color #777
-                    color #fff
 
         .title
             color rgba(255, 255, 255, .8)

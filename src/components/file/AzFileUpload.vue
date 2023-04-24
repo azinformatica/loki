@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="az-drop-file-container" @click="openFileSelector" v-on="$listeners">
         <form enctype="multipart/form-data" novalidate>
             <div
                 class="az-drop-file"
@@ -9,6 +9,7 @@
             >
                 <input
                     id="azFileSelector"
+                    ref="azFileSelector"
                     type="file"
                     :multiple="multiple"
                     class="input-file"
@@ -33,7 +34,7 @@ export default {
         },
         repository: {
             type: String,
-            required: true,
+            default: '',
         },
         thumbnail: {
             type: Boolean,
@@ -47,11 +48,23 @@ export default {
             type: Boolean,
             default: true,
         },
+        useCustomBehavior: {
+            type: Boolean,
+            default: false,
+        },
     },
     data() {
         return {
             uploadFieldName: 'file',
         }
+    },
+    watch: {
+        $props: {
+            immediate: true,
+            handler() {
+                this.validateProps()
+            },
+        },
     },
     methods: {
         calcFileSize(bytes, unit) {
@@ -82,39 +95,67 @@ export default {
             const fileSize = this.calcFileSize(file.size, unit)
             return fileSize > maxSize
         },
-        onDropFiles(eventItems) {
-            if (!Object.keys(eventItems).length) {
-                return
-            }
-            const files = []
-            Object.keys(eventItems).forEach((key) => {
-                const item = eventItems[key]
-                if (item.kind === 'file') {
-                    files.push(item.getAsFile())
-                }
-            })
-            this.uploadFiles(files)
+        onDropFiles(dataTransferItemList) {
+            const eventItems = this.convertDataTransferItemListToEventItems(dataTransferItemList)
+            const eventItemsContainingFiles = this.filterEventItemsContainingFiles(eventItems)
+            const files = this.getFilesFromEventItems(eventItemsContainingFiles)
+            this.validateFiles(files)
+            this.emitFilesToUpload(files)
+            this.uploadFilesIfUsingDefaultBehavior(files)
         },
         onSelectFiles(fileList) {
-            if (!fileList.length) {
-                return
-            }
-            this.uploadFiles(fileList)
+            const files = this.convertFileListToFiles(fileList)
+            this.validateFiles(files)
+            this.emitFilesToUpload(files)
+            this.uploadFilesIfUsingDefaultBehavior(files)
             this.resetSelectedFiles()
         },
         openFileSelector() {
             document.getElementById('azFileSelector').click()
         },
-        uploadFiles(fileList) {
-            Array.from(Array(fileList.length).keys()).map((x) => {
-                const file = fileList[x]
-                if (this.isFileBiggerThanExpected(file)) {
-                    this.throwFileExceedMaxLimitSizeEvent(file)
-                } else {
-                    const payload = this.createPayload(file)
-                    this.$store.dispatch('uploadFile', payload)
-                }
-            })
+        uploadFilesIfUsingDefaultBehavior(files) {
+            if (!this.useCustomBehavior) {
+                this.uploadFiles(files)
+            }
+        },
+        uploadFiles(files) {
+            files.forEach((file) => this.upload(file))
+        },
+        convertFileListToFiles(fileList) {
+            return Array.from(fileList)
+        },
+        convertDataTransferItemListToEventItems(dataTransferItemList) {
+            return Array.from(dataTransferItemList)
+        },
+        filterEventItemsContainingFiles(eventItems) {
+            return eventItems.filter((eventItem) => eventItem.kind === 'file')
+        },
+        getFilesFromEventItems(eventItems) {
+            return eventItems.map((eventItem) => eventItem.getAsFile())
+        },
+        allowsMultipleFiles() {
+            return this.multiple
+        },
+        hasSelectedMultipleFiles(files) {
+            return files.length && files.length > 1
+        },
+        validateIfMultipleFilesSelected(files) {
+            if (!this.allowsMultipleFiles() && this.hasSelectedMultipleFiles(files)) {
+                throw new Error('Selecione apenas um único arquivo.')
+            }
+        },
+        validateFiles(files) {
+            this.validateIfMultipleFilesSelected(files)
+            files.forEach((file) => this.validateFile(file))
+        },
+        validateFile(file) {
+            if (this.isFileBiggerThanExpected(file)) {
+                this.throwFileExceedMaxLimitSizeEvent(file)
+            }
+        },
+        upload(file) {
+            const payload = this.createPayload(file)
+            this.$store.dispatch('uploadFile', payload)
         },
         resetSelectedFiles() {
             document.getElementById('azFileSelector').value = ''
@@ -125,11 +166,25 @@ export default {
                 filename: file.name,
             })
         },
+        validateRepositoryIfNoCustomBehavior() {
+            if (!this.useCustomBehavior && !this.repository) {
+                throw new Error('Prop "repository" must be informed')
+            }
+        },
+        validateProps() {
+            this.validateRepositoryIfNoCustomBehavior()
+        },
+        emitFilesToUpload(files) {
+            this.$emit('upload-files', files)
+        },
     },
 }
 </script>
 
 <style scoped lang="stylus">
+.az-drop-file-container
+    cursor pointer
+
 .az-drop-file
     border: 2px dashed #ccc
     margin: 10px 0

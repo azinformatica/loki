@@ -3,7 +3,7 @@
         <div class="card_title">
             {{ finishedUploadsCount }} arquivos concluídos
             <a href="#" class="close" @click.prevent="close()" v-show="!isUploading">
-                <v-icon color="grey">close</v-icon>
+                <v-icon color="grey">mdi-close</v-icon>
             </a>
         </div>
         <div class="scroll">
@@ -17,7 +17,7 @@
                                 :value="getFileUploadProgress(file)"
                                 v-show="!hasUploadError(file)"
                             ></v-progress-circular>
-                            <v-icon v-show="hasUploadError(file)">error</v-icon>
+                            <v-icon v-show="hasUploadError(file)">mdi-alert-circle</v-icon>
                         </div>
                     </div>
                 </li>
