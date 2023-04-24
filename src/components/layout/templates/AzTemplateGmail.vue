@@ -20,7 +20,7 @@
         </az-aside>
 
         <v-toolbar app height="60" class="toolbar">
-            <v-icon class="mobile_menu" @click="showAside()">dehaze</v-icon>
+            <v-icon class="mobile_menu" @click="showAside()">mdi-menu</v-icon>
             <img class="mobile" :src="logoMobile" />
             <div class="top-search">
                 <div class="input-search">
@@ -32,7 +32,7 @@
                     />
                 </div>
                 <v-btn class="icon-search" fab dark small depressed @click="$emit('searchEvent', searchText)">
-                    <v-icon small>search</v-icon>
+                    <v-icon small>mdi-magnify</v-icon>
                 </v-btn>
             </div>
             <v-spacer></v-spacer>

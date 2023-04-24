@@ -14,7 +14,7 @@
         <div :class="{ 'arrow-opened': !asideClosed, 'arrow-closed': asideClosed }" class="no-mobile" @click="toogle()">
             <v-btn icon flat>
                 <v-icon color="rgba(255, 255, 255, 0.3)">{{
-                    asideClosed ? 'keyboard_arrow_right' : 'keyboard_arrow_left'
+                    asideClosed ? 'mdi mdi-chevron-right-circle' : 'mdi mdi-chevron-left-circle'
                 }}</v-icon>
             </v-btn>
             <a v-if="!asideClosed" class="text-hide-menu">Recolher menu</a>

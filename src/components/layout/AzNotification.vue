@@ -11,7 +11,7 @@
         <v-btn icon slot="activator" @click="$emit('read')">
             <v-badge right overlap color="secondary">
                 <span slot="badge" v-if="hasNotificationsToRead">{{ notification.unread }}</span>
-                <v-icon color="white">notification_important</v-icon>
+                <v-icon color="white">mdi-bell</v-icon>
             </v-badge>
         </v-btn>
         <v-list>
@@ -37,13 +37,13 @@
                     <div @click="$emit('visit', message)">
                         <div v-html="message.text" class="text" />
                         <div class="when">
-                            <v-icon size="14px">alarm</v-icon>
+                            <v-icon size="14px">mdi-alarm</v-icon>
                             {{ message.when | azElapsedTime }}
                         </div>
                     </div>
                     <div>
                         <a @click.prevent="$emit('remove', message)">
-                            <v-icon size="14px">close</v-icon>
+                            <v-icon size="14px">mdi-close</v-icon>
                         </a>
                     </div>
                 </v-list-tile>

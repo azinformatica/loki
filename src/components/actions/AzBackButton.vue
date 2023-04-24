@@ -1,6 +1,6 @@
 <template>
     <div class="az-back-button">
-        <v-btn color="primary" flat depressed @click="back"> <v-icon>chevron_left</v-icon>{{ text }} </v-btn>
+        <v-btn color="primary" flat depressed @click="back"> <v-icon>mdi-chevron-left</v-icon>{{ text }} </v-btn>
     </div>
 </template>
 

@@ -24,7 +24,7 @@
         <v-btn
             class="btn-advanced-search"
             depressed
-            color="grey darken-1"
+            color="primary"
             @click="toggle()"
             v-if="hasAdvancedSearchItems"
         >
@@ -50,7 +50,7 @@
                 <slot name="search-items"></slot>
             </div>
             <div class="actions">
-                <v-btn class="ad-search" depressed color="secondary" @click="advancedSearch()">Buscar</v-btn>
+                <v-btn class="ad-search" depressed color="primary" @click="advancedSearch()">Buscar</v-btn>
                 <a class="ad-clear" @click="clear()">Limpar</a>
             </div>
         </v-navigation-drawer>
@@ -58,7 +58,6 @@
 </template>
 <script>
 import mutationTypes from '../../store/mutation-types'
-
 export default {
     props: {
         filter: {
@@ -170,12 +169,10 @@ export default {
     .btn-search
         margin-right: 10px
         padding: 5px 10px
-
         i
             color: rgba(255, 255, 255, 0.8)
             font-size: 13px
             font-weight: bold
-
     .v-navigation-drawer
         height: 100%
         margin-top: 60px !important
@@ -190,7 +187,6 @@ export default {
             font-size: 20px
             color: rgba(255,255,255,0.8)
             margin-right: 10px
-
         .items
             height: -webkit-calc(100% - 194px)
             height: -moz-calc(100% - 194px)
@@ -216,15 +212,10 @@ export default {
             .ad-clear
                 width: 30%
                 margin-left: 10px
-                color: #777
-                border: 1px solid #777
+                color: var(--v-primary-base)
                 text-align: center
                 padding: 5px
                 font-size: 13px
-                border-radius: 2px
-                &:hover
-                    background-color: #777
-                    color: white
         .title
             color: rgba(255, 255, 255, 0.8)
             position: fixed
@@ -234,7 +225,6 @@ export default {
             align-items center
             font-size: 18px !important
             font-weight: bold
-
 @media (max-width: 720px)
     .advanced-search-bar
         display: none

@@ -2,13 +2,13 @@
     <div>
         <div class="az-dv-controls" v-if="isZoomEnabled" :style="{ width: containerStyle.width }">
             <v-btn @click="zoomOut" depressed flat>
-                <v-icon>zoom_out</v-icon>
+                <v-icon>mdi-magnify-minus-outline</v-icon>
             </v-btn>
             <v-btn @click="restoreZoom" depressed flat>
-                <v-icon>aspect_ratio</v-icon>
+                <v-icon>mdi-aspect-ratio</v-icon>
             </v-btn>
             <v-btn @click="zoomIn" depressed flat>
-                <v-icon>zoom_in</v-icon>
+                <v-icon>mdi-magnify-plus-outline</v-icon>
             </v-btn>
             <div class="pagination-label no-mobile">Página {{ currentPage }} de {{ totalPages }}</div>
         </div>

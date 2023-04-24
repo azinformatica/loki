@@ -1,9 +1,12 @@
 import AzFileUpload from './AzFileUpload'
 import Vuex from 'vuex'
+import Vuetify from 'vuetify'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
+import Vue from 'vue'
 
 const localVue = createLocalVue()
-localVue.use(Vuex)
+Vue.use(Vuex)
+Vue.use(Vuetify)
 
 describe('AzFileUpload.spec.js', () => {
     let wrapper, propsData, store, actions
@@ -37,11 +40,16 @@ describe('AzFileUpload.spec.js', () => {
         expect(wrapper.vm.thumbnail).toBeFalsy()
         expect(wrapper.vm.repository).toEqual('repo1')
         expect(wrapper.vm.accept).toEqual('*')
+        expect(wrapper.vm.useCustomBehavior).toEqual(false)
     })
 
     it('Do nothing when the list of selected files to be uploaded is empty', () => {
+        const input = { value: '' }
+        document.getElementById = jest.fn().mockReturnValue(input)
+
         const filesToBeUploaded = []
         wrapper.vm.onSelectFiles(filesToBeUploaded)
+
         expect(actions.uploadFile.mock.calls).toHaveLength(0)
     })
 
@@ -69,14 +77,15 @@ describe('AzFileUpload.spec.js', () => {
             0: {
                 name: 'file1',
                 kind: 'file',
-                getAsFile() {
-                    return { name: 'file1' }
-                },
+                getAsFile: () => ({
+                    name: 'file1',
+                }),
             },
             1: {
                 name: 'file2',
                 kind: 'notfile',
             },
+            length: 2,
         }
         wrapper.vm.onDropFiles(droppedItems)
 

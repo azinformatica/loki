@@ -5,7 +5,7 @@
         <v-btn class="az-pdf-toolbar__content" @click="$emit('zoomOut')" icon data-test="zoomOut" :disabled="disableButtons">
             <v-tooltip bottom open-delay="800">
                 <span>Zoom -</span>
-                <v-icon slot="activator" >zoom_out</v-icon>
+                <v-icon slot="activator" >mdi-magnify-minus-outline</v-icon>
             </v-tooltip>
         </v-btn>
         <v-btn class="az-pdf-toolbar__content" @click="$emit('changeScaleType')" icon data-test="changeScaleType" :disabled="disableButtons">
@@ -13,14 +13,14 @@
                 <span v-if="scaleType === 'page-fit'" >Ajustar à largura</span>
                 <span v-else >Ajustar à altura</span>
 
-                <v-icon v-if="scaleType === 'page-fit'" slot="activator" >fullscreen</v-icon>
-                <v-icon v-else slot="activator" >fullscreen_exit</v-icon>
+                <v-icon v-if="scaleType === 'page-fit'" slot="activator" >mdi-fullscreen</v-icon>
+                <v-icon v-else slot="activator" >mdi-fullscreen-exit</v-icon>
             </v-tooltip>
         </v-btn>
         <v-btn class="az-pdf-toolbar__content" @click="$emit('zoomIn')" icon data-test="zoomIn" :disabled="disableButtons">
             <v-tooltip bottom open-delay="800">
                 <span>Zoom +</span>
-                <v-icon slot="activator" >zoom_in</v-icon>
+                <v-icon slot="activator" >mdi-magnify-plus-outline</v-icon>
             </v-tooltip>
         </v-btn>
         <div class="az-pdf-toolbar__pagination" data-test="pagination">
@@ -38,7 +38,7 @@
             >
                 <v-tooltip bottom open-delay="800">
                     <span>Girar</span>
-                    <v-icon slot="activator">rotate_right</v-icon>
+                    <v-icon slot="activator">mdi-rotate-right</v-icon>
                 </v-tooltip>
             </v-btn>
             <v-btn
@@ -51,7 +51,7 @@
             >
                 <v-tooltip bottom open-delay="800">
                     <span>Download</span>
-                    <v-icon slot="activator" >get_app</v-icon>
+                    <v-icon slot="activator" >mdi-download</v-icon>
                 </v-tooltip>
             </v-btn>
             <v-btn
@@ -64,7 +64,7 @@
             >
                 <v-tooltip bottom open-delay="800">
                     <span>Imprimir</span>
-                    <v-icon slot="activator">print</v-icon>
+                    <v-icon slot="activator">mdi-printer</v-icon>
                 </v-tooltip>
             </v-btn>
             <v-btn
@@ -73,7 +73,7 @@
                 @click="toggleToolbarActions"
                 icon
             >
-                <v-icon>more_vert</v-icon>
+                <v-icon>mdi-dots-vertical</v-icon>
             </v-btn>
         </div>
     </v-toolbar>

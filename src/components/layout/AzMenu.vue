@@ -59,7 +59,7 @@
                     </v-list-tile>
                     <v-list-tile @click="logout()" class="item">
                         <v-list-tile-action>
-                            <v-icon>exit_to_app</v-icon>
+                            <v-icon>mdi-exit-to-app</v-icon>
                         </v-list-tile-action>
                         <v-list-tile-content>
                             <v-list-tile-title>Sair</v-list-tile-title>
