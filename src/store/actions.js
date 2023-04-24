@@ -61,15 +61,16 @@ export default {
             assinaturaTemporariaId: temporarySubscription,
             rubricaBase64: rubricBase64,
             participacao: participation,
-            dadosExtras: extraDatas && (
-                extraDatas.map(extraData => ({
+            dadosExtras:
+                extraDatas &&
+                extraDatas.map((extraData) => ({
                     nome: extraData.name,
                     valor: extraData.value,
                     tipoDado: extraData.dataType,
-                }))
-            ),
-            posicionamentosVisuais: visualPositionings && (
-                visualPositionings.map(visualPositioning => ({
+                })),
+            posicionamentosVisuais:
+                visualPositionings &&
+                visualPositionings.map((visualPositioning) => ({
                     porcentagemEmX: visualPositioning.percentX,
                     porcentagemEmY: visualPositioning.percentY,
                     porcentagemLargura: visualPositioning.percentWidth,
@@ -77,13 +78,44 @@ export default {
                     indiceDadoExtra: visualPositioning.indexExtraData,
                     pagina: visualPositioning.pageNumber,
                     tipo: visualPositioning.type,
-                }))
-            )
+                })),
         }
 
         const { data } = await axios.post(url, requestData, { headers })
 
         return data
+    },
+
+    async [actionTypes.BPM.GET_PROCESS_INSTANCE]({ commit, state }, { processKey, businessKey }) {
+        if (!state.bpm.process[processKey][businessKey].isLoading) {
+            try {
+                commit(mutationTypes.BPM.SET_IS_LOADING_PROCESS_INSTANCE, { processKey, businessKey, isLoading: true })
+                const response = await axios.get(`${state.bpm.api}/getInstance/${processKey}/${businessKey}`)
+                commit(mutationTypes.BPM.SET_PROCESS_INSTANCE, { processKey, businessKey, instance: response.data })
+            } finally {
+                commit(mutationTypes.BPM.SET_IS_LOADING_PROCESS_INSTANCE, { processKey, businessKey, isLoading: false })
+            }
+        }
+    },
+
+    async [actionTypes.BPM.CLAIM]({ state }, { taskId }) {
+        const response = await axios.get(`${state.bpm.api}/claim/${taskId}`)
+        return response.data
+    },
+
+    async [actionTypes.BPM.UNCLAIM]({ state }, { taskId }) {
+        const response = await axios.get(`${state.bpm.api}/unclaim/${taskId}`)
+        return response.data
+    },
+
+    async [actionTypes.BPM.COMPLETE]({ state }, { taskId, bpmParameters }) {
+        const response = await axios.post(`${state.bpm.api}/complete/${taskId}`, bpmParameters)
+        return response.data
+    },
+
+    async [actionTypes.BPM.UNCOMPLETE]({ state }, { taskId }) {
+        const response = await axios.get(`${state.bpm.api}/uncomplete/${taskId}`)
+        return response.data
     },
 }
 
