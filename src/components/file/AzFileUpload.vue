@@ -159,11 +159,10 @@ export default {
         resetSelectedFiles() {
             document.getElementById('azFileSelector').value = ''
         },
-        throwFileExceedMaxLimitSizeEvent(file) {
-            this.$emit('error', {
-                type: 'FILE_EXCEEDED_MAX_SIZE_LIMIT',
-                filename: file.name,
-            })
+        throwFileExceedMaxLimitSizeEvent() {
+            const { maxSize } = this.$store.state.loki.file
+
+            throw new Error(`O tamanho máximo do arquivo deve ser de '${maxSize}'.`)
         },
         validateRepositoryIfNoCustomBehavior() {
             if (!this.useCustomBehavior && !this.repository) {
