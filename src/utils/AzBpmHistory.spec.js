@@ -248,7 +248,7 @@ describe('AzBpmHistory', () => {
         )
     })
 
-    it('zica', () => {
-        azBpmHistory.getLogs('a', 'b').then((logs) => console.log())
+    it('historico', () => {
+        azBpmHistory.getHistory('a', 'b').then((logs) => console.log())
     })
 })
