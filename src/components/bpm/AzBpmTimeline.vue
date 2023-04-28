@@ -41,8 +41,8 @@ export default {
         initializeAzBpmHistory() {
             this.azBpmHistory = new AzBpmHistory(this.$store)
         },
-        fetchHistory() {
-            this.history = this.azBpmHistory.getHistory(this.processKey, this.businessKey)
+        async fetchHistory() {
+            this.history = await this.azBpmHistory.getHistory(this.processKey, this.businessKey)
         },
     },
     async created() {
