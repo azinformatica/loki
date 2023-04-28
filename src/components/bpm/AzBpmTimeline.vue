@@ -1,15 +1,21 @@
 <template>
     <v-timeline dense>
-        <v-timeline-item
-            v-for="n in history"
-            :key="n"
-        >
-            <v-row class="pt-1">
-                <v-col cols="3">
-                    <strong> {{ history.date }} </strong>
+        <v-timeline-item v-for="log in history" :key="log.taskName" :icon="log.icon">
+            <v-row class="mt-2">
+                <v-col>
+                    {{ log.date }}
                 </v-col>
                 <v-col>
-                    <strong> {{ history.date }} </strong>
+                    {{ log.taskName }}
+                </v-col>
+                <v-col>
+                    {{ log.status }}
+                </v-col>
+                <v-col>
+                    {{ log.assignee }}
+                </v-col>
+                <v-col>
+                    {{ log.nextTaskName }}
                 </v-col>
             </v-row>
         </v-timeline-item>

@@ -78,6 +78,7 @@ export default class AzBpmHistory {
 
         defaultData.taskName = currentLog.activityName
         defaultData.status = 'RECEBIDO'
+        defaultData.icon = 'mdi-account-arrow-left'
         defaultData.assignee = assignee
         defaultData.date = assigneeDate
 
@@ -89,6 +90,7 @@ export default class AzBpmHistory {
 
         defaultData.taskName = currentLog.activityName
         defaultData.status = 'RECEBIMENTO CANCELADO'
+        defaultData.icon = 'mdi-account-arrow-right'
         defaultData.assignee = assignee
         defaultData.date = assigneeDate
 
@@ -100,6 +102,7 @@ export default class AzBpmHistory {
 
         defaultData.taskName = previousLog.activityName
         defaultData.status = 'ENCAMINHADO'
+        defaultData.icon = 'mdi-transfer-right'
         defaultData.nextTaskName = currentLog.activityName
         defaultData.assignee = previousLog.completeUser
         defaultData.date = (previousLog.activityAssignees || []).length
@@ -114,6 +117,7 @@ export default class AzBpmHistory {
 
         defaultData.taskName = previousLog.activityName
         defaultData.status = 'ENCAMINHAMENTO CANCELADO'
+        defaultData.icon = 'mdi-transfer-left'
         defaultData.nextTaskName = currentLog.activityName
         defaultData.assignee = previousLog.uncompleteUser
         defaultData.date = previousLog.date
@@ -123,12 +127,13 @@ export default class AzBpmHistory {
 
     _getDefaultData() {
         return {
-            date: null,
             taskName: '',
-            assignee: null,
-            nextTaskName: '',
-            duration: null,
             status: '',
+            icon: '',
+            nextTaskName: '',
+            assignee: null,
+            date: null,
+            duration: null,
         }
     }
 }
