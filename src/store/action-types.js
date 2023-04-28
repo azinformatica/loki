@@ -18,6 +18,7 @@ export default {
         },
     },
     BPM: {
+        GET_PROCESS_LOGS: 'getProcessLogs',
         GET_PROCESS_INSTANCE: 'getProcessInstance',
         CLAIM: 'getTaskAccess',
         UNCLAIM: 'releaseTaskAccess',
