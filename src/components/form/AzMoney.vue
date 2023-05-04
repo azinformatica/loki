@@ -1,5 +1,6 @@
 <template>
     <v-text-field
+        ref="azMoney"
         v-money="conditionalMoneyConfig"
         :name="name"
         :label="label"
@@ -14,6 +15,7 @@
         :error-messages="errors.collect(`${name}`)"
         @click:prepend-inner="cleanValue"
         @blur="updateValue($event.target.value, 'blur')"
+        @focus="$emit('focus', $event)"
         @keydown.ctrl.65="selectValue"
         @keydown="checkKeyAndValidateLength($event)"
         @keyup="checkKey($event)"
@@ -133,6 +135,10 @@ export default {
     watch: {
         validationField() {
             this.validateRequired(this.value)
+        },
+        valueFormated(newValue) {
+            const input = this.$refs.azMoney.$el.querySelector('input')
+            input.value = newValue
         },
     },
     updated() {
