@@ -1,5 +1,5 @@
 <template>
-    <div ref="azDraggableReordered" class="az-draggable-reordered">
+    <div ref="azReorderable" class="az-reorderable">
         <slot></slot>
     </div>
 </template>
@@ -9,7 +9,7 @@ import { cloneDeep, difference } from 'lodash'
 import Sortable from 'sortablejs/modular/sortable.complete.esm'
 
 export default {
-    name: 'az-draggable-reordered',
+    name: 'az-reorderable',
     props: {
         dragElement: {
             type: String,
@@ -122,7 +122,7 @@ export default {
         initSortable() {
             this.$nextTick(() => {
                 this.sortable = Sortable.create(
-                    this.$refs.azDraggableReordered.querySelector(this.dropElementContainer),
+                    this.$refs.azReorderable.querySelector(this.dropElementContainer),
                     this.propsInternal.options
                 )
             })
@@ -193,7 +193,7 @@ export default {
 </script>
 
 <style lang="stylus">
-.az-draggable-reordered
+.az-reorderable
     .item-drag
         border thin solid rgba(0, 0, 0, .12)
         background #C8EBFB
