@@ -1,3 +1,4 @@
+import moment from 'moment-timezone'
 import { actionTypes } from '../store'
 
 export default class AzBpmHistory {
@@ -7,14 +8,16 @@ export default class AzBpmHistory {
 
     async getHistory(processKey, businessKey) {
         const history = []
+
         const logs = await this._findLogs(processKey, businessKey)
+
         logs.reduce((previousLog, currentLog) => {
             this._addHistoryComplete(history, currentLog, previousLog)
             this._addHistoryUncomplete(history, currentLog, previousLog)
 
             const assignees = currentLog.activityAssignees || []
             assignees.reduce((previousAssignee, currentAssignee) => {
-                this._addHistoryClaim(history, currentLog, currentAssignee)
+                this._addHistoryClaim(history, currentLog, previousLog, currentAssignee)
                 this._addHistoryUnclaim(history, currentLog, currentAssignee, previousAssignee)
 
                 return currentAssignee
@@ -22,7 +25,18 @@ export default class AzBpmHistory {
 
             return currentLog
         }, null)
+
         return history
+    }
+
+    getHumanizedDuration(startDate, endDate) {
+        const momentStartDate = moment(startDate)
+        const momentEndDate = moment(endDate)
+        const momentDuration = moment.duration(momentEndDate.diff(momentStartDate))
+
+        const duration = this._getDurationWithProperScale(momentDuration)
+
+        return this._humanizeDuration(duration)
     }
 
     async _findLogs(processKey, businessKey) {
@@ -53,11 +67,9 @@ export default class AzBpmHistory {
         }
     }
 
-    _addHistoryClaim(history, currentLog, currentAssignee) {
+    _addHistoryClaim(history, currentLog, previousLog, currentAssignee) {
         if (currentAssignee.assignee) {
-            const assignee = currentAssignee.assignee
-            const assigneeDate = currentAssignee.assigneeDate
-            const historyClaim = this._getHistoryClaim(currentLog, assignee, assigneeDate)
+            const historyClaim = this._getHistoryClaim(currentLog, previousLog, currentAssignee)
 
             history.push(historyClaim)
         }
@@ -65,34 +77,33 @@ export default class AzBpmHistory {
 
     _addHistoryUnclaim(history, currentLog, currentAssignee, previousAssignee) {
         if (!currentAssignee.assignee) {
-            const assignee = previousAssignee.assignee
-            const assigneeDate = currentAssignee.assigneeDate
-            const historyUnclaim = this._getHistoryUnclaim(currentLog, assignee, assigneeDate)
+            const historyUnclaim = this._getHistoryUnclaim(currentLog, currentAssignee, previousAssignee)
 
             history.push(historyUnclaim)
         }
     }
 
-    _getHistoryClaim(currentLog, assignee, assigneeDate) {
+    _getHistoryClaim(currentLog, previousLog, currentAssignee) {
         const defaultData = this._getDefaultData()
 
-        defaultData.taskName = currentLog.activityName
         defaultData.status = 'RECEBIDO'
         defaultData.icon = 'mdi-account-arrow-left'
-        defaultData.assignee = assignee
-        defaultData.date = assigneeDate
+        defaultData.taskName = currentLog.activityName
+        defaultData.assignee = previousLog && previousLog.completeUser
+        defaultData.toAssignee = currentAssignee.assignee
+        defaultData.date = currentAssignee.assigneeDate
 
         return defaultData
     }
 
-    _getHistoryUnclaim(currentLog, assignee, assigneeDate) {
+    _getHistoryUnclaim(currentLog, currentAssignee, previousAssignee) {
         const defaultData = this._getDefaultData()
 
-        defaultData.taskName = currentLog.activityName
         defaultData.status = 'RECEBIMENTO CANCELADO'
-        defaultData.icon = 'mdi-account-arrow-right'
-        defaultData.assignee = assignee
-        defaultData.date = assigneeDate
+        defaultData.icon = 'mdi-account-cancel'
+        defaultData.taskName = currentLog.activityName
+        defaultData.assignee = previousAssignee.assignee
+        defaultData.date = currentAssignee.assigneeDate
 
         return defaultData
     }
@@ -100,14 +111,12 @@ export default class AzBpmHistory {
     _getHistoryComplete(currentLog, previousLog) {
         const defaultData = this._getDefaultData()
 
-        defaultData.taskName = previousLog.activityName
         defaultData.status = 'ENCAMINHADO'
-        defaultData.icon = 'mdi-transfer-right'
-        defaultData.nextTaskName = currentLog.activityName
+        defaultData.icon = 'mdi-progress-check'
+        defaultData.taskName = previousLog.activityName
+        defaultData.toTaskName = currentLog.activityName
         defaultData.assignee = previousLog.completeUser
-        defaultData.date = (previousLog.activityAssignees || []).length
-            ? previousLog.completeDate
-            : previousLog.activityEndTime
+        defaultData.date = previousLog.activityEndTime
 
         return defaultData
     }
@@ -115,25 +124,50 @@ export default class AzBpmHistory {
     _getHistoryUncomplete(currentLog, previousLog) {
         const defaultData = this._getDefaultData()
 
-        defaultData.taskName = previousLog.activityName
         defaultData.status = 'ENCAMINHAMENTO CANCELADO'
-        defaultData.icon = 'mdi-transfer-left'
-        defaultData.nextTaskName = currentLog.activityName
+        defaultData.icon = 'mdi-progress-close'
+        defaultData.taskName = previousLog.activityName
+        defaultData.toTaskName = currentLog.activityName
         defaultData.assignee = previousLog.uncompleteUser
-        defaultData.date = previousLog.date
+        defaultData.date = previousLog.activityEndTime
 
         return defaultData
     }
 
     _getDefaultData() {
         return {
-            taskName: '',
             status: '',
             icon: '',
-            nextTaskName: '',
+            taskName: '',
+            toTaskName: '',
             assignee: null,
+            toAssignee: null,
             date: null,
-            duration: null,
         }
+    }
+
+    _getDurationWithProperScale(momentDuration) {
+        const durations = [
+            this._createDuration(momentDuration.asDays(), 'dia'),
+            this._createDuration(momentDuration.asHours(), 'hora'),
+            this._createDuration(momentDuration.asMinutes(), 'minuto'),
+            this._createDuration(momentDuration.asSeconds(), 'segundo'),
+        ]
+
+        return durations.find((duration) => duration.quantity >= 1 || duration.unit === 'segundo')
+    }
+
+    _createDuration(quantity, unit) {
+        return {
+            quantity: Math.floor(quantity),
+            unit,
+        }
+    }
+
+    _humanizeDuration(duration) {
+        const quantity = duration.quantity
+        const unit = duration.unit
+
+        return `${quantity} ${unit}${quantity !== 1 ? 's' : ''}`
     }
 }
