@@ -1,77 +1,83 @@
 <template>
-    <div class="az-bpm-timeline">
-        <div v-if="visibleItemsLength" class="az-bpm-timeline__timeline">
-            <v-timeline>
+    <div>
+        <div v-if="visibleItemsLength" class="az-bpm-timeline-wrapper">
+            <v-timeline class="az-bpm-timeline">
                 <template v-for="timelineItem of visibleTimelineItems">
-                    <v-timeline-item v-if="timelineItem.duration" hide-dot right>
-                        <template v-if="!$vuetify.breakpoint.smAndDown" #opposite>
-                            <p class="grey--text text--darken-2 font-italic text-right mb-0 mr-n9">
-                                {{ timelineItem.duration }}
-                            </p>
-                        </template>
-                        <template v-else #default>
-                            <p class="grey--text text--darken-2 font-italic text-left mb-0 ml-n9">
-                                {{ timelineItem.duration }}
+                    <v-timeline-item
+                        class="az-bpm-timeline-item"
+                        :key="timelineItem.keyDuration"
+                        v-if="timelineItem.duration"
+                        hide-dot
+                        :right="isSmallDevice"
+                        :left="!isSmallDevice"
+                    >
+                        <template #default>
+                            <p class="az-bpm-timeline-item__duration">
+                                <i>
+                                    {{ timelineItem.duration }}
+                                </i>
                             </p>
                         </template>
                     </v-timeline-item>
                     <v-timeline-item
+                        class="az-bpm-timeline-item"
+                        :key="timelineItem.keyDate"
                         :icon="timelineItem.icon"
                         color="grey lighten-2"
                         icon-color="grey darken-2"
                         large
-                        right
                         fill-dot
+                        :right="isSmallDevice"
+                        :left="!isSmallDevice"
                     >
-                        <template v-if="!$vuetify.breakpoint.smAndDown" #opposite>
-                            <p class="primary--text font-weight-bold text-no-wrap mb-0">
-                                {{ timelineItem.date }}
-                                <br />
-                                {{ timelineItem.time }}
+                        <template #default>
+                            <p class="az-bpm-timeline-item__datetime">
+                                <b>
+                                    {{ timelineItem.date }}
+                                    <span v-if="isSmallDevice">
+                                        {{ '-' }}
+                                    </span>
+                                    <br v-if="!isSmallDevice" />
+                                    {{ timelineItem.time }}
+                                </b>
                             </p>
                         </template>
+                    </v-timeline-item>
+                    <v-timeline-item class="az-bpm-timeline-item" :key="timelineItem.keyCard" right hide-dot>
                         <template #default>
-                            <p
-                                v-if="$vuetify.breakpoint.smAndDown"
-                                class="primary--text font-weight-bold text-no-wrap mb-2"
-                            >
-                                {{ timelineItem.date }} - {{ timelineItem.time }}
-                            </p>
-                            <v-card class="pa-4 grey--text text--darken-2" outlined flat>
-                                <v-row dense align="center" justify="space-between">
-                                    <v-col cols="auto">
-                                        <p class="font-weight-bold mb-0">
+                            <div class="az-bpm-timeline-item__card">
+                                <div>
+                                    <p class="az-bpm-timeline-item__card__title">
+                                        <b>
                                             {{ timelineItem.title }}
-                                        </p>
-                                        <p class="mb-0">
-                                            {{ timelineItem.subtitle }}
-                                        </p>
-                                    </v-col>
-                                    <v-col cols="auto">
-                                        <p class="font-weight-bold mb-0">
+                                        </b>
+                                    </p>
+                                    <p class="az-bpm-timeline-item__card__subtitle">
+                                        {{ timelineItem.subtitle }}
+                                    </p>
+                                </div>
+                                <div>
+                                    <p class="az-bpm-timeline-item__card__content">
+                                        <b>
                                             {{ timelineItem.content }}
-                                        </p>
-                                    </v-col>
-                                </v-row>
-                            </v-card>
+                                        </b>
+                                    </p>
+                                </div>
+                            </div>
                         </template>
                     </v-timeline-item>
                 </template>
             </v-timeline>
-            <v-row dense align="center" justify="space-between">
-                <v-col cols="auto">
-                    <a v-if="seeMoreLength" @click="seeMore"> Ver mais {{ seeMoreLength }} </a>
-                </v-col>
-                <v-col cols="auto">
-                    <p class="text-right grey--text text--lighten-1 mb-0">
-                        {{ visibleItemsLength }} de {{ timelineItems.length }} - Registros
-                    </p>
-                </v-col>
-            </v-row>
+            <div class="az-bpm-timeline-info">
+                <a class="az-bpm-timeline-info__see-more" v-if="seeMoreLength" @click="seeMore">
+                    Ver mais {{ seeMoreLength }}
+                </a>
+                <p class="az-bpm-timeline-info__counter">
+                    {{ visibleItemsLength }} de {{ timelineItems.length }} - Registros
+                </p>
+            </div>
         </div>
-        <div v-else class="az-bpm-timeline__empty">
-            <slot name="empty"></slot>
-        </div>
+        <slot name="empty"></slot>
     </div>
 </template>
 
@@ -79,7 +85,7 @@
 import AzBpmHistory from '../../utils/AzBpmHistory'
 
 export default {
-    name: 'AzBpmHistory',
+    name: 'AzBpmTimeline',
     props: {
         businessKey: {
             type: String,
@@ -108,6 +114,9 @@ export default {
         }
     },
     computed: {
+        isSmallDevice() {
+            return this.$vuetify.breakpoint.smAndDown
+        },
         visibleTimelineItems() {
             return this.timelineItems.slice(0, this.visibleItemsLength)
         },
@@ -129,6 +138,9 @@ export default {
                     title: this.formatTimelineTitle(currentLog),
                     subtitle: this.formatTimelineSubtitle(currentLog),
                     content: this.formatTimelineContent(currentLog),
+                    keyDate: this.formatTimelineKeyDate(currentLog),
+                    keyCard: this.formatTimelineKeyCard(currentLog),
+                    keyDuration: this.formatTimelineKeyDuration(currentLog),
                 }
             })
         },
@@ -161,6 +173,15 @@ export default {
         formatTimelineContent(currentLog) {
             return currentLog.toTaskName || currentLog.taskName
         },
+        formatTimelineKeyDate(currentLog) {
+            return `key-date-${currentLog.date}`
+        },
+        formatTimelineKeyCard(currentLog) {
+            return `key-card-${currentLog.date}`
+        },
+        formatTimelineKeyDuration(currentLog) {
+            return `key-duration-${currentLog.date}`
+        },
         initializeAzBpmHistory() {
             this.azBpmHistory = new AzBpmHistory(this.$store)
         },
@@ -178,50 +199,107 @@ export default {
 </script>
 
 <style lang="stylus">
-.az-bpm-timeline
-    &__empty
-        width 100%
+.az-bpm-timeline-wrapper
+    max-width 900px
+    margin auto
 
-    &__timeline
-        max-width 900px
-        margin auto
+    .v-timeline::before
+        left 147px !important
 
-        > .row
-            margin-left: 196px
+    .v-timeline-item
+        &__dot
+            box-shadow none
 
-        .v-card
-            border-width 3px !important
+        &--after
+            justify-content flex-end
 
-        .v-timeline::before
-            left 147px !important
+            .v-timeline-item__body
+                margin-top -92px
+                margin-left 100px
+                max-width calc(100% - 96px) !important
 
-        .v-timeline-item
-            &__opposite
+        &--before
+            .v-timeline-item__body
                 min-width 100px
                 width 100px
                 flex 0 1 auto
+                max-width 100px !important
 
-            &__body
-                max-width calc(100% - 196px) !important
+.az-bpm-timeline-item
+    align-items center
 
-            &__dot
-                box-shadow none
+    &__duration
+        color #616161
+        text-align right
+        margin-right -36px
 
-            &--after
-                justify-content flex-end
+    &__datetime
+        text-align right
+        color var(--v-primary-base)
+        white-space nowrap
+        margin-bottom 0 !important
+
+    &__card
+        color #616161
+        border-radius 4px
+        border 3px solid #e0e0e0
+        display flex
+        flex-wrap wrap
+        justify-content space-between
+        align-items center
+        padding 16px
+        word-break break-word
+
+        &__title
+            margin-bottom 0 !important
+
+        &__subtitle
+            margin-bottom 0 !important
+
+        &__content
+            margin-bottom 0 !important
+
+.az-bpm-timeline-info
+    display flex
+    justify-content space-between
+    align-items center
+    flex-wrap wrap
+    margin-left 196px
+
+    &__see-more
+        color var(--v-primary-base)
+
+    &__counter
+        flex 1 1 auto
+        text-align right
+        color #bdbdbd
+        margin-bottom 0 !important
+
+    &__see-more + &__counter
+        flex 0 1 auto
 
 @media (max-width: 960px)
-    .az-bpm-timeline
-        padding-right 20px
+    .az-bpm-timeline-wrapper
+        .v-timeline::before
+            left 47px !important
 
-        &__timeline
-            > .row
-                margin-left: 96px
+        .v-timeline-item
+            &__body
+                margin-top 0 !important
+                margin-left 0 !important
 
-            .v-timeline::before
-                left 47px !important
+            &--fill-dot
+                padding-bottom 0 !important
 
-            .v-timeline-item
-                &__body
-                    max-width calc(100% - 96px) !important
+    .az-bpm-timeline-item
+        &__duration
+            text-align left
+            margin-left -36px
+
+        &__datetime
+            text-align left
+            display inline
+
+    .az-bpm-timeline-info
+        margin-left 96px
 </style>
