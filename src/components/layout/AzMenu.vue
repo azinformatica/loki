@@ -252,7 +252,7 @@ export default {
     .primary--text
         color rgba(255, 255, 255, .5) !important
 
-    .material-icons
+    .mdi
         font-size 20px
         color rgba(255, 255, 255, .5) !important
 

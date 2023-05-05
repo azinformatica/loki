@@ -12,7 +12,7 @@
                         <v-icon medium v-if="!userPhoto" :color="color">mdi-account-circle</v-icon>
                         <img v-if="userPhoto" :src="userPhoto" alt="Foto do usuário" />
                     </v-avatar>
-                    <v-icon right="right">keyboard_arrow_down</v-icon>
+                    <v-icon right="right">mdi-chevron-down</v-icon>
                 </v-btn>
             </template>
             <v-list>
@@ -143,7 +143,7 @@ export default {
                 padding-right 10px
                 margin-right 0 !important
 
-                .material-icons
+                .mdi
                     font-size 13px
 
             .v-list-item__content
