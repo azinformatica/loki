@@ -143,7 +143,7 @@ export default {
                 padding-right 10px
                 margin-right 0 !important
 
-                .material-icons
+                .mdi
                     font-size 13px
 
             .v-list-item__content
