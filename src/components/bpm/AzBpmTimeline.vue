@@ -7,9 +7,8 @@
                         class="az-bpm-timeline-item"
                         :key="timelineItem.keyDuration"
                         v-if="timelineItem.duration"
+                        :[timelineItemPosition]="true"
                         hide-dot
-                        :right="isSmallDevice"
-                        :left="!isSmallDevice"
                     >
                         <template #default>
                             <p class="az-bpm-timeline-item__duration">
@@ -25,41 +24,42 @@
                         :icon="timelineItem.icon"
                         color="grey lighten-2"
                         icon-color="grey darken-2"
+                        :[timelineItemPosition]="true"
                         large
                         fill-dot
-                        :right="isSmallDevice"
-                        :left="!isSmallDevice"
                     >
                         <template #default>
-                            <p class="az-bpm-timeline-item__datetime">
-                                <b>
-                                    {{ timelineItem.date }}
-                                    <span v-if="isSmallDevice">
-                                        {{ '-' }}
-                                    </span>
-                                    <br v-if="!isSmallDevice" />
-                                    {{ timelineItem.time }}
-                                </b>
-                            </p>
+                            <div class="az-bpm-timeline-item__datetime">
+                                <p class="az-bpm-timeline-item__date">
+                                    <b>
+                                        {{ timelineItem.date }}
+                                    </b>
+                                </p>
+                                <p class="az-bpm-timeline-item__time">
+                                    <b>
+                                        {{ timelineItem.time }}
+                                    </b>
+                                </p>
+                            </div>
                         </template>
                     </v-timeline-item>
                     <v-timeline-item class="az-bpm-timeline-item" :key="timelineItem.keyCard" right hide-dot>
                         <template #default>
                             <div class="az-bpm-timeline-item__card">
                                 <div>
-                                    <p class="az-bpm-timeline-item__card__title">
+                                    <p class="az-bpm-timeline-item__status">
                                         <b>
-                                            {{ timelineItem.title }}
+                                            {{ timelineItem.status }}
                                         </b>
                                     </p>
-                                    <p class="az-bpm-timeline-item__card__subtitle">
-                                        {{ timelineItem.subtitle }}
+                                    <p class="az-bpm-timeline-item__assignee">
+                                        {{ timelineItem.assignee }}
                                     </p>
                                 </div>
                                 <div>
-                                    <p class="az-bpm-timeline-item__card__content">
+                                    <p class="az-bpm-timeline-item__task">
                                         <b>
-                                            {{ timelineItem.content }}
+                                            {{ timelineItem.task }}
                                         </b>
                                     </p>
                                 </div>
@@ -114,8 +114,8 @@ export default {
         }
     },
     computed: {
-        isSmallDevice() {
-            return this.$vuetify.breakpoint.smAndDown
+        timelineItemPosition() {
+            return this.$vuetify.breakpoint.smAndDown ? 'right' : 'left'
         },
         visibleTimelineItems() {
             return this.timelineItems.slice(0, this.visibleItemsLength)
@@ -135,9 +135,9 @@ export default {
                     time: this.formatTimelineTime(currentLog),
                     duration: this.formatTimelineDuration(currentLog, previousLog),
                     icon: this.formatTimelineIcon(currentLog),
-                    title: this.formatTimelineTitle(currentLog),
-                    subtitle: this.formatTimelineSubtitle(currentLog),
-                    content: this.formatTimelineContent(currentLog),
+                    status: this.formatTimelineStatus(currentLog),
+                    assignee: this.formatTimelineAssignee(currentLog),
+                    task: this.formatTimelineTask(currentLog),
                     keyDate: this.formatTimelineKeyDate(currentLog),
                     keyCard: this.formatTimelineKeyCard(currentLog),
                     keyDuration: this.formatTimelineKeyDuration(currentLog),
@@ -164,13 +164,13 @@ export default {
         formatTimelineIcon(currentLog) {
             return currentLog.icon
         },
-        formatTimelineTitle(currentLog) {
+        formatTimelineStatus(currentLog) {
             return currentLog.status
         },
-        formatTimelineSubtitle(currentLog) {
+        formatTimelineAssignee(currentLog) {
             return [currentLog.assignee, currentLog.toAssignee].filter(Boolean).join(' » ')
         },
-        formatTimelineContent(currentLog) {
+        formatTimelineTask(currentLog) {
             return currentLog.toTaskName || currentLog.taskName
         },
         formatTimelineKeyDate(currentLog) {
@@ -185,15 +185,16 @@ export default {
         initializeAzBpmHistory() {
             this.azBpmHistory = new AzBpmHistory(this.$store)
         },
-        async fetchHistory() {
-            this.history = await this.azBpmHistory.getHistory(this.processKey, this.businessKey)
-            this.history.reverse()
-            this.visibleItemsLength = Math.min(this.initialVisibleItemsLength, this.history.length)
+        fetchHistory() {
+            this.azBpmHistory.getHistory(this.processKey, this.businessKey).then((history) => {
+                this.history = history.reverse()
+                this.visibleItemsLength = Math.min(this.initialVisibleItemsLength, history.length)
+            })
         },
     },
-    async created() {
+    created() {
         this.initializeAzBpmHistory()
-        await this.fetchHistory()
+        this.fetchHistory()
     },
 }
 </script>
@@ -234,9 +235,15 @@ export default {
         margin-right -36px
 
     &__datetime
-        text-align right
         color var(--v-primary-base)
         white-space nowrap
+
+    &__date
+        text-align right
+        margin-bottom 0 !important
+
+    &__time
+        text-align right
         margin-bottom 0 !important
 
     &__card
@@ -250,14 +257,14 @@ export default {
         padding 16px
         word-break break-word
 
-        &__title
-            margin-bottom 0 !important
+    &__status
+        margin-bottom 0 !important
 
-        &__subtitle
-            margin-bottom 0 !important
+    &__assignee
+        margin-bottom 0 !important
 
-        &__content
-            margin-bottom 0 !important
+    &__task
+        margin-bottom 0 !important
 
 .az-bpm-timeline-info
     display flex
@@ -296,9 +303,16 @@ export default {
             text-align left
             margin-left -36px
 
-        &__datetime
-            text-align left
+        &__date
             display inline
+            text-align left
+
+        &__time
+            display inline
+            text-align left
+
+            &::before
+                content '-'
 
     .az-bpm-timeline-info
         margin-left 96px
