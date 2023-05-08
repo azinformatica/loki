@@ -61,6 +61,7 @@ import buildMenu from './utils/azBuildMenu'
 import hasPermissions from './utils/AzHasPermissions'
 import hasDomainPermissions from './utils/AzHasDomainPermissions'
 import AzDigitalSignature from './utils/AzDigitalSignature'
+import AzBpmHistory from './utils/AzBpmHistory'
 
 Vue.use(accounting)
 Vue.use(money, {
@@ -163,4 +164,5 @@ export {
     hasPermissions,
     hasDomainPermissions,
     AzDigitalSignature,
+    AzBpmHistory,
 }
