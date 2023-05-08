@@ -6,10 +6,34 @@ export default class AzBpmHistory {
         this.store = store
     }
 
-    async getHistory(processKey, businessKey) {
-        const history = []
+    getHistory(processKey, businessKey) {
+        return this._findLogs(processKey, businessKey).then((logs) => this._formatLogs(logs))
+    }
 
-        const logs = await this._findLogs(processKey, businessKey)
+    getHumanizedDuration(startDate, endDate) {
+        const momentStartDate = moment(startDate)
+        const momentEndDate = moment(endDate)
+        const momentDuration = moment.duration(momentEndDate.diff(momentStartDate))
+
+        const duration = this._getDurationWithProperScale(momentDuration)
+
+        return this._humanizeDuration(duration)
+    }
+
+    _findLogs(processKey, businessKey) {
+        const processLogsParams = this._getProcessLogsParams(processKey, businessKey)
+        return Promise.resolve(this.store.dispatch(actionTypes.BPM.GET_PROCESS_LOGS, processLogsParams))
+    }
+
+    _getProcessLogsParams(processKey, businessKey) {
+        return {
+            processKey,
+            businessKey,
+        }
+    }
+
+    _formatLogs(logs) {
+        const history = []
 
         logs.reduce((previousLog, currentLog) => {
             this._addHistoryComplete(history, currentLog, previousLog)
@@ -23,32 +47,12 @@ export default class AzBpmHistory {
                 return currentAssignee
             }, null)
 
+            this._addHistoryFinish(history, currentLog)
+
             return currentLog
         }, null)
 
         return history
-    }
-
-    getHumanizedDuration(startDate, endDate) {
-        const momentStartDate = moment(startDate)
-        const momentEndDate = moment(endDate)
-        const momentDuration = moment.duration(momentEndDate.diff(momentStartDate))
-
-        const duration = this._getDurationWithProperScale(momentDuration)
-
-        return this._humanizeDuration(duration)
-    }
-
-    async _findLogs(processKey, businessKey) {
-        const processLogsParams = this._getProcessLogsParams(processKey, businessKey)
-        return await this.store.dispatch(actionTypes.BPM.GET_PROCESS_LOGS, processLogsParams)
-    }
-
-    _getProcessLogsParams(processKey, businessKey) {
-        return {
-            processKey,
-            businessKey,
-        }
     }
 
     _addHistoryComplete(history, currentLog, previousLog) {
@@ -64,6 +68,14 @@ export default class AzBpmHistory {
             const historyUncomplete = this._getHistoryUncomplete(currentLog, previousLog)
 
             history.push(historyUncomplete)
+        }
+    }
+
+    _addHistoryFinish(history, currentLog) {
+        if (currentLog.state === 'COMPLETED') {
+            const historyFinish = this._getHistoryFinish(currentLog)
+
+            history.push(historyFinish)
         }
     }
 
@@ -102,8 +114,20 @@ export default class AzBpmHistory {
         defaultData.status = 'RECEBIMENTO CANCELADO'
         defaultData.icon = 'mdi-account-cancel'
         defaultData.taskName = currentLog.activityName
-        defaultData.assignee = previousAssignee.assignee
+        defaultData.assignee = previousAssignee && previousAssignee.assignee
         defaultData.date = currentAssignee.assigneeDate
+
+        return defaultData
+    }
+
+    _getHistoryFinish(currentLog) {
+        const defaultData = this._getDefaultData()
+
+        defaultData.status = 'FINALIZADO'
+        defaultData.icon = 'mdi-progress-check'
+        defaultData.taskName = currentLog.activityName
+        defaultData.assignee = currentLog.completeUser
+        defaultData.date = currentLog.activityEndTime
 
         return defaultData
     }
