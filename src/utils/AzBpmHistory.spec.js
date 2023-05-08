@@ -7,60 +7,28 @@ describe('AzBpmHistory', () => {
         azBpmHistory = new AzBpmHistory({})
         azBpmHistory.store.dispatch = jest.fn(() => [
             {
-                processDefinitionId: 'process_002:1:0c9fa754-d2fa-11ed-876f-0242ac120007',
-                instanceId: '35e2a6a8-d3b9-11ed-9b7f-0aac80447f94',
-                taskId: '35e4063b-d3b9-11ed-9b7f-0aac80447f94',
-                activityId: 'UserTask_0gosj4v',
                 activityName: 'Primeiro',
-                activityStartTime: '2023-04-05T10:53:14.490-0300',
                 activityEndTime: '2023-04-05T10:58:27.246-0300',
-                activityDuration: 312756,
-                completeDate: '2023-04-05T10:58:27.216-0300',
                 completeUser: 'Administrador do sistema',
-                completeUserLogin: 'admin',
                 activityAssignees: [
                     {
-                        assigneeLogin: 'admin',
                         assignee: 'Administrador do sistema',
                         assigneeDate: '2023-04-05T10:58:11.366-0300',
                     },
                 ],
-                activityType: 'userTask',
-                canceled: false,
-            },
-            {
-                processDefinitionId: 'process_002:1:0c9fa754-d2fa-11ed-876f-0242ac120007',
-                instanceId: '35e2a6a8-d3b9-11ed-9b7f-0aac80447f94',
-                taskId: 'f04f1bb6-d3b9-11ed-9b7f-0aac80447f94',
-                activityId: 'UserTask_0vyxa16',
-                activityName: 'Segundo',
-                activityStartTime: '2023-04-05T10:58:27.247-0300',
-                activityEndTime: '2023-04-05T10:59:27.284-0300',
-                activityDuration: 60037,
-                completeDate: '2023-04-05T10:59:27.263-0300',
-                completeUser: 'Administrador do sistema',
-                completeUserLogin: 'admin',
-                previousTask: '35e4063b-d3b9-11ed-9b7f-0aac80447f94',
-                activityAssignees: [
-                    {
-                        assigneeLogin: 'admin',
-                        assignee: 'Administrador do sistema',
-                        assigneeDate: '2023-04-05T10:58:35.926-0300',
-                    },
-                ],
-                activityType: 'userTask',
                 canceled: false,
             },
         ])
+        azBpmHistory.getHistory = jest.fn(() => azBpmHistory._formatLogs(azBpmHistory.store.dispatch()))
     })
 
     describe('getHistory', () => {
-        let history, processKey, businessKey
+        let history, updateHistory
 
-        beforeAll(async () => {
-            processKey = 'example-process-key'
-            businessKey = 'example-business-key'
-            history = await azBpmHistory.getHistory(processKey, businessKey)
+        beforeAll(() => {
+            updateHistory = () => (history = azBpmHistory.getHistory())
+
+            updateHistory()
         })
 
         describe('Property', () => {
@@ -90,6 +58,248 @@ describe('AzBpmHistory', () => {
 
             it('Should have "date" property', () => {
                 expect(history[0].hasOwnProperty('date')).toBe(true)
+            })
+        })
+
+        describe('History finish', () => {
+            let currentLog
+            beforeEach(() => {
+                currentLog = {
+                    state: 'COMPLETED',
+                    activityName: 'example-name',
+                    completeUser: 'example-complete-user',
+                    activityEndTime: '2020-02-02',
+                }
+                azBpmHistory.store.dispatch = jest.fn(() => [currentLog])
+                updateHistory()
+            })
+
+            it('Should add history with "status" FINALIZADO', () => {
+                expect(history[0].status).toBe('FINALIZADO')
+            })
+
+            it('Should add history with proper "taskName"', () => {
+                expect(history[0].taskName).toBe(currentLog.activityName)
+            })
+
+            it('Should add history with proper "assignee"', () => {
+                expect(history[0].assignee).toBe(currentLog.completeUser)
+            })
+
+            it('Should add history with proper "date"', () => {
+                expect(history[0].date).toBe(currentLog.activityEndTime)
+            })
+
+            it('Should add history with default values on unused fields', () => {
+                expect(history[0].toAssignee).toBeFalsy()
+                expect(history[0].toTaskName).toBeFalsy()
+            })
+        })
+
+        describe('History complete', () => {
+            let currentLog, previousLog
+            beforeEach(() => {
+                previousLog = {
+                    canceled: false,
+                    activityName: 'example-name-01',
+                    activityEndTime: '2020-02-02',
+                    completeUser: 'user-name-example',
+                }
+                currentLog = {
+                    activityName: 'example-name-02',
+                }
+
+                azBpmHistory.store.dispatch = jest.fn(() => [previousLog, currentLog])
+                updateHistory()
+            })
+
+            it('Should not add if has no previous log', () => {
+                azBpmHistory.store.dispatch = jest.fn(() => [currentLog])
+                updateHistory()
+
+                expect(history).toHaveLength(0)
+            })
+
+            it('Should not add if is canceled', () => {
+                previousLog.canceled = true
+                updateHistory()
+
+                expect(history).toHaveLength(1)
+                expect(history[0].status).not.toBe('ENCAMINHADO')
+            })
+
+            it('Should add history with "status" ENCAMINHADO', () => {
+                expect(history[0].status).toBe('ENCAMINHADO')
+            })
+
+            it('Should add history with proper "taskName"', () => {
+                expect(history[0].taskName).toBe(previousLog.activityName)
+            })
+
+            it('Should add history with proper "toTaskName"', () => {
+                expect(history[0].toTaskName).toBe(currentLog.activityName)
+            })
+
+            it('Should add history with proper "assignee"', () => {
+                expect(history[0].assignee).toBe(previousLog.completeUser)
+            })
+
+            it('Should add history with proper "date"', () => {
+                expect(history[0].date).toBe(previousLog.activityEndTime)
+            })
+
+            it('Should add history with default values on unused fields', () => {
+                expect(history[0].toAssignee).toBeFalsy()
+            })
+        })
+
+        describe('History uncomplete', () => {
+            let currentLog, previousLog
+            beforeEach(() => {
+                previousLog = {
+                    canceled: true,
+                    activityName: 'example-name-01',
+                    activityEndTime: '2020-02-02',
+                    uncompleteUser: 'user-name-example',
+                }
+                currentLog = {
+                    activityName: 'example-name-02',
+                }
+
+                azBpmHistory.store.dispatch = jest.fn(() => [previousLog, currentLog])
+                updateHistory()
+            })
+
+            it('Should not add if has no previous log', () => {
+                azBpmHistory.store.dispatch = jest.fn(() => [currentLog])
+                updateHistory()
+
+                expect(history).toHaveLength(0)
+            })
+
+            it('Should not add if is not canceled', () => {
+                previousLog.canceled = false
+                updateHistory()
+
+                expect(history).toHaveLength(1)
+                expect(history[0].status).not.toBe('ENCAMINHAMENTO CANCELADO')
+            })
+
+            it('Should add history with "status" ENCAMINHAMENTO CANCELADO', () => {
+                expect(history[0].status).toBe('ENCAMINHAMENTO CANCELADO')
+            })
+
+            it('Should add history with proper "taskName"', () => {
+                expect(history[0].taskName).toBe(previousLog.activityName)
+            })
+
+            it('Should add history with proper "toTaskName"', () => {
+                expect(history[0].toTaskName).toBe(currentLog.activityName)
+            })
+
+            it('Should add history with proper "assignee"', () => {
+                expect(history[0].assignee).toBe(previousLog.uncompleteUser)
+            })
+
+            it('Should add history with proper "date"', () => {
+                expect(history[0].date).toBe(previousLog.activityEndTime)
+            })
+
+            it('Should add history with default values on unused fields', () => {
+                expect(history[0].toAssignee).toBeFalsy()
+            })
+        })
+
+        describe('History claim', () => {
+            let currentLog, currentAssignee
+            beforeEach(() => {
+                currentAssignee = {
+                    assignee: 'user-name-example-02',
+                    assigneeDate: '2020-02-02',
+                }
+                currentLog = {
+                    activityName: 'example-name-02',
+                    activityAssignees: [currentAssignee],
+                }
+
+                azBpmHistory.store.dispatch = jest.fn(() => [currentLog])
+                updateHistory()
+            })
+
+            it('Should not add if has no assignee', () => {
+                currentAssignee.assignee = null
+                updateHistory()
+
+                expect(history[0]).not.toBe('RECEBIDO')
+            })
+
+            it('Should add history with "status" RECEBIDO', () => {
+                expect(history[0].status).toBe('RECEBIDO')
+            })
+
+            it('Should add history with proper "taskName"', () => {
+                expect(history[0].taskName).toBe(currentLog.activityName)
+            })
+
+            it('Should add history with proper "assignee"', () => {
+                expect(history[0].assignee).toBe(null)
+            })
+
+            it('Should add history with proper "toAssignee"', () => {
+                expect(history[0].toAssignee).toBe(currentAssignee.assignee)
+            })
+
+            it('Should add history with proper "date"', () => {
+                expect(history[0].date).toBe(currentAssignee.assigneeDate)
+            })
+
+            it('Should add history with default values on unused fields', () => {
+                expect(history[0].toTaskName).toBeFalsy()
+            })
+        })
+
+        describe('History unclaim', () => {
+            let currentLog, currentAssignee
+            beforeEach(() => {
+                currentAssignee = {
+                    assignee: null,
+                    assigneeDate: '2020-02-02',
+                }
+                currentLog = {
+                    activityName: 'example-name-02',
+                    activityAssignees: [currentAssignee],
+                }
+
+                azBpmHistory.store.dispatch = jest.fn(() => [currentLog])
+                updateHistory()
+            })
+
+            it('Should not add if has assignee', () => {
+                currentAssignee.assignee = 'user-name-example-01'
+                updateHistory()
+
+                expect(history[0]).not.toBe('RECEBIMENTO CANCELADO')
+            })
+
+            it('Should add history with "status" RECEBIMENTO CANCELADO', () => {
+                expect(history[0].status).toBe('RECEBIMENTO CANCELADO')
+            })
+
+            it('Should add history with proper "taskName"', () => {
+                expect(history[0].taskName).toBe(currentLog.activityName)
+            })
+
+            it('Should add history with proper "assignee"', () => {
+                expect(history[0].assignee).toBe(null)
+            })
+
+            it('Should add history with proper "date"', () => {
+                expect(history[0].date).toBe(currentAssignee.assigneeDate)
+            })
+
+            it('Should add history with default values on unused fields', () => {
+                expect(history[0].toAssignee).toBeFalsy()
+                expect(history[0].toTaskName).toBeFalsy()
             })
         })
     })
