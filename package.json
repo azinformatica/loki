@@ -1,6 +1,6 @@
 {
   "name": "@azinformatica/loki",
-  "version": "2.15.1",
+  "version": "2.16.1",
   "description": "Biblioteca de componentes visuais compartilhados construidos usando vuejs.",
   "main": "src/index.js",
   "private": false,
@@ -30,6 +30,7 @@
     "sass": "~1.52.2",
     "sass-loader": "~12.2.0",
     "scrollmonitor": "1.2.4",
+    "sortablejs": "~1.15.0",
     "soundex": "~0.2.1",
     "string-mask": "~0.3.0",
     "string-similarity": "~4.0.4",
@@ -68,9 +69,9 @@
     "webpack-dev-server": "~4.9.1"
   },
   "peerDependencies": {
+    "@azinformatica/pdfjs-dist": "~2.10.380",
     "axios": "~0.27.2",
     "moment-timezone": "~0.5.34",
-    "@azinformatica/pdfjs-dist": "~2.10.377",
     "scrollmonitor": "1.2.4",
     "web-pki": "~2.14.8"
   },

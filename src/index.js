@@ -39,6 +39,7 @@ import AzConfirm from './components/actions/AzConfirm'
 import AzBackButton from './components/actions/AzBackButton'
 import AzCallToAction from './components/actions/AzCallToAction'
 import AzDialog from './components/actions/AzDialog'
+import AzReorderable from './components/reorderable/AzReorderable'
 
 import azAuth from './directives/auth'
 import azAuthDomain from './directives/authDomain'
@@ -116,6 +117,7 @@ const lokiPlugin = {
         Vue.component('az-back-button', AzBackButton)
         Vue.component('az-call-to-action', AzCallToAction)
         Vue.component('az-dialog', AzDialog)
+        Vue.component('az-reorderable', AzReorderable)
 
         Vue.directive('az-auth', azAuth)
         Vue.directive('az-auth-domain', azAuthDomain)

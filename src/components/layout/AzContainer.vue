@@ -29,7 +29,7 @@ export default {}
             min-width unset
             padding-right 10px
 
-            .material-icons
+            .mdi
                 font-size 13px
 
 .container.grid-list-xl
