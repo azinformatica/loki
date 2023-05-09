@@ -13,6 +13,8 @@ const createDefaultProps = () => {
     return {
         businessKey: 'business-key-example',
         processKey: 'process-key-example',
+        initialVisibleItemsLength: 100,
+        seeMoreStep: 20,
     }
 }
 
@@ -41,6 +43,28 @@ describe('AzBpmTimeline.spec.js', () => {
 
         it('Should receive processKey', () => {
             expect(wrapper.props().processKey).toBe(propsData.processKey)
+        })
+
+        it('Should receive initialVisibleItemsLength', () => {
+            expect(wrapper.props().initialVisibleItemsLength).toBe(propsData.initialVisibleItemsLength)
+        })
+
+        it('Should have default initialVisibleItemsLength', () => {
+            propsData.initialVisibleItemsLength = undefined
+            wrapper = createWrapper({ propsData, shallow: false })
+
+            expect(wrapper.props().initialVisibleItemsLength).toBe(10)
+        })
+
+        it('Should receive seeMoreStep', () => {
+            expect(wrapper.props().seeMoreStep).toBe(propsData.seeMoreStep)
+        })
+
+        it('Should have default seeMoreStep', () => {
+            propsData.seeMoreStep = undefined
+            wrapper = createWrapper({ propsData, shallow: false })
+
+            expect(wrapper.props().seeMoreStep).toBe(10)
         })
     })
 
