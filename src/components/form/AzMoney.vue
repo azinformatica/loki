@@ -1,32 +1,31 @@
 <template>
     <v-text-field
         ref="azMoney"
+        v-model="formattedValue"
         v-money="conditionalMoneyConfig"
+        v-validate="getValidator"
         :name="name"
         :label="label"
-        :maxLength="length"
         :disabled="disabled"
         :required="required"
-        :value="valueFormated"
         :placeholder="placeholder"
-        :showClearButton="showClearButton"
-        class="clear-button"
-        :prepend-inner-icon="showClearButtonIf"
+        :clearable="showClearButton"
         :error-messages="errors.collect(`${name}`)"
-        @click:prepend-inner="cleanValue"
-        @blur="updateValue($event.target.value, 'blur')"
+        :dense="dense"
+        @click:clear="cleanValue"
+        @blur="updateValue('blur')"
+        @change="updateValue('change')"
         @focus="$emit('focus', $event)"
-        @keydown.ctrl.65="selectValue"
-        @keydown="checkKeyAndValidateLength($event)"
+        @keydown="checkKeyAndValidate($event)"
         @keyup="checkKey($event)"
     >
-        <template v-slot:label if="this.$slots['label']">
+        <template v-if="$slots['label']">
             <slot name="label" />
         </template>
-        <template v-slot:append-outer v-if="this.$slots['append-outer']">
+        <template v-if="$slots['append-outer']">
             <slot name="append-outer" />
         </template>
-        <template v-slot:append v-if="this.$slots['append']">
+        <template v-if="$slots['append']">
             <slot name="append" />
         </template>
     </v-text-field>
@@ -36,46 +35,40 @@
 import accounting from 'accounting'
 
 export default {
+    inject: ['$validator'],
     props: {
-        value: {
-            required: true,
+        dense: {
+            type: Boolean,
+        },
+        disabled: {
+            type: Boolean,
+        },
+        eventSubmit: {
+            type: String,
             default: null,
         },
         label: {
             type: String,
             default: '',
         },
+        value: {
+            type: Number,
+            default: null,
+        },
         placeholder: {
             type: String,
             default: '',
+        },
+        maxLength: {
+            type: Number,
+            default: 15,
         },
         name: {
             type: String,
             default: '',
         },
-        required: {
-            type: Boolean,
-            default: false,
-        },
-        disabled: {
-            type: Boolean,
-            default: false,
-        },
-        showClearButton: {
-            type: Boolean,
-            default: false,
-        },
-        maxLength: {
-            type: Number,
-            default: 24,
-        },
-        validateLength: {
-            type: Boolean,
-            default: false,
-        },
         negative: {
             type: Boolean,
-            default: false,
         },
         precision: {
             type: Number,
@@ -85,24 +78,25 @@ export default {
             type: String,
             default: 'R$ ',
         },
+        required: {
+            type: Boolean,
+        },
+        showClearButton: {
+            type: Boolean,
+        },
         suffix: {
             type: String,
             default: '',
         },
-        requeridMessage: {
-            type: String,
-            default: 'O campo {name} é obrigatório',
-        },
-        validationField: {
-            type: Number,
-        },
-        eventSubmit: {
-            type: String,
+        validateLength: {
+            type: Boolean,
         },
     },
-    inject: ['$validator'],
     data() {
         return {
+            clickedField: false,
+            formatted: false,
+            formattedValue: null,
             moneyConfig: {
                 decimal: ',',
                 thousands: '.',
@@ -111,140 +105,123 @@ export default {
                 precision: this.precision,
                 masked: false,
             },
-            clickedField: false,
-            formatted: false,
-            select: false,
-            length: this.maxLength,
         }
     },
     computed: {
-        valueFormated() {
-            if (this.value !== null) {
-                return accounting.formatMoney(this.value, this.prefix, this.precision, this.thousands, this.decimal)
-            } else {
-                return null
-            }
-        },
         conditionalMoneyConfig() {
             return this.value !== null || this.clickedField ? this.moneyConfig : null
         },
-        showClearButtonIf() {
-            return this.value !== null && this.showClearButton ? 'fas fa-times-circle' : ''
+        getValidator() {
+            return {
+                required: this.required,
+                ...this.checkMaxLength(),
+            }
         },
     },
     watch: {
-        validationField() {
-            this.validateRequired(this.value)
-        },
-        valueFormated(newValue) {
+        value() {
+            this.setFormattedValue()
             const input = this.$refs.azMoney.$el.querySelector('input')
-            input.value = newValue
+            input.value = this.formattedValue
         },
     },
-    updated() {
-        if (!this.required) {
-            this.clearErrorValidate()
-        }
+    mounted() {
+        this.createRules()
+        this.setFormattedValue()
     },
     methods: {
-        updateValue(value, event) {
-            this.formatted = true
-            let valueNumber = value
-            if (this.prefix) {
-                valueNumber = valueNumber.replace(this.prefix, '')
-            }
-            if (this.suffix) {
-                valueNumber = valueNumber.replace(this.suffix, '')
-            }
-            const valueFormatedSimple = accounting.unformat(valueNumber, ',')
-
-            if (
-                (valueFormatedSimple !== this.value || event === 'keyupEnter' || event === 'keyupEsc') &&
-                this.clickedField
-            ) {
-                if (!this.eventSubmit || this.eventSubmit === event) {
-                    this.$emit('input', valueFormatedSimple)
-                    this.$emit(event, valueFormatedSimple)
-                    this.clickedField = false
-                }
+        async checkKey(event) {
+            if (event.key === 'Tab') {
+                return
             }
 
-            this.validateRequired(value)
+            this.clickedField = true
+            if (event.key === 'Enter') {
+                await this.updateValue('keyupEnter')
+            } else if (event.key === 'Escape') {
+                await this.updateValue(event.target.value, 'keyupEsc')
+            } else {
+                await this.updateValue('keyup')
+            }
         },
-        validatorNegative($event) {
-            if ($event.key === '-' && !this.negative) {
-                $event.preventDefault()
+        checkKeyAndValidate(event) {
+            this.validatorNegative(event)
+        },
+        checkMaxLength() {
+            if (this.validateLength) {
+                return {
+                    digits: this.maxLength,
+                }
+            } else {
+                return {}
             }
         },
         cleanValue() {
-            this.$emit('blur', null)
+            this.$emit('input', null)
+            this.$emit(this.eventSubmit, null)
             this.clickedField = false
         },
-        checkKey($event) {
-            if ($event.key !== 'Tab') {
-                this.clickedField = true
-            }
-            if ($event.key === 'Enter') {
-                this.updateValue($event.target.value, 'keyupEnter')
-            } else if ($event.key === 'Escape') {
-                this.updateValue($event.target.value, 'keyupEsc')
+        createRules() {
+            this.createRuleDigits()
+        },
+        createRuleDigits() {
+            this.$validator.extend('digits', {
+                validate(value, args) {
+                    if (!value || !args.digits) {
+                        return true
+                    }
+                    const digits = value.replace(/\D/g, '')
+                    return digits.length <= args.digits
+                },
+                getMessage: (field, params) => 'O campo permite no máximo ' + params[0] + ' dígito(s)',
+                paramNames: ['digits'],
+            })
+        },
+        setFormattedValue() {
+            if (this.value !== null) {
+                this.formattedValue = accounting.formatMoney(
+                    this.value,
+                    this.prefix,
+                    this.precision,
+                    this.thousands,
+                    this.decimal
+                )
             } else {
-                this.updateValue($event.target.value, 'keyup')
+                this.formattedValue = null
             }
         },
-        validateRequired(value) {
-            if (this.required) {
-                this.clearErrorValidate()
-                if (!value) {
-                    this.errors.add({
-                        field: this.name,
-                        msg: this.requeridMessage.replace('{name}', this.name),
-                    })
+        async updateValue(event) {
+            await this.$nextTick()
+
+            this.formatted = true
+            let valueNumber = this.formattedValue
+
+            if (valueNumber) {
+                if (this.prefix) {
+                    valueNumber = valueNumber.replace(this.prefix, '')
                 }
+                if (this.suffix) {
+                    valueNumber = valueNumber.replace(this.suffix, '')
+                }
+                valueNumber = accounting.unformat(valueNumber, ',')
             }
-        },
-        checkMaxLength($event) {
-            if (this.validateLength) {
-                if (this.formatted && this.isDigit($event.code) && !this.select) {
-                    this.length = this.maxLength + Math.floor(this.maxLength / 3) + this.prefix.length
-                } else {
-                    this.length = this.maxLength
+
+            if (this.clickedField || event === 'keyupEnter' || event === 'keyupEsc') {
+                if (valueNumber !== this.value) {
+                    this.$emit('input', valueNumber)
                 }
 
-                if (this.isDigit($event.code)) {
-                    this.select = false
+                if (this.eventSubmit === event) {
+                    this.$emit(event, valueNumber)
+                    this.clickedField = false
                 }
             }
         },
-        isDigit(key) {
-            const pattern = /Digit\d|Numpad\d/i
-
-            return pattern.test(key)
-        },
-        selectValue() {
-            this.select = true
-        },
-        checkKeyAndValidateLength($event) {
-            this.validatorNegative($event)
-            this.checkMaxLength($event)
-        },
-        clearErrorValidate() {
-            for (var index = 0; index < this.$validator.errors.items.length; index++) {
-                if (this.$validator.errors.items[index].field === this.name) {
-                    this.$validator.errors.items.splice(index, 1)
-                }
+        validatorNegative(event) {
+            if (event.key === '-' && !this.negative) {
+                event.preventDefault()
             }
         },
     },
 }
 </script>
-
-<style lang="stylus">
-.clear-button
-    .v-input__icon
-        min-width 13px
-        width 13px
-
-    i
-        font-size 13px
-</style>
