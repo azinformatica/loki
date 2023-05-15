@@ -158,7 +158,9 @@ export default {
         },
         cleanValue() {
             this.$emit('input', null)
-            this.$emit(this.eventSubmit, null)
+            if (this.eventSubmit) {
+                this.$emit(this.eventSubmit, null)
+            }
             this.clickedField = false
         },
         createRules() {
@@ -211,7 +213,7 @@ export default {
                     this.$emit('input', valueNumber)
                 }
 
-                if (this.eventSubmit === event) {
+                if (!this.eventSubmit || this.eventSubmit === event) {
                     this.$emit(event, valueNumber)
                     this.clickedField = false
                 }
