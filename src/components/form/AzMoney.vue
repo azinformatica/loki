@@ -19,13 +19,13 @@
         @keydown="checkKeyAndValidate($event)"
         @keyup="checkKey($event)"
     >
-        <template v-if="$slots['label']">
+        <template v-slot:label v-if="$slots['label']">
             <slot name="label" />
         </template>
-        <template v-if="$slots['append-outer']">
+        <template v-slot:append-outer v-if="$slots['append-outer']">
             <slot name="append-outer" />
         </template>
-        <template v-if="$slots['append']">
+        <template v-slot:append v-if="$slots['append']">
             <slot name="append" />
         </template>
     </v-text-field>
