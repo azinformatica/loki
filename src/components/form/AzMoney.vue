@@ -88,6 +88,12 @@ export default {
             type: String,
             default: '',
         },
+        validate: {
+            type: Object,
+            default() {
+                return {}
+            },
+        },
         validateLength: {
             type: Boolean,
         },
@@ -114,6 +120,7 @@ export default {
         getValidator() {
             return {
                 required: this.required,
+                ...this.validate,
                 ...this.checkMaxLength(),
             }
         },
