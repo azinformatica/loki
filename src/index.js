@@ -31,6 +31,7 @@ import AzComboEnum from './components/form/AzComboEnum'
 import AzFileUpload from './components/file/AzFileUpload'
 import AzFileProgress from './components/file/AzFileProgress'
 import AzDocumentViewer from './components/file/AzDocumentViewer'
+import AzBpmTimeline from './components/bpm/AzBpmTimeline'
 import AzBpmInteraction from './components/bpm/AzBpmInteraction'
 import AzBpmAction from './components/bpm/AzBpmAction'
 import AzPdfDocumentViewer from './components/viewer/AzPdfDocumentViewer'
@@ -61,6 +62,7 @@ import buildMenu from './utils/azBuildMenu'
 import hasPermissions from './utils/AzHasPermissions'
 import hasDomainPermissions from './utils/AzHasDomainPermissions'
 import AzDigitalSignature from './utils/AzDigitalSignature'
+import AzBpmHistory from './utils/AzBpmHistory'
 
 Vue.use(accounting)
 Vue.use(money, {
@@ -107,6 +109,7 @@ const lokiPlugin = {
         Vue.component('az-file-upload', AzFileUpload)
         Vue.component('az-file-progress', AzFileProgress)
         Vue.component('az-document-viewer', AzDocumentViewer)
+        Vue.component('az-bpm-timeline', AzBpmTimeline)
         Vue.component('az-bpm-interaction', AzBpmInteraction)
         Vue.component('az-bpm-action', AzBpmAction)
         Vue.component('az-pdf-document-viewer', AzPdfDocumentViewer)
@@ -163,4 +166,5 @@ export {
     hasPermissions,
     hasDomainPermissions,
     AzDigitalSignature,
+    AzBpmHistory,
 }

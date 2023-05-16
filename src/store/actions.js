@@ -86,6 +86,11 @@ export default {
         return data
     },
 
+    async [actionTypes.BPM.GET_PROCESS_LOGS]({ commit, state }, { processKey, businessKey }) {
+        const response = await axios.get(`${state.bpm.api}/getLog/${processKey}/${businessKey}`)
+        return response.data
+    },
+
     async [actionTypes.BPM.GET_PROCESS_INSTANCE]({ commit, state }, { processKey, businessKey }) {
         if (!state.bpm.process[processKey][businessKey].isLoading) {
             try {

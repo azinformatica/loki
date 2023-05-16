@@ -327,7 +327,7 @@ export default {
                 groupId: null,
                 id: DraggableUtil.generateUUID(),
             })
-            this.validateOutputDraggable(outputDraggable)
+            this.fixDraggableBounds(outputDraggable)
             this.$emit('create:draggable', { draggable: outputDraggable })
         },
         deleteAllDraggablesByGroupId(groupId) {
@@ -357,19 +357,11 @@ export default {
                 return draggableTargetZone.id === draggableTargetZoneId
             })
         },
-        validateOutputDraggable(draggable) {
-            if (draggable.percentX < 0.0) {
-                throw new Error('Extrapolou o limite esquerdo da página.')
-            }
-            if (draggable.percentY < 0.0) {
-                throw new Error('Extrapolou o limite superior da página.')
-            }
-            if (draggable.percentX + draggable.percentWidth > 1.0) {
-                throw new Error('Extrapolou o limite direito da página.')
-            }
-            if (draggable.percentY + draggable.percentHeight > 1.0) {
-                throw new Error('Extrapolou o limite inferior da página.')
-            }
+        fixDraggableBounds(draggable) {
+            draggable.percentX = Math.max(draggable.percentX, 0.0)
+            draggable.percentX = Math.min(draggable.percentX, 1.0 - draggable.percentWidth)
+            draggable.percentY = Math.max(draggable.percentY, 0.0)
+            draggable.percentY = Math.min(draggable.percentY, 1.0 - draggable.percentHeight)
         },
         areDraggableChangesValid(eventData) {
             if (!eventData.draggableTargetZoneItemId) {
