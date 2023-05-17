@@ -88,6 +88,12 @@ export default {
             type: String,
             default: '',
         },
+        validate: {
+            type: Object,
+            default() {
+                return {}
+            },
+        },
         validateLength: {
             type: Boolean,
         },
@@ -114,20 +120,19 @@ export default {
         getValidator() {
             return {
                 required: this.required,
+                ...this.validate,
                 ...this.checkMaxLength(),
             }
         },
     },
     watch: {
-        value() {
-            this.setFormattedValue()
-            const input = this.$refs.azMoney.$el.querySelector('input')
-            input.value = this.formattedValue
+        value(newValue) {
+            this.setFormattedValue(newValue)
         },
     },
     mounted() {
         this.createRules()
-        this.setFormattedValue()
+        this.setFormattedValue(this.value)
     },
     methods: {
         async checkKey(event) {
@@ -139,7 +144,7 @@ export default {
             if (event.key === 'Enter') {
                 await this.updateValue('keyupEnter')
             } else if (event.key === 'Escape') {
-                await this.updateValue(event.target.value, 'keyupEsc')
+                await this.updateValue('keyupEsc')
             } else {
                 await this.updateValue('keyup')
             }
@@ -157,11 +162,13 @@ export default {
             }
         },
         cleanValue() {
+            this.setFormattedValue(null)
+            this.clickedField = false
+
             this.$emit('input', null)
             if (this.eventSubmit) {
                 this.$emit(this.eventSubmit, null)
             }
-            this.clickedField = false
         },
         createRules() {
             this.createRuleDigits()
@@ -179,10 +186,10 @@ export default {
                 paramNames: ['digits'],
             })
         },
-        setFormattedValue() {
-            if (this.value !== null) {
+        setFormattedValue(value) {
+            if (value !== null) {
                 this.formattedValue = accounting.formatMoney(
-                    this.value,
+                    value,
                     this.prefix,
                     this.precision,
                     this.thousands,
@@ -191,6 +198,9 @@ export default {
             } else {
                 this.formattedValue = null
             }
+
+            const input = this.$refs.azMoney.$el.querySelector('input')
+            input.value = this.formattedValue
         },
         async updateValue(event) {
             await this.$nextTick()
