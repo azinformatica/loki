@@ -1,7 +1,7 @@
 <template>
     <v-text-field
         ref="azMoney"
-        v-model="formattedValue"
+        v-model.lazy="formattedValue"
         v-money="conditionalMoneyConfig"
         v-validate="getValidator"
         :name="name"
@@ -10,14 +10,14 @@
         :required="required"
         :placeholder="placeholder"
         :clearable="showClearButton"
-        :error-messages="errors.collect(`${name}`)"
+        :error-messages="errors.collect(getFieldName)"
         :dense="dense"
         @click:clear="cleanValue"
         @blur="updateValue('blur')"
         @change="updateValue('change')"
         @focus="$emit('focus', $event)"
-        @keydown="checkKeyAndValidate($event)"
-        @keyup="checkKey($event)"
+        @keydown="checkKeydown($event)"
+        @keyup="checkKeyup($event)"
     >
         <template v-slot:label v-if="$slots['label']">
             <slot name="label" />
@@ -51,14 +51,6 @@ export default {
             type: String,
             default: '',
         },
-        value: {
-            type: Number,
-            default: null,
-        },
-        placeholder: {
-            type: String,
-            default: '',
-        },
         maxLength: {
             type: Number,
             default: 15,
@@ -69,6 +61,10 @@ export default {
         },
         negative: {
             type: Boolean,
+        },
+        placeholder: {
+            type: String,
+            default: '',
         },
         precision: {
             type: Number,
@@ -97,11 +93,14 @@ export default {
         validateLength: {
             type: Boolean,
         },
+        value: {
+            type: Number,
+            default: null,
+        },
     },
     data() {
         return {
             clickedField: false,
-            formatted: false,
             formattedValue: null,
             moneyConfig: {
                 decimal: ',',
@@ -116,6 +115,9 @@ export default {
     computed: {
         conditionalMoneyConfig() {
             return this.value !== null || this.clickedField ? this.moneyConfig : null
+        },
+        getFieldName() {
+            return this.$attrs['data-vv-scope'] ? `${this.$attrs['data-vv-scope']}.${this.name}` : this.name
         },
         getValidator() {
             return {
@@ -135,7 +137,12 @@ export default {
         this.setFormattedValue(this.value)
     },
     methods: {
-        async checkKey(event) {
+        async checkKeydown(event) {
+            if (event.key === '-') {
+                await this.updateSign(event)
+            }
+        },
+        async checkKeyup(event) {
             if (event.key === 'Tab') {
                 return
             }
@@ -148,9 +155,6 @@ export default {
             } else {
                 await this.updateValue('keyup')
             }
-        },
-        checkKeyAndValidate(event) {
-            this.validatorNegative(event)
         },
         checkMaxLength() {
             if (this.validateLength) {
@@ -186,15 +190,16 @@ export default {
                 paramNames: ['digits'],
             })
         },
+        getNumberValue() {
+            if (!this.formattedValue) {
+                return null
+            }
+
+            return accounting.unformat(this.formattedValue, ',')
+        },
         setFormattedValue(value) {
             if (value !== null) {
-                this.formattedValue = accounting.formatMoney(
-                    value,
-                    this.prefix,
-                    this.precision,
-                    this.thousands,
-                    this.decimal
-                )
+                this.formattedValue = accounting.formatMoney(value, '', this.precision, '.', ',')
             } else {
                 this.formattedValue = null
             }
@@ -202,36 +207,34 @@ export default {
             const input = this.$refs.azMoney.$el.querySelector('input')
             input.value = this.formattedValue
         },
-        async updateValue(event) {
+        async updateSign(event) {
             await this.$nextTick()
 
-            this.formatted = true
-            let valueNumber = this.formattedValue
-
-            if (valueNumber) {
-                if (this.prefix) {
-                    valueNumber = valueNumber.replace(this.prefix, '')
-                }
-                if (this.suffix) {
-                    valueNumber = valueNumber.replace(this.suffix, '')
-                }
-                valueNumber = accounting.unformat(valueNumber, ',')
+            if (!this.negative) {
+                event.preventDefault()
+                return
             }
 
+            const numberValue = this.getNumberValue()
+            if (numberValue !== null) {
+                this.setFormattedValue(numberValue * -1)
+            }
+
+            event.preventDefault()
+        },
+        async updateValue(event) {
+            await this.$nextTick()
+            const numberValue = this.getNumberValue()
+
             if (this.clickedField || event === 'keyupEnter' || event === 'keyupEsc') {
-                if (valueNumber !== this.value) {
-                    this.$emit('input', valueNumber)
+                if (numberValue !== this.value) {
+                    this.$emit('input', numberValue)
                 }
 
                 if (!this.eventSubmit || this.eventSubmit === event) {
-                    this.$emit(event, valueNumber)
+                    this.$emit(event, numberValue)
                     this.clickedField = false
                 }
-            }
-        },
-        validatorNegative(event) {
-            if (event.key === '-' && !this.negative) {
-                event.preventDefault()
             }
         },
     },
