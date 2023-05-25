@@ -7,6 +7,7 @@
         :name="name"
         :label="label"
         :disabled="disabled"
+        :readonly="readonly"
         :required="required"
         :placeholder="placeholder"
         :clearable="showClearButton"
@@ -74,6 +75,9 @@ export default {
             type: String,
             default: 'R$ ',
         },
+        readonly: {
+            type: Boolean,
+        },
         required: {
             type: Boolean,
         },
@@ -137,13 +141,11 @@ export default {
         this.setFormattedValue(this.value)
     },
     methods: {
-        async checkKeydown(event) {
-            if (event.key === '-') {
-                await this.updateSign(event)
-            }
+        checkKeydown(event) {
+            this.validateNegative(event)
         },
         async checkKeyup(event) {
-            if (event.key === 'Tab') {
+            if (event.key === 'Tab' || this.readonly) {
                 return
             }
 
@@ -152,6 +154,10 @@ export default {
                 await this.updateValue('keyupEnter')
             } else if (event.key === 'Escape') {
                 await this.updateValue('keyupEsc')
+            } else if (event.key === '+') {
+                await this.updateSign()
+            } else if (event.key === 'Backspace') {
+                await this.removeNegativeZero()
             } else {
                 await this.updateValue('keyup')
             }
@@ -197,30 +203,42 @@ export default {
 
             return accounting.unformat(this.formattedValue, ',')
         },
-        setFormattedValue(value) {
-            if (value !== null) {
-                this.formattedValue = accounting.formatMoney(value, '', this.precision, '.', ',')
-            } else {
-                this.formattedValue = null
-            }
-
-            const input = this.$refs.azMoney.$el.querySelector('input')
-            input.value = this.formattedValue
-        },
-        async updateSign(event) {
+        async removeNegativeZero() {
             await this.$nextTick()
-
-            if (!this.negative) {
-                event.preventDefault()
-                return
-            }
-
             const numberValue = this.getNumberValue()
-            if (numberValue !== null) {
-                this.setFormattedValue(numberValue * -1)
-            }
 
-            event.preventDefault()
+            if (Object.is(numberValue, -0)) {
+                this.setFormattedValue(0, true)
+            }
+            await this.updateValue('keyup')
+        },
+        setFormattedValue(value, forceUpdate = false) {
+            const numberValue = this.getNumberValue()
+
+            if (value !== numberValue || forceUpdate) {
+                if (value !== null) {
+                    this.formattedValue = accounting.formatMoney(value, '', this.precision, '.', ',')
+                } else {
+                    this.formattedValue = null
+                }
+
+                const input = this.$refs.azMoney.$el.querySelector('input')
+                input.value = this.formattedValue
+            }
+        },
+        validateNegative(event) {
+            if (event.key === '-' && !this.negative) {
+                event.preventDefault()
+            }
+        },
+        async updateSign() {
+            await this.$nextTick()
+            const numberValue = this.getNumberValue()
+
+            if (numberValue !== null && numberValue <= 0) {
+                this.setFormattedValue(numberValue * -1, true)
+            }
+            await this.updateValue('keyup')
         },
         async updateValue(event) {
             await this.$nextTick()
