@@ -93,5 +93,6 @@ export default {
     bpm: {
         api: 'api/bpm',
         process: {},
+		currentTask: {}
     },
 }

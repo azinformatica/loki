@@ -209,6 +209,10 @@ export default {
         state.bpm.process[processKey][businessKey].instance = instance
     },
 
+    [mutationTypes.BPM.SET_CURRENT_TASK](state, { processKey, businessKey, currentTask }) {
+        state.bpm.process[processKey][businessKey].instance.currentTask = currentTas
+    },
+
     [mutationTypes.BPM.SET_IS_LOADING_PROCESS_INSTANCE](state, { processKey, businessKey, isLoading }) {
         state.bpm.process[processKey][businessKey].isLoading = isLoading
     },

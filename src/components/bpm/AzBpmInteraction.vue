@@ -1,11 +1,11 @@
 <template>
     <div>
-        <slot :hasAuthority="hasAuthority" :components="components" :processInstance="processInstance"> </slot>
+        <slot :hasAuthority="hasAuthority" :components="components" :processInstance="processInstance"></slot>
     </div>
 </template>
 
 <script>
-import { actionTypes, mutationTypes } from '../../store'
+import {actionTypes, mutationTypes} from '../../store'
 
 export default {
     name: 'AzBpmInteraction',
@@ -48,12 +48,6 @@ export default {
                 !this.isAuthorityRevoked(authority.name)
             )
         },
-        getProcessInstance() {
-            return this.$store.dispatch(actionTypes.BPM.GET_PROCESS_INSTANCE, this.processInstanceParams)
-        },
-        initializeProcessInstance() {
-            return this.$store.commit(mutationTypes.BPM.INITIALIZE_PROCESS_INSTANCE, this.processInstanceParams)
-        },
         dispatchButtonActionIfAllowed(buttonType, bpmParameters) {
             const button = this.components.button[buttonType]
             if (button.disabled || !button.show) {
@@ -87,6 +81,12 @@ export default {
         splitCommaSeparatedTextToArray(text) {
             return text.replace(/\s+/g, '').split(',').filter(Boolean)
         },
+        initializeProcessInstance() {
+            return this.$store.commit(mutationTypes.BPM.INITIALIZE_PROCESS_INSTANCE, this.processInstanceParams)
+        },
+        getProcessInstance() {
+            return this.$store.dispatch(actionTypes.BPM.GET_PROCESS_INSTANCE, this.processInstanceParams)
+        },
     },
     computed: {
         processInstanceParams() {
@@ -105,6 +105,7 @@ export default {
             return this.bpmAtProcessKey[this.businessKey] || {}
         },
         processInstance() {
+            console.log(this.bpmAtProcessKeyAtBusinessKey)
             return this.bpmAtProcessKeyAtBusinessKey.instance || null
         },
         user() {
