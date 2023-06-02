@@ -24,6 +24,7 @@
 <script>
 import _ from 'lodash'
 import AzBpmInteraction from './AzBpmInteraction'
+import { mutationTypes } from '../../store'
 
 export default {
     name: 'AzBpmAction',
@@ -88,8 +89,23 @@ export default {
                 this.selectedTask = this.firstItemValue
             }
         },
+        selectedTask() {
+            if (this.isSetCurrentTaskValid) {
+                this.$store.commit(mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID, this.setCurrentTaskParams)
+            }
+        },
     },
     computed: {
+        setCurrentTaskParams() {
+            return {
+                processKey: this.processKey,
+                businessKey: this.businessKey,
+                currentTaskId: this.selectedTask,
+            }
+        },
+        isSetCurrentTaskValid() {
+            return this.isSelectedTaskValid && this.processKey && this.businessKey && this.selectedTask
+        },
         bpmMergedParameters() {
             return _.merge({}, this.bpmDefaultParameters, this.bpmParameters)
         },
@@ -105,16 +121,18 @@ export default {
             return this.firstItem.value || null
         },
         isSelectedTaskValid() {
-            return this.select.items.includes(this.selectedTask)
+            return this.select.items.some((obj) => {
+                return obj.value === this.selectedTask
+            })
         },
         closestBpmInteractionProps() {
             return (this.closestBpmInteraction && this.closestBpmInteraction.$props) || {}
         },
         processKey() {
-            return this.closestBpmInteractionProps.processKey
+            return this.closestBpmInteractionProps.processKey || null
         },
         businessKey() {
-            return this.closestBpmInteractionProps.businessKey
+            return this.closestBpmInteractionProps.businessKey || null
         },
         components() {
             return (this.closestBpmInteraction && this.closestBpmInteraction.components) || {}

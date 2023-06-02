@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import {actionTypes, mutationTypes} from '../../store'
+import { actionTypes, mutationTypes } from '../../store'
 
 export default {
     name: 'AzBpmInteraction',
@@ -72,10 +72,16 @@ export default {
                 bpmParameters,
             }
         },
-        selectItemsMapper(task) {
+        selectNextTasksItemsMapper(task) {
             return {
                 text: task.taskName,
                 value: task.taskId,
+            }
+        },
+        selectCurrentTasksItemsMapper(task) {
+            return {
+                text: task.name,
+                value: task.id,
             }
         },
         splitCommaSeparatedTextToArray(text) {
@@ -105,7 +111,6 @@ export default {
             return this.bpmAtProcessKey[this.businessKey] || {}
         },
         processInstance() {
-            console.log(this.bpmAtProcessKeyAtBusinessKey)
             return this.bpmAtProcessKeyAtBusinessKey.instance || null
         },
         user() {
@@ -124,16 +129,13 @@ export default {
             return (this.processInstance && this.processInstance.currentTask) || {}
         },
         previousTask() {
-            return (this.processInstance && this.processInstance.previousTask) || {}
+            return (this.processInstance && this.processInstance.currentTask.previousTask) || {}
         },
         nextTasks() {
-            return (this.processInstance && this.processInstance.nextTasks) || []
+            return (this.processInstance && this.processInstance.currentTask.nextTasks) || []
         },
         hasNextTasks() {
             return this.nextTasks.length > 0
-        },
-        hasHumanDecisionInAllNextTasks() {
-            return this.nextTasks.every((task) => task.flowExpression && task.flowExpression.includes('humanDecision'))
         },
         revokedAuthorities() {
             return this.splitCommaSeparatedTextToArray(this.currentTask.revokedPermissions || '')
@@ -206,16 +208,42 @@ export default {
                 action: this.buttonUncompleteAction,
             }
         },
-        selectShow() {
+        selectParallelShow() {
+            return Boolean(
+                this.processInstance ? this.processInstance.currentTasks.length > 1 : false
+            )
+        },
+        selectHumanDecisionShow() {
             return Boolean(
                 this.isStatusInstanceActive && this.assignee && this.hasNextTasks && this.hasHumanDecisionInAllNextTasks
             )
         },
+        selectShow() {
+            return this.selectParallelShow || this.selectHumanDecisionShow
+        },
         selectDisabled() {
             return Boolean(this.isLoadingProcessInstance || !this.isUserCandidate)
         },
+        selectParallelItems() {
+            if (this.selectParallelShow && this.processInstance) {
+                return this.processInstance.currentTasks.map(this.selectCurrentTasksItemsMapper)
+            }
+            return []
+        },
+        selectHumanDecisionItems() {
+            return this.hasHumanDecisionInAllNextTasks ? this.nextTasks.map(this.selectNextTasksItemsMapper) : []
+        },
         selectItems() {
-            return this.hasHumanDecisionInAllNextTasks ? this.nextTasks.map(this.selectItemsMapper) : []
+            if (this.selectParallelItems.length > 0) {
+                return this.selectParallelItems
+            } else if (this.selectHumanDecisionItems.length > 0) {
+                return this.selectHumanDecisionItems
+            }
+
+            return []
+        },
+        hasHumanDecisionInAllNextTasks() {
+            return this.nextTasks.every((task) => task.flowExpression && task.flowExpression.includes('humanDecision'))
         },
         buttonClaimShow() {
             return Boolean(this.isStatusInstanceActive && !this.assignee)
