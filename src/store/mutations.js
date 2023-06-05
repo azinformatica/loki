@@ -206,19 +206,32 @@ export default {
     },
 
     [mutationTypes.BPM.SET_PROCESS_INSTANCE](state, { processKey, businessKey, instance }) {
-        state.bpm.process[processKey][businessKey].instance = instance
+        Vue.set(state.bpm.process[processKey][businessKey], 'instance', instance)
     },
 
     [mutationTypes.BPM.SET_CURRENT_TASK](state, { processKey, businessKey, currentTask }) {
-        Vue.set(state.bpm.process[processKey][businessKey].instance, 'currentTask', currentTask)
+        Vue.set(state.bpm.process[processKey][businessKey], 'currentTask', currentTask)
     },
 
-    [mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID](state, { processKey, businessKey, currentTaskId }) {
+    [mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_PROCESS](state, { processKey, businessKey, currentTaskId }) {
+        const process = state.bpm.process[processKey][businessKey]
+        const currentTask = process.instance.currentTasks.find((currentTask) => {
+            return currentTask.id === currentTaskId
+        })
+        Vue.set(process, 'currentTask', currentTask)
+        console.log('SET_CURRENT_TASK_FOR_ID_IN_PROCESS')
+        console.log(process)
+    },
+
+    [mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_INSTANCE](state, { processKey, businessKey, currentTaskId }) {
         const instance = state.bpm.process[processKey][businessKey].instance
         const currentTask = instance.currentTasks.find((currentTask) => {
             return currentTask.id === currentTaskId
         })
         Vue.set(instance, 'currentTask', currentTask)
+
+        console.log('SET_CURRENT_TASK_FOR_ID_IN_INSTANCE')
+        console.log(state.bpm.process[processKey][businessKey])
     },
 
     [mutationTypes.BPM.SET_IS_LOADING_PROCESS_INSTANCE](state, { processKey, businessKey, isLoading }) {

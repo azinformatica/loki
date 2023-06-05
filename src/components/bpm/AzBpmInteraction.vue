@@ -49,7 +49,13 @@ export default {
             )
         },
         dispatchButtonActionIfAllowed(buttonType, bpmParameters) {
+            console.log('buttonType')
+            console.log(buttonType)
             const button = this.components.button[buttonType]
+
+            console.log('button')
+            console.log(button)
+
             if (button.disabled || !button.show) {
                 throw new Error('Não foi possível realizar essa ação.')
             }
@@ -125,14 +131,17 @@ export default {
         validUserAuthorities() {
             return this.userAuthorities.filter(this.isAuthorityValid.bind(this))
         },
+        currentTasks() {
+            return (this.processInstance && this.processInstance.currentTasks) || []
+        },
         currentTask() {
             return (this.processInstance && this.processInstance.currentTask) || {}
         },
         previousTask() {
-            return (this.processInstance && this.processInstance.currentTask.previousTask) || {}
+            return this.currentTask.previousTask || {}
         },
         nextTasks() {
-            return (this.processInstance && this.processInstance.currentTask.nextTasks) || []
+            return this.currentTask.nextTasks || []
         },
         hasNextTasks() {
             return this.nextTasks.length > 0
@@ -160,7 +169,10 @@ export default {
         },
         components() {
             return {
-                select: this.select,
+                select: {
+                    humanDecision: this.selectHumanDecision,
+                    parallel: this.selectParallel,
+                },
                 button: {
                     claim: this.buttonClaim,
                     unclaim: this.buttonUnclaim,
@@ -169,11 +181,18 @@ export default {
                 },
             }
         },
-        select() {
+        selectHumanDecision() {
             return {
-                show: this.selectShow,
+                show: this.selectHumanDecisionShow,
                 disabled: this.selectDisabled,
-                items: this.selectItems,
+                items: this.selectHumanDecisionItems,
+            }
+        },
+        selectParallel() {
+            return {
+                show: this.selectParallelShow,
+                disabled: this.selectDisabled,
+                items: this.selectParallelItems,
             }
         },
         buttonClaim() {
@@ -209,38 +228,21 @@ export default {
             }
         },
         selectParallelShow() {
-            return Boolean(
-                this.processInstance ? this.processInstance.currentTasks.length > 1 : false
-            )
+            return Boolean(this.currentTasks.length > 1)
         },
         selectHumanDecisionShow() {
             return Boolean(
                 this.isStatusInstanceActive && this.assignee && this.hasNextTasks && this.hasHumanDecisionInAllNextTasks
             )
         },
-        selectShow() {
-            return this.selectParallelShow || this.selectHumanDecisionShow
-        },
         selectDisabled() {
             return Boolean(this.isLoadingProcessInstance || !this.isUserCandidate)
         },
         selectParallelItems() {
-            if (this.selectParallelShow && this.processInstance) {
-                return this.processInstance.currentTasks.map(this.selectCurrentTasksItemsMapper)
-            }
-            return []
+            return (this.selectParallelShow && this.currentTasks.map(this.selectCurrentTasksItemsMapper)) || []
         },
         selectHumanDecisionItems() {
             return this.hasHumanDecisionInAllNextTasks ? this.nextTasks.map(this.selectNextTasksItemsMapper) : []
-        },
-        selectItems() {
-            if (this.selectParallelItems.length > 0) {
-                return this.selectParallelItems
-            } else if (this.selectHumanDecisionItems.length > 0) {
-                return this.selectHumanDecisionItems
-            }
-
-            return []
         },
         hasHumanDecisionInAllNextTasks() {
             return this.nextTasks.every((task) => task.flowExpression && task.flowExpression.includes('humanDecision'))
