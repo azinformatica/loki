@@ -95,40 +95,9 @@ export default {
         if (!state.bpm.process[processKey][businessKey].isLoading) {
             try {
                 commit(mutationTypes.BPM.SET_IS_LOADING_PROCESS_INSTANCE, { processKey, businessKey, isLoading: true })
-
                 const response = await axios.get(`${state.bpm.api}/getInstance/${processKey}/${businessKey}`)
                 const processInstance = response.data
-                const currentTask = state.bpm.process[processKey][businessKey].currentTask
-
-                console.log('processInstance')
-                console.log(processInstance)
-                console.log('currentTask')
-                console.log(currentTask)
-
                 commit(mutationTypes.BPM.SET_PROCESS_INSTANCE, { processKey, businessKey, instance: processInstance })
-
-                if (currentTask) {
-                    const currentTaskId = currentTask.id
-                    commit(mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_INSTANCE, {
-                        processKey,
-                        businessKey,
-                        currentTaskId,
-                    })
-                } else {
-                    const currentTasks = (processInstance && processInstance.currentTasks) || []
-                    const currentTask = currentTasks.find((element, index, array) => index === 0) || {}
-                    const currentTaskId = currentTask.id
-                    commit(mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_INSTANCE, {
-                        processKey,
-                        businessKey,
-                        currentTaskId,
-                    })
-                    commit(mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_PROCESS, {
-                        processKey,
-                        businessKey,
-                        currentTaskId,
-                    })
-                }
             } finally {
                 commit(mutationTypes.BPM.SET_IS_LOADING_PROCESS_INSTANCE, { processKey, businessKey, isLoading: false })
             }

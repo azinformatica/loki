@@ -49,13 +49,7 @@ export default {
             )
         },
         dispatchButtonActionIfAllowed(buttonType, bpmParameters) {
-            console.log('buttonType')
-            console.log(buttonType)
             const button = this.components.button[buttonType]
-
-            console.log('button')
-            console.log(button)
-
             if (button.disabled || !button.show) {
                 throw new Error('Não foi possível realizar essa ação.')
             }
@@ -96,8 +90,22 @@ export default {
         initializeProcessInstance() {
             return this.$store.commit(mutationTypes.BPM.INITIALIZE_PROCESS_INSTANCE, this.processInstanceParams)
         },
-        getProcessInstance() {
-            return this.$store.dispatch(actionTypes.BPM.GET_PROCESS_INSTANCE, this.processInstanceParams)
+        async getProcessInstance() {
+            await this.$store.dispatch(actionTypes.BPM.GET_PROCESS_INSTANCE, this.processInstanceParams)
+
+            if (this.currentTasks.length > 1 && this.bpmTemporaryCurrentTask) {
+                this.$store.commit(mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_INSTANCE, this.currentTaskParams())
+            } else {
+                const currentTask = this.currentTasks.find((element, index, array) => index === 0) || {}
+                this.$store.commit(
+                    mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_INSTANCE,
+                    this.currentTaskParams(currentTask.id)
+                )
+                this.$store.commit(
+                    mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_PROCESS,
+                    this.currentTaskParams(currentTask.id)
+                )
+            }
         },
     },
     computed: {
@@ -107,6 +115,13 @@ export default {
                 businessKey: this.businessKey,
             }
         },
+        currentTaskParams() {
+            return (currentTaskId) => ({
+                processKey: this.processKey,
+                businessKey: this.businessKey,
+                currentTaskId: currentTaskId ? currentTaskId : this.bpmTemporaryCurrentTask.id,
+            })
+        },
         bpm() {
             return this.$store.state.loki.bpm
         },
@@ -115,6 +130,9 @@ export default {
         },
         bpmAtProcessKeyAtBusinessKey() {
             return this.bpmAtProcessKey[this.businessKey] || {}
+        },
+        bpmTemporaryCurrentTask() {
+            return this.bpmAtProcessKeyAtBusinessKey.currentTask || {}
         },
         processInstance() {
             return this.bpmAtProcessKeyAtBusinessKey.instance || null
@@ -228,6 +246,8 @@ export default {
             }
         },
         selectParallelShow() {
+            //TODO this.candidateUsers.includes(this.user.name)
+            //TODO this.userRoles.some((role) => this.candidateGroups.includes(role))
             return Boolean(this.currentTasks.length > 1)
         },
         selectHumanDecisionShow() {
@@ -286,8 +306,23 @@ export default {
         buttonUncompleteShow() {
             return Boolean(this.isStatusInstanceActive && !this.assignee && !this.isFirstTask)
         },
+        isNextNodeParallelFromPreviousTaskHasSingleOutgoing() {
+            return Boolean(this.currentTask.previousTask.isNextNodeParallelHasSingleOutgoing)
+        },
+        isUncompleteTaskDisabled() {
+            if (this.currentTask.previousTask.isNextNodeParallelHasMultipleOutgoing) {
+                return Boolean(
+                    this.currentTasks.filter(
+                        (task) => task.previousTask.key === this.previousTask.key && !task.assignee
+                    ).length < 2
+                )
+            }
+            return this.isNextNodeParallelFromPreviousTaskHasSingleOutgoing
+        },
         buttonUncompleteDisabled() {
-            return Boolean(this.isLoadingProcessInstance || !this.isUserCandidateInPreviousTask)
+            return Boolean(
+                this.isLoadingProcessInstance || !this.isUserCandidateInPreviousTask || this.isUncompleteTaskDisabled
+            )
         },
         buttonUncompleteLabel() {
             return 'Cancelar encaminhamento'

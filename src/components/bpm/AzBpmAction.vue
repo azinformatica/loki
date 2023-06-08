@@ -109,12 +109,8 @@ export default {
         selectParallelTask() {
             if (this.isSetCurrentTaskValid) {
                 if (this.currentTask && !this.selectParallelTask) {
-                    console.log('entrei no if')
-                    console.log(this.currentTask)
                     this.$store.commit(mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_INSTANCE, this.setCurrentTaskParams)
                 } else {
-                    console.log('entrei no else')
-                    console.log(this.currentTask)
                     this.$store.commit(mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_PROCESS, this.setCurrentTaskParams)
                     this.$store.commit(mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_INSTANCE, this.setCurrentTaskParams)
                 }
