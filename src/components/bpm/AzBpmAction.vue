@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex justify-center align-center">
         <v-select
-            v-model="selectParallelTask"
+            v-model="selectedParallelTask"
             v-show="select.parallel.show"
             :items="select.parallel.items"
             :label="select.parallel.label"
@@ -9,7 +9,7 @@
             v-bind="selectMergedAttrs"
         ></v-select>
         <v-select
-            v-model="selectHumanTask"
+            v-model="selectedHumanTask"
             v-show="select.humanDecision.show"
             :items="select.humanDecision.items"
             :label="select.humanDecision.label"
@@ -61,8 +61,8 @@ export default {
     },
     data() {
         return {
-            selectHumanTask: '',
-            selectParallelTask: '',
+            selectedHumanTask: '',
+            selectedParallelTask: '',
             closestBpmInteraction: null,
             selectDefaultAttrs: {},
             buttonDefaultAttrs: {
@@ -91,30 +91,30 @@ export default {
 
             return this.findClosestBpmInteraction(vm.$parent)
         },
-    },
-    watch: {
-        select() {
+        setCurrentTaskSelected() {
+            if (this.isSetCurrentTaskValid) {
+                this.$store.commit(mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_PROCESS, this.setCurrentTaskParams)
+                this.$store.commit(mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_INSTANCE, this.setCurrentTaskParams)
+            }
+        },
+        selectHumanTask() {
             if (!this.isSelectedHumanTaskValid) {
-                this.selectHumanTask = this.firstHumanItemValue
-            }
-
-            if (this.currentTask) {
-                this.selectParallelTask = this.currentTask.id
-            }
-
-            if (!this.isSelectedParallelTaskValid) {
-                this.selectParallelTask = this.firstParallelItemValue
+                this.selectedHumanTask = this.firstHumanItemValue
             }
         },
         selectParallelTask() {
-            if (this.isSetCurrentTaskValid) {
-                if (this.currentTask && !this.selectParallelTask) {
-                    this.$store.commit(mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_INSTANCE, this.setCurrentTaskParams)
-                } else {
-                    this.$store.commit(mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_PROCESS, this.setCurrentTaskParams)
-                    this.$store.commit(mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_INSTANCE, this.setCurrentTaskParams)
-                }
+            if (this.currentTask) {
+                this.selectedParallelTask = this.currentTask.id
             }
+        },
+    },
+    watch: {
+        select() {
+            this.selectHumanTask()
+            this.selectParallelTask()
+        },
+        selectedParallelTask() {
+            this.setCurrentTaskSelected()
         },
     },
     computed: {
@@ -122,18 +122,18 @@ export default {
             return {
                 processKey: this.processKey,
                 businessKey: this.businessKey,
-                currentTaskId: this.selectParallelTask,
+                currentTaskId: this.selectedParallelTask,
             }
         },
         isSetCurrentTaskValid() {
-            return this.isSelectedParallelTaskValid && this.processKey && this.businessKey && this.selectParallelTask
+            return this.isSelectedParallelTaskValid && this.processKey && this.businessKey && this.selectedParallelTask
         },
         bpmMergedParameters() {
             return _.merge({}, this.bpmDefaultParameters, this.bpmParameters)
         },
         bpmDefaultParameters() {
             return {
-                humanDecision: this.selectHumanTask,
+                humanDecision: this.selectedHumanTask,
             }
         },
         firstHumanItem() {
@@ -150,28 +150,13 @@ export default {
         },
         isSelectedHumanTaskValid() {
             return this.select.humanDecision.items.some((obj) => {
-                return obj.value === this.selectHumanTask
+                return obj.value === this.selectedHumanTask
             })
         },
         isSelectedParallelTaskValid() {
             return this.select.parallel.items.some((obj) => {
-                return obj.value === this.selectParallelTask
+                return obj.value === this.selectedParallelTask
             })
-        },
-        closestBpmInteractionProps() {
-            return (this.closestBpmInteraction && this.closestBpmInteraction.$props) || {}
-        },
-        processKey() {
-            return this.closestBpmInteractionProps.processKey || null
-        },
-        businessKey() {
-            return this.closestBpmInteractionProps.businessKey || null
-        },
-        currentTask() {
-            return this.closestBpmInteraction.bpmAtProcessKeyAtBusinessKey.currentTask || null
-        },
-        components() {
-            return (this.closestBpmInteraction && this.closestBpmInteraction.components) || {}
         },
         select() {
             return this.components.select || {}
@@ -187,6 +172,21 @@ export default {
         },
         buttonMergedAttrs() {
             return _.merge({}, this.buttonDefaultAttrs, this.buttonAttrs)
+        },
+        closestBpmInteractionProps() {
+            return (this.closestBpmInteraction && this.closestBpmInteraction.$props) || {}
+        },
+        processKey() {
+            return this.closestBpmInteractionProps.processKey || null
+        },
+        businessKey() {
+            return this.closestBpmInteractionProps.businessKey || null
+        },
+        components() {
+            return (this.closestBpmInteraction && this.closestBpmInteraction.components) || {}
+        },
+        currentTask() {
+            return this.closestBpmInteraction.bpmAtProcessKeyAtBusinessKey.currentTask || null
         },
     },
     created() {
