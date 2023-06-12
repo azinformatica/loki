@@ -95,8 +95,14 @@ export default {
         },
         setCurrentTaskSelected() {
             const currentTask = this.firstCurrentTaskUserHasPermission || this.firstCurrentTask || {}
-            this.$store.commit(mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_INSTANCE, this.currentTaskParams(currentTask.id))
-            this.$store.commit(mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_PROCESS, this.currentTaskParams(currentTask.id))
+            this.$store.commit(
+                mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_INSTANCE,
+                this.currentTaskParams(currentTask.id)
+            )
+            this.$store.commit(
+                mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_PROCESS,
+                this.currentTaskParams(currentTask.id)
+            )
         },
         setCurrentTask() {
             if (this.isSetSelectedTask) {
@@ -121,7 +127,7 @@ export default {
             return (currentTaskId) => ({
                 processKey: this.processKey,
                 businessKey: this.businessKey,
-                currentTaskId: currentTaskId ? currentTaskId : this.currentTaskSelected.id
+                currentTaskId: currentTaskId ? currentTaskId : this.currentTaskSelected.id,
             })
         },
         bpm() {
@@ -155,24 +161,39 @@ export default {
             return Boolean(this.currentTasks.some((task) => task.id === this.currentTaskSelected.id))
         },
         isSetSelectedTask() {
-            return Boolean(this.currentTasks.length > 1 && this.currentTaskSelected && this.isSelectedTaskInCurrentTasks)
+            return Boolean(
+                this.currentTasks.length > 1 && this.currentTaskSelected && this.isSelectedTaskInCurrentTasks
+            )
         },
         firstCurrentTask() {
-            return this.currentTasks.find((element, index, array) => index === 0) || null
+            return this.currentTasks.find((element, index) => index === 0) || null
         },
         firstCurrentTaskUserHasPermission() {
             return this.currentTasksUserHasPermission.find((element, index, array) => index === 0) || null
         },
         isUserCandidateInPreviousTaskByTask() {
-            return (task) => (Boolean(task.previousTask.assignee === this.user.name || this.userRoles.some((role) => task.previousTask.candidateGroups && task.previousTask.candidateGroups.includes(role))))
+            return (task) =>
+                Boolean(
+                    task.previousTask.assignee === this.user.name ||
+                        this.userRoles.some(
+                            (role) =>
+                                task.previousTask.candidateGroups && task.previousTask.candidateGroups.includes(role)
+                        )
+                )
         },
         isUserCandidateByTask() {
-            return (task) => (Boolean(task.candidateUsers.includes(this.user.name) || this.userRoles.some((role) => task.candidateGroups.includes(role))))
+            return (task) =>
+                Boolean(
+                    task.candidateUsers.includes(this.user.name) ||
+                        this.userRoles.some((role) => task.candidateGroups.includes(role))
+                )
         },
         currentTasksUserHasPermission() {
-            return this.currentTasks.filter(task => {
+            return (
+                this.currentTasks.filter((task) => {
                     return Boolean(this.isUserCandidateByTask(task) || this.isUserCandidateInPreviousTaskByTask(task))
                 }) || []
+            )
         },
         currentTasks() {
             return (this.processInstance && this.processInstance.currentTasks) || []
@@ -181,10 +202,10 @@ export default {
             return (this.processInstance && this.processInstance.currentTask) || {}
         },
         previousTask() {
-            return (this.currentTask.previousTask) || {}
+            return this.currentTask.previousTask || {}
         },
         nextTasks() {
-            return (this.currentTask.nextTasks) || []
+            return this.currentTask.nextTasks || []
         },
         hasNextTasks() {
             return this.nextTasks.length > 0
@@ -214,7 +235,7 @@ export default {
             return {
                 select: {
                     humanDecision: this.selectHumanDecision,
-                    parallel: this.selectParallel
+                    parallel: this.selectParallel,
                 },
                 button: {
                     claim: this.buttonClaim,
@@ -274,13 +295,19 @@ export default {
             return this.currentTasksUserHasPermissionForAction.length > 1
         },
         currentTasksUserHasPermissionForAction() {
-            return this.currentTasks.filter(task => {
-                return Boolean(task.candidateUsers.includes(this.user.name) || this.userRoles.some((role) => task.candidateGroups.includes(role)))
+            return (
+                this.currentTasks.filter((task) => {
+                    return Boolean(
+                        task.candidateUsers.includes(this.user.name) ||
+                            this.userRoles.some((role) => task.candidateGroups.includes(role))
+                    )
                 }) || []
             )
         },
         selectParallelShow() {
-            return Boolean(this.firstCurrentTaskUserHasPermission && this.moreThenOneCurrentTasksUserHasPermissionForAction)
+            return Boolean(
+                this.firstCurrentTaskUserHasPermission && this.moreThenOneCurrentTasksUserHasPermissionForAction
+            )
         },
         selectHumanDecisionShow() {
             return Boolean(
@@ -291,7 +318,7 @@ export default {
             return Boolean(this.isLoadingProcessInstance || !this.isUserCandidate)
         },
         selectParallelItems() {
-            return (this.currentTasks.map(this.selectCurrentTasksItemsMapper)) || []
+            return this.currentTasks.map(this.selectCurrentTasksItemsMapper) || []
         },
         selectHumanDecisionItems() {
             return this.hasHumanDecisionInAllNextTasks ? this.nextTasks.map(this.selectNextTasksItemsMapper) : []
@@ -343,12 +370,18 @@ export default {
         },
         isUncompleteTaskDisabled() {
             if (this.currentTask.previousTask.isNextNodeParallelHasMultipleOutgoing) {
-                return Boolean(this.currentTasks.filter(task => (task.previousTask.key === this.previousTask.key) && !task.assignee).length < 2)
+                return Boolean(
+                    this.currentTasks.filter(
+                        (task) => task.previousTask.key === this.previousTask.key && !task.assignee
+                    ).length < 2
+                )
             }
             return this.isNextNodeParallelFromPreviousTaskHasSingleOutgoing
         },
         buttonUncompleteDisabled() {
-            return Boolean(this.isLoadingProcessInstance || !this.isUserCandidateInPreviousTask || this.isUncompleteTaskDisabled)
+            return Boolean(
+                this.isLoadingProcessInstance || !this.isUserCandidateInPreviousTask || this.isUncompleteTaskDisabled
+            )
         },
         buttonUncompleteLabel() {
             return 'Cancelar encaminhamento'

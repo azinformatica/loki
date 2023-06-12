@@ -142,12 +142,6 @@ export default {
         firstHumanItemValue() {
             return this.firstHumanItem.value || null
         },
-        firstParallelItem() {
-            return this.select.parallel.items[0] || {}
-        },
-        firstParallelItemValue() {
-            return this.firstParallelItem.value || null
-        },
         isSelectedHumanTaskValid() {
             return this.select.humanDecision.items.some((obj) => {
                 return obj.value === this.selectedHumanTask
