@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime'
 import Vue from 'vue'
 import AzBpmInteraction from './AzBpmInteraction'
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils'
@@ -36,6 +37,7 @@ const createStoreState = ({ propsData }) => ({
             process: {
                 [propsData.processKey]: {
                     [propsData.businessKey]: {
+                        currentTask: createCurrentTaskMock(),
                         instance: createProcessInstanceMock(),
                         isLoading: false,
                     },
@@ -62,15 +64,45 @@ const createStore = ({ state } = {}) => {
 
 const createProcessInstanceMock = () => ({
     statusInstance: 'ACTIVE',
-    currentTask: {
-        assignee: {
-            name: 'user-name-example-01',
+    currentTasks: [
+        {
+            id: 'a82cb167-0957-11ee-a3f3-a6628296c1c1',
+            key: 'UserTask_example',
+            name: 'User name Exemple Task',
+            assignee: {
+                name: 'user-name-example-01',
+            },
+            candidateGroups: ['user-role-example-01'],
+            candidateUsers: ['user-name-example-01'],
+            revokedPermissions: '',
+            firstTask: false,
+            nextTasks: [
+                {
+                    taskId: 'next-user-task-01',
+                    taskName: 'Next user task 01',
+                    flowExpression: '${humanDecision == "next-user-task-01"}',
+                },
+            ],
+            previousTask: {
+                assignee: 'user-name-example-01',
+                candidateGroups: ['user-role-example-01'],
+            },
         },
-        candidateGroups: ['user-role-example-01'],
-        candidateUsers: ['user-name-example-01'],
-        revokedPermissions: '',
-        firstTask: false,
+    ],
+    currentTask: createCurrentTaskMock(),
+})
+
+const createCurrentTaskMock = () => ({
+    id: 'a82cb167-0957-11ee-a3f3-a6628296c1c1',
+    key: 'UserTask_example',
+    name: 'User name Exemple Task',
+    assignee: {
+        name: 'user-name-example-01',
     },
+    candidateGroups: ['user-role-example-01'],
+    candidateUsers: ['user-name-example-01'],
+    revokedPermissions: '',
+    firstTask: false,
     nextTasks: [
         {
             taskId: 'next-user-task-01',
@@ -249,7 +281,7 @@ describe('AzBpmInteraction.spec.js', () => {
                 store = createStore({ state })
                 wrapper = createWrapper({ propsData, store })
 
-                expect(wrapper.vm.components.select.show).toBe(false)
+                expect(wrapper.vm.components.select.humanDecision.show).toBe(false)
             })
 
             it('Should not show if has no assignee', () => {
@@ -257,31 +289,45 @@ describe('AzBpmInteraction.spec.js', () => {
                 store = createStore({ state })
                 wrapper = createWrapper({ propsData, store })
 
-                expect(wrapper.vm.components.select.show).toBe(false)
+                expect(wrapper.vm.components.select.humanDecision.show).toBe(false)
             })
 
             it('Should not show if has no next tasks', () => {
-                process.instance.nextTasks = []
+                process.instance.currentTask.nextTasks = []
                 store = createStore({ state })
                 wrapper = createWrapper({ propsData, store })
 
-                expect(wrapper.vm.components.select.show).toBe(false)
+                expect(wrapper.vm.components.select.humanDecision.show).toBe(false)
             })
 
             it('Should not show if some next task has no human decision', () => {
-                process.instance.nextTasks.push({
-                    taskId: 'next-user-task-02',
-                    taskName: 'Next user task 02',
-                    flowExpression: '${randomVariable == "randomValue"}',
-                })
+                process.instance.currentTask.nextTasks = [
+                    {
+                        taskId: 'next-user-task-02',
+                        taskName: 'Next user task 02',
+                        flowExpression: '${randomVariable == "randomValue"}',
+                    },
+                ]
                 store = createStore({ state })
                 wrapper = createWrapper({ propsData, store })
 
-                expect(wrapper.vm.components.select.show).toBe(false)
+                expect(wrapper.vm.components.select.humanDecision.show).toBe(false)
             })
 
             it('Should show if every next task has human decision', () => {
-                expect(wrapper.vm.components.select.show).toBe(true)
+                process.currentTask.nextTasks = [
+                    {
+                        taskId: 'next-user-task-02',
+                        taskName: 'Next user task 02',
+                        flowExpression: '${humanDecision == "humanValue"}',
+                    },
+                    {
+                        taskId: 'next-user-task-02',
+                        taskName: 'Next user task 02',
+                        flowExpression: '${humanDecision == "humanValue"}',
+                    },
+                ]
+                expect(wrapper.vm.components.select.humanDecision.show).toBe(true)
             })
 
             it('Should disable if is loading process instance', () => {
@@ -289,7 +335,7 @@ describe('AzBpmInteraction.spec.js', () => {
                 store = createStore({ state })
                 wrapper = createWrapper({ propsData, store })
 
-                expect(wrapper.vm.components.select.disabled).toBe(true)
+                expect(wrapper.vm.components.select.humanDecision.disabled).toBe(true)
             })
 
             it('Should disable if user is not a candidate user and does not belong to candidate group', () => {
@@ -298,7 +344,7 @@ describe('AzBpmInteraction.spec.js', () => {
                 store = createStore({ state })
                 wrapper = createWrapper({ propsData, store })
 
-                expect(wrapper.vm.components.select.disabled).toBe(true)
+                expect(wrapper.vm.components.select.humanDecision.disabled).toBe(true)
             })
 
             it('Should not disable if user is a candidate user', () => {
@@ -306,7 +352,7 @@ describe('AzBpmInteraction.spec.js', () => {
                 store = createStore({ state })
                 wrapper = createWrapper({ propsData, store })
 
-                expect(wrapper.vm.components.select.disabled).toBe(false)
+                expect(wrapper.vm.components.select.humanDecision.disabled).toBe(false)
             })
 
             it('Should not disable if user belongs to candidate group', () => {
@@ -314,21 +360,21 @@ describe('AzBpmInteraction.spec.js', () => {
                 store = createStore({ state })
                 wrapper = createWrapper({ propsData, store })
 
-                expect(wrapper.vm.components.select.disabled).toBe(false)
+                expect(wrapper.vm.components.select.humanDecision.disabled).toBe(false)
             })
 
             it('Should have items as array', () => {
-                expect(Array.isArray(wrapper.vm.components.select.items)).toBe(true)
+                expect(Array.isArray(wrapper.vm.components.select.humanDecision.items)).toBe(true)
             })
 
             it('Should have property "text" in every item of items array', () => {
-                for (const item of wrapper.vm.components.select.items) {
+                for (const item of wrapper.vm.components.select.humanDecision.items) {
                     expect(item.hasOwnProperty('text')).toBe(true)
                 }
             })
 
             it('Should have property "value" in every item of items array', () => {
-                for (const item of wrapper.vm.components.select.items) {
+                for (const item of wrapper.vm.components.select.humanDecision.items) {
                     expect(item.hasOwnProperty('value')).toBe(true)
                 }
             })
@@ -585,8 +631,8 @@ describe('AzBpmInteraction.spec.js', () => {
                     'Should disable if is not a candidate user' +
                         'and does not belong to candidate group in previous task',
                     () => {
-                        process.instance.previousTask.assignee = 'user-name-example-02'
-                        process.instance.previousTask.candidateGroups = ['user-role-example-02']
+                        process.instance.currentTask.previousTask.assignee = 'user-name-example-02'
+                        process.instance.currentTask.previousTask.candidateGroups = ['user-role-example-02']
                         store = createStore({ state })
                         wrapper = createWrapper({ propsData, store })
 
@@ -603,7 +649,7 @@ describe('AzBpmInteraction.spec.js', () => {
                 })
 
                 it('Should not disable if user belongs to candidate group', () => {
-                    process.instance.previousTask.assignee = 'user-name-example-02'
+                    process.instance.currentTask.previousTask.assignee = 'user-name-example-02'
                     store = createStore({ state })
                     wrapper = createWrapper({ propsData, store })
 

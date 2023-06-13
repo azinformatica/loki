@@ -127,7 +127,7 @@ export default {
             return (currentTaskId) => ({
                 processKey: this.processKey,
                 businessKey: this.businessKey,
-                currentTaskId: currentTaskId ? currentTaskId : this.currentTaskSelected.id,
+                currentTaskId: currentTaskId ? currentTaskId : this.currentTaskSelectedId,
             })
         },
         bpm() {
@@ -141,6 +141,9 @@ export default {
         },
         currentTaskSelected() {
             return this.bpmAtProcessKeyAtBusinessKey.currentTask || null
+        },
+        currentTaskSelectedId() {
+            return (this.currentTaskSelected && this.currentTaskSelected.id) || null
         },
         processInstance() {
             return this.bpmAtProcessKeyAtBusinessKey.instance || null
@@ -169,7 +172,7 @@ export default {
             return this.currentTasks.find((element, index) => index === 0) || null
         },
         firstCurrentTaskUserHasPermission() {
-            return this.currentTasksUserHasPermission.find((element, index, array) => index === 0) || null
+            return this.currentTasksUserHasPermission.find((element, index) => index === 0) || null
         },
         isUserCandidateInPreviousTaskByTask() {
             return (task) =>
@@ -190,9 +193,20 @@ export default {
         },
         currentTasksUserHasPermission() {
             return (
-                this.currentTasks.filter((task) => {
-                    return Boolean(this.isUserCandidateByTask(task) || this.isUserCandidateInPreviousTaskByTask(task))
-                }) || []
+                this.currentTasks
+                    .filter((task) => {
+                        task.isUserCandidateByTask = this.isUserCandidateByTask(task)
+                        return Boolean(
+                            this.isUserCandidateByTask(task) || this.isUserCandidateInPreviousTaskByTask(task)
+                        )
+                    })
+                    .sort(function (previous, actual) {
+                        if (previous.isUserCandidateByTask === actual.isUserCandidateByTask) {
+                            return 0
+                        } else {
+                            return previous.isUserCandidateByTask ? -1 : 1
+                        }
+                    }) || []
             )
         },
         currentTasks() {
@@ -368,6 +382,9 @@ export default {
         isNextNodeParallelFromPreviousTaskHasSingleOutgoing() {
             return Boolean(this.currentTask.previousTask.isNextNodeParallelHasSingleOutgoing)
         },
+        isParallelTask() {
+            return Boolean(this.currentTask.isParallel)
+        },
         isUncompleteTaskDisabled() {
             if (this.currentTask.previousTask.isNextNodeParallelHasMultipleOutgoing) {
                 return Boolean(
@@ -376,7 +393,7 @@ export default {
                     ).length < 2
                 )
             }
-            return this.isNextNodeParallelFromPreviousTaskHasSingleOutgoing
+            return this.isNextNodeParallelFromPreviousTaskHasSingleOutgoing || this.isParallelTask
         },
         buttonUncompleteDisabled() {
             return Boolean(

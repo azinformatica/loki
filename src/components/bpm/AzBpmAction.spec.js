@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime'
 import Vue from 'vue'
 import AzBpmAction from './AzBpmAction'
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils'
@@ -43,17 +44,28 @@ const createParentComponent = () => {
             id: 'example-id',
             processKey: 'example-process-key-01',
             businessKey: 'example-business-key-01',
+            bpmAtProcessKeyAtBusinessKey: {
+                currentTask: {},
+            },
             components: {
                 select: {
-                    disabled: false,
-                    show: true,
-                    label: 'example-select-label',
-                    items: [
-                        {
-                            text: 'example-text-01',
-                            value: 'example-value-01',
-                        },
-                    ],
+                    humanDecision: {
+                        disabled: false,
+                        show: true,
+                        label: 'example-select-humanDecision-label',
+                        items: [
+                            {
+                                text: 'example-text-01',
+                                value: 'example-value-01',
+                            },
+                        ],
+                    },
+                    parallel: {
+                        disabled: false,
+                        show: false,
+                        label: 'example-select-parallel-label',
+                        items: [],
+                    },
                 },
                 button: {
                     claim: {
@@ -157,29 +169,35 @@ describe('AzBpmAction.spec.js', () => {
     })
 
     describe('Select', () => {
-        let select
+        let selectHumanDecision
 
         beforeEach(() => {
-            select = wrapper.findComponent({ name: 'v-select' })
+            selectHumanDecision = wrapper.findAllComponents({ name: 'v-select' }).at(1)
         })
 
         it('Should have items from closest bpm interaction', () => {
-            expect(select.props().items).toStrictEqual(wrapper.vm.closestBpmInteraction.components.select.items)
+            expect(selectHumanDecision.props().items).toStrictEqual(
+                wrapper.vm.closestBpmInteraction.components.select.humanDecision.items
+            )
         })
 
         it('Should have label from closest bpm interaction', () => {
-            expect(select.props().label).toBe(wrapper.vm.closestBpmInteraction.components.select.label)
+            expect(selectHumanDecision.props().label).toBe(
+                wrapper.vm.closestBpmInteraction.components.select.humanDecision.label
+            )
         })
 
         it('Should have disabled from closest bpm interaction', () => {
-            expect(select.props().disabled).toBe(wrapper.vm.closestBpmInteraction.components.select.disabled)
+            expect(selectHumanDecision.props().disabled).toBe(
+                wrapper.vm.closestBpmInteraction.components.select.humanDecision.disabled
+            )
         })
 
         it('Should have attrs given through props', () => {
-            select = wrapper.findComponent({ name: 'v-select' })
+            selectHumanDecision = wrapper.findComponent({ name: 'v-select' })
 
-            expect(select.vm.$el.classList.contains(propsData.selectAttrs.class)).toBe(true)
-            expect(select.props().color).toBe(propsData.selectAttrs.color)
+            expect(selectHumanDecision.vm.$el.classList.contains(propsData.selectAttrs.class)).toBe(true)
+            expect(selectHumanDecision.props().color).toBe(propsData.selectAttrs.color)
         })
     })
 
