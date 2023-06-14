@@ -196,9 +196,7 @@ export default {
                 this.currentTasks
                     .filter((task) => {
                         task.isUserCandidateByTask = this.isUserCandidateByTask(task)
-                        return Boolean(
-                            this.isUserCandidateByTask(task) || this.isUserCandidateInPreviousTaskByTask(task)
-                        )
+                        return Boolean(task.isUserCandidateByTask || this.isUserCandidateInPreviousTaskByTask(task))
                     })
                     .sort(function (previous, actual) {
                         if (previous.isUserCandidateByTask === actual.isUserCandidateByTask) {
@@ -320,7 +318,9 @@ export default {
         },
         selectParallelShow() {
             return Boolean(
-                this.firstCurrentTaskUserHasPermission && this.moreThenOneCurrentTasksUserHasPermissionForAction
+                this.isStatusInstanceActive &&
+                    this.firstCurrentTaskUserHasPermission &&
+                    this.moreThenOneCurrentTasksUserHasPermissionForAction
             )
         },
         selectHumanDecisionShow() {
