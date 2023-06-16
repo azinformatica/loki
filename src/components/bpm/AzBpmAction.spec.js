@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime'
 import Vue from 'vue'
 import AzBpmAction from './AzBpmAction'
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils'
@@ -43,17 +44,37 @@ const createParentComponent = () => {
             id: 'example-id',
             processKey: 'example-process-key-01',
             businessKey: 'example-business-key-01',
+            bpmAtProcessKeyAtBusinessKey: {
+                currentTask: {},
+            },
             components: {
                 select: {
-                    disabled: false,
-                    show: true,
-                    label: 'example-select-label',
-                    items: [
-                        {
-                            text: 'example-text-01',
-                            value: 'example-value-01',
-                        },
-                    ],
+                    humanDecision: {
+                        disabled: false,
+                        show: true,
+                        label: 'example-select-humanDecision-label',
+                        items: [
+                            {
+                                text: 'example-text-01',
+                                value: 'example-value-01',
+                            },
+                        ],
+                    },
+                    parallel: {
+                        disabled: false,
+                        show: false,
+                        label: 'example-select-parallel-label',
+                        items: [
+                            {
+                                text: 'example-text-03',
+                                value: 'example-value-03',
+                            },
+                            {
+                                text: 'example-text-04',
+                                value: 'example-value-04',
+                            },
+                        ],
+                    },
                 },
                 button: {
                     claim: {
@@ -157,29 +178,66 @@ describe('AzBpmAction.spec.js', () => {
     })
 
     describe('Select', () => {
-        let select
+        let select, selects
 
         beforeEach(() => {
-            select = wrapper.findComponent({ name: 'v-select' })
+            selects = wrapper.findAllComponents({ name: 'v-select' })
         })
 
-        it('Should have items from closest bpm interaction', () => {
-            expect(select.props().items).toStrictEqual(wrapper.vm.closestBpmInteraction.components.select.items)
+        describe('Parallel', () => {
+            beforeEach(() => {
+                select = selects.at(0)
+            })
+
+            it('Should have items from closest bpm interaction', () => {
+                expect(select.props().items).toStrictEqual(
+                    wrapper.vm.closestBpmInteraction.components.select.parallel.items
+                )
+            })
+
+            it('Should have label from closest bpm interaction', () => {
+                expect(select.props().label).toBe(wrapper.vm.closestBpmInteraction.components.select.parallel.label)
+            })
+
+            it('Should have disabled from closest bpm interaction', () => {
+                expect(select.props().disabled).toBe(
+                    wrapper.vm.closestBpmInteraction.components.select.parallel.disabled
+                )
+            })
+
+            it('Should have attrs given through props', () => {
+                expect(select.vm.$el.classList.contains(propsData.selectAttrs.class)).toBe(true)
+                expect(select.props().color).toBe(propsData.selectAttrs.color)
+            })
         })
 
-        it('Should have label from closest bpm interaction', () => {
-            expect(select.props().label).toBe(wrapper.vm.closestBpmInteraction.components.select.label)
-        })
+        describe('HumanDecision', () => {
+            beforeEach(() => {
+                select = selects.at(1)
+            })
 
-        it('Should have disabled from closest bpm interaction', () => {
-            expect(select.props().disabled).toBe(wrapper.vm.closestBpmInteraction.components.select.disabled)
-        })
+            it('Should have items from closest bpm interaction', () => {
+                expect(select.props().items).toStrictEqual(
+                    wrapper.vm.closestBpmInteraction.components.select.humanDecision.items
+                )
+            })
 
-        it('Should have attrs given through props', () => {
-            select = wrapper.findComponent({ name: 'v-select' })
+            it('Should have label from closest bpm interaction', () => {
+                expect(select.props().label).toBe(
+                    wrapper.vm.closestBpmInteraction.components.select.humanDecision.label
+                )
+            })
 
-            expect(select.vm.$el.classList.contains(propsData.selectAttrs.class)).toBe(true)
-            expect(select.props().color).toBe(propsData.selectAttrs.color)
+            it('Should have disabled from closest bpm interaction', () => {
+                expect(select.props().disabled).toBe(
+                    wrapper.vm.closestBpmInteraction.components.select.humanDecision.disabled
+                )
+            })
+
+            it('Should have attrs given through props', () => {
+                expect(select.vm.$el.classList.contains(propsData.selectAttrs.class)).toBe(true)
+                expect(select.props().color).toBe(propsData.selectAttrs.color)
+            })
         })
     })
 
@@ -296,6 +354,60 @@ describe('AzBpmAction.spec.js', () => {
             it('Should have attrs given through props', () => {
                 expect(getButton().vm.$el.classList.contains(propsData.buttonAttrs[key].class)).toBe(true)
                 expect(getButton().props().color).toBe(propsData.buttonAttrs[key].color)
+            })
+        })
+    })
+
+    describe('Computed', () => {
+        describe('setCurrentTaskParams', () => {
+            it('Should have same processKey', () => {
+                expect(wrapper.vm.setCurrentTaskParams.processKey).toBe(wrapper.vm.processKey)
+            })
+
+            it('Should have same businessKey', () => {
+                expect(wrapper.vm.setCurrentTaskParams.businessKey).toBe(wrapper.vm.businessKey)
+            })
+
+            it('Should have currentTaskId equals selectedParallelTask', () => {
+                expect(wrapper.vm.setCurrentTaskParams.currentTaskId).toBe(wrapper.vm.selectedParallelTask)
+            })
+        })
+
+        describe('isSetCurrentTaskValid', () => {
+            it('Should return false if isSelectedParallelTaskValid is false', () => {
+                expect(wrapper.vm.isSetCurrentTaskValid).toBe(false)
+            })
+        })
+    })
+
+    describe('Watch', () => {
+        describe('selectedParallelTask', () => {
+            it('Should update current task selected on select a different parallel task', async () => {
+                wrapper.vm.setCurrentTaskSelected = jest.fn()
+
+                wrapper.vm.selectedParallelTask = 'changed-value'
+
+                await wrapper.vm.$nextTick()
+
+                expect(wrapper.vm.setCurrentTaskSelected).toHaveBeenCalled()
+            })
+        })
+    })
+
+    describe('Methods', () => {
+        describe('selectHumanTask', () => {
+            it('Should update selectedHumanTask', async () => {
+                wrapper.vm.selectHumanTask()
+
+                expect(wrapper.vm.selectedHumanTask).toBe(wrapper.vm.firstHumanItemValue)
+            })
+        })
+
+        describe('selectParallelTask', () => {
+            it('Should update selectedParallelTask', () => {
+                wrapper.vm.selectParallelTask()
+
+                expect(wrapper.vm.selectedParallelTask).toBe(wrapper.vm.currentTask.id)
             })
         })
     })

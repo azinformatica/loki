@@ -1,6 +1,6 @@
 <template>
     <div>
-        <slot :hasAuthority="hasAuthority" :components="components" :processInstance="processInstance"> </slot>
+        <slot :hasAuthority="hasAuthority" :components="components" :processInstance="processInstance"></slot>
     </div>
 </template>
 
@@ -48,12 +48,6 @@ export default {
                 !this.isAuthorityRevoked(authority.name)
             )
         },
-        getProcessInstance() {
-            return this.$store.dispatch(actionTypes.BPM.GET_PROCESS_INSTANCE, this.processInstanceParams)
-        },
-        initializeProcessInstance() {
-            return this.$store.commit(mutationTypes.BPM.INITIALIZE_PROCESS_INSTANCE, this.processInstanceParams)
-        },
         dispatchButtonActionIfAllowed(buttonType, bpmParameters) {
             const button = this.components.button[buttonType]
             if (button.disabled || !button.show) {
@@ -78,14 +72,48 @@ export default {
                 bpmParameters,
             }
         },
-        selectItemsMapper(task) {
+        selectNextTasksItemsMapper(task) {
             return {
                 text: task.taskName,
                 value: task.taskId,
             }
         },
+        selectCurrentTasksItemsMapper(task) {
+            return {
+                text: task.name,
+                value: task.id,
+            }
+        },
         splitCommaSeparatedTextToArray(text) {
             return text.replace(/\s+/g, '').split(',').filter(Boolean)
+        },
+        initializeProcessInstance() {
+            return this.$store.commit(mutationTypes.BPM.INITIALIZE_PROCESS_INSTANCE, this.processInstanceParams)
+        },
+        setCurrentTaskPreviouslySelected() {
+            this.$store.commit(mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_INSTANCE, this.currentTaskParams())
+        },
+        setCurrentTaskSelected() {
+            const currentTask = this.firstCurrentTaskUserHasPermission || this.firstCurrentTask || {}
+            this.$store.commit(
+                mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_INSTANCE,
+                this.currentTaskParams(currentTask.id)
+            )
+            this.$store.commit(
+                mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_PROCESS,
+                this.currentTaskParams(currentTask.id)
+            )
+        },
+        setCurrentTask() {
+            if (this.isSetSelectedTask) {
+                this.setCurrentTaskPreviouslySelected()
+            } else {
+                this.setCurrentTaskSelected()
+            }
+        },
+        async getProcessInstance() {
+            await this.$store.dispatch(actionTypes.BPM.GET_PROCESS_INSTANCE, this.processInstanceParams)
+            this.setCurrentTask()
         },
     },
     computed: {
@@ -95,6 +123,13 @@ export default {
                 businessKey: this.businessKey,
             }
         },
+        currentTaskParams() {
+            return (currentTaskId) => ({
+                processKey: this.processKey,
+                businessKey: this.businessKey,
+                currentTaskId: currentTaskId ? currentTaskId : this.currentTaskSelectedId,
+            })
+        },
         bpm() {
             return this.$store.state.loki.bpm
         },
@@ -103,6 +138,12 @@ export default {
         },
         bpmAtProcessKeyAtBusinessKey() {
             return this.bpmAtProcessKey[this.businessKey] || {}
+        },
+        currentTaskSelected() {
+            return this.bpmAtProcessKeyAtBusinessKey.currentTask || null
+        },
+        currentTaskSelectedId() {
+            return (this.currentTaskSelected && this.currentTaskSelected.id) || null
         },
         processInstance() {
             return this.bpmAtProcessKeyAtBusinessKey.instance || null
@@ -119,20 +160,67 @@ export default {
         validUserAuthorities() {
             return this.userAuthorities.filter(this.isAuthorityValid.bind(this))
         },
+        isSelectedTaskInCurrentTasks() {
+            return Boolean(this.currentTasks.some((task) => task.id === this.currentTaskSelected.id))
+        },
+        isSetSelectedTask() {
+            return Boolean(
+                this.currentTasks.length > 1 && this.currentTaskSelected && this.isSelectedTaskInCurrentTasks
+            )
+        },
+        firstCurrentTask() {
+            return this.currentTasks.find((element, index) => index === 0) || null
+        },
+        firstCurrentTaskUserHasPermission() {
+            return this.currentTasksUserHasPermission.find((element, index) => index === 0) || null
+        },
+        isUserCandidateInPreviousTaskByTask() {
+            return (task) =>
+                Boolean(
+                    task.previousTask.assignee === this.user.name ||
+                        this.userRoles.some(
+                            (role) =>
+                                task.previousTask.candidateGroups && task.previousTask.candidateGroups.includes(role)
+                        )
+                )
+        },
+        isUserCandidateByTask() {
+            return (task) =>
+                Boolean(
+                    task.candidateUsers.includes(this.user.name) ||
+                        this.userRoles.some((role) => task.candidateGroups.includes(role))
+                )
+        },
+        currentTasksUserHasPermission() {
+            return (
+                this.currentTasks
+                    .filter((task) => {
+                        task.isUserCandidateByTask = this.isUserCandidateByTask(task)
+                        return Boolean(task.isUserCandidateByTask || this.isUserCandidateInPreviousTaskByTask(task))
+                    })
+                    .sort(function (previous, actual) {
+                        if (previous.isUserCandidateByTask === actual.isUserCandidateByTask) {
+                            return 0
+                        } else {
+                            return previous.isUserCandidateByTask ? -1 : 1
+                        }
+                    }) || []
+            )
+        },
+        currentTasks() {
+            return (this.processInstance && this.processInstance.currentTasks) || []
+        },
         currentTask() {
             return (this.processInstance && this.processInstance.currentTask) || {}
         },
         previousTask() {
-            return (this.processInstance && this.processInstance.previousTask) || {}
+            return this.currentTask.previousTask || {}
         },
         nextTasks() {
-            return (this.processInstance && this.processInstance.nextTasks) || []
+            return this.currentTask.nextTasks || []
         },
         hasNextTasks() {
             return this.nextTasks.length > 0
-        },
-        hasHumanDecisionInAllNextTasks() {
-            return this.nextTasks.every((task) => task.flowExpression && task.flowExpression.includes('humanDecision'))
         },
         revokedAuthorities() {
             return this.splitCommaSeparatedTextToArray(this.currentTask.revokedPermissions || '')
@@ -157,7 +245,10 @@ export default {
         },
         components() {
             return {
-                select: this.select,
+                select: {
+                    humanDecision: this.selectHumanDecision,
+                    parallel: this.selectParallel,
+                },
                 button: {
                     claim: this.buttonClaim,
                     unclaim: this.buttonUnclaim,
@@ -166,11 +257,18 @@ export default {
                 },
             }
         },
-        select() {
+        selectHumanDecision() {
             return {
-                show: this.selectShow,
+                show: this.selectHumanDecisionShow,
                 disabled: this.selectDisabled,
-                items: this.selectItems,
+                items: this.selectHumanDecisionItems,
+            }
+        },
+        selectParallel() {
+            return {
+                show: this.selectParallelShow,
+                disabled: this.selectDisabled,
+                items: this.selectParallelItems,
             }
         },
         buttonClaim() {
@@ -205,7 +303,27 @@ export default {
                 action: this.buttonUncompleteAction,
             }
         },
-        selectShow() {
+        moreThenOneCurrentTasksUserHasPermissionForAction() {
+            return this.currentTasksUserHasPermissionForAction.length > 1
+        },
+        currentTasksUserHasPermissionForAction() {
+            return (
+                this.currentTasks.filter((task) => {
+                    return Boolean(
+                        task.candidateUsers.includes(this.user.name) ||
+                            this.userRoles.some((role) => task.candidateGroups.includes(role))
+                    )
+                }) || []
+            )
+        },
+        selectParallelShow() {
+            return Boolean(
+                this.isStatusInstanceActive &&
+                    this.firstCurrentTaskUserHasPermission &&
+                    this.moreThenOneCurrentTasksUserHasPermissionForAction
+            )
+        },
+        selectHumanDecisionShow() {
             return Boolean(
                 this.isStatusInstanceActive && this.assignee && this.hasNextTasks && this.hasHumanDecisionInAllNextTasks
             )
@@ -213,8 +331,14 @@ export default {
         selectDisabled() {
             return Boolean(this.isLoadingProcessInstance || !this.isUserCandidate)
         },
-        selectItems() {
-            return this.hasHumanDecisionInAllNextTasks ? this.nextTasks.map(this.selectItemsMapper) : []
+        selectParallelItems() {
+            return this.currentTasks.map(this.selectCurrentTasksItemsMapper) || []
+        },
+        selectHumanDecisionItems() {
+            return this.hasHumanDecisionInAllNextTasks ? this.nextTasks.map(this.selectNextTasksItemsMapper) : []
+        },
+        hasHumanDecisionInAllNextTasks() {
+            return this.nextTasks.every((task) => task.flowExpression && task.flowExpression.includes('humanDecision'))
         },
         buttonClaimShow() {
             return Boolean(this.isStatusInstanceActive && !this.assignee)
@@ -255,8 +379,26 @@ export default {
         buttonUncompleteShow() {
             return Boolean(this.isStatusInstanceActive && !this.assignee && !this.isFirstTask)
         },
+        isNextNodeParallelFromPreviousTaskHasSingleOutgoing() {
+            return Boolean(this.currentTask.previousTask.isNextNodeParallelHasSingleOutgoing)
+        },
+        isParallelTask() {
+            return Boolean(this.currentTask.isParallel)
+        },
+        isUncompleteTaskDisabled() {
+            if (this.currentTask.previousTask.isNextNodeParallelHasMultipleOutgoing) {
+                return Boolean(
+                    this.currentTasks.filter(
+                        (task) => task.previousTask.key === this.previousTask.key && !task.assignee
+                    ).length < 2
+                )
+            }
+            return this.isNextNodeParallelFromPreviousTaskHasSingleOutgoing || this.isParallelTask
+        },
         buttonUncompleteDisabled() {
-            return Boolean(this.isLoadingProcessInstance || !this.isUserCandidateInPreviousTask)
+            return Boolean(
+                this.isLoadingProcessInstance || !this.isUserCandidateInPreviousTask || this.isUncompleteTaskDisabled
+            )
         },
         buttonUncompleteLabel() {
             return 'Cancelar encaminhamento'
