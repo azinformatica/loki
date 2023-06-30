@@ -61,11 +61,24 @@ export default {
             return this.$store.dispatch(actionType, args)
         },
         dispatchButtonActionOnCurrentTask(buttonType, bpmParameters) {
+            let response = null
+
             return this.getProcessInstance()
                 .then(() => this.$nextTick())
                 .then(() => this.dispatchButtonActionIfAllowed(buttonType, bpmParameters))
-                .then(() => this.getProcessInstance())
-                .then(() => this.processInstance)
+                .then((actionResponse) => {
+                    response = actionResponse
+                    return this.getProcessInstance()
+                })
+                .then(() => ({
+                    response,
+                    action: buttonType,
+                    processInstance: this.processInstance,
+                }))
+                .catch((error) => ({
+                    action: buttonType,
+                    error,
+                }))
         },
         createBpmArgumentsOnCurrentTask(bpmParameters = {}) {
             return {
