@@ -65,6 +65,7 @@ export default {
                 .then(() => this.$nextTick())
                 .then(() => this.dispatchButtonActionIfAllowed(buttonType, bpmParameters))
                 .then(() => this.getProcessInstance())
+                .then(() => this.processInstance)
         },
         createBpmArgumentsOnCurrentTask(bpmParameters = {}) {
             return {
@@ -112,8 +113,12 @@ export default {
             }
         },
         async getProcessInstance() {
-            await this.$store.dispatch(actionTypes.BPM.GET_PROCESS_INSTANCE, this.processInstanceParams)
+            const type = actionTypes.BPM.GET_PROCESS_INSTANCE
+            const payload = this.processInstanceParams
+            const processInstance = await this.$store.dispatch(type, payload)
             this.setCurrentTask()
+
+            return processInstance
         },
     },
     computed: {
@@ -124,7 +129,7 @@ export default {
             }
         },
         currentTaskParams() {
-            return (currentTaskId) => ({
+            return (currentTaskId = null) => ({
                 processKey: this.processKey,
                 businessKey: this.businessKey,
                 currentTaskId: currentTaskId ? currentTaskId : this.currentTaskSelectedId,

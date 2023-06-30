@@ -98,6 +98,8 @@ export default {
                 const response = await axios.get(`${state.bpm.api}/getInstance/${processKey}/${businessKey}`)
                 const processInstance = response.data
                 commit(mutationTypes.BPM.SET_PROCESS_INSTANCE, { processKey, businessKey, instance: processInstance })
+
+                return processInstance
             } finally {
                 commit(mutationTypes.BPM.SET_IS_LOADING_PROCESS_INSTANCE, { processKey, businessKey, isLoading: false })
             }

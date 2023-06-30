@@ -215,17 +215,19 @@ export default {
 
     [mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_PROCESS](state, { processKey, businessKey, currentTaskId }) {
         const process = state.bpm.process[processKey][businessKey]
-        const currentTask = process.instance.currentTasks.find((currentTask) => {
-            return currentTask.id === currentTaskId
-        })
+        const instance = process.instance || {}
+        const currentTasks = instance.currentTasks || []
+        const currentTask = currentTasks.find((currentTask) => currentTask.id === currentTaskId)
+
         Vue.set(process, 'currentTask', currentTask)
     },
 
     [mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_INSTANCE](state, { processKey, businessKey, currentTaskId }) {
-        const instance = state.bpm.process[processKey][businessKey].instance
-        const currentTask = instance.currentTasks.find((currentTask) => {
-            return currentTask.id === currentTaskId
-        })
+        const process = state.bpm.process[processKey][businessKey]
+        const instance = process.instance || {}
+        const currentTasks = instance.currentTasks || []
+        const currentTask = currentTasks.find((currentTask) => currentTask.id === currentTaskId)
+
         Vue.set(instance, 'currentTask', currentTask)
     },
 

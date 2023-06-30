@@ -22,7 +22,7 @@
             v-show="button[buttonType].show"
             :disabled="disabled || button[buttonType].disabled"
             v-bind="buttonMergedAttrs[buttonType]"
-            @click="button[buttonType].action(bpmMergedParameters)"
+            @click="executeButtonAction(buttonType)"
         >
             {{ button[buttonType].label }}
         </v-btn>
@@ -58,6 +58,14 @@ export default {
                         !buttonAttrs.hasOwnProperty(buttonType) || typeof buttonAttrs[buttonType] === 'object'
                 ),
         },
+        beforeAction: {
+            type: Function,
+            default: (buttonType) => true,
+        },
+        afterAction: {
+            type: Function,
+            default: (processInstance) => null,
+        },
     },
     data() {
         return {
@@ -74,6 +82,13 @@ export default {
         }
     },
     methods: {
+        async executeButtonAction(buttonType) {
+            const button = this.button[buttonType]
+            if (await this.beforeAction(buttonType)) {
+                const processInstance = await button.action(this.bpmMergedParameters)
+                await this.afterAction(processInstance)
+            }
+        },
         getComponentName(vm) {
             return (vm && vm.$options && vm.$options.name) || ''
         },
