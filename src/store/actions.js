@@ -99,7 +99,7 @@ export default {
                 const processInstance = response.data
                 commit(mutationTypes.BPM.SET_PROCESS_INSTANCE, { processKey, businessKey, instance: processInstance })
 
-                return response
+                return processInstance
             } finally {
                 commit(mutationTypes.BPM.SET_IS_LOADING_PROCESS_INSTANCE, { processKey, businessKey, isLoading: false })
             }
