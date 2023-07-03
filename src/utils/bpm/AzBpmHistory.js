@@ -1,5 +1,5 @@
 import moment from 'moment-timezone'
-import { actionTypes } from '../store'
+import { actionTypes } from '../../store'
 
 export default class AzBpmHistory {
     constructor(store) {
