@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import AzBpmHistory from '../../utils/AzBpmHistory'
+import AzBpmHistory from '../../utils/bpm/AzBpmHistory'
 
 export default {
     name: 'AzBpmTimeline',
