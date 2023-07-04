@@ -442,7 +442,10 @@ describe('AzBpmInteraction.spec.js', () => {
 
                 const createProcessInstanceMock = () => ({
                     statusInstance: 'ACTIVE',
-                    currentTasks: [createCurrentTaskMock(), createOtherCurrentTaskMock()],
+                    currentTasks: [
+                        createCurrentTaskMock(),
+                        createOtherCurrentTaskMock()
+                    ],
                     currentTask: createCurrentTaskMock(),
                 })
 
@@ -462,11 +465,13 @@ describe('AzBpmInteraction.spec.js', () => {
                 expect(wrapper.vm.components.select.parallel.show).toBe(false)
             })
 
-            it('Should not show if no has candidateGroups and candidateUsers all tasks', () => {
+            it('Should not show if user can not interact with task', () => {
                 process.instance.currentTasks[0].candidateGroups = ['user-name-example-05']
                 process.instance.currentTasks[0].candidateUsers = ['user-name-example-05']
+                process.instance.currentTasks[0].previousTask.assignee = null
                 process.instance.currentTasks[1].candidateGroups = ['user-name-example-05']
                 process.instance.currentTasks[1].candidateUsers = ['user-name-example-05']
+                process.instance.currentTasks[1].previousTask.assignee = null
 
                 store = createStore({ state })
                 wrapper = createWrapper({ propsData, store })
@@ -474,26 +479,53 @@ describe('AzBpmInteraction.spec.js', () => {
                 expect(wrapper.vm.components.select.parallel.show).toBe(false)
             })
 
-            it('Should not show if has candidateGroups and candidateUsers in at least one task', () => {
-                process.instance.currentTasks[0].candidateGroups = ['user-name-example-05']
-                process.instance.currentTasks[0].candidateUsers = ['user-name-example-05']
+            it('Should not show if has no multiple current tasks', () => {
+                process.instance.currentTasks.length = 1
 
                 store = createStore({ state })
                 wrapper = createWrapper({ propsData, store })
 
+                expect(process.instance.currentTasks.length < 2).toBe(true)
                 expect(wrapper.vm.components.select.parallel.show).toBe(false)
             })
 
-            it('Should not show if has candidateGroups and candidateUsers only in previousTasks', () => {
+            it('Should show if user is in candidateGroups in at least one of the current tasks', () => {
+                process.instance.currentTasks[0].candidateUsers = ['user-name-example-05']
+                process.instance.currentTasks[0].previousTask.assignee = null
+                process.instance.currentTasks[1].candidateGroups = ['user-name-example-05']
+                process.instance.currentTasks[1].candidateUsers = ['user-name-example-05']
+                process.instance.currentTasks[1].previousTask.assignee = null
+
+                store = createStore({ state })
+                wrapper = createWrapper({ propsData, store })
+
+                expect(wrapper.vm.components.select.parallel.show).toBe(true)
+            })
+
+            it('Should show if user is in candidateUsers in at least one of the current tasks', () => {
+                process.instance.currentTasks[0].candidateGroups = ['user-name-example-05']
+                process.instance.currentTasks[0].previousTask.assignee = null
+                process.instance.currentTasks[1].candidateGroups = ['user-name-example-05']
+                process.instance.currentTasks[1].candidateUsers = ['user-name-example-05']
+                process.instance.currentTasks[1].previousTask.assignee = null
+
+                store = createStore({ state })
+                wrapper = createWrapper({ propsData, store })
+
+                expect(wrapper.vm.components.select.parallel.show).toBe(true)
+            })
+
+            it('Should show if user is assigne in at least one of the current tasks previous task', () => {
                 process.instance.currentTasks[0].candidateGroups = ['user-name-example-05']
                 process.instance.currentTasks[0].candidateUsers = ['user-name-example-05']
                 process.instance.currentTasks[1].candidateGroups = ['user-name-example-05']
                 process.instance.currentTasks[1].candidateUsers = ['user-name-example-05']
+                process.instance.currentTasks[1].previousTask.assignee = null
 
                 store = createStore({ state })
                 wrapper = createWrapper({ propsData, store })
 
-                expect(wrapper.vm.components.select.parallel.show).toBe(false)
+                expect(wrapper.vm.components.select.parallel.show).toBe(true)
             })
 
             it('Should not show if has moreThenOneCurrentTasksUserHasPermissionForAction', () => {
