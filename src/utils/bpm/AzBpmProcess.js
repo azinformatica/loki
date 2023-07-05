@@ -14,7 +14,7 @@ export default class AzBpmProcess {
             const currentTask = this._getCurrentTaskInProcess()
             this._setCurrentTaskInInstance(currentTask)
 
-            const task = this._hasValidCurrentTask() ? this._getCurrentTask() : this._getFirstValidCurrentTask()
+            const task = this._hasValidCurrentTask() ? this.getCurrentTask() : this._getFirstValidCurrentTask()
 
             this._setCurrentTaskInInstance(task)
             this._setCurrentTaskInProcess(task)
@@ -28,7 +28,7 @@ export default class AzBpmProcess {
     }
 
     hasAuthority(authorities = []) {
-        const currentTask = this._getCurrentTask()
+        const currentTask = this.getCurrentTask()
 
         return (
             !this.isLoadingProcess() &&
@@ -50,6 +50,12 @@ export default class AzBpmProcess {
         const process = this.getProcess()
 
         return process.instance || null
+    }
+
+    getCurrentTask() {
+        const processInstance = this.getProcessInstance()
+
+        return (processInstance && processInstance.currentTask) || {}
     }
 
     getComponents() {
@@ -171,13 +177,13 @@ export default class AzBpmProcess {
 
     _isCurrentTaskInCurrentTasks() {
         const currentTasks = this._getCurrentTasks()
-        const currentTask = this._getCurrentTask()
+        const currentTask = this.getCurrentTask()
 
         return currentTasks.some((task) => task.id === currentTask.id)
     }
 
     _getSelectHumanDecisionShow() {
-        const currentTask = this._getCurrentTask()
+        const currentTask = this.getCurrentTask()
 
         return Boolean(
             this._hasHumanDecisionInAllNextTasks(currentTask) &&
@@ -188,13 +194,13 @@ export default class AzBpmProcess {
     }
 
     _getSelectHumanDecisionDisabled() {
-        const currentTask = this._getCurrentTask()
+        const currentTask = this.getCurrentTask()
 
         return Boolean(this.isLoadingProcess() || !this._isUserCandidate(currentTask))
     }
 
     _getSelectHumanDecisionItems() {
-        const currentTask = this._getCurrentTask()
+        const currentTask = this.getCurrentTask()
         if (!this._hasHumanDecisionInAllNextTasks(currentTask)) {
             return []
         }
@@ -216,7 +222,7 @@ export default class AzBpmProcess {
     }
 
     _getSelectParallelDisabled() {
-        const currentTask = this._getCurrentTask()
+        const currentTask = this.getCurrentTask()
 
         return Boolean(this.isLoadingProcess() || !this._isUserCandidate(currentTask))
     }
@@ -231,13 +237,13 @@ export default class AzBpmProcess {
     }
 
     _getButtonClaimShow() {
-        const currentTask = this._getCurrentTask()
+        const currentTask = this.getCurrentTask()
 
         return Boolean(this._isStatusInstanceActive() && !this._hasAssignee(currentTask))
     }
 
     _getButtonClaimDisabled() {
-        const currentTask = this._getCurrentTask()
+        const currentTask = this.getCurrentTask()
 
         return Boolean(this.isLoadingProcess() || !this._isUserCandidate(currentTask))
     }
@@ -251,13 +257,13 @@ export default class AzBpmProcess {
     }
 
     _getButtonUnclaimShow() {
-        const currentTask = this._getCurrentTask()
+        const currentTask = this.getCurrentTask()
 
         return Boolean(this._isStatusInstanceActive() && this._hasAssignee(currentTask))
     }
 
     _getButtonUnclaimDisabled() {
-        const currentTask = this._getCurrentTask()
+        const currentTask = this.getCurrentTask()
 
         return Boolean(this.isLoadingProcess() || !this._isUserCandidate(currentTask))
     }
@@ -271,19 +277,19 @@ export default class AzBpmProcess {
     }
 
     _getButtonCompleteShow() {
-        const currentTask = this._getCurrentTask()
+        const currentTask = this.getCurrentTask()
 
         return Boolean(this._isStatusInstanceActive() && this._hasAssignee(currentTask))
     }
 
     _getButtonCompleteDisabled() {
-        const currentTask = this._getCurrentTask()
+        const currentTask = this.getCurrentTask()
 
         return Boolean(this.isLoadingProcess() || !this._isUserCandidate(currentTask))
     }
 
     _getButtonCompleteLabel() {
-        const currentTask = this._getCurrentTask()
+        const currentTask = this.getCurrentTask()
 
         return this._hasNextTasks(currentTask) ? 'Encaminhar' : 'Finalizar'
     }
@@ -293,7 +299,7 @@ export default class AzBpmProcess {
     }
 
     _getButtonUncompleteShow() {
-        const currentTask = this._getCurrentTask()
+        const currentTask = this.getCurrentTask()
 
         return Boolean(
             this._isStatusInstanceActive() && !this._hasAssignee(currentTask) && !this._isFirstTask(currentTask)
@@ -301,7 +307,7 @@ export default class AzBpmProcess {
     }
 
     _getButtonUncompleteDisabled() {
-        const currentTask = this._getCurrentTask()
+        const currentTask = this.getCurrentTask()
 
         return Boolean(
             this.isLoadingProcess() ||
@@ -351,14 +357,8 @@ export default class AzBpmProcess {
         return task.assignee || null
     }
 
-    _getCurrentTask() {
-        const processInstance = this.getProcessInstance()
-
-        return (processInstance && processInstance.currentTask) || {}
-    }
-
     _hasCurrentTask() {
-        const currentTask = this._getCurrentTask()
+        const currentTask = this.getCurrentTask()
 
         return currentTask.id
     }
@@ -410,7 +410,7 @@ export default class AzBpmProcess {
     }
 
     _getCurrentTaskRevokedAuthorities() {
-        const currentTask = this._getCurrentTask()
+        const currentTask = this.getCurrentTask()
 
         return this._getRevokedAuthorities(currentTask)
     }
@@ -602,7 +602,7 @@ export default class AzBpmProcess {
     }
 
     _createButtonActionArgs(bpmParameters) {
-        const currentTask = this._getCurrentTask()
+        const currentTask = this.getCurrentTask()
 
         return {
             bpmParameters,
