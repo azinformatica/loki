@@ -1,6 +1,12 @@
 import axios from 'axios'
 import mutationTypes from './mutation-types'
 import actionTypes from './action-types'
+import state from './state'
+
+axios.interceptors.request.use((config) => {
+    config.headers.common['Authorization'] = state.keycloak.accessToken
+    return config
+})
 
 export default {
     async getProduct({ commit, state }) {

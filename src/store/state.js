@@ -94,4 +94,8 @@ export default {
         api: 'api/bpm',
         process: {},
     },
+
+    keycloak: {
+        accessToken: null,
+    },
 }
