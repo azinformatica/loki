@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex justify-center align-center">
+    <div v-if="hasComponents" class="d-flex justify-center align-center">
         <v-select
             v-model="selectedParallelTask"
             v-show="select.parallel.show"
@@ -33,6 +33,7 @@
 import _ from 'lodash'
 import AzBpmInteraction from './AzBpmInteraction'
 import { mutationTypes } from '../../store'
+import AzBpmProcess from '../../utils/bpm/AzBpmProcess'
 
 export default {
     name: 'AzBpmAction',
@@ -40,6 +41,14 @@ export default {
         disabled: {
             default: false,
             type: Boolean,
+        },
+        processKey: {
+            default: '',
+            type: String,
+        },
+        businessKey: {
+            default: '',
+            type: String,
         },
         bpmParameters: {
             default: () => ({}),
@@ -60,18 +69,17 @@ export default {
         },
         beforeAction: {
             type: Function,
-            default: (buttonType) => true,
+            default: () => true,
         },
         afterAction: {
             type: Function,
-            default: (processInstance) => null,
+            default: () => null,
         },
     },
     data() {
         return {
             selectedHumanTask: '',
             selectedParallelTask: '',
-            closestBpmInteraction: null,
             selectDefaultAttrs: {},
             buttonDefaultAttrs: {
                 claim: {},
@@ -79,6 +87,8 @@ export default {
                 complete: {},
                 uncomplete: {},
             },
+            interaction: null,
+            process: null,
         }
     },
     methods: {
@@ -89,22 +99,36 @@ export default {
                 await this.afterAction(processInstance)
             }
         },
+        initializeProcess() {
+            if (!this.currentProcessKey) {
+                throw new Error('É necessário informar uma "processKey" na prop ou no AzBpmInteraction ascendente.')
+            }
+
+            if (!this.currentProcessKey) {
+                throw new Error('É necessário informar uma "businessKey" na prop ou no AzBpmInteraction ascendente.')
+            }
+
+            this.process = new AzBpmProcess(this.$store, this.currentProcessKey, this.currentBusinessKey)
+        },
+        initializeInteraction() {
+            this.interaction = this.findClosestInteraction(this.$parent)
+        },
         getComponentName(vm) {
             return (vm && vm.$options && vm.$options.name) || ''
         },
         isBpmInteraction(vm) {
             return this.getComponentName(vm) === AzBpmInteraction.name
         },
-        findClosestBpmInteraction(vm) {
+        findClosestInteraction(vm) {
             if (!vm) {
-                throw new Error(`${this.getComponentName(this)} must be inside ${AzBpmInteraction.name}`)
+                return null
             }
 
             if (this.isBpmInteraction(vm)) {
                 return vm
             }
 
-            return this.findClosestBpmInteraction(vm.$parent)
+            return this.findClosestInteraction(vm.$parent)
         },
         setCurrentTaskSelected() {
             if (this.isSetCurrentTaskValid) {
@@ -135,13 +159,18 @@ export default {
     computed: {
         setCurrentTaskParams() {
             return {
-                processKey: this.processKey,
-                businessKey: this.businessKey,
+                processKey: this.currentProcessKey,
+                businessKey: this.currentBusinessKey,
                 currentTaskId: this.selectedParallelTask,
             }
         },
         isSetCurrentTaskValid() {
-            return this.isSelectedParallelTaskValid && this.processKey && this.businessKey && this.selectedParallelTask
+            return (
+                this.isSelectedParallelTaskValid &&
+                this.currentProcessKey &&
+                this.currentBusinessKey &&
+                this.selectedParallelTask
+            )
         },
         bpmMergedParameters() {
             return _.merge({}, this.bpmDefaultParameters, this.bpmParameters)
@@ -182,24 +211,28 @@ export default {
         buttonMergedAttrs() {
             return _.merge({}, this.buttonDefaultAttrs, this.buttonAttrs)
         },
-        closestBpmInteractionProps() {
-            return (this.closestBpmInteraction && this.closestBpmInteraction.$props) || {}
+        interactionProps() {
+            return (this.interaction && this.interaction.$props) || {}
         },
-        processKey() {
-            return this.closestBpmInteractionProps.processKey || null
+        currentProcessKey() {
+            return this.processKey || this.interactionProps.processKey || ''
         },
-        businessKey() {
-            return this.closestBpmInteractionProps.businessKey || null
+        currentBusinessKey() {
+            return this.businessKey || this.interactionProps.businessKey || ''
         },
         components() {
-            return (this.closestBpmInteraction && this.closestBpmInteraction.components) || {}
+            return (this.process && this.process.getComponents()) || {}
         },
         currentTask() {
-            return this.closestBpmInteraction.bpmAtProcessKeyAtBusinessKey.currentTask || null
+            return (this.process && this.process.getCurrentTask()) || {}
+        },
+        hasComponents() {
+            return !_.isEmpty(this.components)
         },
     },
     created() {
-        this.closestBpmInteraction = this.findClosestBpmInteraction(this.$parent)
+        this.initializeInteraction()
+        this.initializeProcess()
     },
 }
 </script>
