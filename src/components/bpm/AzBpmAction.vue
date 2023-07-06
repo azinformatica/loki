@@ -109,6 +109,7 @@ export default {
             }
 
             this.process = new AzBpmProcess(this.$store, this.currentProcessKey, this.currentBusinessKey)
+            this.process.load()
         },
         initializeInteraction() {
             this.interaction = this.findClosestInteraction(this.$parent)
