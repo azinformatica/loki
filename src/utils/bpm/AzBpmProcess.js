@@ -148,7 +148,7 @@ export default class AzBpmProcess {
             ...this._getCurrentTasks(),
         ]
 
-        return currentTasks.shift() || null
+        return currentTasks.shift() || {}
     }
 
     _setCurrentTaskInInstance(task) {
