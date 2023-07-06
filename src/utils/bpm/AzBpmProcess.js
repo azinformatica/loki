@@ -1,6 +1,9 @@
 import { actionTypes, mutationTypes } from '../../store'
 
 export default class AzBpmProcess {
+    static _cache = {}
+    static _debounce = {}
+
     constructor(store, processKey, businessKey) {
         this.store = store
         this.processKey = processKey
@@ -9,8 +12,16 @@ export default class AzBpmProcess {
         this.initialize()
     }
 
-    async load() {
-        return this._loadProcessInstance().then((processInstance) => {
+    async load(invalidateCache = false) {
+        this._unregisterDebounce()
+        this._registerDebounce()
+
+        if (invalidateCache || !this._getCache()) {
+            const cache = this._loadProcessInstance()
+            this._setCache(cache)
+        }
+
+        return this._getCache().then((processInstance) => {
             const currentTask = this._getCurrentTaskInProcess()
             this._setCurrentTaskInInstance(currentTask)
 
@@ -133,6 +144,42 @@ export default class AzBpmProcess {
 
     _loadProcessInstance() {
         return this.store.dispatch(actionTypes.BPM.GET_PROCESS_INSTANCE, this._getProcessParams())
+    }
+
+    _getKeyProcessBusiness() {
+        return `${this.processKey}-${this.businessKey}`
+    }
+
+    _registerDebounce() {
+        const INACTIVITY_TIME = 300
+        const key = this._getKeyProcessBusiness()
+
+        AzBpmProcess._debounce[key] = setTimeout(() => {
+            AzBpmProcess._cache[key] = null
+        }, INACTIVITY_TIME)
+    }
+
+    _unregisterDebounce() {
+        const key = this._getKeyProcessBusiness()
+
+        clearTimeout(AzBpmProcess._debounce[key])
+        AzBpmProcess._debounce[key] = null
+    }
+
+    _setCache(cache) {
+        const key = this._getKeyProcessBusiness()
+
+        AzBpmProcess._cache[key] = cache
+    }
+
+    _getCache() {
+        const key = this._getKeyProcessBusiness()
+
+        return AzBpmProcess._cache[key]
+    }
+
+    _removeCache() {
+        this._setCache(null)
     }
 
     _getCurrentTaskInProcess() {
@@ -566,6 +613,7 @@ export default class AzBpmProcess {
             .then(() => this._dispatchButtonActionIfAllowed(buttonType, bpmParameters))
             .then((actionResponse) => {
                 result.response = actionResponse
+                this._removeCache()
                 return this.load()
             })
             .then(() => {
