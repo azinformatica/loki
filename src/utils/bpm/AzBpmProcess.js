@@ -12,7 +12,7 @@ export default class AzBpmProcess {
         this.initialize()
     }
 
-    async load(invalidateCache = false) {
+    load(invalidateCache = false) {
         this._unregisterDebounce()
         this._registerDebounce()
 
@@ -155,7 +155,7 @@ export default class AzBpmProcess {
         const key = this._getKeyProcessBusiness()
 
         AzBpmProcess._debounce[key] = setTimeout(() => {
-            AzBpmProcess._cache[key] = null
+            this._removeCache()
         }, INACTIVITY_TIME)
     }
 
@@ -179,7 +179,7 @@ export default class AzBpmProcess {
     }
 
     _removeCache() {
-        this._setCache(null)
+        delete AzBpmProcess._cache[key]
     }
 
     _getCurrentTaskInProcess() {
@@ -614,7 +614,7 @@ export default class AzBpmProcess {
             .then((actionResponse) => {
                 result.response = actionResponse
                 this._removeCache()
-                return this.load()
+                return this.load(true)
             })
             .then(() => {
                 result.processInstance = this.getProcessInstance()
