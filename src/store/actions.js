@@ -111,20 +111,28 @@ export default {
             })
     },
 
-    async [actionTypes.BPM.CLAIM]({ state }, { taskId }) {
-        return await axios.get(`${state.bpm.api}/claim/${taskId}`)
+    [actionTypes.BPM.ROUTE_TO_TASK]({ state }, { processKey, taskId, activityIdDestination }) {
+        return axios.post(`${state.bpm.api}/${processKey}/route/from/${taskId}/destination/${activityIdDestination}`)
     },
 
-    async [actionTypes.BPM.UNCLAIM]({ state }, { taskId }) {
-        return await axios.get(`${state.bpm.api}/unclaim/${taskId}`)
+    [actionTypes.BPM.GET_USER_TASKS]({ state }, { processKey }) {
+        return axios.get(`${state.bpm.api}/getActivity/${processKey}`)
     },
 
-    async [actionTypes.BPM.COMPLETE]({ state }, { taskId, bpmParameters }) {
-        return await axios.post(`${state.bpm.api}/complete/${taskId}`, bpmParameters)
+    [actionTypes.BPM.CLAIM]({ state }, { taskId }) {
+        return axios.get(`${state.bpm.api}/claim/${taskId}`)
     },
 
-    async [actionTypes.BPM.UNCOMPLETE]({ state }, { taskId }) {
-        return await axios.get(`${state.bpm.api}/uncomplete/${taskId}`)
+    [actionTypes.BPM.UNCLAIM]({ state }, { taskId }) {
+        return axios.get(`${state.bpm.api}/unclaim/${taskId}`)
+    },
+
+    [actionTypes.BPM.COMPLETE]({ state }, { taskId, bpmParameters }) {
+        return axios.post(`${state.bpm.api}/complete/${taskId}`, bpmParameters)
+    },
+
+    [actionTypes.BPM.UNCOMPLETE]({ state }, { taskId }) {
+        return axios.get(`${state.bpm.api}/uncomplete/${taskId}`)
     },
 }
 

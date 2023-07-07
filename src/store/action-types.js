@@ -20,6 +20,8 @@ export default {
     BPM: {
         GET_PROCESS_LOGS: 'getProcessLogs',
         GET_PROCESS_INSTANCE: 'getProcessInstance',
+        GET_USER_TASKS: 'getUserTasks',
+        ROUTE_TO_TASK: 'routeToTask',
         CLAIM: 'getTaskAccess',
         UNCLAIM: 'releaseTaskAccess',
         COMPLETE: 'goToNextTask',
