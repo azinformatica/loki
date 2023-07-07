@@ -114,6 +114,9 @@ export default {
         }
     },
     computed: {
+        timelineItemPosition() {
+            return this.$vuetify.breakpoint.smAndDown ? 'right' : 'left'
+        },
         visibleTimelineItems() {
             return this.timelineItems.slice(0, this.visibleItemsLength)
         },
