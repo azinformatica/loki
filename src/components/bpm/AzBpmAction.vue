@@ -8,35 +8,37 @@
             :disabled="disabled || select.parallel.disabled"
             v-bind="selectMergedAttrs"
         ></v-select>
-        <v-select
-            v-model="selectedHumanTask"
-            v-show="select.humanDecision.show"
-            :items="select.humanDecision.items"
-            :label="select.humanDecision.label"
-            :disabled="disabled || select.humanDecision.disabled"
-            v-bind="selectMergedAttrs"
-        ></v-select>
         <v-btn
             v-for="buttonType of buttonTypes"
             :key="buttonType"
             v-show="button[buttonType].show"
             :disabled="disabled || button[buttonType].disabled"
             v-bind="buttonMergedAttrs[buttonType]"
-            @click="executeButtonAction(buttonType)"
+            @click="handleButtonClick(buttonType)"
         >
             {{ button[buttonType].label }}
         </v-btn>
+        <az-bpm-modal
+            v-if="showModal"
+            :button-type="selectedButtonType"
+            :current-task="currentTask"
+            :components="components"
+            @close="closeModal"
+            @action="handleModalAction"
+        />
     </div>
 </template>
 
 <script>
 import _ from 'lodash'
 import AzBpmInteraction from './AzBpmInteraction'
+import AzBpmModal from './AzBpmModal'
 import { mutationTypes } from '../../store'
 import AzBpmProcess from '../../utils/bpm/AzBpmProcess'
 
 export default {
     name: 'AzBpmAction',
+    components: { AzBpmModal },
     props: {
         disabled: {
             default: false,
@@ -78,8 +80,9 @@ export default {
     },
     data() {
         return {
-            selectedHumanTask: '',
+            showModal: false,
             selectedParallelTask: '',
+            selectedButtonType: '',
             selectDefaultAttrs: {},
             buttonDefaultAttrs: {
                 claim: {},
@@ -92,12 +95,46 @@ export default {
         }
     },
     methods: {
-        async executeButtonAction(buttonType) {
+        async executeButtonAction(buttonType, selectedBpmParameters = {}) {
             const button = this.button[buttonType]
             if (await this.beforeAction(buttonType)) {
-                const processInstance = await button.action(this.bpmMergedParameters)
-                await this.afterAction(processInstance)
+                const bpmParameters = this.mergeWithPropsBpmParameters(selectedBpmParameters)
+                const actionResponse = await button.action(bpmParameters)
+                await this.afterAction(actionResponse)
             }
+        },
+        mergeWithPropsBpmParameters(bpmParameters) {
+            return _.merge({}, this.bpmParameters, bpmParameters)
+        },
+        isButtonTypeComplete(buttonType) {
+            return buttonType === 'complete'
+        },
+        hasHumanDecision() {
+            return this.select.humanDecision.show && !this.select.humanDecision.disabled
+        },
+        shouldOpenModal(buttonType) {
+            return this.isButtonTypeComplete(buttonType) && this.hasHumanDecision()
+        },
+        setSelectedButtonType(buttonType) {
+            this.selectedButtonType = buttonType
+        },
+        handleButtonClick(buttonType) {
+            if (this.shouldOpenModal(buttonType)) {
+                this.setSelectedButtonType(buttonType)
+                this.openModal()
+            } else {
+                this.executeButtonAction(buttonType)
+            }
+        },
+        handleModalAction({ buttonType, selectedBpmParameters }) {
+            this.executeButtonAction(buttonType, selectedBpmParameters)
+            this.closeModal()
+        },
+        openModal() {
+            this.showModal = true
+        },
+        closeModal() {
+            this.showModal = false
         },
         initializeProcess() {
             if (!this.currentProcessKey) {
@@ -137,11 +174,6 @@ export default {
                 this.$store.commit(mutationTypes.BPM.SET_CURRENT_TASK_FOR_ID_IN_INSTANCE, this.setCurrentTaskParams)
             }
         },
-        selectHumanTask() {
-            if (!this.isSelectedHumanTaskValid) {
-                this.selectedHumanTask = this.firstHumanItemValue
-            }
-        },
         selectParallelTask() {
             if (this.currentTask) {
                 this.selectedParallelTask = this.currentTask.id
@@ -150,7 +182,6 @@ export default {
     },
     watch: {
         select() {
-            this.selectHumanTask()
             this.selectParallelTask()
         },
         selectedParallelTask() {
@@ -172,25 +203,6 @@ export default {
                 this.currentBusinessKey &&
                 this.selectedParallelTask
             )
-        },
-        bpmMergedParameters() {
-            return _.merge({}, this.bpmDefaultParameters, this.bpmParameters)
-        },
-        bpmDefaultParameters() {
-            return {
-                humanDecision: this.selectedHumanTask,
-            }
-        },
-        firstHumanItem() {
-            return this.select.humanDecision.items[0] || {}
-        },
-        firstHumanItemValue() {
-            return this.firstHumanItem.value || null
-        },
-        isSelectedHumanTaskValid() {
-            return this.select.humanDecision.items.some((obj) => {
-                return obj.value === this.selectedHumanTask
-            })
         },
         isSelectedParallelTaskValid() {
             return this.select.parallel.items.some((obj) => {

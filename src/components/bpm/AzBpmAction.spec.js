@@ -132,6 +132,9 @@ const createWrapper = ({ propsData = {}, shallow = true }) => {
         localVue,
         propsData,
         parentComponent,
+        stubs: {
+            AzBpmModal: true,
+        },
         vuetify: new Vuetify(),
     }
     const mountingFunction = shallow ? shallowMount : mount
@@ -233,29 +236,6 @@ describe('AzBpmAction.spec.js', () => {
                 expect(select.props().color).toBe(propsData.selectAttrs.color)
             })
         })
-
-        describe('HumanDecision', () => {
-            beforeEach(() => {
-                select = selects.at(1)
-            })
-
-            it('Should have items from closest bpm interaction', () => {
-                expect(select.props().items).toStrictEqual(wrapper.vm.components.select.humanDecision.items)
-            })
-
-            it('Should have label from closest bpm interaction', () => {
-                expect(select.props().label).toBe(wrapper.vm.components.select.humanDecision.label)
-            })
-
-            it('Should have disabled from closest bpm interaction', () => {
-                expect(select.props().disabled).toBe(wrapper.vm.components.select.humanDecision.disabled)
-            })
-
-            it('Should have attrs given through props', () => {
-                expect(select.vm.$el.classList.contains(propsData.selectAttrs.class)).toBe(true)
-                expect(select.props().color).toBe(propsData.selectAttrs.color)
-            })
-        })
     })
 
     describe('Button', () => {
@@ -333,12 +313,12 @@ describe('AzBpmAction.spec.js', () => {
                 expect(getButton().html()).toContain(wrapper.vm.components.button[key].label)
             })
 
-            it('Should have action function', async () => {
+            it('Should open modal on click', async () => {
                 getButton().trigger('click')
 
                 await wrapper.vm.$nextTick()
 
-                expect(wrapper.vm.components.button[key].action).toHaveBeenCalled()
+                expect(wrapper.vm.showModal).toBe(true)
             })
 
             it('Should have attrs given through props', () => {
@@ -412,14 +392,6 @@ describe('AzBpmAction.spec.js', () => {
     })
 
     describe('Methods', () => {
-        describe('selectHumanTask', () => {
-            it('Should update selectedHumanTask', async () => {
-                wrapper.vm.selectHumanTask()
-
-                expect(wrapper.vm.selectedHumanTask).toBe(wrapper.vm.firstHumanItemValue)
-            })
-        })
-
         describe('selectParallelTask', () => {
             it('Should update selectedParallelTask', () => {
                 wrapper.vm.selectParallelTask()
