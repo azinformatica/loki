@@ -111,12 +111,17 @@ export default {
             })
     },
 
-    [actionTypes.BPM.ROUTE_TO_TASK]({ state }, { processKey, taskId, activityIdDestination }) {
+    [actionTypes.BPM.ROUTE]({ state }, { processKey, taskId, activityIdDestination }) {
         return axios.post(`${state.bpm.api}/${processKey}/route/from/${taskId}/destination/${activityIdDestination}`)
     },
 
-    [actionTypes.BPM.GET_USER_TASKS]({ state }, { processKey }) {
-        return axios.get(`${state.bpm.api}/getActivity/${processKey}`)
+    [actionTypes.BPM.GET_USER_TASKS]({ commit, state }, { processKey }) {
+        return axios.get(`${state.bpm.api}/getActivity/${processKey}`).then((response) => {
+            const userTasks = response.data
+
+            commit(mutationTypes.BPM.SET_USER_TASKS, { processKey, userTasks })
+            return userTasks
+        })
     },
 
     [actionTypes.BPM.CLAIM]({ state }, { taskId }) {

@@ -21,7 +21,7 @@ export default {
         GET_PROCESS_LOGS: 'getProcessLogs',
         GET_PROCESS_INSTANCE: 'getProcessInstance',
         GET_USER_TASKS: 'getUserTasks',
-        ROUTE_TO_TASK: 'routeToTask',
+        ROUTE: 'routeToTask',
         CLAIM: 'getTaskAccess',
         UNCLAIM: 'releaseTaskAccess',
         COMPLETE: 'goToNextTask',
