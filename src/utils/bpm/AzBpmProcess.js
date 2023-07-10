@@ -17,6 +17,10 @@ export default class AzBpmProcess {
         this._registerDebounce()
 
         if (invalidateCache || !this._getCache()) {
+            if (!this._hasUserTasks()) {
+                this._loadUserTasks()
+            }
+
             const cache = this._loadProcessInstance()
             this._setCache(cache)
         }
@@ -51,10 +55,7 @@ export default class AzBpmProcess {
     }
 
     getProcess() {
-        const bpm = this.store.state.loki.bpm || {}
-        const bpmAtProcessKey = bpm.process[this.processKey] || {}
-
-        return bpmAtProcessKey[this.businessKey] || {}
+        return this._getBpmAtBusinessKey()
     }
 
     getProcessInstance() {
@@ -74,12 +75,14 @@ export default class AzBpmProcess {
             select: {
                 humanDecision: this.getSelectHumanDecision(),
                 parallel: this.getSelectParallel(),
+                // route: this.getSelectRoute(),
             },
             button: {
                 claim: this.getButtonClaim(),
                 unclaim: this.getButtonUnclaim(),
                 complete: this.getButtonComplete(),
                 uncomplete: this.getButtonUncomplete(),
+                // route: this.getButtonRoute(),
             },
         }
     }
@@ -97,6 +100,14 @@ export default class AzBpmProcess {
             show: this._getSelectParallelShow(),
             disabled: this._getSelectParallelDisabled(),
             items: this._getSelectParallelItems(),
+        }
+    }
+
+    getSelectRoute() {
+        return {
+            show: this._getSelectRouteShow(),
+            disabled: this._getSelectRouteDisabled(),
+            items: this._getSelectRouteItems(),
         }
     }
 
@@ -136,14 +147,43 @@ export default class AzBpmProcess {
         }
     }
 
+    getButtonRoute() {
+        return {
+            show: this._getButtonRouteShow(),
+            disabled: this._getButtonRouteDisabled(),
+            label: this._getButtonRouteLabel(),
+            action: this._getButtonRouteAction(),
+        }
+    }
+
     isLoadingProcess() {
         const process = this.getProcess()
 
         return process.isLoading || false
     }
 
+    _getBpm() {
+        return this.store.state.loki.bpm || {}
+    }
+
+    _getBpmAtProcessKey() {
+        const bpm = this._getBpm()
+
+        return bpm.process[this.processKey] || {}
+    }
+
+    _getBpmAtBusinessKey() {
+        const bpmAtProcessKey = this._getBpmAtProcessKey()
+
+        return bpmAtProcessKey[this.businessKey] || {}
+    }
+
     _loadProcessInstance() {
         return this.store.dispatch(actionTypes.BPM.GET_PROCESS_INSTANCE, this._getProcessParams())
+    }
+
+    _loadUserTasks() {
+        return this.store.dispatch(actionTypes.BPM.GET_USER_TASKS, this._getProcessParams())
     }
 
     _getKeyProcessBusiness() {
@@ -179,6 +219,8 @@ export default class AzBpmProcess {
     }
 
     _removeCache() {
+        const key = this._getKeyProcessBusiness()
+
         delete AzBpmProcess._cache[key]
     }
 
@@ -283,6 +325,23 @@ export default class AzBpmProcess {
         }))
     }
 
+    _getSelectRouteShow() {
+        return true
+    }
+
+    _getSelectRouteDisabled() {
+        return false
+    }
+
+    _getSelectRouteItems() {
+        const userTasks = this._getUserTasks()
+
+        return userTasks.map((userTask) => ({
+            text: userTask.name,
+            value: userTask.activityId,
+        }))
+    }
+
     _getButtonClaimShow() {
         const currentTask = this.getCurrentTask()
 
@@ -369,6 +428,26 @@ export default class AzBpmProcess {
 
     _getButtonUncompleteAction() {
         return () => this._dispatchButtonActionOnCurrentTask('uncomplete')
+    }
+
+    _getButtonRouteShow() {
+        const currentTask = this.getCurrentTask()
+
+        return Boolean(this._isStatusInstanceActive() && this._hasAssignee(currentTask))
+    }
+
+    _getButtonRouteDisabled() {
+        const currentTask = this.getCurrentTask()
+
+        return Boolean(this.isLoadingProcess() || !this._isUserCandidate(currentTask))
+    }
+
+    _getButtonRouteLabel() {
+        return 'Encaminhar'
+    }
+
+    _getButtonRouteAction() {
+        return (bpmParameters) => this._dispatchButtonActionOnCurrentTask('route', bpmParameters)
     }
 
     _getProcessParams() {
@@ -537,15 +616,7 @@ export default class AzBpmProcess {
     }
 
     _isUncompleteTaskDisabled(task) {
-        if (task.isParallel) {
-            return true
-        }
-
         const previousTask = this._getPreviousTask(task)
-        if (previousTask.isNextNodeParallelHasSingleOutgoing) {
-            return true
-        }
-
         if (previousTask.isNextNodeParallelHasMultipleOutgoing) {
             const currentTasks = this._getCurrentTasks()
             const tasksGenerated = currentTasks.filter((task) => task.previousTask.key === previousTask.key)
@@ -555,7 +626,23 @@ export default class AzBpmProcess {
             return !hasMultipleTasks
         }
 
-        return false
+        if (previousTask.isNextNodeParallelHasSingleOutgoing) {
+            return true
+        }
+
+        return !!task.isParallel
+    }
+
+    _getUserTasks() {
+        const bpmAtProcessKey = this._getBpmAtProcessKey()
+
+        return bpmAtProcessKey.userTasks || []
+    }
+
+    _hasUserTasks() {
+        const userTasks = this._getUserTasks()
+
+        return userTasks.length > 0
     }
 
     _getCurrentTasks() {
@@ -613,7 +700,6 @@ export default class AzBpmProcess {
             .then(() => this._dispatchButtonActionIfAllowed(buttonType, bpmParameters))
             .then((actionResponse) => {
                 result.response = actionResponse
-                this._removeCache()
                 return this.load(true)
             })
             .then(() => {
@@ -649,12 +735,14 @@ export default class AzBpmProcess {
         return actionTypes.BPM[actionName]
     }
 
-    _createButtonActionArgs(bpmParameters) {
+    _createButtonActionArgs(bpmParameters = {}) {
         const currentTask = this.getCurrentTask()
 
         return {
-            bpmParameters,
+            processKey: this.processKey,
             taskId: currentTask.id,
+            activityIdDestination: bpmParameters.activityIdDestination,
+            bpmParameters,
         }
     }
 
