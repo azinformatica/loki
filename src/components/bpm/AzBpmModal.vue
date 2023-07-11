@@ -3,7 +3,7 @@
         <template #title>
             <div class="d-flex flex-grow-1 flex-nowrap justify-space-between">
                 <h4>{{ actionLabel }} processo</h4>
-                <v-btn icon color="white" @click="emitCloseEvent">
+                <v-btn icon color="white" @click="emitCloseEvent" data-test="button-close">
                     <v-icon> mdi-close </v-icon>
                 </v-btn>
             </div>
@@ -42,8 +42,10 @@
         <template #actions>
             <v-divider class="mx-2 pb-2"></v-divider>
             <div class="d-flex flex-grow-1 justify-space-between pa-2">
-                <v-btn outlined color="grey lighten-1" @click="emitCloseEvent"> Cancelar </v-btn>
-                <v-btn color="primary" @click="emitActionEvent"> {{ actionLabel }} </v-btn>
+                <v-btn outlined color="grey lighten-1" @click="emitCloseEvent" data-test="button-cancel">
+                    Cancelar
+                </v-btn>
+                <v-btn color="primary" @click="emitActionEvent" data-test="button-action"> {{ actionLabel }} </v-btn>
             </div>
         </template>
     </az-modal>
@@ -51,7 +53,7 @@
 
 <script>
 export default {
-    name: 'AzBpmModal.vue',
+    name: 'AzBpmModal',
     props: {
         buttonType: {
             type: String,
@@ -107,7 +109,7 @@ export default {
     },
     computed: {
         actionLabel() {
-            return this.components.button[this.buttonType].label
+            return this.selectedButton.label || '-'
         },
         currentTaskName() {
             return (this.currentTask && this.currentTask.name) || '-'
@@ -117,6 +119,9 @@ export default {
         },
         isButtonTypeRoute() {
             return this.buttonType === 'route'
+        },
+        selectedButton() {
+            return this.components.button[this.buttonType] || {}
         },
         select() {
             return this.components.select || {}
