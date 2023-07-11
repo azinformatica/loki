@@ -98,8 +98,8 @@ export default class AzBpmHistory {
     _getHistoryClaim(currentLog, previousLog, currentAssignee) {
         const defaultData = this._getDefaultData()
 
-        defaultData.status = 'RECEBIDO'
-        defaultData.icon = 'mdi-account-arrow-left'
+        defaultData.status = previousLog ? 'RECEBIDO' : 'CRIADO'
+        defaultData.icon = previousLog ? 'mdi-account-arrow-left' : 'mdi-text-box-check-outline'
         defaultData.taskName = currentLog.activityName
         defaultData.assignee = previousLog && previousLog.completeUser
         defaultData.toAssignee = currentAssignee.assignee
