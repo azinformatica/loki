@@ -27,8 +27,8 @@ const createDefaultProps = () => {
         },
         buttonType: 'complete',
         currentTask: {
-            name: 'Atividade inicial'
-        }
+            name: 'Atividade inicial',
+        },
     }
 }
 
@@ -50,7 +50,7 @@ describe('AzBpmModal.spec.js', () => {
 
     beforeEach(() => {
         propsData = createDefaultProps()
-        wrapper = createWrapper({ propsData, shallow: false })
+        wrapper = createWrapper({ propsData })
     })
 
     describe('Props', () => {
@@ -68,11 +68,29 @@ describe('AzBpmModal.spec.js', () => {
     })
 
     describe('Buttons', () => {
+        beforeEach(() => {
+            wrapper = createWrapper({ propsData, shallow: false })
+        })
+
         it('Should emit close event on press close icon', () => {
             const buttonClose = wrapper.find('[data-test="button-close"]')
             buttonClose.trigger('click')
 
             expect(wrapper.emitted('close')).toBeTruthy()
+        })
+
+        it('Should emit close event on press cancel button', () => {
+            const buttonClose = wrapper.find('[data-test="button-cancel"]')
+            buttonClose.trigger('click')
+
+            expect(wrapper.emitted('close')).toBeTruthy()
+        })
+
+        it('Should emit action event on press close icon', () => {
+            const buttonClose = wrapper.find('[data-test="button-action"]')
+            buttonClose.trigger('click')
+
+            expect(wrapper.emitted('action')).toBeTruthy()
         })
     })
 })
