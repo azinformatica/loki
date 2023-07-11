@@ -365,7 +365,9 @@ export default class AzBpmProcess {
     _getButtonUnclaimShow() {
         const currentTask = this.getCurrentTask()
 
-        return Boolean(this._isStatusInstanceActive() && this._hasAssignee(currentTask))
+        return Boolean(
+            this._isStatusInstanceActive() && this._hasAssignee(currentTask) && !this._isFirstExecutionTask(currentTask)
+        )
     }
 
     _getButtonUnclaimDisabled() {
@@ -481,6 +483,10 @@ export default class AzBpmProcess {
 
     _getAssignee(task) {
         return task.assignee || null
+    }
+
+    _isFirstExecutionTask(task) {
+        return task.firstExecutionTask
     }
 
     _hasCurrentTask() {
