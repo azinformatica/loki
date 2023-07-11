@@ -174,13 +174,13 @@ export default {
             return currentLog.toTaskName || currentLog.taskName
         },
         formatTimelineKeyDate(currentLog) {
-            return `key-date-${currentLog.date}`
+            return `key-date-${currentLog.status}-${currentLog.date}`
         },
         formatTimelineKeyCard(currentLog) {
-            return `key-card-${currentLog.date}`
+            return `key-card-${currentLog.status}-${currentLog.date}`
         },
         formatTimelineKeyDuration(currentLog) {
-            return `key-duration-${currentLog.date}`
+            return `key-duration-${currentLog.status}-${currentLog.date}`
         },
         initializeAzBpmHistory() {
             this.azBpmHistory = new AzBpmHistory(this.$store)
