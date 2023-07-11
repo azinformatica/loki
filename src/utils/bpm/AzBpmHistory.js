@@ -35,7 +35,9 @@ export default class AzBpmHistory {
     _formatLogs(logs) {
         const history = []
 
-        logs.reduce((previousLog, currentLog) => {
+        logs.forEach((currentLog, currentLogIndex) => {
+            const previousLog = this._findPreviousTaskLastLog(logs, currentLogIndex, currentLog.previousTask)
+
             this._addHistoryComplete(history, currentLog, previousLog)
             this._addHistoryUncomplete(history, currentLog, previousLog)
 
@@ -48,9 +50,7 @@ export default class AzBpmHistory {
             }, null)
 
             this._addHistoryFinish(history, currentLog)
-
-            return currentLog
-        }, null)
+        })
 
         return history
     }
@@ -168,6 +168,22 @@ export default class AzBpmHistory {
             toAssignee: null,
             date: null,
         }
+    }
+
+    _findPreviousTaskLastLog(logs, currentLogIndex, previousTaskId) {
+        const previousLogIndex = currentLogIndex - 1
+        if (!previousTaskId) {
+            return logs[previousLogIndex] || null
+        }
+
+        for (let logIndex = previousLogIndex; logIndex >= 0; logIndex--) {
+            const log = logs[logIndex]
+            if (log.taskId === previousTaskId) {
+                return log
+            }
+        }
+
+        return null
     }
 
     _getDurationWithProperScale(momentDuration) {
