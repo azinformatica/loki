@@ -6,6 +6,17 @@ import Vuex from 'vuex'
 const localVue = createLocalVue()
 Vue.use(Vuex)
 
+jest.mock('../../utils/bpm/AzBpmProcess.js', () => {
+    return jest.fn().mockImplementation(() => {
+        return {
+            getComponents: jest.fn(() => ({})),
+            hasAuthority: jest.fn(() => false),
+            getProcessInstance: jest.fn(() => ({})),
+            load: jest.fn(),
+        }
+    })
+})
+
 const createDefaultProps = () => {
     return {
         id: 'az-interaction-id-example',
