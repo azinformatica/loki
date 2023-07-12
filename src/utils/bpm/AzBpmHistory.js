@@ -199,7 +199,7 @@ export default class AzBpmHistory {
 
     _createDuration(quantity, unit) {
         return {
-            quantity: Math.floor(quantity),
+            quantity: Math.max(Math.floor(quantity), 0),
             unit,
         }
     }
