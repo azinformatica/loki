@@ -1,3 +1,5 @@
+import UUIDUtil from '../../utils/UUIDUtil'
+
 class DraggableUtil {
     getElementRectRelativeToAnotherElementRect(element, relativeElement) {
         const relativeElementRect = relativeElement.getBoundingClientRect()
@@ -11,11 +13,7 @@ class DraggableUtil {
     }
 
     generateUUID() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-            const r = (Math.random() * 16) | 0
-            const v = c === 'x' ? r : (r & 0x3) | 0x8
-            return v.toString(16)
-        })
+        return UUIDUtil.generateUUID()
     }
 
     isElementInsideAnotherElement(element, relativeElement) {

@@ -83,6 +83,7 @@
 
 <script>
 import AzBpmHistory from '../../utils/bpm/AzBpmHistory'
+import UUIDUtil from '../../utils/UUIDUtil'
 
 export default {
     name: 'AzBpmTimeline',
@@ -138,14 +139,17 @@ export default {
                     status: this.formatTimelineStatus(currentLog),
                     assignee: this.formatTimelineAssignee(currentLog),
                     task: this.formatTimelineTask(currentLog),
-                    keyDate: this.formatTimelineKeyDate(currentLog),
-                    keyCard: this.formatTimelineKeyCard(currentLog),
-                    keyDuration: this.formatTimelineKeyDuration(currentLog),
+                    keyDate: this.generateUUID(),
+                    keyCard: this.generateUUID(),
+                    keyDuration: this.generateUUID(),
                 }
             })
         },
     },
     methods: {
+        generateUUID() {
+            return UUIDUtil.generateUUID()
+        },
         seeMore() {
             this.visibleItemsLength += this.seeMoreLength
         },
@@ -172,15 +176,6 @@ export default {
         },
         formatTimelineTask(currentLog) {
             return currentLog.toTaskName || currentLog.taskName
-        },
-        formatTimelineKeyDate(currentLog) {
-            return `key-date-${currentLog.status}-${currentLog.date}`
-        },
-        formatTimelineKeyCard(currentLog) {
-            return `key-card-${currentLog.status}-${currentLog.date}`
-        },
-        formatTimelineKeyDuration(currentLog) {
-            return `key-duration-${currentLog.status}-${currentLog.date}`
         },
         initializeAzBpmHistory() {
             this.azBpmHistory = new AzBpmHistory(this.$store)
