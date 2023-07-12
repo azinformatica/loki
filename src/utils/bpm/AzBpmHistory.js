@@ -36,7 +36,7 @@ export default class AzBpmHistory {
         const history = []
 
         logs.forEach((currentLog, currentLogIndex) => {
-            const previousLog = this._findPreviousTaskLastLog(logs, currentLogIndex, currentLog.previousTask)
+            const previousLog = this._findPreviousTaskLastLog(logs, currentLogIndex, currentLog.originTask)
 
             this._addHistoryComplete(history, currentLog, previousLog)
             this._addHistoryUncomplete(history, currentLog, previousLog)
@@ -52,7 +52,15 @@ export default class AzBpmHistory {
             this._addHistoryFinish(history, currentLog)
         })
 
+        this._sortHistory(history)
+
         return history
+    }
+
+    _sortHistory(history) {
+        history.sort((previousHistory, currentHistory) => {
+            return Date.parse(previousHistory.date) - Date.parse(currentHistory.date)
+        })
     }
 
     _addHistoryComplete(history, currentLog, previousLog) {
@@ -127,7 +135,7 @@ export default class AzBpmHistory {
         defaultData.icon = 'mdi-progress-check'
         defaultData.taskName = currentLog.activityName
         defaultData.assignee = currentLog.completeUser
-        defaultData.date = currentLog.activityEndTime
+        defaultData.date = currentLog.activityEndTime || currentLog.completeDate
 
         return defaultData
     }
@@ -140,7 +148,7 @@ export default class AzBpmHistory {
         defaultData.taskName = previousLog.activityName
         defaultData.toTaskName = currentLog.activityName
         defaultData.assignee = previousLog.completeUser
-        defaultData.date = previousLog.activityEndTime
+        defaultData.date = previousLog.activityEndTime || previousLog.completeDate
 
         return defaultData
     }
@@ -153,7 +161,7 @@ export default class AzBpmHistory {
         defaultData.taskName = previousLog.activityName
         defaultData.toTaskName = currentLog.activityName
         defaultData.assignee = previousLog.uncompleteUser
-        defaultData.date = previousLog.activityEndTime
+        defaultData.date = previousLog.activityEndTime || previousLog.uncompleteDate
 
         return defaultData
     }
@@ -170,15 +178,15 @@ export default class AzBpmHistory {
         }
     }
 
-    _findPreviousTaskLastLog(logs, currentLogIndex, previousTaskId) {
+    _findPreviousTaskLastLog(logs, currentLogIndex, originTaskId) {
         const previousLogIndex = currentLogIndex - 1
-        if (!previousTaskId) {
+        if (!originTaskId) {
             return logs[previousLogIndex] || null
         }
 
         for (let logIndex = previousLogIndex; logIndex >= 0; logIndex--) {
             const log = logs[logIndex]
-            if (log.taskId === previousTaskId) {
+            if (log.taskId === originTaskId) {
                 return log
             }
         }
