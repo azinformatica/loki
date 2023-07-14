@@ -445,7 +445,7 @@ export default class AzBpmProcess {
     }
 
     _getButtonRouteLabel() {
-        return 'Encaminhar'
+        return 'Rotear'
     }
 
     _getButtonRouteAction() {
