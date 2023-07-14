@@ -112,7 +112,7 @@ export default {
     },
 
     [actionTypes.BPM.ROUTE]({ state }, { processKey, taskId, activityIdDestination }) {
-        return axios.post(`${state.bpm.api}/${processKey}/route/from/${taskId}/destination/${activityIdDestination}`)
+        return axios.put(`${state.bpm.api}/${processKey}/route/from/${taskId}/destination/${activityIdDestination}`)
     },
 
     [actionTypes.BPM.GET_USER_TASKS]({ commit, state }, { processKey }) {
