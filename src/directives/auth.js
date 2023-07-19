@@ -6,7 +6,9 @@ export default {
         const requiredPermissions = value ? value.split(',') : []
 
         if (!hasPermissions(userPermissions, requiredPermissions)) {
-            el.parentNode.removeChild(el)
+            if (el && el.parentNode) {
+                el.parentNode.removeChild(el)
+            }
         }
-    },
+    }
 }
