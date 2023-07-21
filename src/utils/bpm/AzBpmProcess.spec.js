@@ -676,7 +676,7 @@ describe('AzBpmProcess', () => {
 
                 it('Should not show if is first task', () => {
                     process.instance.currentTask.assignee = null
-                    process.instance.currentTask.firstTask = true
+                    process.instance.currentTask.firstProcessDefinitionUserTask = true
                     process.instance.currentTask.previousTask = {}
                     components = azBpmProcess.getComponents()
 
