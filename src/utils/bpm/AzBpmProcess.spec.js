@@ -46,6 +46,7 @@ const createProcessInstanceMock = () => ({
                 },
             ],
             previousTask: {
+                key: 'test-key',
                 assignee: 'user-name-example-01',
                 candidateGroups: ['user-role-example-01'],
             },
@@ -676,6 +677,7 @@ describe('AzBpmProcess', () => {
                 it('Should not show if is first task', () => {
                     process.instance.currentTask.assignee = null
                     process.instance.currentTask.firstTask = true
+                    process.instance.currentTask.previousTask = {}
                     components = azBpmProcess.getComponents()
 
                     expect(getButton().show).toBe(false)
