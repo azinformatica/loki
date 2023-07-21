@@ -410,7 +410,7 @@ export default class AzBpmProcess {
         const currentTask = this.getCurrentTask()
 
         return Boolean(
-            this._isStatusInstanceActive() && !this._hasAssignee(currentTask) && !this._hasPreviousTask(currentTask)
+            this._isStatusInstanceActive() && !this._hasAssignee(currentTask) && this._hasPreviousTask(currentTask)
         )
     }
 
@@ -604,10 +604,6 @@ export default class AzBpmProcess {
         const flowExpression = task.flowExpression
 
         return flowExpression && flowExpression.includes('humanDecision')
-    }
-
-    _isFirstTask(task) {
-        return task.firstTask || false
     }
 
     _getPreviousTask(task) {
