@@ -410,7 +410,7 @@ export default class AzBpmProcess {
         const currentTask = this.getCurrentTask()
 
         return Boolean(
-            this._isStatusInstanceActive() && !this._hasAssignee(currentTask) && !this._isFirstTask(currentTask)
+            this._isStatusInstanceActive() && !this._hasAssignee(currentTask) && !this._hasPreviousTask(currentTask)
         )
     }
 
@@ -612,6 +612,12 @@ export default class AzBpmProcess {
 
     _getPreviousTask(task) {
         return task.previousTask || {}
+    }
+
+    _hasPreviousTask(task) {
+        const previousTask = this._getPreviousTask(task)
+
+        return previousTask && previousTask.key
     }
 
     _isUserAssignee(task) {
