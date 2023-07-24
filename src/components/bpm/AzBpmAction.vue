@@ -109,11 +109,17 @@ export default {
         isButtonTypeComplete(buttonType) {
             return buttonType === 'complete'
         },
+        isButtonTypeRoute(buttonType) {
+            return buttonType === 'route'
+        },
         hasHumanDecision() {
             return this.select.humanDecision.show && !this.select.humanDecision.disabled
         },
         shouldOpenModal(buttonType) {
-            return this.isButtonTypeComplete(buttonType) && this.hasHumanDecision()
+            return (
+                (this.isButtonTypeComplete(buttonType) && this.hasHumanDecision()) ||
+                (this.isButtonTypeRoute(buttonType))
+            )
         },
         setSelectedButtonType(buttonType) {
             this.selectedButtonType = buttonType

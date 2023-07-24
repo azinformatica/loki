@@ -75,14 +75,14 @@ export default class AzBpmProcess {
             select: {
                 humanDecision: this.getSelectHumanDecision(),
                 parallel: this.getSelectParallel(),
-                // route: this.getSelectRoute(),
+                route: this.getSelectRoute(),
             },
             button: {
                 claim: this.getButtonClaim(),
                 unclaim: this.getButtonUnclaim(),
                 complete: this.getButtonComplete(),
                 uncomplete: this.getButtonUncomplete(),
-                // route: this.getButtonRoute(),
+                route: this.getButtonRoute(),
             },
         }
     }
@@ -435,13 +435,18 @@ export default class AzBpmProcess {
     _getButtonRouteShow() {
         const currentTask = this.getCurrentTask()
 
-        return Boolean(this._isStatusInstanceActive() && this._hasAssignee(currentTask))
+        return Boolean(
+            this._isStatusInstanceActive() &&
+                this._isRoutingEnabled() &&
+                this._hasAssignee(currentTask) &&
+                !this._isParallel(currentTask)
+        )
     }
 
     _getButtonRouteDisabled() {
         const currentTask = this.getCurrentTask()
 
-        return Boolean(this.isLoadingProcess() || !this._isUserCandidate(currentTask))
+        return Boolean(this.isLoadingProcess() || !this._isRoutingEnabled() || !this._isUserCandidate(currentTask))
     }
 
     _getButtonRouteLabel() {
@@ -555,6 +560,18 @@ export default class AzBpmProcess {
         return this._isUserInCandidateUsers(task) || this._isUserInCandidateGroups(task)
     }
 
+    _isRoutingEnabled() {
+        const processDefinitionInfo = this._getProcessDefinitionInfo()
+
+        return processDefinitionInfo.routingEnabled || false
+    }
+
+    _getProcessDefinitionInfo() {
+        const process = this.getProcess()
+
+        return process.processDefinitionInfo || {}
+    }
+
     _isUserInCandidateUsers(task) {
         const candidateUsers = this._getCandidateUsers(task)
         const user = this._getUser()
@@ -633,16 +650,18 @@ export default class AzBpmProcess {
             const currentTasks = this._getCurrentTasks()
             const tasksGenerated = currentTasks.filter((task) => task.previousTask.key === previousTask.key)
             const tasksGeneratedWithoutAssignee = tasksGenerated.filter((task) => !task.assignee)
-            const hasMultipleTasks = tasksGeneratedWithoutAssignee.length > 1
-
-            return !hasMultipleTasks
+            return tasksGeneratedWithoutAssignee.length < 2
         }
 
         if (previousTask.isNextNodeParallelHasSingleOutgoing) {
             return true
         }
 
-        return !!task.isParallel
+        return this._isParallel(task)
+    }
+
+    _isParallel(task) {
+        return task.isParallel || false
     }
 
     _getUserTasks() {

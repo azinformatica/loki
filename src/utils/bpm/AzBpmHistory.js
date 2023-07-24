@@ -134,8 +134,8 @@ export default class AzBpmHistory {
         defaultData.status = 'FINALIZADO'
         defaultData.icon = 'mdi-progress-check'
         defaultData.taskName = currentLog.activityName
-        defaultData.assignee = currentLog.completeUser
-        defaultData.date = currentLog.activityEndTime || currentLog.completeDate
+        defaultData.assignee = currentLog.completeUser || currentLog.routingUser
+        defaultData.date = currentLog.activityEndTime || currentLog.completeDate || currentLog.routingDate
 
         return defaultData
     }
@@ -147,8 +147,8 @@ export default class AzBpmHistory {
         defaultData.icon = 'mdi-progress-check'
         defaultData.taskName = previousLog.activityName
         defaultData.toTaskName = currentLog.activityName
-        defaultData.assignee = previousLog.completeUser
-        defaultData.date = previousLog.activityEndTime || previousLog.completeDate
+        defaultData.assignee = previousLog.completeUser || previousLog.routingUser
+        defaultData.date = previousLog.activityEndTime || previousLog.completeDate || previousLog.routingDate
 
         return defaultData
     }
