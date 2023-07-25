@@ -98,6 +98,7 @@ export default {
     },
 
     async [actionTypes.BPM.GET_PROCESS_INSTANCE]({ commit, state }, { processKey, businessKey }) {
+        commit(mutationTypes.BPM.SET_IS_LOADING_PROCESS_INSTANCE, { processKey, businessKey, isLoading: true })
         return axios
             .get(`${state.bpm.api}/getInstance/${processKey}/${businessKey}`)
             .then((response) => {
