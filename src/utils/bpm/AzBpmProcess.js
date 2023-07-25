@@ -721,7 +721,7 @@ export default class AzBpmProcess {
     _dispatchButtonActionOnCurrentTask(buttonType, bpmParameters) {
         const result = this._createButtonActionResult(buttonType)
 
-        return this.load()
+        return this.load(true)
             .then(() => this._dispatchButtonActionIfAllowed(buttonType, bpmParameters))
             .then((actionResponse) => {
                 result.response = actionResponse
