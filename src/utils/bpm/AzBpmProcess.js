@@ -276,9 +276,9 @@ export default class AzBpmProcess {
 
         return Boolean(
             this._hasHumanDecisionInAllNextTasks(currentTask) &&
-                this._hasNextTasks(currentTask) &&
-                this._hasAssignee(currentTask) &&
-                this._isStatusInstanceActive()
+            this._hasNextTasks(currentTask) &&
+            this._hasAssignee(currentTask) &&
+            this._isStatusInstanceActive()
         )
     }
 
@@ -305,8 +305,8 @@ export default class AzBpmProcess {
     _getSelectParallelShow() {
         return Boolean(
             this._isStatusInstanceActive() &&
-                this._hasSomeCurrentTaskThatUserCanInteract() &&
-                this._hasMultipleCurrentTasks()
+            this._hasSomeCurrentTaskThatUserCanInteract() &&
+            this._hasMultipleCurrentTasks()
         )
     }
 
@@ -419,8 +419,8 @@ export default class AzBpmProcess {
 
         return Boolean(
             this.isLoadingProcess() ||
-                !this._isUserCandidateInPreviousTask(currentTask) ||
-                this._isUncompleteTaskDisabled(currentTask)
+            !this._isUserCandidateInPreviousTask(currentTask) ||
+            this._isUncompleteTaskDisabled(currentTask)
         )
     }
 
@@ -437,9 +437,9 @@ export default class AzBpmProcess {
 
         return Boolean(
             this._isStatusInstanceActive() &&
-                this._isRoutingEnabled() &&
-                this._hasAssignee(currentTask) &&
-                !this._isParallel(currentTask)
+            this._isRoutingEnabled() &&
+            this._hasAssignee(currentTask) &&
+            !this._isParallel(currentTask)
         )
     }
 
@@ -567,9 +567,9 @@ export default class AzBpmProcess {
     }
 
     _getProcessDefinitionInfo() {
-        const process = this.getProcess()
+        const processInstance = this.getProcessInstance()
 
-        return process.processDefinitionInfo || {}
+        return (processInstance && processInstance.processDefinitionInfo) || {}
     }
 
     _isUserInCandidateUsers(task) {

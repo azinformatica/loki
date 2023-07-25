@@ -112,13 +112,10 @@ export default {
     },
 
     [actionTypes.BPM.ROUTE]({ state }, { processKey, taskId, activityIdDestination }) {
-        const productId = state.product.id
-
-        const productPath = `/product/${productId}`
         const processPath = `/process/${processKey}`
         const routePath = `/route/from/${taskId}/destination/${activityIdDestination}`
 
-        return axios.put(`${state.bpm.api}${productPath}${processPath}${routePath}`)
+        return axios.put(`${state.bpm.api}${processPath}${routePath}`)
     },
 
     [actionTypes.BPM.GET_USER_TASKS]({ commit, state }, { processKey }) {
