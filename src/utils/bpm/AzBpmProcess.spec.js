@@ -116,7 +116,7 @@ describe('AzBpmProcess', () => {
 
     describe('hasAuthority', () => {
         it('Should be false if process instance is loading', () => {
-            process.isLoading = true
+            azBpmProcess.isLoadingProcess = jest.fn(() => true)
 
             expect(azBpmProcess.hasAuthority()).toBe(false)
         })
@@ -242,7 +242,14 @@ describe('AzBpmProcess', () => {
             })
 
             it('Should disable if is loading process instance', () => {
-                process.isLoading = true
+                azBpmProcess.isLoadingProcess = jest.fn(() => true)
+                components = azBpmProcess.getComponents()
+
+                expect(components.select.humanDecision.disabled).toBe(true)
+            })
+
+            it('Should disable if is dispatching action', () => {
+                azBpmProcess._isDispatchingAction = jest.fn(() => true)
                 components = azBpmProcess.getComponents()
 
                 expect(components.select.humanDecision.disabled).toBe(true)
@@ -420,7 +427,14 @@ describe('AzBpmProcess', () => {
             })
 
             it('Should disable if is loading process instance', () => {
-                process.isLoading = true
+                azBpmProcess.isLoadingProcess = jest.fn(() => true)
+                components = azBpmProcess.getComponents()
+
+                expect(components.select.parallel.disabled).toBe(true)
+            })
+
+            it('Should disable if is dispatching action', () => {
+                azBpmProcess._isDispatchingAction = jest.fn(() => true)
                 components = azBpmProcess.getComponents()
 
                 expect(components.select.parallel.disabled).toBe(true)
@@ -496,7 +510,14 @@ describe('AzBpmProcess', () => {
                 })
 
                 it('Should disable if is loading process instance', () => {
-                    process.isLoading = true
+                    azBpmProcess.isLoadingProcess = jest.fn(() => true)
+                    components = azBpmProcess.getComponents()
+
+                    expect(getButton().disabled).toBe(true)
+                })
+
+                it('Should disable if is dispatching action', () => {
+                    azBpmProcess._isDispatchingAction = jest.fn(() => true)
                     components = azBpmProcess.getComponents()
 
                     expect(getButton().disabled).toBe(true)
@@ -558,7 +579,14 @@ describe('AzBpmProcess', () => {
                 })
 
                 it('Should disable if is loading process instance', () => {
-                    process.isLoading = true
+                    azBpmProcess.isLoadingProcess = jest.fn(() => true)
+                    components = azBpmProcess.getComponents()
+
+                    expect(getButton().disabled).toBe(true)
+                })
+
+                it('Should disable if is dispatching action', () => {
+                    azBpmProcess._isDispatchingAction = jest.fn(() => true)
                     components = azBpmProcess.getComponents()
 
                     expect(getButton().disabled).toBe(true)
@@ -620,7 +648,14 @@ describe('AzBpmProcess', () => {
                 })
 
                 it('Should disable if is loading process instance', () => {
-                    process.isLoading = true
+                    azBpmProcess.isLoadingProcess = jest.fn(() => true)
+                    components = azBpmProcess.getComponents()
+
+                    expect(getButton().disabled).toBe(true)
+                })
+
+                it('Should disable if is dispatching action', () => {
+                    azBpmProcess._isDispatchingAction = jest.fn(() => true)
                     components = azBpmProcess.getComponents()
 
                     expect(getButton().disabled).toBe(true)
@@ -691,7 +726,14 @@ describe('AzBpmProcess', () => {
                 })
 
                 it('Should disable if is loading process instance', () => {
-                    process.isLoading = true
+                    azBpmProcess.isLoadingProcess = jest.fn(() => true)
+                    components = azBpmProcess.getComponents()
+
+                    expect(getButton().disabled).toBe(true)
+                })
+
+                it('Should disable if is dispatching action', () => {
+                    azBpmProcess._isDispatchingAction = jest.fn(() => true)
                     components = azBpmProcess.getComponents()
 
                     expect(getButton().disabled).toBe(true)
