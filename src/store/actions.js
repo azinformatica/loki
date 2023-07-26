@@ -103,6 +103,8 @@ export default {
             .get(`${state.bpm.api}/getInstance/${processKey}/${businessKey}`)
             .then((response) => {
                 const processInstance = response.data
+                const process = state.bpm.process[processKey][businessKey]
+                processInstance.currentTask = process.currentTask
                 commit(mutationTypes.BPM.SET_PROCESS_INSTANCE, { processKey, businessKey, instance: processInstance })
 
                 return processInstance
