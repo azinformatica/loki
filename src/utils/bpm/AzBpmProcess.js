@@ -1,8 +1,8 @@
 import { actionTypes, mutationTypes } from '../../store'
+import Vue from 'vue'
 
 export default class AzBpmProcess {
-    static _cache = {}
-    static _debounce = {}
+    static _shared = {}
 
     constructor(store, processKey, businessKey) {
         this.store = store
@@ -13,33 +13,34 @@ export default class AzBpmProcess {
     }
 
     load(invalidateCache = false) {
+        this._startLoadingProcess()
+
         this._unregisterDebounce()
         this._registerDebounce()
 
         if (invalidateCache || !this._getCache()) {
-            if (!this._hasUserTasks()) {
-                this._loadUserTasks()
-            }
-
-            const cache = this._loadProcessInstance()
+            const cache = this._loadProcessInstance().finally(() => this._loadUserTasks())
             this._setCache(cache)
         }
 
-        return this._getCache().then((processInstance) => {
-            const currentTask = this._getCurrentTaskInProcess()
-            this._setCurrentTaskInInstance(currentTask)
+        return this._getCache()
+            .then((processInstance) => {
+                const currentTask = this._getCurrentTaskInProcess()
+                this._setCurrentTaskInInstance(currentTask)
 
-            const task = this._hasValidCurrentTask() ? this.getCurrentTask() : this._getFirstValidCurrentTask()
+                const task = this._hasValidCurrentTask() ? this.getCurrentTask() : this._getFirstValidCurrentTask()
 
-            this._setCurrentTaskInInstance(task)
-            this._setCurrentTaskInProcess(task)
+                this._setCurrentTaskInInstance(task)
+                this._setCurrentTaskInProcess(task)
 
-            return processInstance
-        })
+                return processInstance
+            })
+            .finally(() => this._finishLoadingProcess())
     }
 
     initialize() {
-        return this.store.commit(mutationTypes.BPM.INITIALIZE_PROCESS_INSTANCE, this._getProcessParams())
+        this._initializeProcessSharedVariables()
+        this._initializeProcessInstance()
     }
 
     hasAuthority(authorities = []) {
@@ -157,9 +158,7 @@ export default class AzBpmProcess {
     }
 
     isLoadingProcess() {
-        const process = this.getProcess()
-
-        return process.isLoading || false
+        return this._isLoadingProcess()
     }
 
     _getBpm() {
@@ -186,42 +185,99 @@ export default class AzBpmProcess {
         return this.store.dispatch(actionTypes.BPM.GET_USER_TASKS, this._getProcessParams())
     }
 
+    _initializeProcessInstance() {
+        return this.store.commit(mutationTypes.BPM.INITIALIZE_PROCESS_INSTANCE, this._getProcessParams())
+    }
+
     _getKeyProcessBusiness() {
         return `${this.processKey}-${this.businessKey}`
     }
 
-    _registerDebounce() {
-        const INACTIVITY_TIME = 300
+    _initializeProcessSharedVariables() {
         const key = this._getKeyProcessBusiness()
 
-        AzBpmProcess._debounce[key] = setTimeout(() => {
+        if (!AzBpmProcess._shared[key]) {
+            AzBpmProcess._shared[key] = Vue.observable({
+                _debounce: null,
+                _cache: null,
+                _isDispatchingAction: false,
+                _isLoadingProcess: false,
+            })
+        }
+    }
+
+    _getProcessSharedVariables() {
+        const key = this._getKeyProcessBusiness()
+
+        return AzBpmProcess._shared[key]
+    }
+
+    _startDispatchingAction() {
+        const shared = this._getProcessSharedVariables()
+
+        shared._isDispatchingAction = true
+    }
+
+    _finishDispatchingAction() {
+        const shared = this._getProcessSharedVariables()
+
+        shared._isDispatchingAction = false
+    }
+
+    _isDispatchingAction() {
+        const shared = this._getProcessSharedVariables()
+
+        return shared._isDispatchingAction
+    }
+
+    _startLoadingProcess() {
+        const shared = this._getProcessSharedVariables()
+
+        shared._isLoadingProcess = true
+    }
+
+    _finishLoadingProcess() {
+        const shared = this._getProcessSharedVariables()
+
+        shared._isLoadingProcess = false
+    }
+
+    _isLoadingProcess() {
+        const shared = this._getProcessSharedVariables()
+
+        return shared._isLoadingProcess
+    }
+
+    _registerDebounce() {
+        const INACTIVITY_TIME = 300
+        const shared = this._getProcessSharedVariables()
+
+        shared._debounce = setTimeout(() => {
             this._removeCache()
         }, INACTIVITY_TIME)
     }
 
     _unregisterDebounce() {
-        const key = this._getKeyProcessBusiness()
+        const shared = this._getProcessSharedVariables()
 
-        clearTimeout(AzBpmProcess._debounce[key])
-        AzBpmProcess._debounce[key] = null
+        clearTimeout(shared._debounce)
+        shared._debounce = null
     }
 
     _setCache(cache) {
-        const key = this._getKeyProcessBusiness()
+        const shared = this._getProcessSharedVariables()
 
-        AzBpmProcess._cache[key] = cache
+        shared._cache = cache
     }
 
     _getCache() {
-        const key = this._getKeyProcessBusiness()
+        const shared = this._getProcessSharedVariables()
 
-        return AzBpmProcess._cache[key]
+        return shared._cache
     }
 
     _removeCache() {
-        const key = this._getKeyProcessBusiness()
-
-        delete AzBpmProcess._cache[key]
+        this._setCache(null)
     }
 
     _getCurrentTaskInProcess() {
@@ -276,16 +332,16 @@ export default class AzBpmProcess {
 
         return Boolean(
             this._hasHumanDecisionInAllNextTasks(currentTask) &&
-            this._hasNextTasks(currentTask) &&
-            this._hasAssignee(currentTask) &&
-            this._isStatusInstanceActive()
+                this._hasNextTasks(currentTask) &&
+                this._hasAssignee(currentTask) &&
+                this._isStatusInstanceActive()
         )
     }
 
     _getSelectHumanDecisionDisabled() {
         const currentTask = this.getCurrentTask()
 
-        return Boolean(this.isLoadingProcess() || !this._isUserCandidate(currentTask))
+        return Boolean(this.isLoadingProcess() || this._isDispatchingAction() || !this._isUserCandidate(currentTask))
     }
 
     _getSelectHumanDecisionItems() {
@@ -305,15 +361,15 @@ export default class AzBpmProcess {
     _getSelectParallelShow() {
         return Boolean(
             this._isStatusInstanceActive() &&
-            this._hasSomeCurrentTaskThatUserCanInteract() &&
-            this._hasMultipleCurrentTasks()
+                this._hasSomeCurrentTaskThatUserCanInteract() &&
+                this._hasMultipleCurrentTasks()
         )
     }
 
     _getSelectParallelDisabled() {
         const currentTask = this.getCurrentTask()
 
-        return Boolean(this.isLoadingProcess() || !this._isUserCandidate(currentTask))
+        return Boolean(this.isLoadingProcess() || this._isDispatchingAction() || !this._isUserCandidate(currentTask))
     }
 
     _getSelectParallelItems() {
@@ -351,7 +407,7 @@ export default class AzBpmProcess {
     _getButtonClaimDisabled() {
         const currentTask = this.getCurrentTask()
 
-        return Boolean(this.isLoadingProcess() || !this._isUserCandidate(currentTask))
+        return Boolean(this.isLoadingProcess() || this._isDispatchingAction() || !this._isUserCandidate(currentTask))
     }
 
     _getButtonClaimLabel() {
@@ -373,7 +429,7 @@ export default class AzBpmProcess {
     _getButtonUnclaimDisabled() {
         const currentTask = this.getCurrentTask()
 
-        return Boolean(this.isLoadingProcess() || !this._isUserCandidate(currentTask))
+        return Boolean(this.isLoadingProcess() || this._isDispatchingAction() || !this._isUserCandidate(currentTask))
     }
 
     _getButtonUnclaimLabel() {
@@ -393,7 +449,7 @@ export default class AzBpmProcess {
     _getButtonCompleteDisabled() {
         const currentTask = this.getCurrentTask()
 
-        return Boolean(this.isLoadingProcess() || !this._isUserCandidate(currentTask))
+        return Boolean(this.isLoadingProcess() || this._isDispatchingAction() || !this._isUserCandidate(currentTask))
     }
 
     _getButtonCompleteLabel() {
@@ -419,8 +475,9 @@ export default class AzBpmProcess {
 
         return Boolean(
             this.isLoadingProcess() ||
-            !this._isUserCandidateInPreviousTask(currentTask) ||
-            this._isUncompleteTaskDisabled(currentTask)
+                this._isDispatchingAction() ||
+                !this._isUserCandidateInPreviousTask(currentTask) ||
+                this._isUncompleteTaskDisabled(currentTask)
         )
     }
 
@@ -437,16 +494,21 @@ export default class AzBpmProcess {
 
         return Boolean(
             this._isStatusInstanceActive() &&
-            this._isRoutingEnabled() &&
-            this._hasAssignee(currentTask) &&
-            !this._isParallel(currentTask)
+                this._isRoutingEnabled() &&
+                this._hasAssignee(currentTask) &&
+                !this._isParallel(currentTask)
         )
     }
 
     _getButtonRouteDisabled() {
         const currentTask = this.getCurrentTask()
 
-        return Boolean(this.isLoadingProcess() || !this._isRoutingEnabled() || !this._isUserCandidate(currentTask))
+        return Boolean(
+            this.isLoadingProcess() ||
+                this._isDispatchingAction() ||
+                !this._isRoutingEnabled() ||
+                !this._isUserCandidate(currentTask)
+        )
     }
 
     _getButtonRouteLabel() {
@@ -718,16 +780,18 @@ export default class AzBpmProcess {
         return this._isUserAssignee(previousTask) || this._isUserInCandidateGroups(previousTask)
     }
 
+    _updateButtonsAndDispatchAction(buttonType, bpmParameters) {
+        return this.load(true)
+            .then(() => this._dispatchButtonAction(buttonType, bpmParameters))
+            .finally(() => this.load(true))
+    }
+
     _dispatchButtonActionOnCurrentTask(buttonType, bpmParameters) {
         const result = this._createButtonActionResult(buttonType)
 
-        return this.load(true)
-            .then(() => this._dispatchButtonActionIfAllowed(buttonType, bpmParameters))
+        return this._updateButtonsAndDispatchAction(buttonType, bpmParameters)
             .then((actionResponse) => {
                 result.response = actionResponse
-                return this.load(true)
-            })
-            .then(() => {
                 result.processInstance = this.getProcessInstance()
             })
             .catch((error) => {
@@ -736,15 +800,21 @@ export default class AzBpmProcess {
             .then(() => result)
     }
 
-    _dispatchButtonActionIfAllowed(buttonType, bpmParameters) {
+    _dispatchButtonAction(buttonType, bpmParameters) {
+        if (this._isDispatchingAction()) {
+            throw new Error('Já existe uma ação sendo executada.')
+        }
+
         if (!this._isButtonAllowed(buttonType)) {
             throw new Error('Não foi possível realizar essa ação.')
         }
 
+        this._startDispatchingAction()
+
         const actionType = this._createButtonActionType(buttonType)
         const args = this._createButtonActionArgs(bpmParameters)
 
-        return this.store.dispatch(actionType, args)
+        return this.store.dispatch(actionType, args).finally(() => this._finishDispatchingAction())
     }
 
     _isButtonAllowed(buttonType) {
