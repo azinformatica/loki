@@ -16,7 +16,9 @@
             v-bind="buttonMergedAttrs[buttonType]"
             @click="handleButtonClick(buttonType)"
         >
-            {{ button[buttonType].label }}
+            <slot :name="buttonType" :button="button[buttonType]">
+                {{ button[buttonType].label }}
+            </slot>
         </v-btn>
         <az-bpm-modal
             v-if="showModal"
