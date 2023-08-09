@@ -495,6 +495,7 @@ export default class AzBpmProcess {
         return Boolean(
             this._isStatusInstanceActive() &&
                 this._isRoutingEnabled() &&
+                this._isUserHasPermissionToRoute() &&
                 this._hasAssignee(currentTask) &&
                 !this._isParallel(currentTask)
         )
@@ -507,6 +508,7 @@ export default class AzBpmProcess {
             this.isLoadingProcess() ||
                 this._isDispatchingAction() ||
                 !this._isRoutingEnabled() ||
+                !this._isUserHasPermissionToRoute() ||
                 !this._isUserCandidate(currentTask)
         )
     }
@@ -626,6 +628,12 @@ export default class AzBpmProcess {
         const processDefinitionInfo = this._getProcessDefinitionInfo()
 
         return processDefinitionInfo.routingEnabled || false
+    }
+
+    _isUserHasPermissionToRoute() {
+        const processDefinitionInfo = this._getProcessDefinitionInfo()
+
+        return processDefinitionInfo.userHasPermissionToRoute || false
     }
 
     _getProcessDefinitionInfo() {
