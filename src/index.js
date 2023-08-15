@@ -38,6 +38,7 @@ import AzCallToAction from './components/actions/AzCallToAction'
 import AzDialog from './components/actions/AzDialog'
 
 import azAuth from './directives/auth'
+import azScroll from './directives/scroll'
 
 import azClipText from './filters/clip-text'
 import azConcat from './filters/concat'
@@ -112,6 +113,7 @@ const lokiPlugin = {
         Vue.component('az-dialog', AzDialog)
 
         Vue.directive('az-auth', azAuth)
+        Vue.directive('az-scroll', azScroll)
 
         Vue.filter('azClipText', azClipText)
         Vue.filter('azConcat', azConcat)
