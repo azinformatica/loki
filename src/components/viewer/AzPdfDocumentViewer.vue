@@ -15,7 +15,13 @@
             @print="print"
             v-show="!loadingPlaceHolder"
         />
-        <div id="az-pdf-viewer" class="Viewer" :style="azPdfViewerStyle" v-show="!loadingPlaceHolder">
+        <div
+            id="az-pdf-viewer"
+            class="Viewer"
+            v-az-scroll="emitirScroll"
+            :style="azPdfViewerStyle"
+            v-show="!loadingPlaceHolder"
+        >
             <div class="pdfViewer"></div>
             <Draggable
                 data-test="draggable"
@@ -307,6 +313,9 @@ export default {
         },
         handleDeleteDraggable({ draggable, draggableIndex }) {
             this.$emit('delete:draggable', { draggable, draggableIndex })
+        },
+        emitirScroll(scroll) {
+            this.$emit('scroll', scroll)
         },
     },
     props: {
