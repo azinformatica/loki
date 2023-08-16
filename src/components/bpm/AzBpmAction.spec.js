@@ -8,46 +8,10 @@ import Vuetify from 'vuetify'
 const localVue = createLocalVue()
 Vue.use(Vuetify)
 
-const createDefaultProps = () => {
-    return {
-        disabled: false,
-        bpmParameters: {},
-        selectAttrs: {
-            class: 'example-select-class',
-            color: 'example-select-color',
-        },
-        buttonAttrs: {
-            claim: {
-                class: 'example-claim-class',
-                color: 'example-claim-color',
-            },
-            unclaim: {
-                class: 'example-unclaim-class',
-                color: 'example-unclaim-color',
-            },
-            complete: {
-                class: 'example-complete-class',
-                color: 'example-complete-color',
-            },
-            uncomplete: {
-                class: 'example-uncomplete-class',
-                color: 'example-uncomplete-color',
-            },
-        },
-    }
-}
-
-const createParentComponent = () => {
-    return {
-        name: AzBpmInteraction.name,
-        data: () => ({
-            id: 'example-id',
-            processKey: 'example-process-key-01',
-            businessKey: 'example-business-key-01',
-            bpmAtProcessKeyAtBusinessKey: {
-                currentTask: {},
-            },
-            components: {
+jest.mock('../../utils/bpm/AzBpmProcess.js', () => {
+    return jest.fn().mockImplementation(() => {
+        return {
+            getComponents: jest.fn(() => ({
                 select: {
                     humanDecision: {
                         disabled: false,
@@ -81,7 +45,7 @@ const createParentComponent = () => {
                         disabled: false,
                         show: true,
                         label: 'example-button-claim-label',
-                        action: jest.fn(),
+                        action: jest.fn(() => new Promise((resolve) => resolve(''))),
                     },
                     unclaim: {
                         disabled: false,
@@ -102,8 +66,63 @@ const createParentComponent = () => {
                         action: jest.fn(),
                     },
                 },
+            })),
+            getCurrentTask: jest.fn(() => null),
+            hasAuthority: jest.fn(() => false),
+            getProcessInstance: jest.fn(() => true),
+            load: jest.fn(),
+        }
+    })
+})
+
+const createDefaultProps = () => {
+    return {
+        disabled: false,
+        processKey: '',
+        businessKey: '',
+        bpmParameters: {},
+        selectAttrs: {
+            class: 'example-select-class',
+            color: 'example-select-color',
+        },
+        buttonAttrs: {
+            claim: {
+                class: 'example-claim-class',
+                color: 'example-claim-color',
             },
-        }),
+            unclaim: {
+                class: 'example-unclaim-class',
+                color: 'example-unclaim-color',
+            },
+            complete: {
+                class: 'example-complete-class',
+                color: 'example-complete-color',
+            },
+            uncomplete: {
+                class: 'example-uncomplete-class',
+                color: 'example-uncomplete-color',
+            },
+        },
+    }
+}
+
+const createParentComponent = () => {
+    return {
+        name: AzBpmInteraction.name,
+        props: {
+            id: {
+                default: 'example-id',
+                type: String,
+            },
+            processKey: {
+                default: 'example-process-key-01',
+                type: String,
+            },
+            businessKey: {
+                default: 'example-business-key-01',
+                type: String,
+            },
+        },
     }
 }
 
@@ -113,6 +132,9 @@ const createWrapper = ({ propsData = {}, shallow = true }) => {
         localVue,
         propsData,
         parentComponent,
+        stubs: {
+            AzBpmModal: true,
+        },
         vuetify: new Vuetify(),
     }
     const mountingFunction = shallow ? shallowMount : mount
@@ -130,6 +152,14 @@ describe('AzBpmAction.spec.js', () => {
     describe('Props', () => {
         it('Should receive id', () => {
             expect(wrapper.props().id).toEqual(propsData.id)
+        })
+
+        it('Should receive processKey', () => {
+            expect(wrapper.props().processKey).toEqual(propsData.processKey)
+        })
+
+        it('Should receive businessKey', () => {
+            expect(wrapper.props().businessKey).toEqual(propsData.businessKey)
         })
 
         it('Should receive disabled', () => {
@@ -190,48 +220,15 @@ describe('AzBpmAction.spec.js', () => {
             })
 
             it('Should have items from closest bpm interaction', () => {
-                expect(select.props().items).toStrictEqual(
-                    wrapper.vm.closestBpmInteraction.components.select.parallel.items
-                )
+                expect(select.props().items).toStrictEqual(wrapper.vm.components.select.parallel.items)
             })
 
             it('Should have label from closest bpm interaction', () => {
-                expect(select.props().label).toBe(wrapper.vm.closestBpmInteraction.components.select.parallel.label)
+                expect(select.props().label).toBe(wrapper.vm.components.select.parallel.label)
             })
 
             it('Should have disabled from closest bpm interaction', () => {
-                expect(select.props().disabled).toBe(
-                    wrapper.vm.closestBpmInteraction.components.select.parallel.disabled
-                )
-            })
-
-            it('Should have attrs given through props', () => {
-                expect(select.vm.$el.classList.contains(propsData.selectAttrs.class)).toBe(true)
-                expect(select.props().color).toBe(propsData.selectAttrs.color)
-            })
-        })
-
-        describe('HumanDecision', () => {
-            beforeEach(() => {
-                select = selects.at(1)
-            })
-
-            it('Should have items from closest bpm interaction', () => {
-                expect(select.props().items).toStrictEqual(
-                    wrapper.vm.closestBpmInteraction.components.select.humanDecision.items
-                )
-            })
-
-            it('Should have label from closest bpm interaction', () => {
-                expect(select.props().label).toBe(
-                    wrapper.vm.closestBpmInteraction.components.select.humanDecision.label
-                )
-            })
-
-            it('Should have disabled from closest bpm interaction', () => {
-                expect(select.props().disabled).toBe(
-                    wrapper.vm.closestBpmInteraction.components.select.humanDecision.disabled
-                )
+                expect(select.props().disabled).toBe(wrapper.vm.components.select.parallel.disabled)
             })
 
             it('Should have attrs given through props', () => {
@@ -254,20 +251,20 @@ describe('AzBpmAction.spec.js', () => {
                 key = 'claim'
             })
 
-            it('Should have disabled from closest bpm interaction', () => {
-                expect(getButton().props().disabled).toBe(
-                    wrapper.vm.closestBpmInteraction.components.button[key].disabled
-                )
+            it('Should have disabled value', () => {
+                expect(getButton().props().disabled).toBe(wrapper.vm.components.button[key].disabled)
             })
 
-            it('Should have label from closest bpm interaction', () => {
-                expect(getButton().html()).toContain(wrapper.vm.closestBpmInteraction.components.button[key].label)
+            it('Should have label value', () => {
+                expect(getButton().html()).toContain(wrapper.vm.components.button[key].label)
             })
 
-            it('Should have action from closest bpm interaction', () => {
+            it('Should have action function', async () => {
                 getButton().trigger('click')
 
-                expect(wrapper.vm.$parent.components.button[key].action).toHaveBeenCalled()
+                await wrapper.vm.$nextTick()
+
+                expect(wrapper.vm.components.button[key].action).toHaveBeenCalled()
             })
 
             it('Should have attrs given through props', () => {
@@ -281,20 +278,20 @@ describe('AzBpmAction.spec.js', () => {
                 key = 'unclaim'
             })
 
-            it('Should have disabled from closest bpm interaction', () => {
-                expect(getButton().props().disabled).toBe(
-                    wrapper.vm.closestBpmInteraction.components.button[key].disabled
-                )
+            it('Should have disabled value', () => {
+                expect(getButton().props().disabled).toBe(wrapper.vm.components.button[key].disabled)
             })
 
-            it('Should have label from closest bpm interaction', () => {
-                expect(getButton().html()).toContain(wrapper.vm.closestBpmInteraction.components.button[key].label)
+            it('Should have label value', () => {
+                expect(getButton().html()).toContain(wrapper.vm.components.button[key].label)
             })
 
-            it('Should have action from closest bpm interaction', () => {
+            it('Should have action function', async () => {
                 getButton().trigger('click')
 
-                expect(wrapper.vm.$parent.components.button[key].action).toHaveBeenCalled()
+                await wrapper.vm.$nextTick()
+
+                expect(wrapper.vm.components.button[key].action).toHaveBeenCalled()
             })
 
             it('Should have attrs given through props', () => {
@@ -308,20 +305,20 @@ describe('AzBpmAction.spec.js', () => {
                 key = 'complete'
             })
 
-            it('Should have disabled from closest bpm interaction', () => {
-                expect(getButton().props().disabled).toBe(
-                    wrapper.vm.closestBpmInteraction.components.button[key].disabled
-                )
+            it('Should have disabled value', () => {
+                expect(getButton().props().disabled).toBe(wrapper.vm.components.button[key].disabled)
             })
 
-            it('Should have label from closest bpm interaction', () => {
-                expect(getButton().html()).toContain(wrapper.vm.closestBpmInteraction.components.button[key].label)
+            it('Should have label value', () => {
+                expect(getButton().html()).toContain(wrapper.vm.components.button[key].label)
             })
 
-            it('Should have action from closest bpm interaction', () => {
+            it('Should open modal on click', async () => {
                 getButton().trigger('click')
 
-                expect(wrapper.vm.$parent.components.button[key].action).toHaveBeenCalled()
+                await wrapper.vm.$nextTick()
+
+                expect(wrapper.vm.showModal).toBe(true)
             })
 
             it('Should have attrs given through props', () => {
@@ -335,20 +332,20 @@ describe('AzBpmAction.spec.js', () => {
                 key = 'uncomplete'
             })
 
-            it('Should have disabled from closest bpm interaction', () => {
-                expect(getButton().props().disabled).toBe(
-                    wrapper.vm.closestBpmInteraction.components.button[key].disabled
-                )
+            it('Should have disabled value', () => {
+                expect(getButton().props().disabled).toBe(wrapper.vm.components.button[key].disabled)
             })
 
-            it('Should have label from closest bpm interaction', () => {
-                expect(getButton().html()).toContain(wrapper.vm.closestBpmInteraction.components.button[key].label)
+            it('Should have label value', () => {
+                expect(getButton().html()).toContain(wrapper.vm.components.button[key].label)
             })
 
-            it('Should have action from closest bpm interaction', () => {
+            it('Should have action function', async () => {
                 getButton().trigger('click')
 
-                expect(wrapper.vm.$parent.components.button[key].action).toHaveBeenCalled()
+                await wrapper.vm.$nextTick()
+
+                expect(wrapper.vm.components.button[key].action).toHaveBeenCalled()
             })
 
             it('Should have attrs given through props', () => {
@@ -361,11 +358,11 @@ describe('AzBpmAction.spec.js', () => {
     describe('Computed', () => {
         describe('setCurrentTaskParams', () => {
             it('Should have same processKey', () => {
-                expect(wrapper.vm.setCurrentTaskParams.processKey).toBe(wrapper.vm.processKey)
+                expect(wrapper.vm.setCurrentTaskParams.processKey).toBe(wrapper.vm.currentProcessKey)
             })
 
             it('Should have same businessKey', () => {
-                expect(wrapper.vm.setCurrentTaskParams.businessKey).toBe(wrapper.vm.businessKey)
+                expect(wrapper.vm.setCurrentTaskParams.businessKey).toBe(wrapper.vm.currentBusinessKey)
             })
 
             it('Should have currentTaskId equals selectedParallelTask', () => {
@@ -395,14 +392,6 @@ describe('AzBpmAction.spec.js', () => {
     })
 
     describe('Methods', () => {
-        describe('selectHumanTask', () => {
-            it('Should update selectedHumanTask', async () => {
-                wrapper.vm.selectHumanTask()
-
-                expect(wrapper.vm.selectedHumanTask).toBe(wrapper.vm.firstHumanItemValue)
-            })
-        })
-
         describe('selectParallelTask', () => {
             it('Should update selectedParallelTask', () => {
                 wrapper.vm.selectParallelTask()

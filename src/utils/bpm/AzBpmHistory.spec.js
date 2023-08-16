@@ -23,41 +23,42 @@ describe('AzBpmHistory', () => {
     })
 
     describe('getHistory', () => {
-        let history, updateHistory
+        let history, updateHistory, getLastLog
 
         beforeAll(() => {
             updateHistory = () => (history = azBpmHistory.getHistory())
+            getLastLog = () => history[history.length - 1] || null
 
             updateHistory()
         })
 
         describe('Property', () => {
             it('Should have "status" property', () => {
-                expect(history[0].hasOwnProperty('status')).toBe(true)
+                expect(getLastLog().hasOwnProperty('status')).toBe(true)
             })
 
             it('Should have "icon" property', () => {
-                expect(history[0].hasOwnProperty('icon')).toBe(true)
+                expect(getLastLog().hasOwnProperty('icon')).toBe(true)
             })
 
             it('Should have "taskName" property', () => {
-                expect(history[0].hasOwnProperty('taskName')).toBe(true)
+                expect(getLastLog().hasOwnProperty('taskName')).toBe(true)
             })
 
             it('Should have "toTaskName" property', () => {
-                expect(history[0].hasOwnProperty('toTaskName')).toBe(true)
+                expect(getLastLog().hasOwnProperty('toTaskName')).toBe(true)
             })
 
             it('Should have "assignee" property', () => {
-                expect(history[0].hasOwnProperty('assignee')).toBe(true)
+                expect(getLastLog().hasOwnProperty('assignee')).toBe(true)
             })
 
             it('Should have "toAssignee" property', () => {
-                expect(history[0].hasOwnProperty('toAssignee')).toBe(true)
+                expect(getLastLog().hasOwnProperty('toAssignee')).toBe(true)
             })
 
             it('Should have "date" property', () => {
-                expect(history[0].hasOwnProperty('date')).toBe(true)
+                expect(getLastLog().hasOwnProperty('date')).toBe(true)
             })
         })
 
@@ -75,24 +76,24 @@ describe('AzBpmHistory', () => {
             })
 
             it('Should add history with "status" FINALIZADO', () => {
-                expect(history[0].status).toBe('FINALIZADO')
+                expect(getLastLog().status).toBe('FINALIZADO')
             })
 
             it('Should add history with proper "taskName"', () => {
-                expect(history[0].taskName).toBe(currentLog.activityName)
+                expect(getLastLog().taskName).toBe(currentLog.activityName)
             })
 
             it('Should add history with proper "assignee"', () => {
-                expect(history[0].assignee).toBe(currentLog.completeUser)
+                expect(getLastLog().assignee).toBe(currentLog.completeUser)
             })
 
             it('Should add history with proper "date"', () => {
-                expect(history[0].date).toBe(currentLog.activityEndTime)
+                expect(getLastLog().date).toBe(currentLog.activityEndTime)
             })
 
             it('Should add history with default values on unused fields', () => {
-                expect(history[0].toAssignee).toBeFalsy()
-                expect(history[0].toTaskName).toBeFalsy()
+                expect(getLastLog().toAssignee).toBeFalsy()
+                expect(getLastLog().toTaskName).toBeFalsy()
             })
         })
 
@@ -125,31 +126,31 @@ describe('AzBpmHistory', () => {
                 updateHistory()
 
                 expect(history).toHaveLength(1)
-                expect(history[0].status).not.toBe('ENCAMINHADO')
+                expect(getLastLog().status).not.toBe('ENCAMINHADO')
             })
 
             it('Should add history with "status" ENCAMINHADO', () => {
-                expect(history[0].status).toBe('ENCAMINHADO')
+                expect(getLastLog().status).toBe('ENCAMINHADO')
             })
 
             it('Should add history with proper "taskName"', () => {
-                expect(history[0].taskName).toBe(previousLog.activityName)
+                expect(getLastLog().taskName).toBe(previousLog.activityName)
             })
 
             it('Should add history with proper "toTaskName"', () => {
-                expect(history[0].toTaskName).toBe(currentLog.activityName)
+                expect(getLastLog().toTaskName).toBe(currentLog.activityName)
             })
 
             it('Should add history with proper "assignee"', () => {
-                expect(history[0].assignee).toBe(previousLog.completeUser)
+                expect(getLastLog().assignee).toBe(previousLog.completeUser)
             })
 
             it('Should add history with proper "date"', () => {
-                expect(history[0].date).toBe(previousLog.activityEndTime)
+                expect(getLastLog().date).toBe(previousLog.activityEndTime)
             })
 
             it('Should add history with default values on unused fields', () => {
-                expect(history[0].toAssignee).toBeFalsy()
+                expect(getLastLog().toAssignee).toBeFalsy()
             })
         })
 
@@ -211,8 +212,12 @@ describe('AzBpmHistory', () => {
         })
 
         describe('History claim', () => {
-            let currentLog, currentAssignee
+            let previousLog, currentLog, currentAssignee
             beforeEach(() => {
+                previousLog = {
+                    activityName: 'example-name-01',
+                    completeUser: 'user-name-example-01',
+                }
                 currentAssignee = {
                     assignee: 'user-name-example-02',
                     assigneeDate: '2020-02-02',
@@ -222,7 +227,7 @@ describe('AzBpmHistory', () => {
                     activityAssignees: [currentAssignee],
                 }
 
-                azBpmHistory.store.dispatch = jest.fn(() => [currentLog])
+                azBpmHistory.store.dispatch = jest.fn(() => [previousLog, currentLog])
                 updateHistory()
             })
 
@@ -230,31 +235,39 @@ describe('AzBpmHistory', () => {
                 currentAssignee.assignee = null
                 updateHistory()
 
-                expect(history[0]).not.toBe('RECEBIDO')
+                expect(getLastLog()).not.toBe('RECEBIDO')
+                expect(getLastLog()).not.toBe('CRIADO')
             })
 
-            it('Should add history with "status" RECEBIDO', () => {
-                expect(history[0].status).toBe('RECEBIDO')
+            it('Should add history with "status" RECEBIDO if has previous log', () => {
+                expect(getLastLog().status).toBe('RECEBIDO')
+            })
+
+            it('Should add history with "status" CRIADO if has no previous log', () => {
+                azBpmHistory.store.dispatch = jest.fn(() => [currentLog])
+                updateHistory()
+
+                expect(getLastLog().status).toBe('CRIADO')
             })
 
             it('Should add history with proper "taskName"', () => {
-                expect(history[0].taskName).toBe(currentLog.activityName)
+                expect(getLastLog().taskName).toBe(currentLog.activityName)
             })
 
             it('Should add history with proper "assignee"', () => {
-                expect(history[0].assignee).toBe(null)
+                expect(getLastLog().assignee).toBe(previousLog.completeUser)
             })
 
             it('Should add history with proper "toAssignee"', () => {
-                expect(history[0].toAssignee).toBe(currentAssignee.assignee)
+                expect(getLastLog().toAssignee).toBe(currentAssignee.assignee)
             })
 
             it('Should add history with proper "date"', () => {
-                expect(history[0].date).toBe(currentAssignee.assigneeDate)
+                expect(getLastLog().date).toBe(currentAssignee.assigneeDate)
             })
 
             it('Should add history with default values on unused fields', () => {
-                expect(history[0].toTaskName).toBeFalsy()
+                expect(getLastLog().toTaskName).toBeFalsy()
             })
         })
 
@@ -278,28 +291,28 @@ describe('AzBpmHistory', () => {
                 currentAssignee.assignee = 'user-name-example-01'
                 updateHistory()
 
-                expect(history[0]).not.toBe('RECEBIMENTO CANCELADO')
+                expect(getLastLog()).not.toBe('RECEBIMENTO CANCELADO')
             })
 
             it('Should add history with "status" RECEBIMENTO CANCELADO', () => {
-                expect(history[0].status).toBe('RECEBIMENTO CANCELADO')
+                expect(getLastLog().status).toBe('RECEBIMENTO CANCELADO')
             })
 
             it('Should add history with proper "taskName"', () => {
-                expect(history[0].taskName).toBe(currentLog.activityName)
+                expect(getLastLog().taskName).toBe(currentLog.activityName)
             })
 
             it('Should add history with proper "assignee"', () => {
-                expect(history[0].assignee).toBe(null)
+                expect(getLastLog().assignee).toBe(null)
             })
 
             it('Should add history with proper "date"', () => {
-                expect(history[0].date).toBe(currentAssignee.assigneeDate)
+                expect(getLastLog().date).toBe(currentAssignee.assigneeDate)
             })
 
             it('Should add history with default values on unused fields', () => {
-                expect(history[0].toAssignee).toBeFalsy()
-                expect(history[0].toTaskName).toBeFalsy()
+                expect(getLastLog().toAssignee).toBeFalsy()
+                expect(getLastLog().toTaskName).toBeFalsy()
             })
         })
     })

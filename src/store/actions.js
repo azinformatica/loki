@@ -1,6 +1,12 @@
 import axios from 'axios'
 import mutationTypes from './mutation-types'
 import actionTypes from './action-types'
+import state from './state'
+
+axios.interceptors.request.use((config) => {
+    config.headers.common['Authorization'] = state.keycloak.accessToken
+    return config
+})
 
 export default {
     async getProduct({ commit, state }) {
@@ -92,36 +98,52 @@ export default {
     },
 
     async [actionTypes.BPM.GET_PROCESS_INSTANCE]({ commit, state }, { processKey, businessKey }) {
-        if (!state.bpm.process[processKey][businessKey].isLoading) {
-            try {
-                commit(mutationTypes.BPM.SET_IS_LOADING_PROCESS_INSTANCE, { processKey, businessKey, isLoading: true })
-                const response = await axios.get(`${state.bpm.api}/getInstance/${processKey}/${businessKey}`)
+        commit(mutationTypes.BPM.SET_IS_LOADING_PROCESS_INSTANCE, { processKey, businessKey, isLoading: true })
+        return axios
+            .get(`${state.bpm.api}/getInstance/${processKey}/${businessKey}`)
+            .then((response) => {
                 const processInstance = response.data
+                const process = state.bpm.process[processKey][businessKey]
+                processInstance.currentTask = process.currentTask
                 commit(mutationTypes.BPM.SET_PROCESS_INSTANCE, { processKey, businessKey, instance: processInstance })
-            } finally {
+
+                return processInstance
+            })
+            .finally(() => {
                 commit(mutationTypes.BPM.SET_IS_LOADING_PROCESS_INSTANCE, { processKey, businessKey, isLoading: false })
-            }
-        }
+            })
     },
 
-    async [actionTypes.BPM.CLAIM]({ state }, { taskId }) {
-        const response = await axios.get(`${state.bpm.api}/claim/${taskId}`)
-        return response.data
+    [actionTypes.BPM.ROUTE]({ state }, { processKey, taskId, activityIdDestination }) {
+        const processPath = `/process/${processKey}`
+        const routePath = `/route/from/${taskId}/destination/${activityIdDestination}`
+
+        return axios.put(`${state.bpm.api}${processPath}${routePath}`)
     },
 
-    async [actionTypes.BPM.UNCLAIM]({ state }, { taskId }) {
-        const response = await axios.get(`${state.bpm.api}/unclaim/${taskId}`)
-        return response.data
+    [actionTypes.BPM.GET_USER_TASKS]({ commit, state }, { processKey }) {
+        return axios.get(`${state.bpm.api}/getActivity/${processKey}`).then((response) => {
+            const userTasks = response.data
+
+            commit(mutationTypes.BPM.SET_USER_TASKS, { processKey, userTasks })
+            return userTasks
+        })
     },
 
-    async [actionTypes.BPM.COMPLETE]({ state }, { taskId, bpmParameters }) {
-        const response = await axios.post(`${state.bpm.api}/complete/${taskId}`, bpmParameters)
-        return response.data
+    [actionTypes.BPM.CLAIM]({ state }, { taskId }) {
+        return axios.get(`${state.bpm.api}/claim/${taskId}`)
     },
 
-    async [actionTypes.BPM.UNCOMPLETE]({ state }, { taskId }) {
-        const response = await axios.get(`${state.bpm.api}/uncomplete/${taskId}`)
-        return response.data
+    [actionTypes.BPM.UNCLAIM]({ state }, { taskId }) {
+        return axios.get(`${state.bpm.api}/unclaim/${taskId}`)
+    },
+
+    [actionTypes.BPM.COMPLETE]({ state }, { taskId, bpmParameters }) {
+        return axios.post(`${state.bpm.api}/complete/${taskId}`, bpmParameters)
+    },
+
+    [actionTypes.BPM.UNCOMPLETE]({ state }, { taskId }) {
+        return axios.get(`${state.bpm.api}/uncomplete/${taskId}`)
     },
 }
 

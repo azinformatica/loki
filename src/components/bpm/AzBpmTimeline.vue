@@ -1,88 +1,89 @@
 <template>
-    <div>
-        <div v-if="visibleItemsLength" class="az-bpm-timeline-wrapper">
-            <v-timeline class="az-bpm-timeline">
-                <template v-for="timelineItem of visibleTimelineItems">
-                    <v-timeline-item
-                        class="az-bpm-timeline-item"
-                        :key="timelineItem.keyDuration"
-                        v-if="timelineItem.duration"
-                        :[timelineItemPosition]="true"
-                        hide-dot
-                    >
-                        <template #default>
-                            <p class="az-bpm-timeline-item__duration">
-                                <i>
-                                    {{ timelineItem.duration }}
-                                </i>
+    <div v-if="visibleItemsLength" class="az-bpm-timeline-wrapper">
+        <v-timeline class="az-bpm-timeline">
+            <template v-for="timelineItem of visibleTimelineItems">
+                <v-timeline-item
+                    class="az-bpm-timeline-item"
+                    :key="timelineItem.keyDuration"
+                    v-if="timelineItem.duration"
+                    :[timelineItemPosition]="true"
+                    hide-dot
+                >
+                    <template #default>
+                        <p class="az-bpm-timeline-item__duration">
+                            <i>
+                                {{ timelineItem.duration }}
+                            </i>
+                        </p>
+                    </template>
+                </v-timeline-item>
+                <v-timeline-item
+                    class="az-bpm-timeline-item"
+                    :key="timelineItem.keyDate"
+                    :icon="timelineItem.icon"
+                    color="grey lighten-2"
+                    icon-color="grey darken-2"
+                    :[timelineItemPosition]="true"
+                    large
+                    fill-dot
+                >
+                    <template #default>
+                        <div class="az-bpm-timeline-item__datetime">
+                            <p class="az-bpm-timeline-item__date">
+                                <b>
+                                    {{ timelineItem.date }}
+                                </b>
                             </p>
-                        </template>
-                    </v-timeline-item>
-                    <v-timeline-item
-                        class="az-bpm-timeline-item"
-                        :key="timelineItem.keyDate"
-                        :icon="timelineItem.icon"
-                        color="grey lighten-2"
-                        icon-color="grey darken-2"
-                        :[timelineItemPosition]="true"
-                        large
-                        fill-dot
-                    >
-                        <template #default>
-                            <div class="az-bpm-timeline-item__datetime">
-                                <p class="az-bpm-timeline-item__date">
+                            <p class="az-bpm-timeline-item__time">
+                                <b>
+                                    {{ timelineItem.time }}
+                                </b>
+                            </p>
+                        </div>
+                    </template>
+                </v-timeline-item>
+                <v-timeline-item class="az-bpm-timeline-item" :key="timelineItem.keyCard" right hide-dot>
+                    <template #default>
+                        <div class="az-bpm-timeline-item__card">
+                            <div>
+                                <p class="az-bpm-timeline-item__status">
                                     <b>
-                                        {{ timelineItem.date }}
+                                        {{ timelineItem.status }}
                                     </b>
                                 </p>
-                                <p class="az-bpm-timeline-item__time">
+                                <p class="az-bpm-timeline-item__assignee">
+                                    {{ timelineItem.assignee }}
+                                </p>
+                            </div>
+                            <div>
+                                <p class="az-bpm-timeline-item__task">
                                     <b>
-                                        {{ timelineItem.time }}
+                                        {{ timelineItem.task }}
                                     </b>
                                 </p>
                             </div>
-                        </template>
-                    </v-timeline-item>
-                    <v-timeline-item class="az-bpm-timeline-item" :key="timelineItem.keyCard" right hide-dot>
-                        <template #default>
-                            <div class="az-bpm-timeline-item__card">
-                                <div>
-                                    <p class="az-bpm-timeline-item__status">
-                                        <b>
-                                            {{ timelineItem.status }}
-                                        </b>
-                                    </p>
-                                    <p class="az-bpm-timeline-item__assignee">
-                                        {{ timelineItem.assignee }}
-                                    </p>
-                                </div>
-                                <div>
-                                    <p class="az-bpm-timeline-item__task">
-                                        <b>
-                                            {{ timelineItem.task }}
-                                        </b>
-                                    </p>
-                                </div>
-                            </div>
-                        </template>
-                    </v-timeline-item>
-                </template>
-            </v-timeline>
-            <div class="az-bpm-timeline-info">
-                <a class="az-bpm-timeline-info__see-more" v-if="seeMoreLength" @click="seeMore">
-                    Ver mais {{ seeMoreLength }}
-                </a>
-                <p class="az-bpm-timeline-info__counter">
-                    {{ visibleItemsLength }} de {{ timelineItems.length }} - Registros
-                </p>
-            </div>
+                        </div>
+                    </template>
+                </v-timeline-item>
+            </template>
+        </v-timeline>
+        <div class="az-bpm-timeline-info">
+            <a class="az-bpm-timeline-info__see-more" v-if="seeMoreLength" @click="seeMore">
+                Ver mais {{ seeMoreLength }}
+            </a>
+            <p class="az-bpm-timeline-info__counter">
+                {{ visibleItemsLength }} de {{ timelineItems.length }} - Registros
+            </p>
         </div>
+    </div>
+    <div v-else>
         <slot name="empty"></slot>
     </div>
 </template>
 
 <script>
-import AzBpmHistory from '../../utils/AzBpmHistory'
+import AzBpmHistory from '../../utils/bpm/AzBpmHistory'
+import UUIDUtil from '../../utils/UUIDUtil'
 
 export default {
     name: 'AzBpmTimeline',
@@ -138,14 +139,17 @@ export default {
                     status: this.formatTimelineStatus(currentLog),
                     assignee: this.formatTimelineAssignee(currentLog),
                     task: this.formatTimelineTask(currentLog),
-                    keyDate: this.formatTimelineKeyDate(currentLog),
-                    keyCard: this.formatTimelineKeyCard(currentLog),
-                    keyDuration: this.formatTimelineKeyDuration(currentLog),
+                    keyDate: this.generateUUID(),
+                    keyCard: this.generateUUID(),
+                    keyDuration: this.generateUUID(),
                 }
             })
         },
     },
     methods: {
+        generateUUID() {
+            return UUIDUtil.generateUUID()
+        },
         seeMore() {
             this.visibleItemsLength += this.seeMoreLength
         },
@@ -172,15 +176,6 @@ export default {
         },
         formatTimelineTask(currentLog) {
             return currentLog.toTaskName || currentLog.taskName
-        },
-        formatTimelineKeyDate(currentLog) {
-            return `key-date-${currentLog.date}`
-        },
-        formatTimelineKeyCard(currentLog) {
-            return `key-card-${currentLog.date}`
-        },
-        formatTimelineKeyDuration(currentLog) {
-            return `key-duration-${currentLog.date}`
         },
         initializeAzBpmHistory() {
             this.azBpmHistory = new AzBpmHistory(this.$store)

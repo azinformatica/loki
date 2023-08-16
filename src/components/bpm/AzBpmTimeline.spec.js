@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import AzBpmTimeline from './AzBpmTimeline'
-import AzBpmHistory from '../../utils/AzBpmHistory'
+import AzBpmHistory from '../../utils/bpm/AzBpmHistory'
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils'
 import Vuetify from 'vuetify'
 

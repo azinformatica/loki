@@ -1,5 +1,5 @@
 import moment from 'moment-timezone'
-import { actionTypes } from '../store'
+import { actionTypes } from '../../store'
 
 export default class AzBpmHistory {
     constructor(store) {
@@ -35,7 +35,9 @@ export default class AzBpmHistory {
     _formatLogs(logs) {
         const history = []
 
-        logs.reduce((previousLog, currentLog) => {
+        logs.forEach((currentLog, currentLogIndex) => {
+            const previousLog = this._findPreviousTaskLastLog(logs, currentLogIndex, currentLog.originTask)
+
             this._addHistoryComplete(history, currentLog, previousLog)
             this._addHistoryUncomplete(history, currentLog, previousLog)
 
@@ -48,11 +50,17 @@ export default class AzBpmHistory {
             }, null)
 
             this._addHistoryFinish(history, currentLog)
+        })
 
-            return currentLog
-        }, null)
+        this._sortHistory(history)
 
         return history
+    }
+
+    _sortHistory(history) {
+        history.sort((previousHistory, currentHistory) => {
+            return Date.parse(previousHistory.date) - Date.parse(currentHistory.date)
+        })
     }
 
     _addHistoryComplete(history, currentLog, previousLog) {
@@ -98,8 +106,8 @@ export default class AzBpmHistory {
     _getHistoryClaim(currentLog, previousLog, currentAssignee) {
         const defaultData = this._getDefaultData()
 
-        defaultData.status = 'RECEBIDO'
-        defaultData.icon = 'mdi-account-arrow-left'
+        defaultData.status = previousLog ? 'RECEBIDO' : 'CRIADO'
+        defaultData.icon = previousLog ? 'mdi-account-arrow-left' : 'mdi-text-box-check-outline'
         defaultData.taskName = currentLog.activityName
         defaultData.assignee = previousLog && previousLog.completeUser
         defaultData.toAssignee = currentAssignee.assignee
@@ -126,8 +134,8 @@ export default class AzBpmHistory {
         defaultData.status = 'FINALIZADO'
         defaultData.icon = 'mdi-progress-check'
         defaultData.taskName = currentLog.activityName
-        defaultData.assignee = currentLog.completeUser
-        defaultData.date = currentLog.activityEndTime
+        defaultData.assignee = currentLog.completeUser || currentLog.routingUser
+        defaultData.date = currentLog.activityEndTime || currentLog.completeDate || currentLog.routingDate
 
         return defaultData
     }
@@ -139,8 +147,8 @@ export default class AzBpmHistory {
         defaultData.icon = 'mdi-progress-check'
         defaultData.taskName = previousLog.activityName
         defaultData.toTaskName = currentLog.activityName
-        defaultData.assignee = previousLog.completeUser
-        defaultData.date = previousLog.activityEndTime
+        defaultData.assignee = previousLog.completeUser || previousLog.routingUser
+        defaultData.date = previousLog.activityEndTime || previousLog.completeDate || previousLog.routingDate
 
         return defaultData
     }
@@ -153,7 +161,7 @@ export default class AzBpmHistory {
         defaultData.taskName = previousLog.activityName
         defaultData.toTaskName = currentLog.activityName
         defaultData.assignee = previousLog.uncompleteUser
-        defaultData.date = previousLog.activityEndTime
+        defaultData.date = previousLog.activityEndTime || previousLog.uncompleteDate
 
         return defaultData
     }
@@ -170,6 +178,22 @@ export default class AzBpmHistory {
         }
     }
 
+    _findPreviousTaskLastLog(logs, currentLogIndex, originTaskId) {
+        const previousLogIndex = currentLogIndex - 1
+        if (!originTaskId) {
+            return logs[previousLogIndex] || null
+        }
+
+        for (let logIndex = previousLogIndex; logIndex >= 0; logIndex--) {
+            const log = logs[logIndex]
+            if (log.taskId === originTaskId) {
+                return log
+            }
+        }
+
+        return null
+    }
+
     _getDurationWithProperScale(momentDuration) {
         const durations = [
             this._createDuration(momentDuration.asDays(), 'dia'),
@@ -183,7 +207,7 @@ export default class AzBpmHistory {
 
     _createDuration(quantity, unit) {
         return {
-            quantity: Math.floor(quantity),
+            quantity: Math.max(Math.floor(quantity), 0),
             unit,
         }
     }
