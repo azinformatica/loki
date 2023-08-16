@@ -17,6 +17,7 @@
         />
         <div
             id="az-pdf-viewer"
+            ref="azPdfViewer"
             class="Viewer"
             v-az-scroll="emitirScroll"
             :style="azPdfViewerStyle"
