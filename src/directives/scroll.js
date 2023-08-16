@@ -7,24 +7,25 @@ export default {
             const maxScroll = el.scrollHeight - el.clientHeight
             const minScroll = 0
 
-            const scroll = {}
-            scroll.direction = 'none'
-            scroll.max = false
+            const scroll = {
+                direction: 'none',
+                max: false,
+            }
 
             const isScrollingDown = scrollPosition > prevScrollTop
             if (isScrollingDown) {
                 scroll.direction = 'down'
-                if (scrollPosition >= maxScroll) {
-                    scroll.max = true
-                }
+            }
+            if (isScrollingDown && scrollPosition >= maxScroll) {
+                scroll.max = true
             }
 
             const isScrollingUp = scrollPosition < prevScrollTop
             if (isScrollingUp) {
                 scroll.direction = 'up'
-                if (scrollPosition === minScroll) {
-                    scroll.max = true
-                }
+            }
+            if (isScrollingUp && scrollPosition === minScroll) {
+                scroll.max = true
             }
 
             prevScrollTop = scrollPosition
