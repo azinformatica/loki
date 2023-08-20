@@ -318,6 +318,9 @@ export default {
         emitirScroll(scroll) {
             this.$emit('scroll', scroll)
         },
+        changePage(page) {
+            this.pdf.viewer.currentPageNumber = _.clamp(page, 1, this.pagination.total)
+        },
     },
     props: {
         src: {
