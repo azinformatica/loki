@@ -1,87 +1,117 @@
 <template>
-    <!-- eslint-disable max-len prettier/prettier -->
     <v-toolbar class="az-pdf-toolbar" flat>
         <v-spacer />
-        <v-btn class="az-pdf-toolbar__content" @click="$emit('zoomOut')" icon data-test="zoomOut" :disabled="disableButtons">
-            <v-tooltip bottom open-delay="800">
-                <span>Zoom -</span>
-                <v-icon slot="activator" >mdi-magnify-minus-outline</v-icon>
-            </v-tooltip>
-        </v-btn>
-        <v-btn class="az-pdf-toolbar__content" @click="$emit('changeScaleType')" icon data-test="changeScaleType" :disabled="disableButtons">
-            <v-tooltip bottom open-delay="800">
-                <span v-if="scaleType === 'page-fit'" >Ajustar à largura</span>
-                <span v-else >Ajustar à altura</span>
-
-                <v-icon v-if="scaleType === 'page-fit'" slot="activator" >mdi-fullscreen</v-icon>
-                <v-icon v-else slot="activator" >mdi-fullscreen-exit</v-icon>
-            </v-tooltip>
-        </v-btn>
-        <v-btn class="az-pdf-toolbar__content" @click="$emit('zoomIn')" icon data-test="zoomIn" :disabled="disableButtons">
-            <v-tooltip bottom open-delay="800">
-                <span>Zoom +</span>
-                <v-icon slot="activator" >mdi-magnify-plus-outline</v-icon>
-            </v-tooltip>
-        </v-btn>
+        <toolbar-button
+            v-if="previousDocumentButton"
+            class="az-pdf-toolbar__content"
+            data-test="previousDocument"
+            :tooltip="previousDocumentButtonTooltip"
+            icon="mdi-page-first"
+            :disabled="disableButtons"
+            @click="$emit('previousDocument')"
+        />
         <div class="az-pdf-toolbar__pagination" data-test="pagination">
-            {{ pagination.current || '-' }} / {{ pagination.total || '-' }}
+            <toolbar-button
+                class="az-pdf-toolbar__content"
+                data-test="previousPage"
+                tooltip="Ir para a página anterior"
+                icon="mdi-chevron-left"
+                :disabled="disableButtons || !hasPreviousPage"
+                @click="$emit('previousPage')"
+            />
+            <v-text-field outline type="number" v-model="page" @change="$emit('changePage', formatPage($event))" />
+            de {{ pagination.total || '1' }}
+            <toolbar-button
+                class="az-pdf-toolbar__content"
+                data-test="nextPage"
+                tooltip="Ir para a próxima página"
+                icon="mdi-chevron-right"
+                :disabled="disableButtons || !hasNextPage"
+                @click="$emit('nextPage')"
+            />
+        </div>
+        <toolbar-button
+            v-if="nextDocumentButton"
+            class="az-pdf-toolbar__content"
+            data-test="nextDocument"
+            :tooltip="nextDocumentButtonTooltip"
+            icon="mdi-page-last"
+            :disabled="disableButtons"
+            @click="$emit('nextDocument')"
+        />
+        <div class="az-pdf-toolbar__display">
+            <toolbar-button
+                class="az-pdf-toolbar__content"
+                data-test="zoomOut"
+                tooltip="Zoom -"
+                icon="mdi-magnify-minus-outline"
+                :disabled="disableButtons"
+                @click="$emit('zoomOut')"
+            />
+            <toolbar-button
+                class="az-pdf-toolbar__content"
+                data-test="changeScaleType"
+                :tooltip="scaleTypeTooltip"
+                :icon="scaleTypeIcon"
+                :disabled="disableButtons"
+                @click="$emit('changeScaleType')"
+            />
+            <toolbar-button
+                class="az-pdf-toolbar__content"
+                data-test="zoomIn"
+                tooltip="Zoom +"
+                icon="mdi-magnify-plus-outline"
+                :disabled="disableButtons"
+                @click="$emit('zoomIn')"
+            />
         </div>
         <v-spacer />
-        <div id="az-pdf-toolbar-actions" class="az-pdf-toolbar__actions" :class="{ 'show': showActions }">
-            <v-btn
-                class="az-pdf-toolbar__content az-pdf-toolbar__actions__btn"
-                @click="$emit('rotate')"
+        <div id="az-pdf-toolbar-actions" class="az-pdf-toolbar__actions" :class="{ show: showActions }">
+            <toolbar-button
                 v-if="rotateButton"
-                icon
+                class="az-pdf-toolbar__content az-pdf-toolbar__actions__btn"
                 data-test="rotate"
+                tooltip="Girar"
+                icon="mdi-rotate-right"
                 :disabled="disableButtons"
-            >
-                <v-tooltip bottom open-delay="800">
-                    <span>Girar</span>
-                    <v-icon slot="activator">mdi-rotate-right</v-icon>
-                </v-tooltip>
-            </v-btn>
-            <v-btn
-                class="az-pdf-toolbar__content az-pdf-toolbar__actions__btn"
-                @click="$emit('download')"
+                @click="$emit('rotate')"
+            />
+            <toolbar-button
                 v-if="downloadButton"
-                icon
-                data-test="download"
-                :disabled="disableButtons"
-            >
-                <v-tooltip bottom open-delay="800">
-                    <span>Download</span>
-                    <v-icon slot="activator" >mdi-download</v-icon>
-                </v-tooltip>
-            </v-btn>
-            <v-btn
                 class="az-pdf-toolbar__content az-pdf-toolbar__actions__btn"
-                @click="$emit('print')"
-                v-if="printButton"
-                icon
-                data-test="print"
+                data-test="download"
+                tooltip="Download"
+                icon="mdi-download"
                 :disabled="disableButtons"
-            >
-                <v-tooltip bottom open-delay="800">
-                    <span>Imprimir</span>
-                    <v-icon slot="activator">mdi-printer</v-icon>
-                </v-tooltip>
-            </v-btn>
-            <v-btn
-                v-if="hasActionButtons()"
+                @click="$emit('download')"
+            />
+            <toolbar-button
+                v-if="printButton"
+                class="az-pdf-toolbar__content az-pdf-toolbar__actions__btn"
+                data-test="print"
+                tooltip="Imprimir"
+                icon="mdi-printer"
+                :disabled="disableButtons"
+                @click="$emit('print')"
+            />
+            <toolbar-button
+                v-if="hasActionButtons"
                 class="az-pdf-toolbar__content az-pdf-toolbar__actions__more"
+                tooltip="Mais opções"
+                icon="mdi-dots-vertical"
                 @click="toggleToolbarActions"
-                icon
-            >
-                <v-icon>mdi-dots-vertical</v-icon>
-            </v-btn>
+            />
         </div>
     </v-toolbar>
 </template>
 
 <script>
+import ToolbarButton from './ToolbarButton'
+import _ from 'lodash'
+
 export default {
     name: 'Toolbar',
+    components: { ToolbarButton },
     props: {
         disableButtons: {
             type: Boolean,
@@ -93,7 +123,7 @@ export default {
         },
         pagination: {
             type: Object,
-            default: () => ({ current: '-', total: '-' }),
+            default: () => ({ current: 1, total: 1 }),
         },
         printButton: {
             type: Boolean,
@@ -107,16 +137,72 @@ export default {
             type: String,
             default: 'page-fit',
         },
+        previousDocumentButton: {
+            type: Boolean,
+            default: false,
+        },
+        previousDocumentButtonTooltip: {
+            type: String,
+            default: 'Ir para o documento anterior',
+        },
+        nextDocumentButton: {
+            type: Boolean,
+            default: false,
+        },
+        nextDocumentButtonTooltip: {
+            type: String,
+            default: 'Ir para o próximo documento',
+        },
     },
     data: () => ({
         showActions: false,
+        page: 1,
     }),
     methods: {
         toggleToolbarActions() {
             this.showActions = !this.showActions
         },
+        formatPage(value) {
+            this.page = value
+            this.page = this.filterDigitsFromPage(this.page)
+            this.page = this.convertPageToNumber(this.page)
+            this.page = this.clampPage(this.page)
+
+            return this.page
+        },
+        filterDigitsFromPage(page) {
+            return page.toString().replace(/[^0-9]/g, '')
+        },
+        convertPageToNumber(page) {
+            return parseInt(page || '1')
+        },
+        clampPage(page) {
+            return _.clamp(page, 1, this.pagination.total)
+        },
+    },
+    computed: {
         hasActionButtons() {
             return this.downloadButton || this.printButton || this.rotateButton
+        },
+        isScaleTypePageFit() {
+            return this.scaleType === 'page-fit'
+        },
+        scaleTypeTooltip() {
+            return this.isScaleTypePageFit ? 'Ajustar à largura' : 'Ajustar à altura'
+        },
+        scaleTypeIcon() {
+            return this.isScaleTypePageFit ? 'mdi-fullscreen' : 'mdi-fullscreen-exit'
+        },
+        hasNextPage() {
+            return this.pagination.current < this.pagination.total
+        },
+        hasPreviousPage() {
+            return this.pagination.current > 1
+        },
+    },
+    watch: {
+        'pagination.current'(page) {
+            this.page = this.formatPage(page)
         },
     },
 }
@@ -132,7 +218,34 @@ export default {
         color #777 !important
 
     &__pagination
-        margin-left 10px
+        display flex
+        flex-wrap nowrap
+        align-items center
+        justify-content center
+        height 32px
+
+        .v-input
+            margin-right 8px
+
+            &__slot, &__control
+                margin-bottom 0
+                min-height auto !important
+                display: flex !important;
+                align-items: center !important;
+                border-radius 0 !important
+                border-color #a0a0a0 !important
+
+                input
+                    color #777 !important
+                    font-size 14px !important
+                    width 45px
+                    text-align center
+                    margin-top 0
+                    -moz-appearance textfield
+
+                    &::-webkit-inner-spin-button, &::-webkit-outer-spin-button
+                        -webkit-appearance none
+                        margin 0
 
     .v-toolbar__content
         height 100% !important
