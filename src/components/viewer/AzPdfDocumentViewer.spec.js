@@ -517,98 +517,106 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         })
     })
 
-    describe('Method linkDraggablesByPageInterval', () => {
-        let draggable, pageIntervalCallback
+    describe('Method', () => {
+        describe('linkDraggablesByPageInterval', () => {
+            let draggable, pageIntervalCallback
 
-        beforeEach(() => {
-            draggable = draggables[0]
-            pageIntervalCallback = () => ({
-                startPage: 1,
-                endPage: 10,
+            beforeEach(() => {
+                draggable = draggables[0]
+                pageIntervalCallback = () => ({
+                    startPage: 1,
+                    endPage: 10,
+                })
+            })
+
+            it('Should not throw any errors when startPage and endPage are valid', () => {
+                wrapper.vm.$refs.draggableRef.linkDraggablesByPageInterval = jest.fn()
+                wrapper.vm.linkDraggablesByPageInterval(draggable, pageIntervalCallback)
+
+                expect(wrapper.vm.$refs.draggableRef.linkDraggablesByPageInterval.mock.calls).toHaveLength(1)
+            })
+
+            it('Should throw error if pageIntervalCallback is null/undefined', () => {
+                const wrapperCallback = () => wrapper.vm.linkDraggablesByPageInterval(draggable, null)
+
+                expect(wrapperCallback).toThrow(Error)
+            })
+
+            it('Should throw error if pageIntervalCallback is not a function', () => {
+                const wrapperCallback = () => wrapper.vm.linkDraggablesByPageInterval(draggable, { test: 1 })
+
+                expect(wrapperCallback).toThrow(Error)
+            })
+
+            it('Should throw error if pageIntervalCallback returns null/undefined', () => {
+                pageIntervalCallback = () => null
+
+                const wrapperCallback = () => wrapper.vm.linkDraggablesByPageInterval(draggable, pageIntervalCallback)
+
+                expect(wrapperCallback).toThrow(Error)
+            })
+
+            it('Should throw error if startPage is null/undefined', () => {
+                pageIntervalCallback = () => ({ endPage: 10 })
+
+                const wrapperCallback = () => wrapper.vm.linkDraggablesByPageInterval(draggable, pageIntervalCallback)
+
+                expect(wrapperCallback).toThrow(Error)
+            })
+
+            it('Should throw error if endPage is null/undefined', () => {
+                pageIntervalCallback = () => ({ startPage: 1 })
+
+                const wrapperCallback = () => wrapper.vm.linkDraggablesByPageInterval(draggable, pageIntervalCallback)
+
+                expect(wrapperCallback).toThrow(Error)
+            })
+
+            it('Should throw error if startPage is < 1', () => {
+                pageIntervalCallback = () => ({ startPage: 0, endPage: 10 })
+
+                const wrapperCallback = () => wrapper.vm.linkDraggablesByPageInterval(draggable, pageIntervalCallback)
+
+                expect(wrapperCallback).toThrow(Error)
+            })
+
+            it('Should throw error if startPage is > totalPages', () => {
+                pageIntervalCallback = () => ({ startPage: 11, endPage: 10 })
+
+                const wrapperCallback = () => wrapper.vm.linkDraggablesByPageInterval(draggable, pageIntervalCallback)
+
+                expect(wrapperCallback).toThrow(Error)
+            })
+
+            it('Should throw error if endPage is < 1', () => {
+                pageIntervalCallback = () => ({ startPage: 1, endPage: 0 })
+
+                const wrapperCallback = () => wrapper.vm.linkDraggablesByPageInterval(draggable, pageIntervalCallback)
+
+                expect(wrapperCallback).toThrow(Error)
+            })
+
+            it('Should throw error if endPage is > totalPages', () => {
+                pageIntervalCallback = () => ({ startPage: 1, endPage: 11 })
+
+                const wrapperCallback = () => wrapper.vm.linkDraggablesByPageInterval(draggable, pageIntervalCallback)
+
+                expect(wrapperCallback).toThrow(Error)
+            })
+
+            it('Should throw error if startPage > endPage', () => {
+                pageIntervalCallback = () => ({ startPage: 5, endPage: 4 })
+
+                const wrapperCallback = () => wrapper.vm.linkDraggablesByPageInterval(draggable, pageIntervalCallback)
+
+                expect(wrapperCallback).toThrow(Error)
             })
         })
 
-        it('Should not throw any errors when startPage and endPage are valid', () => {
-            wrapper.vm.$refs.draggableRef.linkDraggablesByPageInterval = jest.fn()
-            wrapper.vm.linkDraggablesByPageInterval(draggable, pageIntervalCallback)
-
-            expect(wrapper.vm.$refs.draggableRef.linkDraggablesByPageInterval.mock.calls).toHaveLength(1)
-        })
-
-        it('Should throw error if pageIntervalCallback is null/undefined', () => {
-            const wrapperCallback = () => wrapper.vm.linkDraggablesByPageInterval(draggable, null)
-
-            expect(wrapperCallback).toThrow(Error)
-        })
-
-        it('Should throw error if pageIntervalCallback is not a function', () => {
-            const wrapperCallback = () => wrapper.vm.linkDraggablesByPageInterval(draggable, { test: 1 })
-
-            expect(wrapperCallback).toThrow(Error)
-        })
-
-        it('Should throw error if pageIntervalCallback returns null/undefined', () => {
-            pageIntervalCallback = () => null
-
-            const wrapperCallback = () => wrapper.vm.linkDraggablesByPageInterval(draggable, pageIntervalCallback)
-
-            expect(wrapperCallback).toThrow(Error)
-        })
-
-        it('Should throw error if startPage is null/undefined', () => {
-            pageIntervalCallback = () => ({ endPage: 10 })
-
-            const wrapperCallback = () => wrapper.vm.linkDraggablesByPageInterval(draggable, pageIntervalCallback)
-
-            expect(wrapperCallback).toThrow(Error)
-        })
-
-        it('Should throw error if endPage is null/undefined', () => {
-            pageIntervalCallback = () => ({ startPage: 1 })
-
-            const wrapperCallback = () => wrapper.vm.linkDraggablesByPageInterval(draggable, pageIntervalCallback)
-
-            expect(wrapperCallback).toThrow(Error)
-        })
-
-        it('Should throw error if startPage is < 1', () => {
-            pageIntervalCallback = () => ({ startPage: 0, endPage: 10 })
-
-            const wrapperCallback = () => wrapper.vm.linkDraggablesByPageInterval(draggable, pageIntervalCallback)
-
-            expect(wrapperCallback).toThrow(Error)
-        })
-
-        it('Should throw error if startPage is > totalPages', () => {
-            pageIntervalCallback = () => ({ startPage: 11, endPage: 10 })
-
-            const wrapperCallback = () => wrapper.vm.linkDraggablesByPageInterval(draggable, pageIntervalCallback)
-
-            expect(wrapperCallback).toThrow(Error)
-        })
-
-        it('Should throw error if endPage is < 1', () => {
-            pageIntervalCallback = () => ({ startPage: 1, endPage: 0 })
-
-            const wrapperCallback = () => wrapper.vm.linkDraggablesByPageInterval(draggable, pageIntervalCallback)
-
-            expect(wrapperCallback).toThrow(Error)
-        })
-
-        it('Should throw error if endPage is > totalPages', () => {
-            pageIntervalCallback = () => ({ startPage: 1, endPage: 11 })
-
-            const wrapperCallback = () => wrapper.vm.linkDraggablesByPageInterval(draggable, pageIntervalCallback)
-
-            expect(wrapperCallback).toThrow(Error)
-        })
-
-        it('Should throw error if startPage > endPage', () => {
-            pageIntervalCallback = () => ({ startPage: 5, endPage: 4 })
-
-            const wrapperCallback = () => wrapper.vm.linkDraggablesByPageInterval(draggable, pageIntervalCallback)
-
-            expect(wrapperCallback).toThrow(Error)
+        describe('changePage', () => {
+            it('Should be able to change page from parent', () => {
+                expect(wrapper.vm.changePage).toBeTruthy()
+            })
         })
     })
 
