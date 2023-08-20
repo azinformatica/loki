@@ -114,6 +114,7 @@ export default {
             this.setInitialPagination(e.source)
             this.updateScaleType()
             this.setInitialScale(e.source)
+            this.$emit('pagesinit')
         },
         pageChangeEventHandler(e) {
             this.pagination.current = e.pageNumber
