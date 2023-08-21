@@ -11,9 +11,32 @@ const createDefaultProps = () => {
         components: {
             select: {
                 humanDecision: {
-                    show: true,
+                    show: false,
                     disabled: false,
-                    items: [],
+                    items: [
+                        {
+                            value: 'value-ex-1',
+                            text: 'text-ex-1',
+                        },
+                        {
+                            value: 'value-ex-2',
+                            text: 'text-ex-2',
+                        },
+                    ],
+                },
+                route: {
+                    show: false,
+                    disabled: false,
+                    items: [
+                        {
+                            value: 'value-ex-1',
+                            text: 'text-ex-1',
+                        },
+                        {
+                            value: 'value-ex-2',
+                            text: 'text-ex-2',
+                        },
+                    ],
                 },
             },
             button: {
@@ -91,6 +114,75 @@ describe('AzBpmModal.spec.js', () => {
             buttonClose.trigger('click')
 
             expect(wrapper.emitted('action')).toBeTruthy()
+        })
+    })
+
+    describe('Select', () => {
+        let selector, getSelect
+
+        beforeAll(() => {
+            getSelect = () => wrapper.find(selector)
+        })
+
+        describe('Human decision', () => {
+            beforeEach(() => {
+                selector = '#human-decision-select'
+                propsData.buttonType = 'complete'
+                propsData.components.select.humanDecision.show = true
+                wrapper = createWrapper({ propsData })
+            })
+
+            it('Should not show human decision select if button type is not "complete"', () => {
+                propsData.buttonType = 'any-type-different-from-complete'
+                wrapper = createWrapper({ propsData })
+
+                expect(getSelect().exists()).toBe(false)
+            })
+
+            it('Should not show human decision select if not showed in components', () => {
+                propsData.components.select.humanDecision.show = false
+                wrapper = createWrapper({ propsData })
+
+                expect(getSelect().exists()).toBe(false)
+            })
+
+            it('Should show human decision select if button type is "complete" and component show', () => {
+                expect(getSelect().exists()).toBe(true)
+            })
+
+            it('Should change selectedHumanTask when component emits change event', () => {
+                const selectedOption = propsData.components.select.humanDecision.items[1].value
+                getSelect().vm.$emit('input', selectedOption)
+
+                expect(wrapper.vm.selectedHumanTask).toBe(selectedOption)
+            })
+        })
+
+        describe('Route', () => {
+            beforeEach(() => {
+                selector = '#route-select'
+                propsData.buttonType = 'route'
+                propsData.components.select.route.show = true
+                wrapper = createWrapper({ propsData })
+            })
+
+            it('Should not show human decision select if button type is not "route"', () => {
+                propsData.buttonType = 'any-type-different-from-route'
+                wrapper = createWrapper({ propsData })
+
+                expect(getSelect().exists()).toBe(false)
+            })
+
+            it('Should show human decision select if button type is "route"', () => {
+                expect(getSelect().exists()).toBe(true)
+            })
+
+            it('Should change selectedHumanTask when component emits change event', () => {
+                const selectedOption = propsData.components.select.route.items[1].value
+                getSelect().vm.$emit('input', selectedOption)
+
+                expect(wrapper.vm.selectedRoute).toBe(selectedOption)
+            })
         })
     })
 })
