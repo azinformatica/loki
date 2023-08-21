@@ -391,7 +391,7 @@ export default class AzBpmProcess {
 
     _getSelectRouteItems() {
         const currentTask = this.getCurrentTask()
-        const userTasks = this._getUserTasks().filter(item => item.activityId !== currentTask.key)
+        const userTasks = this._getUserTasks().filter((item) => item.activityId !== currentTask.key)
 
         return userTasks.map((userTask) => ({
             text: userTask.name,
