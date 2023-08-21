@@ -735,12 +735,6 @@ export default class AzBpmProcess {
         return bpmAtProcessKey.userTasks || []
     }
 
-    _hasUserTasks() {
-        const userTasks = this._getUserTasks()
-
-        return userTasks.length > 0
-    }
-
     _getCurrentTasks() {
         const processInstance = this.getProcessInstance()
 
