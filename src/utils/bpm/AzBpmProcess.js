@@ -797,11 +797,13 @@ export default class AzBpmProcess {
 
     _dispatchButtonActionOnCurrentTask(buttonType, bpmParameters) {
         const result = this._createButtonActionResult(buttonType)
+        const currentTasks = this._getCurrentTasks()
 
         return this._updateButtonsAndDispatchAction(buttonType, bpmParameters)
             .then((actionResponse) => {
                 result.response = actionResponse
                 result.processInstance = this.getProcessInstance()
+                result.toTasks = this._getGeneratedTasks(currentTasks)
             })
             .catch((error) => {
                 result.error = error
@@ -853,9 +855,18 @@ export default class AzBpmProcess {
     _createButtonActionResult(buttonType) {
         return {
             action: buttonType,
+            fromTask: this.getCurrentTask(),
+            toTasks: [],
             processInstance: null,
             response: null,
             error: null,
         }
+    }
+
+    _getGeneratedTasks(previousTasks) {
+        const currentTasks = this._getCurrentTasks()
+        const previousTasksKeys = previousTasks.map((task) => task.key)
+
+        return currentTasks.filter((task) => !previousTasksKeys.includes(task.key))
     }
 }
