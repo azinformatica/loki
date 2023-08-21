@@ -668,7 +668,7 @@ export default class AzBpmProcess {
     }
 
     _isFirstTask(task) {
-        return task.firstProcessDefinitionUserTask || false
+        return !task.previousTask
     }
 
     _getCandidateGroups(task) {
