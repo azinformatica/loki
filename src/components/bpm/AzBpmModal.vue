@@ -2,7 +2,7 @@
     <az-modal>
         <template #title>
             <div class="d-flex flex-grow-1 flex-nowrap justify-space-between">
-                <h4>{{ actionLabel }} processo</h4>
+                <h4>{{ actionLabel }}</h4>
                 <v-btn icon color="white" @click="emitCloseEvent" data-test="button-close">
                     <v-icon> mdi-close </v-icon>
                 </v-btn>
