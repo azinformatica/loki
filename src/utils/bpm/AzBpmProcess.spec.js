@@ -52,6 +52,14 @@ const createProcessInstanceMock = () => ({
             },
         },
     ],
+    processDefinitionInfo: {
+        nome: 'process-definition-info-name-example',
+        key: 'process-key',
+        version: 5,
+        createdAt: '2023-07-12T09:18:24.613-0400',
+        routingEnabled: true,
+        userHasPermissionToRoute: true,
+    },
     currentTask: createCurrentTaskMock(),
 })
 
@@ -80,6 +88,18 @@ const createStoreState = (processKey, businessKey) => ({
                         instance: createProcessInstanceMock(),
                         isLoading: false,
                     },
+                    userTasks: [
+                        {
+                            activityId: 'UserTask_0gosj4v',
+                            name: 'Primeiro',
+                            type: 'userTask',
+                        },
+                        {
+                            activityId: 'UserTask_1t4kqqz',
+                            name: 'Segundo',
+                            type: 'userTask',
+                        },
+                    ],
                 },
             },
         },
@@ -479,6 +499,32 @@ describe('AzBpmProcess', () => {
             })
         })
 
+        describe('SelectRoute', () => {
+            it('Should show select route', () => {
+                expect(components.select.route.show).toBe(true)
+            })
+
+            it('Should not be disabled', () => {
+                expect(components.select.route.disabled).toBe(false)
+            })
+
+            it('Should have length of items equal to length of userTasks', () => {
+                expect(components.select.route.items).toHaveLength(state.loki.bpm.process[processKey].userTasks.length)
+            })
+
+            it('Should have property "text" in every item of items array', () => {
+                for (const item of components.select.route.items) {
+                    expect(item.hasOwnProperty('text')).toBe(true)
+                }
+            })
+
+            it('Should have property "value" in every item of items array', () => {
+                for (const item of components.select.route.items) {
+                    expect(item.hasOwnProperty('value')).toBe(true)
+                }
+            })
+        })
+
         describe('Button', () => {
             let getButton, buttonType
 
@@ -711,8 +757,7 @@ describe('AzBpmProcess', () => {
 
                 it('Should not show if is first task', () => {
                     process.instance.currentTask.assignee = null
-                    process.instance.currentTask.firstProcessDefinitionUserTask = true
-                    process.instance.currentTask.previousTask = {}
+                    process.instance.currentTask.previousTask = null
                     components = azBpmProcess.getComponents()
 
                     expect(getButton().show).toBe(false)
@@ -750,6 +795,113 @@ describe('AzBpmProcess', () => {
                         expect(getButton().disabled).toBe(true)
                     }
                 )
+
+                it('Should not disable if user is a candidate user in previous task', () => {
+                    process.currentTask.candidateGroups = ['user-role-example-01']
+                    process.instance.currentTask.candidateGroups = ['user-role-example-01']
+                    components = azBpmProcess.getComponents()
+
+                    expect(getButton().disabled).toBe(false)
+                })
+
+                it('Should not disable if user belongs to candidate group', () => {
+                    process.instance.currentTask.previousTask.assignee = 'user-name-example-01'
+                    components = azBpmProcess.getComponents()
+
+                    expect(getButton().disabled).toBe(false)
+                })
+
+                it('Should have label', () => {
+                    expect(getButton().hasOwnProperty('label')).toBe(true)
+                })
+
+                it('Should have action and action must be a function', () => {
+                    expect(getButton().hasOwnProperty('action')).toBe(true)
+                    expect(typeof getButton().action).toBe('function')
+                })
+            })
+
+            describe('Route', () => {
+                beforeAll(() => {
+                    buttonType = 'route'
+                })
+
+                it('Should not show if status instance is not active', () => {
+                    process.instance.statusInstance = 'ENDED'
+                    components = azBpmProcess.getComponents()
+
+                    expect(getButton().show).toBe(false)
+                })
+
+                it('Should not show if routing is not enabled', () => {
+                    process.instance.processDefinitionInfo.routingEnabled = false
+                    components = azBpmProcess.getComponents()
+
+                    expect(getButton().show).toBe(false)
+                })
+
+                it('Should not show if user has no permission to route', () => {
+                    process.instance.processDefinitionInfo.userHasPermissionToRoute = false
+                    components = azBpmProcess.getComponents()
+
+                    expect(getButton().show).toBe(false)
+                })
+
+                it('Should not show if current task has no assignee', () => {
+                    process.instance.currentTask.assignee = null
+                    components = azBpmProcess.getComponents()
+
+                    expect(getButton().show).toBe(false)
+                })
+
+                it('Should not show if is parallel', () => {
+                    process.instance.currentTask.isParallel = true
+                    components = azBpmProcess.getComponents()
+
+                    expect(getButton().show).toBe(false)
+                })
+
+                it('Should show route button', () => {
+                    components = azBpmProcess.getComponents()
+
+                    expect(getButton().show).toBe(true)
+                })
+
+                it('Should disable if is loading process instance', () => {
+                    azBpmProcess.isLoadingProcess = jest.fn(() => true)
+                    components = azBpmProcess.getComponents()
+
+                    expect(getButton().disabled).toBe(true)
+                })
+
+                it('Should disable if is dispatching action', () => {
+                    azBpmProcess._isDispatchingAction = jest.fn(() => true)
+                    components = azBpmProcess.getComponents()
+
+                    expect(getButton().disabled).toBe(true)
+                })
+
+                it('Should disable if routing is not enabled', () => {
+                    process.instance.processDefinitionInfo.routingEnabled = false
+                    components = azBpmProcess.getComponents()
+
+                    expect(getButton().disabled).toBe(true)
+                })
+
+                it('Should disable if user has no permission to route', () => {
+                    process.instance.processDefinitionInfo.userHasPermissionToRoute = false
+                    components = azBpmProcess.getComponents()
+
+                    expect(getButton().disabled).toBe(true)
+                })
+
+                it('Should disable if user is not a candidate user and does not belong to candidate group', () => {
+                    process.instance.currentTask.candidateUsers = ['user-name-example-02']
+                    process.instance.currentTask.candidateGroups = ['user-role-example-02']
+                    components = azBpmProcess.getComponents()
+
+                    expect(getButton().disabled).toBe(true)
+                })
 
                 it('Should not disable if user is a candidate user in previous task', () => {
                     process.currentTask.candidateGroups = ['user-role-example-01']
