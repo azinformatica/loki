@@ -7,12 +7,21 @@
             :printButton="printButton"
             :rotateButton="rotateButton && draggables.length === 0"
             :scaleType="scale.type"
+            :previousDocumentButton="previousDocumentButton"
+            :previousDocumentButtonTooltip="previousDocumentButtonTooltip"
+            :nextDocumentButton="nextDocumentButton"
+            :nextDocumentButtonTooltip="nextDocumentButtonTooltip"
             @changeScaleType="changeScaleType"
             @zoomIn="zoomIn"
             @zoomOut="zoomOut"
             @rotate="rotate"
             @download="download"
             @print="print"
+            @previousDocument="previousDocument"
+            @previousPage="previousPage"
+            @changePage="changePage"
+            @nextPage="nextPage"
+            @nextDocument="nextDocument"
             v-show="!loadingPlaceHolder"
         />
         <div
@@ -319,6 +328,18 @@ export default {
         emitirScroll(scroll) {
             this.$emit('scroll', scroll)
         },
+        previousDocument() {
+            this.$emit('previous-document')
+        },
+        nextDocument() {
+            this.$emit('next-document')
+        },
+        nextPage() {
+            this.changePage(this.pagination.current + 1)
+        },
+        previousPage() {
+            this.changePage(this.pagination.current - 1)
+        },
         changePage(page) {
             this.pdf.viewer.currentPageNumber = _.clamp(page, 1, this.pagination.total)
         },
@@ -359,6 +380,22 @@ export default {
         printButton: {
             type: Boolean,
             default: false,
+        },
+        previousDocumentButton: {
+            type: Boolean,
+            default: false,
+        },
+        previousDocumentButtonTooltip: {
+            type: String,
+            default: 'Ir para o documento anterior',
+        },
+        nextDocumentButton: {
+            type: Boolean,
+            default: false,
+        },
+        nextDocumentButtonTooltip: {
+            type: String,
+            default: 'Ir para o próximo documento',
         },
         draggables: {
             type: Array,

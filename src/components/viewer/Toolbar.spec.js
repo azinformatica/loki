@@ -7,7 +7,16 @@ const localVue = createLocalVue()
 Vue.use(Vuetify)
 
 describe('Toolbar.spec.js', () => {
-    let disableButtons, downloadButton, pagination, rotateButton, scaleType, wrapper
+    let disableButtons,
+        downloadButton,
+        pagination,
+        rotateButton,
+        scaleType,
+        previousDocumentButton,
+        previousDocumentButtonTooltip,
+        nextDocumentButton,
+        nextDocumentButtonTooltip,
+        wrapper
 
     beforeEach(() => {
         disableButtons = true
@@ -18,6 +27,10 @@ describe('Toolbar.spec.js', () => {
         }
         rotateButton = true
         scaleType = 'page-fit'
+        previousDocumentButton = true
+        previousDocumentButtonTooltip = 'tp1'
+        nextDocumentButton = true
+        nextDocumentButtonTooltip = 'tp2'
         wrapper = shallowMount(Toolbar, {
             localVue,
             propsData: {
@@ -26,6 +39,10 @@ describe('Toolbar.spec.js', () => {
                 pagination,
                 rotateButton,
                 scaleType,
+                previousDocumentButton,
+                previousDocumentButtonTooltip,
+                nextDocumentButton,
+                nextDocumentButtonTooltip,
             },
         })
     })
@@ -37,7 +54,7 @@ describe('Toolbar.spec.js', () => {
 
         it('Should have a default value to pagination', () => {
             wrapper = shallowMount(Toolbar, { localVue, propsData: { scaleType } })
-            expect(wrapper.props().pagination).toEqual({ current: '-', total: '-' })
+            expect(wrapper.props().pagination).toEqual({ current: 1, total: 1 })
         })
 
         it('Should receive a disableButtons', () => {
@@ -66,12 +83,68 @@ describe('Toolbar.spec.js', () => {
             wrapper = shallowMount(Toolbar, { localVue, propsData: { scaleType } })
             expect(wrapper.props().rotateButton).toBeFalsy()
         })
+
+        it('Should receive a previousDocumentButton', () => {
+            expect(wrapper.props().previousDocumentButton).toBe(previousDocumentButton)
+        })
+
+        it('Should have a default value to previousDocumentButton', () => {
+            wrapper = shallowMount(Toolbar, { localVue, propsData: { scaleType } })
+            expect(wrapper.props().previousDocumentButton).toBe(false)
+        })
+
+        it('Should receive a previousDocumentButtonTooltip', () => {
+            expect(wrapper.props().previousDocumentButtonTooltip).toBe(previousDocumentButtonTooltip)
+        })
+
+        it('Should have a default previousDocumentButtonTooltip', () => {
+            wrapper = shallowMount(Toolbar, { localVue, propsData: { scaleType } })
+            expect(wrapper.props().previousDocumentButtonTooltip).toBeTruthy()
+        })
+
+        it('Should receive a nextDocumentButton', () => {
+            expect(wrapper.props().nextDocumentButton).toBe(nextDocumentButton)
+        })
+
+        it('Should have a default value to nextDocumentButton', () => {
+            wrapper = shallowMount(Toolbar, { localVue, propsData: { scaleType } })
+            expect(wrapper.props().nextDocumentButton).toBe(false)
+        })
+
+        it('Should receive a nextDocumentButtonTooltip', () => {
+            expect(wrapper.props().nextDocumentButtonTooltip).toBe(nextDocumentButtonTooltip)
+        })
+
+        it('Should have a default nextDocumentButtonTooltip', () => {
+            wrapper = shallowMount(Toolbar, { localVue, propsData: { scaleType } })
+            expect(wrapper.props().nextDocumentButtonTooltip).toBeTruthy()
+        })
     })
 
     describe('Template', () => {
+        it('Should have previousDocument button', () => {
+            let previousDocumentBtn = wrapper.find('[data-test="previousDocument"]')
+            expect(previousDocumentBtn).toBeTruthy()
+        })
+
+        it('Should have previousPage button', () => {
+            let previousPageBtn = wrapper.find('[data-test="previousPage"]')
+            expect(previousPageBtn).toBeTruthy()
+        })
+
         it('Should display pagination', () => {
             let pagination = wrapper.find('[data-test="pagination"]')
-            expect(pagination.html()).toContain('1 / 3')
+            expect(pagination.html()).toContain('de 3')
+        })
+
+        it('Should have nextPage button', () => {
+            let nextPageBtn = wrapper.find('[data-test="nextPage"]')
+            expect(nextPageBtn).toBeTruthy()
+        })
+
+        it('Should have nextDocument button', () => {
+            let nextDocumentBtn = wrapper.find('[data-test="nextDocument"]')
+            expect(nextDocumentBtn).toBeTruthy()
         })
 
         it('Should have a zoomOut button', () => {
@@ -109,6 +182,10 @@ describe('Toolbar.spec.js', () => {
         })
 
         it('Should disable the buttons', () => {
+            expect(wrapper.find('[data-test="previousDocument"]').html()).toContain('disabled="true"')
+            expect(wrapper.find('[data-test="previousPage"]').html()).toContain('disabled="true"')
+            expect(wrapper.find('[data-test="nextPage"]').html()).toContain('disabled="true"')
+            expect(wrapper.find('[data-test="nextDocument"]').html()).toContain('disabled="true"')
             expect(wrapper.find('[data-test="zoomOut"]').html()).toContain('disabled="true"')
             expect(wrapper.find('[data-test="zoomIn"]').html()).toContain('disabled="true"')
             expect(wrapper.find('[data-test="changeScaleType"]').html()).toContain('disabled="true"')
@@ -118,6 +195,30 @@ describe('Toolbar.spec.js', () => {
     })
 
     describe('Events', () => {
+        it('Should emit an event on click at previousDocument button', () => {
+            let previousDocumentBtn = wrapper.find('[data-test="previousDocument"]')
+            previousDocumentBtn.vm.$emit('click')
+            expect(wrapper.emitted().previousDocument).toBeTruthy()
+        })
+
+        it('Should emit an event on click at previousPage button', () => {
+            let previousPageBtn = wrapper.find('[data-test="previousPage"]')
+            previousPageBtn.vm.$emit('click')
+            expect(wrapper.emitted().previousPage).toBeTruthy()
+        })
+
+        it('Should emit an event on click at nextPage button', () => {
+            let nextPageBtn = wrapper.find('[data-test="nextPage"]')
+            nextPageBtn.vm.$emit('click')
+            expect(wrapper.emitted().nextPage).toBeTruthy()
+        })
+
+        it('Should emit an event on click at nextDocument button', () => {
+            let nextDocumentBtn = wrapper.find('[data-test="nextDocument"]')
+            nextDocumentBtn.vm.$emit('click')
+            expect(wrapper.emitted().nextDocument).toBeTruthy()
+        })
+
         it('Should emit an event on click at zoomOut button', () => {
             let zoomOutBtn = wrapper.find('[data-test="zoomOut"]')
             zoomOutBtn.vm.$emit('click')
