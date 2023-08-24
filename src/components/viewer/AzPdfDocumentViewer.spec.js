@@ -5,6 +5,7 @@ import 'regenerator-runtime'
 import '@azinformatica/pdfjs-dist/build/pdf'
 import '@azinformatica/pdfjs-dist/web/pdf_viewer.js'
 import AzPdfDocumentViewer from './AzPdfDocumentViewer'
+import azScroll from '../../directives/scroll'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 
 jest.mock('@azinformatica/pdfjs-dist', () => ({
@@ -60,7 +61,8 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         draggableLinkTooltip,
         draggableUnlinkTooltip,
         draggableDeleteTooltip,
-        wrapper
+        wrapper,
+        directives
 
     beforeEach(() => {
         src = 'document/url'
@@ -83,6 +85,9 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         draggableLinkTooltip = 'link'
         draggableUnlinkTooltip = 'unlink'
         draggableDeleteTooltip = 'delete'
+        directives = {
+            azScroll,
+        }
         wrapper = shallowMount(AzPdfDocumentViewer, {
             localVue,
             propsData: {
@@ -99,6 +104,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 draggableDeleteTooltip,
             },
             attachTo: document.body,
+            directives,
         })
     })
 
@@ -116,6 +122,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 localVue,
                 propsData: { src, downloadButton },
                 attachTo: document.body,
+                directives,
             })
             expect(wrapper.props().httpHeader).toEqual({})
         })
@@ -141,6 +148,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 localVue,
                 propsData: { src, downloadButton },
                 attachTo: document.body,
+                directives,
             })
             expect(wrapper.props().draggables).toEqual([])
         })
@@ -194,6 +202,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 localVue,
                 propsData: { src, httpHeader, downloadButton, progressBar },
                 attachTo: document.body,
+                directives,
             })
             await wrapper.vm.$nextTick()
 
@@ -206,6 +215,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 localVue,
                 propsData: { src, httpHeader, downloadButton, progressBar },
                 attachTo: document.body,
+                directives,
             })
             wrapper.destroy()
 
@@ -289,6 +299,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 stubs: {
                     Toolbar: { template: '<button @click=\'$emit("zoomIn")\' ></button>' },
                 },
+                directives,
             })
             wrapper.setData({
                 pdf: {
@@ -309,6 +320,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 stubs: {
                     Toolbar: { template: '<button @click=\'$emit("zoomOut")\' ></button>' },
                 },
+                directives,
             })
             wrapper.setData({
                 pdf: {
@@ -329,6 +341,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 stubs: {
                     Toolbar: { template: '<button @click=\'$emit("zoomOut")\' ></button>' },
                 },
+                directives,
             })
             wrapper.setData({
                 pdf: {
@@ -349,6 +362,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 stubs: {
                     Toolbar: { template: '<button @click=\'$emit("changeScaleType")\' ></button>' },
                 },
+                directives,
             })
             wrapper.setData({
                 scale: {
@@ -372,6 +386,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 stubs: {
                     Toolbar: { template: '<button @click=\'$emit("changeScaleType")\' ></button>' },
                 },
+                directives,
             })
             wrapper.setData({
                 scale: {
@@ -396,6 +411,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 stubs: {
                     Toolbar: { template: '<button @click=\'$emit("rotate")\' ></button>' },
                 },
+                directives,
             })
             wrapper.setData({
                 pdf: {
@@ -418,6 +434,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 stubs: {
                     Toolbar: { template: '<button @click=\'$emit("download")\' ></button>' },
                 },
+                directives,
             })
             wrapper.find('button').trigger('click')
 
@@ -592,6 +609,30 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             const wrapperCallback = () => wrapper.vm.linkDraggablesByPageInterval(draggable, pageIntervalCallback)
 
             expect(wrapperCallback).toThrow(Error)
+        })
+    })
+
+    describe('Scroll', () => {
+        beforeEach(() => {
+            wrapper = shallowMount(AzPdfDocumentViewer, {
+                localVue,
+                propsData: { src, httpHeader, downloadButton },
+                directives,
+            })
+        })
+
+        it('Should emit event on scroll', () => {
+            const azPdfViewer = wrapper.find('#az-pdf-viewer')
+            azPdfViewer.trigger('scroll')
+
+            wrapper.vm.$nextTick(() => {
+                const event = wrapper.emitted('scroll')
+
+                expect(event[0]).toBeTruthy()
+                expect(event[0][0]).toBeTruthy()
+                expect(event[0][0].direction).toBe('none')
+                expect(event[0][0].max).toBe(false)
+            })
         })
     })
 })

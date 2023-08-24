@@ -15,7 +15,14 @@
             @print="print"
             v-show="!loadingPlaceHolder"
         />
-        <div id="az-pdf-viewer" class="Viewer" :style="azPdfViewerStyle" v-show="!loadingPlaceHolder">
+        <div
+            id="az-pdf-viewer"
+            ref="azPdfViewer"
+            class="Viewer"
+            v-az-scroll="emitirScroll"
+            :style="azPdfViewerStyle"
+            v-show="!loadingPlaceHolder"
+        >
             <div class="pdfViewer"></div>
             <Draggable
                 data-test="draggable"
@@ -107,6 +114,7 @@ export default {
             this.setInitialPagination(e.source)
             this.updateScaleType()
             this.setInitialScale(e.source)
+            this.$emit('pagesinit')
         },
         pageChangeEventHandler(e) {
             this.pagination.current = e.pageNumber
@@ -307,6 +315,12 @@ export default {
         },
         handleDeleteDraggable({ draggable, draggableIndex }) {
             this.$emit('delete:draggable', { draggable, draggableIndex })
+        },
+        emitirScroll(scroll) {
+            this.$emit('scroll', scroll)
+        },
+        changePage(page) {
+            this.pdf.viewer.currentPageNumber = _.clamp(page, 1, this.pagination.total)
         },
     },
     props: {
