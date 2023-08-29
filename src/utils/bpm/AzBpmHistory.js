@@ -44,7 +44,7 @@ export default class AzBpmHistory {
             const assignees = currentLog.activityAssignees || []
             assignees.reduce((previousAssignee, currentAssignee) => {
                 this._addHistoryClaim(history, currentLog, previousLog, currentAssignee)
-                this._addHistoryUnclaim(history, currentLog, currentAssignee, previousAssignee)
+                this._addHistoryUnclaim(history, currentLog, previousLog, currentAssignee, previousAssignee)
 
                 return currentAssignee
             }, null)
@@ -95,9 +95,9 @@ export default class AzBpmHistory {
         }
     }
 
-    _addHistoryUnclaim(history, currentLog, currentAssignee, previousAssignee) {
+    _addHistoryUnclaim(history, currentLog, previousLog, currentAssignee, previousAssignee) {
         if (!currentAssignee.assignee) {
-            const historyUnclaim = this._getHistoryUnclaim(currentLog, currentAssignee, previousAssignee)
+            const historyUnclaim = this._getHistoryUnclaim(currentLog, previousLog, currentAssignee, previousAssignee)
 
             history.push(historyUnclaim)
         }
@@ -112,18 +112,20 @@ export default class AzBpmHistory {
         defaultData.assignee = previousLog && previousLog.completeUser
         defaultData.toAssignee = currentAssignee.assignee
         defaultData.date = currentAssignee.assigneeDate
+        defaultData.uoName = this._getUOName(currentLog, previousLog)
 
         return defaultData
     }
 
-    _getHistoryUnclaim(currentLog, currentAssignee, previousAssignee) {
+    _getHistoryUnclaim(currentLog, previousLog, currentAssignee, previousAssignee) {
         const defaultData = this._getDefaultData()
 
         defaultData.status = 'RECEBIMENTO CANCELADO'
         defaultData.icon = 'mdi-account-cancel'
+        defaultData.date = currentAssignee.assigneeDate
         defaultData.taskName = currentLog.activityName
         defaultData.assignee = previousAssignee && previousAssignee.assignee
-        defaultData.date = currentAssignee.assigneeDate
+        defaultData.uoName = this._getUOName(currentLog, previousLog)
 
         return defaultData
     }
@@ -133,9 +135,10 @@ export default class AzBpmHistory {
 
         defaultData.status = 'FINALIZADO'
         defaultData.icon = 'mdi-progress-check'
+        defaultData.date = currentLog.activityEndTime || currentLog.completeDate || currentLog.routingDate
         defaultData.taskName = currentLog.activityName
         defaultData.assignee = currentLog.completeUser || currentLog.routingUser
-        defaultData.date = currentLog.activityEndTime || currentLog.completeDate || currentLog.routingDate
+        defaultData.uoName = currentLog.uoOrigin ? currentLog.uoOrigin.sigla : ''
 
         return defaultData
     }
@@ -145,10 +148,12 @@ export default class AzBpmHistory {
 
         defaultData.status = 'ENCAMINHADO'
         defaultData.icon = 'mdi-progress-check'
+        defaultData.date = previousLog.activityEndTime || previousLog.completeDate || previousLog.routingDate
         defaultData.taskName = previousLog.activityName
         defaultData.toTaskName = currentLog.activityName
         defaultData.assignee = previousLog.completeUser || previousLog.routingUser
-        defaultData.date = previousLog.activityEndTime || previousLog.completeDate || previousLog.routingDate
+        defaultData.uoName = previousLog.uoOrigin ? previousLog.uoOrigin.sigla : ''
+        defaultData.toUoName = previousLog.uoDestination ? previousLog.uoDestination.sigla : ''
 
         return defaultData
     }
@@ -158,10 +163,12 @@ export default class AzBpmHistory {
 
         defaultData.status = 'ENCAMINHAMENTO CANCELADO'
         defaultData.icon = 'mdi-progress-close'
+        defaultData.date = previousLog.activityEndTime || previousLog.uncompleteDate
         defaultData.taskName = previousLog.activityName
         defaultData.toTaskName = currentLog.activityName
         defaultData.assignee = previousLog.uncompleteUser
-        defaultData.date = previousLog.activityEndTime || previousLog.uncompleteDate
+        defaultData.uoName = previousLog.uoDestination ? previousLog.uoDestination.sigla : ''
+        defaultData.toUoName = previousLog.uoOrigin ? previousLog.uoOrigin.sigla : ''
 
         return defaultData
     }
@@ -170,12 +177,24 @@ export default class AzBpmHistory {
         return {
             status: '',
             icon: '',
+            date: null,
             taskName: '',
             toTaskName: '',
             assignee: null,
             toAssignee: null,
-            date: null,
+            uoName: '',
+            toUoName: '',
         }
+    }
+
+    _getUOName(currentLog, previousLog) {
+        const previousLogCanceled = previousLog && previousLog.canceled
+        const uoDestinationName = previousLog && previousLog.uoDestination && previousLog.uoDestination.sigla
+        const uoOriginName = previousLog && previousLog.uoOrigin && previousLog.uoOrigin.sigla
+        const uoDefault = currentLog.uoOrigin && currentLog.uoOrigin.sigla
+        const uoName = previousLogCanceled ? uoOriginName : uoDestinationName
+
+        return uoName || uoDefault || ''
     }
 
     _findPreviousTaskLastLog(logs, currentLogIndex, originTaskId) {

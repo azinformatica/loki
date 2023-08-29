@@ -17,16 +17,23 @@ describe('AzBpmHistory', () => {
                     },
                 ],
                 canceled: false,
+                uoOrigin: {
+                    sigla: 'sigla-origin',
+                },
+                uoDestination: {
+                    sigla: 'sigla-destination',
+                },
             },
         ])
         azBpmHistory.getHistory = jest.fn(() => azBpmHistory._formatLogs(azBpmHistory.store.dispatch()))
     })
 
     describe('getHistory', () => {
-        let history, updateHistory, getLastLog
+        let history, updateHistory, getLastLog, getFirstLog
 
         beforeAll(() => {
             updateHistory = () => (history = azBpmHistory.getHistory())
+            getFirstLog = () => history[0] || null
             getLastLog = () => history[history.length - 1] || null
 
             updateHistory()
@@ -39,6 +46,10 @@ describe('AzBpmHistory', () => {
 
             it('Should have "icon" property', () => {
                 expect(getLastLog().hasOwnProperty('icon')).toBe(true)
+            })
+
+            it('Should have "date" property', () => {
+                expect(getLastLog().hasOwnProperty('date')).toBe(true)
             })
 
             it('Should have "taskName" property', () => {
@@ -57,8 +68,12 @@ describe('AzBpmHistory', () => {
                 expect(getLastLog().hasOwnProperty('toAssignee')).toBe(true)
             })
 
-            it('Should have "date" property', () => {
-                expect(getLastLog().hasOwnProperty('date')).toBe(true)
+            it('Should have "uoName" property', () => {
+                expect(getLastLog().hasOwnProperty('uoName')).toBe(true)
+            })
+
+            it('Should have "toUoName" property', () => {
+                expect(getLastLog().hasOwnProperty('toUoName')).toBe(true)
             })
         })
 
@@ -70,6 +85,9 @@ describe('AzBpmHistory', () => {
                     activityName: 'example-name',
                     completeUser: 'example-complete-user',
                     activityEndTime: '2020-02-02',
+                    uoOrigin: {
+                        sigla: 'sigla-origin',
+                    },
                 }
                 azBpmHistory.store.dispatch = jest.fn(() => [currentLog])
                 updateHistory()
@@ -91,6 +109,10 @@ describe('AzBpmHistory', () => {
                 expect(getLastLog().date).toBe(currentLog.activityEndTime)
             })
 
+            it('Should add history with proper "uoName"', () => {
+                expect(getLastLog().uoName).toBe(currentLog.uoOrigin.sigla)
+            })
+
             it('Should add history with default values on unused fields', () => {
                 expect(getLastLog().toAssignee).toBeFalsy()
                 expect(getLastLog().toTaskName).toBeFalsy()
@@ -105,6 +127,12 @@ describe('AzBpmHistory', () => {
                     activityName: 'example-name-01',
                     activityEndTime: '2020-02-02',
                     completeUser: 'user-name-example',
+                    uoOrigin: {
+                        sigla: 'origin-sigla',
+                    },
+                    uoDestination: {
+                        sigla: 'destination-sigla',
+                    },
                 }
                 currentLog = {
                     activityName: 'example-name-02',
@@ -149,6 +177,14 @@ describe('AzBpmHistory', () => {
                 expect(getLastLog().date).toBe(previousLog.activityEndTime)
             })
 
+            it('Should add history with proper "uoName"', () => {
+                expect(getLastLog().uoName).toBe(previousLog.uoOrigin.sigla)
+            })
+
+            it('Should add history with proper "toUoName"', () => {
+                expect(getLastLog().toUoName).toBe(previousLog.uoDestination.sigla)
+            })
+
             it('Should add history with default values on unused fields', () => {
                 expect(getLastLog().toAssignee).toBeFalsy()
             })
@@ -162,6 +198,12 @@ describe('AzBpmHistory', () => {
                     activityName: 'example-name-01',
                     activityEndTime: '2020-02-02',
                     uncompleteUser: 'user-name-example',
+                    uoOrigin: {
+                        sigla: 'origin-sigla',
+                    },
+                    uoDestination: {
+                        sigla: 'destination-sigla',
+                    },
                 }
                 currentLog = {
                     activityName: 'example-name-02',
@@ -183,31 +225,39 @@ describe('AzBpmHistory', () => {
                 updateHistory()
 
                 expect(history).toHaveLength(1)
-                expect(history[0].status).not.toBe('ENCAMINHAMENTO CANCELADO')
+                expect(getFirstLog().status).not.toBe('ENCAMINHAMENTO CANCELADO')
             })
 
             it('Should add history with "status" ENCAMINHAMENTO CANCELADO', () => {
-                expect(history[0].status).toBe('ENCAMINHAMENTO CANCELADO')
+                expect(getFirstLog().status).toBe('ENCAMINHAMENTO CANCELADO')
             })
 
             it('Should add history with proper "taskName"', () => {
-                expect(history[0].taskName).toBe(previousLog.activityName)
+                expect(getFirstLog().taskName).toBe(previousLog.activityName)
             })
 
             it('Should add history with proper "toTaskName"', () => {
-                expect(history[0].toTaskName).toBe(currentLog.activityName)
+                expect(getFirstLog().toTaskName).toBe(currentLog.activityName)
             })
 
             it('Should add history with proper "assignee"', () => {
-                expect(history[0].assignee).toBe(previousLog.uncompleteUser)
+                expect(getFirstLog().assignee).toBe(previousLog.uncompleteUser)
             })
 
             it('Should add history with proper "date"', () => {
-                expect(history[0].date).toBe(previousLog.activityEndTime)
+                expect(getFirstLog().date).toBe(previousLog.activityEndTime)
+            })
+
+            it('Should add history with proper "uoName"', () => {
+                expect(getLastLog().uoName).toBe(previousLog.uoDestination.sigla)
+            })
+
+            it('Should add history with proper "toUoName"', () => {
+                expect(getLastLog().toUoName).toBe(previousLog.uoOrigin.sigla)
             })
 
             it('Should add history with default values on unused fields', () => {
-                expect(history[0].toAssignee).toBeFalsy()
+                expect(getFirstLog().toAssignee).toBeFalsy()
             })
         })
 
@@ -217,6 +267,12 @@ describe('AzBpmHistory', () => {
                 previousLog = {
                     activityName: 'example-name-01',
                     completeUser: 'user-name-example-01',
+                    uoOrigin: {
+                        sigla: 'origin-sigla',
+                    },
+                    uoDestination: {
+                        sigla: 'destination-sigla',
+                    },
                 }
                 currentAssignee = {
                     assignee: 'user-name-example-02',
@@ -266,14 +322,35 @@ describe('AzBpmHistory', () => {
                 expect(getLastLog().date).toBe(currentAssignee.assigneeDate)
             })
 
+            it('Should add history with "uoName" of uo origin if previous log was canceled', () => {
+                previousLog.canceled = true
+                updateHistory()
+
+                expect(getLastLog().uoName).toBe(previousLog.uoOrigin.sigla)
+            })
+
+            it('Should add history with "uoName" of uo destination', () => {
+                expect(getLastLog().uoName).toBe(previousLog.uoDestination.sigla)
+            })
+
             it('Should add history with default values on unused fields', () => {
                 expect(getLastLog().toTaskName).toBeFalsy()
             })
         })
 
         describe('History unclaim', () => {
-            let currentLog, currentAssignee
+            let currentLog, previousLog, currentAssignee
             beforeEach(() => {
+                previousLog = {
+                    activityName: 'example-name-01',
+                    completeUser: 'user-name-example-01',
+                    uoOrigin: {
+                        sigla: 'origin-sigla',
+                    },
+                    uoDestination: {
+                        sigla: 'destination-sigla',
+                    },
+                }
                 currentAssignee = {
                     assignee: null,
                     assigneeDate: '2020-02-02',
@@ -283,7 +360,7 @@ describe('AzBpmHistory', () => {
                     activityAssignees: [currentAssignee],
                 }
 
-                azBpmHistory.store.dispatch = jest.fn(() => [currentLog])
+                azBpmHistory.store.dispatch = jest.fn(() => [previousLog, currentLog])
                 updateHistory()
             })
 
@@ -308,6 +385,17 @@ describe('AzBpmHistory', () => {
 
             it('Should add history with proper "date"', () => {
                 expect(getLastLog().date).toBe(currentAssignee.assigneeDate)
+            })
+
+            it('Should add history with "uoName" of uo origin if previous log was canceled', () => {
+                previousLog.canceled = true
+                updateHistory()
+
+                expect(getLastLog().uoName).toBe(previousLog.uoOrigin.sigla)
+            })
+
+            it('Should add history with "uoName" of uo destination', () => {
+                expect(getLastLog().uoName).toBe(previousLog.uoDestination.sigla)
             })
 
             it('Should add history with default values on unused fields', () => {
