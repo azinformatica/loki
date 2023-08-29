@@ -5,6 +5,12 @@ import state from './state'
 
 axios.interceptors.request.use((config) => {
     config.headers.common['Authorization'] = state.keycloak.accessToken
+    state.isLoading = true
+    return config
+})
+
+axios.interceptors.response.use((config) => {
+    state.isLoading = false
     return config
 })
 
