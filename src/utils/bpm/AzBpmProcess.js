@@ -14,27 +14,10 @@ export default class AzBpmProcess {
 
     load(invalidateCache = false) {
         this._startLoadingProcess()
+        this._resetDebounce()
 
-        this._unregisterDebounce()
-        this._registerDebounce()
-
-        if (invalidateCache || !this._getCache()) {
-            const cache = this._loadProcessInstance().finally(() => this._loadUserTasks())
-            this._setCache(cache)
-        }
-
-        return this._getCache()
-            .then((processInstance) => {
-                const currentTask = this._getCurrentTaskInProcess()
-                this._setCurrentTaskInInstance(currentTask)
-
-                const task = this._hasValidCurrentTask() ? this.getCurrentTask() : this._getFirstValidCurrentTask()
-
-                this._setCurrentTaskInInstance(task)
-                this._setCurrentTaskInProcess(task)
-
-                return processInstance
-            })
+        return this._getProcessInstancePromise(invalidateCache)
+            .then((processInstance) => this._resetCurrentTask(processInstance))
             .finally(() => this._finishLoadingProcess())
     }
 
@@ -77,6 +60,7 @@ export default class AzBpmProcess {
                 humanDecision: this.getSelectHumanDecision(),
                 parallel: this.getSelectParallel(),
                 route: this.getSelectRoute(),
+                uo: this.getSelectUO(),
             },
             button: {
                 claim: this.getButtonClaim(),
@@ -109,6 +93,14 @@ export default class AzBpmProcess {
             show: this._getSelectRouteShow(),
             disabled: this._getSelectRouteDisabled(),
             items: this._getSelectRouteItems(),
+        }
+    }
+
+    getSelectUO() {
+        return {
+            show: this._getSelectUOShow(),
+            disabled: this._getSelectUODisabled(),
+            items: this._getSelectUOItems(),
         }
     }
 
@@ -185,6 +177,10 @@ export default class AzBpmProcess {
         return this.store.dispatch(actionTypes.BPM.GET_USER_TASKS, this._getProcessParams())
     }
 
+    _loadUOs() {
+        return this.store.dispatch(actionTypes.UO.FIND_ALL_ACTIVE)
+    }
+
     _initializeProcessInstance() {
         return this.store.commit(mutationTypes.BPM.INITIALIZE_PROCESS_INSTANCE, this._getProcessParams())
     }
@@ -248,6 +244,11 @@ export default class AzBpmProcess {
         return shared._isLoadingProcess
     }
 
+    _resetDebounce() {
+        this._unregisterDebounce()
+        this._registerDebounce()
+    }
+
     _registerDebounce() {
         const INACTIVITY_TIME = 300
         const shared = this._getProcessSharedVariables()
@@ -278,6 +279,35 @@ export default class AzBpmProcess {
 
     _removeCache() {
         this._setCache(null)
+    }
+
+    _getProcessInstancePromise(invalidateCache = false) {
+        let cache = this._getCache()
+        if (invalidateCache || !cache) {
+            cache = this._createProcessInstancePromise()
+            this._setCache(cache)
+        }
+
+        return cache
+    }
+
+    _createProcessInstancePromise() {
+        return this._loadProcessInstance().finally(() => {
+            this._loadUserTasks()
+            this._loadUOs()
+        })
+    }
+
+    _resetCurrentTask(processInstance) {
+        const currentTask = this._getCurrentTaskInProcess()
+        this._setCurrentTaskInInstance(currentTask)
+
+        const task = this._hasValidCurrentTask() ? this.getCurrentTask() : this._getFirstValidCurrentTask()
+
+        this._setCurrentTaskInInstance(task)
+        this._setCurrentTaskInProcess(task)
+
+        return processInstance
     }
 
     _getCurrentTaskInProcess() {
@@ -355,6 +385,7 @@ export default class AzBpmProcess {
         return nextTasks.map((task) => ({
             text: task.taskName,
             value: task.taskId,
+            requiresUO: task.habilitarSelecaoDeUO,
         }))
     }
 
@@ -386,16 +417,34 @@ export default class AzBpmProcess {
     }
 
     _getSelectRouteDisabled() {
-        return false
+        return Boolean(this._isDispatchingAction())
     }
 
     _getSelectRouteItems() {
         const currentTask = this.getCurrentTask()
-        const userTasks = this._getUserTasks().filter((item) => item.activityId !== currentTask.key)
+        const userTasks = this._getUserTasksNotEqual(currentTask)
 
         return userTasks.map((userTask) => ({
             text: userTask.name,
             value: userTask.activityId,
+            requiresUO: userTask.habilitarSelecaoDeUO,
+        }))
+    }
+
+    _getSelectUOShow() {
+        return Boolean(this._isUOEnabled())
+    }
+
+    _getSelectUODisabled() {
+        return Boolean(this._isDispatchingAction() || !this._isUOEnabled())
+    }
+
+    _getSelectUOItems() {
+        const uos = this._getUOs()
+
+        return uos.map((uo) => ({
+            text: this._formatUOText(uo),
+            value: this._formatUOValue(uo),
         }))
     }
 
@@ -416,7 +465,19 @@ export default class AzBpmProcess {
     }
 
     _getButtonClaimAction() {
-        return () => this._dispatchButtonActionOnCurrentTask('claim')
+        return () => {
+            const actionArgs = this._createButtonClaimActionArgs()
+
+            return this._executeButtonAction('claim', actionArgs)
+        }
+    }
+
+    _createButtonClaimActionArgs() {
+        const currentTask = this.getCurrentTask()
+
+        return {
+            taskId: currentTask.id,
+        }
     }
 
     _getButtonUnclaimShow() {
@@ -438,7 +499,19 @@ export default class AzBpmProcess {
     }
 
     _getButtonUnclaimAction() {
-        return () => this._dispatchButtonActionOnCurrentTask('unclaim')
+        return () => {
+            const actionArgs = this._createButtonUnclaimActionArgs()
+
+            return this._executeButtonAction('unclaim', actionArgs)
+        }
+    }
+
+    _createButtonUnclaimActionArgs() {
+        const currentTask = this.getCurrentTask()
+
+        return {
+            taskId: currentTask.id,
+        }
     }
 
     _getButtonCompleteShow() {
@@ -460,7 +533,21 @@ export default class AzBpmProcess {
     }
 
     _getButtonCompleteAction() {
-        return (bpmParameters) => this._dispatchButtonActionOnCurrentTask('complete', bpmParameters)
+        return (bpmParameters) => {
+            const actionArgs = this._createButtonCompleteActionArgs(bpmParameters)
+
+            return this._executeButtonAction('complete', actionArgs)
+        }
+    }
+
+    _createButtonCompleteActionArgs(bpmParameters) {
+        const currentTask = this.getCurrentTask()
+
+        return {
+            taskId: currentTask.id,
+            processKey: this.processKey,
+            bpmParameters: bpmParameters,
+        }
     }
 
     _getButtonUncompleteShow() {
@@ -487,7 +574,20 @@ export default class AzBpmProcess {
     }
 
     _getButtonUncompleteAction() {
-        return () => this._dispatchButtonActionOnCurrentTask('uncomplete')
+        return () => {
+            const actionArgs = this._createButtonUncompleteActionArgs()
+
+            return this._executeButtonAction('uncomplete', actionArgs)
+        }
+    }
+
+    _createButtonUncompleteActionArgs() {
+        const currentTask = this.getCurrentTask()
+
+        return {
+            taskId: currentTask.id,
+            processKey: this.processKey,
+        }
     }
 
     _getButtonRouteShow() {
@@ -519,7 +619,21 @@ export default class AzBpmProcess {
     }
 
     _getButtonRouteAction() {
-        return (bpmParameters) => this._dispatchButtonActionOnCurrentTask('route', bpmParameters)
+        return (bpmParameters) => {
+            const actionArgs = this._createButtonRouteActionArgs(bpmParameters)
+
+            return this._executeButtonAction('route', actionArgs)
+        }
+    }
+
+    _createButtonRouteActionArgs(bpmParameters) {
+        const currentTask = this.getCurrentTask()
+
+        return {
+            taskId: currentTask.id,
+            processKey: this.processKey,
+            bpmParameters: bpmParameters,
+        }
     }
 
     _getProcessParams() {
@@ -729,10 +843,26 @@ export default class AzBpmProcess {
         return task.isParallel || false
     }
 
+    _isUOEnabled() {
+        const processDefinitionInfo = this._getProcessDefinitionInfo()
+
+        return processDefinitionInfo.bpmUoEnabled
+    }
+
     _getUserTasks() {
         const bpmAtProcessKey = this._getBpmAtProcessKey()
 
         return bpmAtProcessKey.userTasks || []
+    }
+
+    _getUserTasksNotEqual(task) {
+        const userTasks = this._getUserTasks()
+
+        return userTasks.filter((userTask) => userTask.activityId !== task.key)
+    }
+
+    _getUOs() {
+        return this.store.state.loki.uos || []
     }
 
     _getCurrentTasks() {
@@ -783,29 +913,53 @@ export default class AzBpmProcess {
         return this._isUserAssignee(previousTask) || this._isUserInCandidateGroups(previousTask)
     }
 
-    _updateButtonsAndDispatchAction(buttonType, bpmParameters) {
+    _updateButtonsThenDispatchAction(buttonType, actionArgs) {
         return this.load(true)
-            .then(() => this._dispatchButtonAction(buttonType, bpmParameters))
+            .then(() => this._dispatchButtonAction(buttonType, actionArgs))
             .finally(() => this.load(true))
     }
 
-    _dispatchButtonActionOnCurrentTask(buttonType, bpmParameters) {
-        const result = this._createButtonActionResult(buttonType)
+    _executeButtonAction(buttonType, actionArgs) {
         const currentTasks = this._getCurrentTasks()
+        const actionResult = this._createDefaultButtonActionResult(buttonType)
+        const actionPromise = this._updateButtonsThenDispatchAction(buttonType, actionArgs)
 
-        return this._updateButtonsAndDispatchAction(buttonType, bpmParameters)
-            .then((actionResponse) => {
-                result.response = actionResponse
-                result.processInstance = this.getProcessInstance()
-                result.toTasks = this._getGeneratedTasks(currentTasks)
-            })
-            .catch((error) => {
-                result.error = error
-            })
-            .then(() => result)
+        return this._formatActionPromiseResult(actionPromise, actionResult, currentTasks)
     }
 
-    _dispatchButtonAction(buttonType, bpmParameters) {
+    _formatActionPromiseResult(actionPromise, actionResult, currentTasks) {
+        return actionPromise
+            .then((actionResponse) => {
+                this._setActionResultResponse(actionResult, actionResponse)
+                this._setActionResultProcessInstance(actionResult)
+                this._setActionResultToTasks(actionResult, currentTasks)
+
+                return actionResult
+            })
+            .catch((error) => {
+                this._setActionResultError(actionResult, error)
+
+                return actionResult
+            })
+    }
+
+    _setActionResultProcessInstance(actionResult) {
+        actionResult.processInstance = this.getProcessInstance()
+    }
+
+    _setActionResultToTasks(actionResult, currentTasks) {
+        actionResult.toTasks = this._getGeneratedTasks(currentTasks)
+    }
+
+    _setActionResultResponse(actionResult, actionResponse) {
+        actionResult.response = actionResponse
+    }
+
+    _setActionResultError(actionResult, error) {
+        actionResult.error = error
+    }
+
+    _dispatchButtonAction(buttonType, actionArgs) {
         if (this._isDispatchingAction()) {
             throw new Error('Já existe uma ação sendo executada.')
         }
@@ -817,9 +971,8 @@ export default class AzBpmProcess {
         this._startDispatchingAction()
 
         const actionType = this._createButtonActionType(buttonType)
-        const args = this._createButtonActionArgs(bpmParameters)
 
-        return this.store.dispatch(actionType, args).finally(() => this._finishDispatchingAction())
+        return this.store.dispatch(actionType, actionArgs).finally(() => this._finishDispatchingAction())
     }
 
     _isButtonAllowed(buttonType) {
@@ -835,18 +988,7 @@ export default class AzBpmProcess {
         return actionTypes.BPM[actionName]
     }
 
-    _createButtonActionArgs(bpmParameters = {}) {
-        const currentTask = this.getCurrentTask()
-
-        return {
-            processKey: this.processKey,
-            taskId: currentTask.id,
-            activityIdDestination: bpmParameters.activityIdDestination,
-            bpmParameters,
-        }
-    }
-
-    _createButtonActionResult(buttonType) {
+    _createDefaultButtonActionResult(buttonType) {
         return {
             action: buttonType,
             fromTask: this.getCurrentTask(),
@@ -862,5 +1004,34 @@ export default class AzBpmProcess {
         const previousTasksKeys = previousTasks.map((task) => task.key)
 
         return currentTasks.filter((task) => !previousTasksKeys.includes(task.key))
+    }
+
+    _formatUOValue(uo) {
+        return uo.id.toString()
+    }
+
+    _formatUOText(uo) {
+        const code = this._formatHierarchyCode(uo.codigoHierarquia)
+        const title = this._joinAcronymAndName(uo)
+
+        return `${code} - ${title}`
+    }
+
+    _formatHierarchyCode(hierarchyCode) {
+        let code = hierarchyCode
+
+        code = code.split('.')
+        code = code.map((digits) => parseInt(digits))
+        code = code.join('.')
+
+        return code
+    }
+
+    _joinAcronymAndName(uo) {
+        if (uo.sigla) {
+            return `${uo.sigla} - ${uo.nome}`
+        }
+
+        return uo.nome
     }
 }
