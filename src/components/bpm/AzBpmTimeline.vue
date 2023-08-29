@@ -169,6 +169,12 @@ export default {
             return currentLog.icon
         },
         formatTimelineStatus(currentLog) {
+            if (currentLog.uoName) {
+                if (currentLog.toUoName && currentLog.uoName !== currentLog.toUoName) {
+                    return currentLog.status + ` - ${currentLog.uoName} → ${currentLog.toUoName}`
+                }
+                return currentLog.status + ` - ${currentLog.uoName}`
+            }
             return currentLog.status
         },
         formatTimelineAssignee(currentLog) {
