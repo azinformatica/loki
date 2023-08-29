@@ -21,7 +21,7 @@
             </slot>
         </v-btn>
         <az-bpm-modal
-            v-if="showModal"
+            :show="showModal"
             :button-type="selectedButtonType"
             :current-task="currentTask"
             :components="components"
@@ -61,12 +61,17 @@ export default {
         selectAttrs: {
             default: () => ({}),
             type: Object,
+            validator: (selectAttrs) =>
+                ['humanDecision', 'parallel', 'route'].every(
+                    (selectType) =>
+                        !selectAttrs.hasOwnProperty(selectType) || typeof selectAttrs[selectType] === 'object'
+                ),
         },
         buttonAttrs: {
             default: () => ({}),
             type: Object,
             validator: (buttonAttrs) =>
-                ['claim', 'unclaim', 'complete', 'uncomplete'].every(
+                ['claim', 'unclaim', 'complete', 'uncomplete', 'route'].every(
                     (buttonType) =>
                         !buttonAttrs.hasOwnProperty(buttonType) || typeof buttonAttrs[buttonType] === 'object'
                 ),
@@ -97,16 +102,34 @@ export default {
         }
     },
     methods: {
-        async executeButtonAction(buttonType, selectedBpmParameters = {}) {
-            const button = this.button[buttonType]
-            if (await this.beforeAction(buttonType)) {
-                const bpmParameters = this.mergeWithPropsBpmParameters(selectedBpmParameters)
+        async executeButtonAction(buttonType, bpmParameters = {}) {
+            this.addUoOriginIfMissing(bpmParameters)
+            this.addUoDestinationIfMissing(bpmParameters)
+            this.addPropsBpmParameters(bpmParameters)
+            const shouldExecuteAction = await this.beforeAction(buttonType, bpmParameters)
+            if (shouldExecuteAction) {
+                const button = this.getButton(buttonType)
                 const actionResponse = await button.action(bpmParameters)
                 await this.afterAction(actionResponse)
             }
         },
-        mergeWithPropsBpmParameters(bpmParameters) {
-            return _.merge({}, this.bpmParameters, bpmParameters)
+        addUoOriginIfMissing(bpmParameters) {
+            if (!bpmParameters.uoOriginId && this.currentUoId) {
+                bpmParameters.uoOriginId = this.currentUoId
+            }
+        },
+        addUoDestinationIfMissing(bpmParameters) {
+            if (!bpmParameters.uoDestinationId && this.currentUoId) {
+                bpmParameters.uoDestinationId = this.currentUoId
+            }
+        },
+        addPropsBpmParameters(bpmParameters) {
+            if (this.hasBpmParameters) {
+                _.merge(bpmParameters, _.merge({}, this.bpmParameters, bpmParameters))
+            }
+        },
+        getButton(buttonType) {
+            return this.button[buttonType]
         },
         isButtonTypeComplete(buttonType) {
             return buttonType === 'complete'
@@ -119,23 +142,22 @@ export default {
         },
         shouldOpenModal(buttonType) {
             return (
-                (this.isButtonTypeComplete(buttonType) && this.hasHumanDecision()) ||
-                (this.isButtonTypeRoute(buttonType))
+                (this.isButtonTypeComplete(buttonType) && this.hasHumanDecision()) || this.isButtonTypeRoute(buttonType)
             )
         },
         setSelectedButtonType(buttonType) {
             this.selectedButtonType = buttonType
         },
-        handleButtonClick(buttonType) {
+        async handleButtonClick(buttonType) {
             if (this.shouldOpenModal(buttonType)) {
                 this.setSelectedButtonType(buttonType)
                 this.openModal()
             } else {
-                this.executeButtonAction(buttonType)
+                await this.executeButtonAction(buttonType)
             }
         },
-        handleModalAction({ buttonType, selectedBpmParameters }) {
-            this.executeButtonAction(buttonType, selectedBpmParameters)
+        async handleModalAction({ buttonType, bpmParameters }) {
+            await this.executeButtonAction(buttonType, bpmParameters)
             this.closeModal()
         },
         openModal() {
@@ -247,8 +269,17 @@ export default {
         currentTask() {
             return (this.process && this.process.getCurrentTask()) || {}
         },
+        currentUo() {
+            return this.currentTask.currentUo || null
+        },
+        currentUoId() {
+            return this.currentUo ? this.currentUo.id.toString() : ''
+        },
         hasComponents() {
             return !_.isEmpty(this.components)
+        },
+        hasBpmParameters() {
+            return !_.isEmpty(this.bpmParameters)
         },
     },
     created() {

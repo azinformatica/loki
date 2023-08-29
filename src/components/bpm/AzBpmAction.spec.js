@@ -4,6 +4,7 @@ import AzBpmAction from './AzBpmAction'
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils'
 import AzBpmInteraction from './AzBpmInteraction'
 import Vuetify from 'vuetify'
+import AzBpmModal from '../bpm/AzBpmModal'
 
 const localVue = createLocalVue()
 Vue.use(Vuetify)
@@ -45,25 +46,25 @@ jest.mock('../../utils/bpm/AzBpmProcess.js', () => {
                         disabled: false,
                         show: true,
                         label: 'example-button-claim-label',
-                        action: jest.fn(() => new Promise((resolve) => resolve(''))),
+                        action: jest.fn(() => Promise.resolve()),
                     },
                     unclaim: {
                         disabled: false,
                         show: true,
                         label: 'example-button-unclaim-label',
-                        action: jest.fn(),
+                        action: jest.fn(() => Promise.resolve()),
                     },
                     complete: {
                         disabled: false,
                         show: true,
                         label: 'example-button-complete-label',
-                        action: jest.fn(),
+                        action: jest.fn(() => Promise.resolve()),
                     },
                     uncomplete: {
                         disabled: false,
                         show: true,
                         label: 'example-button-uncomplete-label',
-                        action: jest.fn(),
+                        action: jest.fn(() => Promise.resolve()),
                     },
                 },
             })),
@@ -102,7 +103,13 @@ const createDefaultProps = () => {
                 class: 'example-uncomplete-class',
                 color: 'example-uncomplete-color',
             },
+            route: {
+                class: 'example-route-class',
+                color: 'example-route-color',
+            },
         },
+        beforeAction: () => true,
+        afterAction: () => null,
     }
 }
 
@@ -146,7 +153,7 @@ describe('AzBpmAction.spec.js', () => {
 
     beforeEach(() => {
         propsData = createDefaultProps()
-        wrapper = createWrapper({ propsData, shallow: false })
+        wrapper = createWrapper({ propsData })
     })
 
     describe('Props', () => {
@@ -168,7 +175,7 @@ describe('AzBpmAction.spec.js', () => {
 
         it('Should have default disabled', () => {
             propsData.disabled = undefined
-            wrapper = createWrapper({ propsData, shallow: false })
+            wrapper = createWrapper({ propsData })
 
             expect(wrapper.props().disabled).toEqual(false)
         })
@@ -179,7 +186,7 @@ describe('AzBpmAction.spec.js', () => {
 
         it('Should have default bpmParameters', () => {
             propsData.bpmParameters = undefined
-            wrapper = createWrapper({ propsData, shallow: false })
+            wrapper = createWrapper({ propsData })
 
             expect(wrapper.props().bpmParameters).toStrictEqual({})
         })
@@ -190,7 +197,7 @@ describe('AzBpmAction.spec.js', () => {
 
         it('Should have default selectAttrs', () => {
             propsData.selectAttrs = undefined
-            wrapper = createWrapper({ propsData, shallow: false })
+            wrapper = createWrapper({ propsData })
 
             expect(wrapper.props().selectAttrs).toStrictEqual({})
         })
@@ -201,9 +208,33 @@ describe('AzBpmAction.spec.js', () => {
 
         it('Should have default buttonAttrs', () => {
             propsData.buttonAttrs = undefined
-            wrapper = createWrapper({ propsData, shallow: false })
+            wrapper = createWrapper({ propsData })
 
             expect(wrapper.props().buttonAttrs).toStrictEqual({})
+        })
+
+        it('Should receive beforeAction', () => {
+            expect(wrapper.props().beforeAction).toBe(propsData.beforeAction)
+            expect(wrapper.props().beforeAction()).toBe(true)
+        })
+
+        it('Should have default beforeAction', () => {
+            propsData.beforeAction = undefined
+            wrapper = createWrapper({ propsData })
+
+            expect(wrapper.props().beforeAction()).toBe(true)
+        })
+
+        it('Should receive afterAction', () => {
+            expect(wrapper.props().afterAction).toBe(propsData.afterAction)
+            expect(wrapper.props().afterAction()).toBe(null)
+        })
+
+        it('Should have default afterAction', () => {
+            propsData.afterAction = undefined
+            wrapper = createWrapper({ propsData })
+
+            expect(wrapper.props().afterAction()).toBe(null)
         })
     })
 
@@ -260,7 +291,7 @@ describe('AzBpmAction.spec.js', () => {
             })
 
             it('Should have action function', async () => {
-                getButton().trigger('click')
+                getButton().vm.$emit('click')
 
                 await wrapper.vm.$nextTick()
 
@@ -287,7 +318,7 @@ describe('AzBpmAction.spec.js', () => {
             })
 
             it('Should have action function', async () => {
-                getButton().trigger('click')
+                getButton().vm.$emit('click')
 
                 await wrapper.vm.$nextTick()
 
@@ -314,7 +345,7 @@ describe('AzBpmAction.spec.js', () => {
             })
 
             it('Should open modal on click', async () => {
-                getButton().trigger('click')
+                getButton().vm.$emit('click')
 
                 await wrapper.vm.$nextTick()
 
@@ -341,7 +372,7 @@ describe('AzBpmAction.spec.js', () => {
             })
 
             it('Should have action function', async () => {
-                getButton().trigger('click')
+                getButton().vm.$emit('click')
 
                 await wrapper.vm.$nextTick()
 
@@ -398,6 +429,55 @@ describe('AzBpmAction.spec.js', () => {
 
                 expect(wrapper.vm.selectedParallelTask).toBe(wrapper.vm.currentTask.id)
             })
+        })
+    })
+
+    describe('Modal', () => {
+        let getModal, eventData
+        beforeAll(() => {
+            getModal = () => wrapper.findComponent(AzBpmModal)
+        })
+
+        beforeEach(() => {
+            eventData = {
+                buttonType: 'claim',
+                bpmParameters: {},
+            }
+        })
+
+        it('Should call action handler', async () => {
+            wrapper.vm.executeButtonAction = jest.fn(() => Promise.resolve())
+            wrapper.vm.closeModal = jest.fn()
+            getModal().vm.$emit('action', eventData)
+            await wrapper.vm.$nextTick()
+
+            expect(wrapper.vm.executeButtonAction).toBeCalledTimes(1)
+            expect(wrapper.vm.closeModal).toBeCalledTimes(1)
+        })
+
+        it('Should execute button action and call beforeAction and afterAction', async () => {
+            propsData.beforeAction = jest.fn(() => Promise.resolve(true))
+            propsData.afterAction = jest.fn(() => Promise.resolve())
+            wrapper = createWrapper({ propsData })
+            const actionResult = { error: null, action: eventData.buttonType }
+            wrapper.vm.button[eventData.buttonType].action = jest.fn(() => Promise.resolve(actionResult))
+            await wrapper.vm.handleModalAction(eventData)
+
+            expect(propsData.beforeAction).toHaveBeenCalledWith(eventData.buttonType, eventData.bpmParameters)
+            expect(wrapper.vm.button[eventData.buttonType].action).toBeCalledTimes(1)
+            expect(propsData.afterAction).toBeCalledTimes(1)
+            expect(propsData.afterAction).toBeCalledWith(actionResult)
+        })
+
+        it('Should execute button action and call only beforeAction', async () => {
+            propsData.beforeAction = jest.fn(() => Promise.resolve(false))
+            propsData.afterAction = jest.fn(() => Promise.resolve())
+            wrapper = createWrapper({ propsData })
+            await wrapper.vm.handleModalAction(eventData)
+
+            expect(propsData.beforeAction).toHaveBeenCalledWith(eventData.buttonType, eventData.bpmParameters)
+            expect(wrapper.vm.button[eventData.buttonType].action).toBeCalledTimes(0)
+            expect(propsData.afterAction).toBeCalledTimes(0)
         })
     })
 })
