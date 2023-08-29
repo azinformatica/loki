@@ -98,4 +98,6 @@ export default {
     keycloak: {
         accessToken: null,
     },
+
+    uos: [],
 }
