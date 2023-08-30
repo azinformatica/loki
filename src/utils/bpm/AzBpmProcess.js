@@ -398,9 +398,9 @@ export default class AzBpmProcess {
     }
 
     _getSelectParallelDisabled() {
-        const currentTask = this.getCurrentTask()
-
-        return Boolean(this.isLoadingProcess() || this._isDispatchingAction() || !this._isUserCandidate(currentTask))
+        return Boolean(
+            this.isLoadingProcess() || this._isDispatchingAction()
+        )
     }
 
     _getSelectParallelItems() {
@@ -432,7 +432,9 @@ export default class AzBpmProcess {
     }
 
     _getSelectUOShow() {
-        return Boolean(this._isUOEnabled())
+        const currentTask = this.getCurrentTask()
+
+        return Boolean(this._isUOEnabled() && !this._isParallel(currentTask))
     }
 
     _getSelectUODisabled() {

@@ -507,28 +507,6 @@ describe('AzBpmProcess', () => {
                     expect(components.select.parallel.disabled).toBe(true)
                 })
 
-                it('Should disable if user is not a candidate user and does not belong to candidate group', () => {
-                    process.instance.currentTask.candidateUsers = ['user-name-example-02']
-                    process.instance.currentTask.candidateGroups = ['user-role-example-02']
-                    components = azBpmProcess.getComponents()
-
-                    expect(components.select.parallel.disabled).toBe(true)
-                })
-
-                it('Should not disable if user is a candidate user', () => {
-                    process.instance.currentTask.candidateGroups = ['user-role-example-02']
-                    components = azBpmProcess.getComponents()
-
-                    expect(components.select.parallel.disabled).toBe(false)
-                })
-
-                it('Should not disable if user belongs to candidate group', () => {
-                    process.instance.currentTask.candidateUsers = ['user-name-example-02']
-                    components = azBpmProcess.getComponents()
-
-                    expect(components.select.parallel.disabled).toBe(false)
-                })
-
                 it('Should be shown and not disabled', () => {
                     components = azBpmProcess.getComponents()
 
@@ -604,6 +582,13 @@ describe('AzBpmProcess', () => {
             describe('UO', () => {
                 it('Should not show if process bpmUoEnabled is false', () => {
                     process.instance.processDefinitionInfo.bpmUoEnabled = false
+                    components = azBpmProcess.getComponents()
+
+                    expect(components.select.uo.show).toBe(false)
+                })
+
+                it('Should not show if current task is parallel', () => {
+                    process.instance.currentTask.isParallel = true
                     components = azBpmProcess.getComponents()
 
                     expect(components.select.uo.show).toBe(false)
