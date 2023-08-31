@@ -1009,7 +1009,7 @@ export default class AzBpmProcess {
     }
 
     _formatUOValue(uo) {
-        return uo.id.toString()
+        return uo.id
     }
 
     _formatUOText(uo) {

@@ -71,6 +71,9 @@ jest.mock('../../utils/bpm/AzBpmProcess.js', () => {
             getCurrentTask: jest.fn(() => null),
             hasAuthority: jest.fn(() => false),
             getProcessInstance: jest.fn(() => true),
+            getProcessDefinitionInfo: jest.fn(() => ({
+                bpmUoEnabled: true,
+            })),
             load: jest.fn(),
         }
     })

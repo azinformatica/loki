@@ -114,12 +114,12 @@ export default {
             }
         },
         addUoOriginIfMissing(bpmParameters) {
-            if (!bpmParameters.uoOriginId && this.currentUoId) {
+            if (!bpmParameters.uoOriginId && this.isBpmUoEnabled && this.currentUoId) {
                 bpmParameters.uoOriginId = this.currentUoId
             }
         },
         addUoDestinationIfMissing(bpmParameters) {
-            if (!bpmParameters.uoDestinationId && this.currentUoId) {
+            if (!bpmParameters.uoDestinationId && this.isBpmUoEnabled && this.currentUoId) {
                 bpmParameters.uoDestinationId = this.currentUoId
             }
         },
@@ -273,7 +273,13 @@ export default {
             return this.currentTask.currentUo || null
         },
         currentUoId() {
-            return this.currentUo ? this.currentUo.id.toString() : ''
+            return this.currentUo ? this.currentUo.id : ''
+        },
+        processDefinitionInfo() {
+            return this.process ? this.process.getProcessDefinitionInfo() : null
+        },
+        isBpmUoEnabled() {
+            return this.processDefinitionInfo ? this.processDefinitionInfo.bpmUoEnabled : false
         },
         hasComponents() {
             return !_.isEmpty(this.components)

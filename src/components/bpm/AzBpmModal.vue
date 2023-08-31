@@ -143,7 +143,9 @@ export default {
             })
         },
         initializeUOSelect() {
-            this.selectedUO = this.originUOId || this.getFirstItemValue(this.selectUOItems)
+            if (this.selectUOShow) {
+                this.selectedUO = this.originUOId || this.getFirstItemValue(this.selectUOItems)
+            }
         },
         resetUOSelect() {
             this.selectedUO = ''
@@ -185,7 +187,7 @@ export default {
             return firstItem || null
         },
         addUoDestinationParametersIfNeeded(bpmParameters) {
-            if (this.selectedUO) {
+            if (this.selectUOShow && this.selectedNextTaskRequiresUO && this.selectedUO) {
                 _.merge(bpmParameters, this.uoDestinationParameters)
             }
         },
@@ -297,7 +299,7 @@ export default {
             return this.currentTask ? this.currentTask.currentUo : null
         },
         originUOId() {
-            return this.originUO ? this.originUO.id.toString() : ''
+            return this.originUO ? this.originUO.id : null
         },
         bpmParameters() {
             const parameters = {}
