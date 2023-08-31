@@ -54,6 +54,12 @@ export default class AzBpmProcess {
         return (processInstance && processInstance.currentTask) || {}
     }
 
+    getProcessDefinitionInfo() {
+        const processInstance = this.getProcessInstance()
+
+        return (processInstance && processInstance.processDefinitionInfo) || {}
+    }
+
     getComponents() {
         return {
             select: {
@@ -742,21 +748,15 @@ export default class AzBpmProcess {
     }
 
     _isRoutingEnabled() {
-        const processDefinitionInfo = this._getProcessDefinitionInfo()
+        const processDefinitionInfo = this.getProcessDefinitionInfo()
 
         return processDefinitionInfo.routingEnabled || false
     }
 
     _isUserHasPermissionToRoute() {
-        const processDefinitionInfo = this._getProcessDefinitionInfo()
+        const processDefinitionInfo = this.getProcessDefinitionInfo()
 
         return processDefinitionInfo.userHasPermissionToRoute || false
-    }
-
-    _getProcessDefinitionInfo() {
-        const processInstance = this.getProcessInstance()
-
-        return (processInstance && processInstance.processDefinitionInfo) || {}
     }
 
     _isUserInCandidateUsers(task) {
@@ -846,7 +846,7 @@ export default class AzBpmProcess {
     }
 
     _isUOEnabled() {
-        const processDefinitionInfo = this._getProcessDefinitionInfo()
+        const processDefinitionInfo = this.getProcessDefinitionInfo()
 
         return processDefinitionInfo.bpmUoEnabled
     }

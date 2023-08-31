@@ -1449,6 +1449,11 @@ describe('AzBpmProcess', () => {
             expect(typeof azBpmProcess.getCurrentTask).toBe('function')
         })
 
+        it('Should have public getProcessDefinitionInfo method', () => {
+            expect(azBpmProcess).toHaveProperty('getProcessDefinitionInfo')
+            expect(typeof azBpmProcess.getProcessDefinitionInfo).toBe('function')
+        })
+
         it('Should have public getComponents method', () => {
             expect(azBpmProcess).toHaveProperty('getComponents')
             expect(typeof azBpmProcess.getComponents).toBe('function')
