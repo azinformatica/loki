@@ -184,9 +184,9 @@ export default {
 
             return firstItem || null
         },
-        addUoParametersIfNeeded(bpmParameters) {
-            if (this.originUOId) {
-                _.merge(bpmParameters, this.uoParameters)
+        addUoDestinationParametersIfNeeded(bpmParameters) {
+            if (this.selectedUO) {
+                _.merge(bpmParameters, this.uoDestinationParameters)
             }
         },
         addHumanDecisionParametersIfNeeded(bpmParameters) {
@@ -301,7 +301,7 @@ export default {
         },
         bpmParameters() {
             const parameters = {}
-            this.addUoParametersIfNeeded(parameters)
+            this.addUoDestinationParametersIfNeeded(parameters)
             this.addHumanDecisionParametersIfNeeded(parameters)
             this.addRouteParametersIfNeeded(parameters)
 
@@ -317,9 +317,8 @@ export default {
                 activityIdDestination: this.selectedRoute && this.selectedRoute.value,
             }
         },
-        uoParameters() {
+        uoDestinationParameters() {
             return {
-                uoOriginId: this.originUOId,
                 uoDestinationId: this.selectedUO,
             }
         },
