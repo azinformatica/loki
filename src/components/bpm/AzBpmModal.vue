@@ -184,6 +184,21 @@ export default {
 
             return firstItem || null
         },
+        addUoParametersIfNeeded(bpmParameters) {
+            if (this.originUOId) {
+                _.merge(bpmParameters, this.uoParameters)
+            }
+        },
+        addHumanDecisionParametersIfNeeded(bpmParameters) {
+            if (this.isButtonTypeComplete && this.selectedHumanDecision) {
+                _.merge(bpmParameters, this.completeParameters)
+            }
+        },
+        addRouteParametersIfNeeded(bpmParameters) {
+            if (this.isButtonTypeRoute && this.selectedRoute) {
+                _.merge(bpmParameters, this.routeParameters)
+            }
+        },
     },
     watch: {
         show() {
@@ -285,17 +300,12 @@ export default {
             return this.originUO ? this.originUO.id.toString() : ''
         },
         bpmParameters() {
-            const selectedParameters = _.cloneDeep(this.uoParameters)
+            const parameters = {}
+            this.addUoParametersIfNeeded(parameters)
+            this.addHumanDecisionParametersIfNeeded(parameters)
+            this.addRouteParametersIfNeeded(parameters)
 
-            if (this.isButtonTypeComplete && this.selectedHumanDecision) {
-                _.merge(selectedParameters, this.completeParameters)
-            }
-
-            if (this.isButtonTypeRoute && this.selectedRoute) {
-                _.merge(selectedParameters, this.routeParameters)
-            }
-
-            return selectedParameters
+            return parameters
         },
         completeParameters() {
             return {
