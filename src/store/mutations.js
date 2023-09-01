@@ -242,4 +242,8 @@ export default {
     [mutationTypes.BPM.SET_BPM_API_URL](state, { url }) {
         state.bpm.api = url
     },
+
+    [mutationTypes.UO.SET](state, uos) {
+        state.uos = uos
+    },
 }

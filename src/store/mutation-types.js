@@ -61,4 +61,7 @@ export default {
         SET_CURRENT_TASK_FOR_ID_IN_PROCESS: 'SET_CURRENT_TASK_FOR_ID_IN_PROCESS',
         SET_CURRENT_TASK_FOR_ID_IN_INSTANCE: 'SET_CURRENT_TASK_FOR_ID_IN_INSTANCE',
     },
+    UO: {
+        SET: 'setUOs',
+    },
 }

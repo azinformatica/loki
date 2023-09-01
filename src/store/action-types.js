@@ -27,4 +27,7 @@ export default {
         COMPLETE: 'goToNextTask',
         UNCOMPLETE: 'goToPreviousTask',
     },
+    UO: {
+        FIND_ALL_ACTIVE: 'findAllActiveUOs',
+    },
 }
