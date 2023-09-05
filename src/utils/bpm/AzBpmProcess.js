@@ -299,9 +299,21 @@ export default class AzBpmProcess {
 
     _createProcessInstancePromise() {
         return this._loadProcessInstance().finally(() => {
-            this._loadUserTasks()
-            this._loadUOs()
+            this._loadUserTasksOnce()
+            this._loadUOsOnce()
         })
+    }
+
+    _loadUserTasksOnce() {
+        if (!this._hasUserTasks()) {
+            return this._loadUserTasks()
+        }
+    }
+
+    _loadUOsOnce() {
+        if (!this._hasUOs()) {
+            return this._loadUOs()
+        }
     }
 
     _resetCurrentTask(processInstance) {
@@ -404,9 +416,7 @@ export default class AzBpmProcess {
     }
 
     _getSelectParallelDisabled() {
-        return Boolean(
-            this.isLoadingProcess() || this._isDispatchingAction()
-        )
+        return Boolean(this.isLoadingProcess() || this._isDispatchingAction())
     }
 
     _getSelectParallelItems() {
@@ -851,16 +861,28 @@ export default class AzBpmProcess {
         return processDefinitionInfo.bpmUoEnabled
     }
 
+    _getUserTasksNotEqual(task) {
+        const userTasks = this._getUserTasks()
+
+        return userTasks.filter((userTask) => userTask.activityId !== task.key)
+    }
+
+    _hasUserTasks() {
+        const userTasks = this._getUserTasks()
+
+        return userTasks.length > 0
+    }
+
     _getUserTasks() {
         const bpmAtProcessKey = this._getBpmAtProcessKey()
 
         return bpmAtProcessKey.userTasks || []
     }
 
-    _getUserTasksNotEqual(task) {
-        const userTasks = this._getUserTasks()
+    _hasUOs() {
+        const uos = this._getUOs()
 
-        return userTasks.filter((userTask) => userTask.activityId !== task.key)
+        return uos.length > 0
     }
 
     _getUOs() {
