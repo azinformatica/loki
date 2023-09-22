@@ -11,6 +11,8 @@
             :previousDocumentButtonTooltip="previousDocumentButtonTooltip"
             :nextDocumentButton="nextDocumentButton"
             :nextDocumentButtonTooltip="nextDocumentButtonTooltip"
+            :current-page="currentPage"
+            :total-pages="totalPages"
             @changeScaleType="changeScaleType"
             @zoomIn="zoomIn"
             @zoomOut="zoomOut"
@@ -127,6 +129,7 @@ export default {
         },
         pageChangeEventHandler(e) {
             this.pagination.current = e.pageNumber
+            this.currentPage = this.pageOffset + this.pagination.current
         },
         createPagesReferences() {
             this.pages = Array.from(_.get(this.pdf, 'viewer.viewer.childNodes') || [])
@@ -165,12 +168,14 @@ export default {
         async createPrinterService() {
             this.pdf.printService = new PrintService({
                 pdfDocument: this.pdf.viewer.pdfDocument,
-                pagesOverview: await this.pdf.viewer.getPagesOverview(),
+                pagesOverview: this.pdf.viewer.getPagesOverview(),
             })
         },
         setInitialPagination(pagination) {
             this.pagination.current = pagination.currentPageNumber
             this.pagination.total = pagination.pagesCount
+            this.pageOffset = this.multipleDocuments ? this.multipleDocumentsCurrentFirstPage - 1 : 0
+            this.currentPage = this.pageOffset + this.pagination.current
         },
         updateScaleType(scaleType) {
             if (scaleType && typeof scaleType === 'string') {
@@ -334,14 +339,29 @@ export default {
         nextDocument() {
             this.$emit('next-document')
         },
+        changeDocument(page) {
+            this.$emit('change-document', { page })
+        },
         nextPage() {
-            this.changePage(this.pagination.current + 1)
+            this.changePage(this.currentPage + 1)
         },
         previousPage() {
-            this.changePage(this.pagination.current - 1)
+            this.changePage(this.currentPage - 1)
         },
-        changePage(page) {
-            this.pdf.viewer.currentPageNumber = _.clamp(page, 1, this.pagination.total)
+        changePage(newPage) {
+            const page = this.clampPage(newPage)
+
+            if (this.isPageOnCurrentDocument(page)) {
+                this.pdf.viewer.currentPageNumber = page - this.pageOffset
+            } else if (this.multipleDocuments) {
+                this.changeDocument(page)
+            }
+        },
+        isPageOnCurrentDocument(page) {
+            return page >= this.documentStartPage && page <= this.documentEndPage
+        },
+        clampPage(page) {
+            return _.clamp(page, 1, this.totalPages)
         },
     },
     props: {
@@ -416,6 +436,18 @@ export default {
         draggableDeleteTooltip: {
             type: String,
         },
+        multipleDocuments: {
+            type: Boolean,
+            default: false,
+        },
+        multipleDocumentsTotalPages: {
+            type: Number,
+            default: 1,
+        },
+        multipleDocumentsCurrentFirstPage: {
+            type: Number,
+            default: 1,
+        },
     },
     computed: {
         customContainerClass() {
@@ -444,6 +476,21 @@ export default {
                 zIndex: 9999,
             }
         },
+        hasNextPage() {
+            return this.pagination.current && this.pagination.total && this.pagination.current < this.pagination.total
+        },
+        hasPreviousPage() {
+            return this.pagination.current && this.pagination.current > 1
+        },
+        totalPages() {
+            return this.multipleDocuments ? this.multipleDocumentsTotalPages : this.documentEndPage
+        },
+        documentStartPage() {
+            return this.multipleDocuments ? this.multipleDocumentsCurrentFirstPage : 1
+        },
+        documentEndPage() {
+            return this.multipleDocuments ? this.pageOffset + this.pagination.total : this.pagination.total
+        },
     },
     data: () => ({
         isPrinting: false,
@@ -466,6 +513,8 @@ export default {
         },
         isCreatingDraggable: false,
         pages: [],
+        currentPage: 1,
+        pageOffset: 0,
     }),
 }
 </script>
