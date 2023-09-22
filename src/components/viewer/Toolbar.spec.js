@@ -9,52 +9,58 @@ Vue.use(Vuetify)
 describe('Toolbar.spec.js', () => {
     let disableButtons,
         downloadButton,
-        pagination,
+        currentPage,
         rotateButton,
         scaleType,
         previousDocumentButton,
         previousDocumentButtonTooltip,
         nextDocumentButton,
         nextDocumentButtonTooltip,
+        totalPages,
+        hasNextDocument,
+        hasPreviousDocument,
         wrapper
 
     beforeEach(() => {
         disableButtons = true
         downloadButton = true
-        pagination = {
-            current: 1,
-            total: 3,
-        }
+        currentPage = 10
         rotateButton = true
         scaleType = 'page-fit'
         previousDocumentButton = true
         previousDocumentButtonTooltip = 'tp1'
         nextDocumentButton = true
         nextDocumentButtonTooltip = 'tp2'
+        totalPages = 20
+        hasNextDocument = true
+        hasPreviousDocument = true
         wrapper = shallowMount(Toolbar, {
             localVue,
             propsData: {
                 disableButtons,
                 downloadButton,
-                pagination,
+                currentPage,
                 rotateButton,
                 scaleType,
                 previousDocumentButton,
                 previousDocumentButtonTooltip,
                 nextDocumentButton,
                 nextDocumentButtonTooltip,
+                totalPages,
+                hasNextDocument,
+                hasPreviousDocument,
             },
         })
     })
 
     describe('Props', () => {
-        it('Should receive a pagination', () => {
-            expect(wrapper.props().pagination).toEqual(pagination)
+        it('Should receive a currentPage', () => {
+            expect(wrapper.props().currentPage).toEqual(currentPage)
         })
 
-        it('Should have a default value to pagination', () => {
+        it('Should have a default value to currentPage', () => {
             wrapper = shallowMount(Toolbar, { localVue, propsData: { scaleType } })
-            expect(wrapper.props().pagination).toEqual({ current: 1, total: 1 })
+            expect(wrapper.props().currentPage).toBe(1)
         })
 
         it('Should receive a disableButtons', () => {
@@ -119,6 +125,33 @@ describe('Toolbar.spec.js', () => {
             wrapper = shallowMount(Toolbar, { localVue, propsData: { scaleType } })
             expect(wrapper.props().nextDocumentButtonTooltip).toBeTruthy()
         })
+
+        it('Should receive a totalPages', () => {
+            expect(wrapper.props().totalPages).toEqual(totalPages)
+        })
+
+        it('Should have a default value to totalPages', () => {
+            wrapper = shallowMount(Toolbar, { localVue, propsData: { scaleType } })
+            expect(wrapper.props().totalPages).toBe(1)
+        })
+
+        it('Should receive a hasNextDocument', () => {
+            expect(wrapper.props().hasNextDocument).toEqual(hasNextDocument)
+        })
+
+        it('Should have a default value to hasNextDocument', () => {
+            wrapper = shallowMount(Toolbar, { localVue, propsData: { scaleType } })
+            expect(wrapper.props().hasNextDocument).toBe(false)
+        })
+
+        it('Should receive a hasPreviousDocument', () => {
+            expect(wrapper.props().hasPreviousDocument).toEqual(hasPreviousDocument)
+        })
+
+        it('Should have a default value to hasPreviousDocument', () => {
+            wrapper = shallowMount(Toolbar, { localVue, propsData: { scaleType } })
+            expect(wrapper.props().hasPreviousDocument).toBe(false)
+        })
     })
 
     describe('Template', () => {
@@ -134,7 +167,7 @@ describe('Toolbar.spec.js', () => {
 
         it('Should display pagination', () => {
             let pagination = wrapper.find('[data-test="pagination"]')
-            expect(pagination.html()).toContain('de 3')
+            expect(pagination.html()).toContain('de 20')
         })
 
         it('Should have nextPage button', () => {
