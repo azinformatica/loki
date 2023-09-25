@@ -76,6 +76,9 @@ export default {
             type: String,
             required: true,
         },
+        keepSearchText: {
+            type: Boolean,
+        },
     },
     data() {
         return {
@@ -122,7 +125,9 @@ export default {
         },
         simpleSearch() {
             this.$emit('simple-search', this.searchText)
-            this.searchText = null
+            if (!this.keepSearchText) {
+                this.searchText = null
+            }
         },
         advancedSearch() {
             this.$emit('advanced-search')
