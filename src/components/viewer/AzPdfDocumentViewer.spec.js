@@ -61,6 +61,9 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         draggableLinkTooltip,
         draggableUnlinkTooltip,
         draggableDeleteTooltip,
+        multipleDocuments,
+        multipleDocumentsTotalPages,
+        multipleDocumentsCurrentFirstPage,
         wrapper,
         directives
 
@@ -85,6 +88,9 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         draggableLinkTooltip = 'link'
         draggableUnlinkTooltip = 'unlink'
         draggableDeleteTooltip = 'delete'
+        multipleDocuments = false
+        multipleDocumentsTotalPages = 10
+        multipleDocumentsCurrentFirstPage = 5
         directives = {
             azScroll,
         }
@@ -102,6 +108,9 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 draggableLinkTooltip,
                 draggableUnlinkTooltip,
                 draggableDeleteTooltip,
+                multipleDocuments,
+                multipleDocumentsTotalPages,
+                multipleDocumentsCurrentFirstPage,
             },
             attachTo: document.body,
             directives,
@@ -162,15 +171,27 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         })
 
         it('Should receive draggableLinkTooltip', () => {
-            expect(wrapper.props().draggableLinkTooltip).toBe('link')
+            expect(wrapper.props().draggableLinkTooltip).toBe(draggableLinkTooltip)
         })
 
         it('Should receive draggableUnlinkTooltip', () => {
-            expect(wrapper.props().draggableUnlinkTooltip).toBe('unlink')
+            expect(wrapper.props().draggableUnlinkTooltip).toBe(draggableUnlinkTooltip)
         })
 
         it('Should receive draggableDeleteTooltip', () => {
-            expect(wrapper.props().draggableDeleteTooltip).toBe('delete')
+            expect(wrapper.props().draggableDeleteTooltip).toBe(draggableDeleteTooltip)
+        })
+
+        it('Should receive multipleDocuments', () => {
+            expect(wrapper.props().multipleDocuments).toBe(multipleDocuments)
+        })
+
+        it('Should receive multipleDocumentsTotalPages', () => {
+            expect(wrapper.props().multipleDocumentsTotalPages).toBe(multipleDocumentsTotalPages)
+        })
+
+        it('Should receive multipleDocumentsCurrentFirstPage', () => {
+            expect(wrapper.props().multipleDocumentsCurrentFirstPage).toBe(multipleDocumentsCurrentFirstPage)
         })
     })
 
@@ -267,6 +288,8 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             })
 
             expect(wrapper.vm.pagination).toEqual({ current: 1, total: 10 })
+            expect(wrapper.vm.pageOffset).toBe(0)
+            expect(wrapper.vm.currentPage).toBe(1)
             expect(wrapper.vm.pdf.viewer.currentScaleValue).toEqual('page-fit')
             expect(wrapper.vm.scale).toEqual({ default: 1 })
         })
@@ -275,6 +298,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             wrapper.vm.pageChangeEventHandler({ pageNumber: 100 })
 
             expect(wrapper.vm.pagination.current).toEqual(100)
+            expect(wrapper.vm.currentPage).toEqual(100)
         })
 
         it('Should execute createPdfViewer', () => {
@@ -517,7 +541,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
         })
     })
 
-    describe('Method', () => {
+    describe('Methods', () => {
         describe('linkDraggablesByPageInterval', () => {
             let draggable, pageIntervalCallback
 
@@ -641,6 +665,206 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 expect(event[0][0].direction).toBe('none')
                 expect(event[0][0].max).toBe(false)
             })
+        })
+    })
+
+    describe('Toolbar pagination events', () => {
+        it('Should emit previous document event', () => {
+            wrapper = shallowMount(AzPdfDocumentViewer, {
+                localVue,
+                propsData: { src, httpHeader },
+                stubs: {
+                    Toolbar: { template: '<button @click=\'$emit("previousDocument")\' ></button>' },
+                },
+                directives,
+            })
+            wrapper.find('button').trigger('click')
+
+            expect(wrapper.emitted('previous-document')).toBeTruthy()
+        })
+
+        it('Should emit next document event', () => {
+            wrapper = shallowMount(AzPdfDocumentViewer, {
+                localVue,
+                propsData: { src, httpHeader },
+                stubs: {
+                    Toolbar: { template: '<button @click=\'$emit("nextDocument")\' ></button>' },
+                },
+                directives,
+            })
+            wrapper.find('button').trigger('click')
+
+            expect(wrapper.emitted('next-document')).toBeTruthy()
+        })
+
+        it('Should change page when the new page is in the current document', () => {
+            wrapper = shallowMount(AzPdfDocumentViewer, {
+                localVue,
+                propsData: { src, httpHeader },
+                stubs: {
+                    Toolbar: { template: '<button @click=\'$emit("changePage", 5)\' ></button>' },
+                },
+                directives,
+            })
+            wrapper.setData({
+                pagination: {
+                    current: 1,
+                    total: 10,
+                },
+                pdf: {
+                    viewer: {
+                        currentPageNumber: 1,
+                    },
+                },
+            })
+            wrapper.find('button').trigger('click')
+
+            expect(wrapper.vm.pdf.viewer.currentPageNumber).toBe(5)
+        })
+
+        it('Should change document when the new page is not in the current document and has multiple documents', () => {
+            multipleDocuments = true
+            multipleDocumentsTotalPages = 30
+            multipleDocumentsCurrentFirstPage = 1
+            wrapper = shallowMount(AzPdfDocumentViewer, {
+                localVue,
+                propsData: {
+                    src,
+                    httpHeader,
+                    multipleDocuments,
+                    multipleDocumentsTotalPages,
+                    multipleDocumentsCurrentFirstPage,
+                },
+                stubs: {
+                    Toolbar: { template: '<button @click=\'$emit("changePage", 20)\' ></button>' },
+                },
+                directives,
+            })
+            wrapper.setData({
+                pageOffset: multipleDocumentsCurrentFirstPage - 1,
+                pagination: {
+                    current: 1,
+                    total: 10,
+                },
+            })
+            wrapper.find('button').trigger('click')
+
+            expect(wrapper.emitted('change-document')).toBeTruthy()
+            expect(wrapper.emitted('change-document')[0][0]['page']).toBe(20)
+        })
+
+        it('Should go to next page if it is in the current document', () => {
+            wrapper = shallowMount(AzPdfDocumentViewer, {
+                localVue,
+                propsData: { src, httpHeader },
+                stubs: {
+                    Toolbar: { template: '<button @click=\'$emit("nextPage")\' ></button>' },
+                },
+                directives,
+            })
+            wrapper.setData({
+                pagination: {
+                    current: 2,
+                    total: 10,
+                },
+                pdf: {
+                    viewer: {
+                        currentPageNumber: 2,
+                    },
+                },
+            })
+            wrapper.find('button').trigger('click')
+
+            expect(wrapper.vm.pdf.viewer.currentPageNumber).toBe(3)
+        })
+
+        it('Should change document if go to next page and it is not in the current document', () => {
+            multipleDocuments = true
+            multipleDocumentsTotalPages = 30
+            multipleDocumentsCurrentFirstPage = 1
+            wrapper = shallowMount(AzPdfDocumentViewer, {
+                localVue,
+                propsData: {
+                    src,
+                    httpHeader,
+                    multipleDocuments,
+                    multipleDocumentsTotalPages,
+                    multipleDocumentsCurrentFirstPage,
+                },
+                stubs: {
+                    Toolbar: { template: '<button @click=\'$emit("nextPage")\' ></button>' },
+                },
+                directives,
+            })
+            wrapper.setData({
+                pageOffset: multipleDocumentsCurrentFirstPage - 1,
+                pagination: {
+                    current: 10,
+                    total: 10,
+                },
+                currentPage: 10,
+            })
+            wrapper.find('button').trigger('click')
+
+            expect(wrapper.emitted('change-document')).toBeTruthy()
+            expect(wrapper.emitted('change-document')[0][0]['page']).toBe(11)
+        })
+
+        it('Should go to previous page if it is in the current document', () => {
+            wrapper = shallowMount(AzPdfDocumentViewer, {
+                localVue,
+                propsData: { src, httpHeader },
+                stubs: {
+                    Toolbar: { template: '<button @click=\'$emit("previousPage")\' ></button>' },
+                },
+                directives,
+            })
+            wrapper.setData({
+                pagination: {
+                    current: 2,
+                    total: 10,
+                },
+                pdf: {
+                    viewer: {
+                        currentPageNumber: 2,
+                    },
+                },
+            })
+            wrapper.find('button').trigger('click')
+
+            expect(wrapper.vm.pdf.viewer.currentPageNumber).toBe(1)
+        })
+
+        it('Should change document if go to previous page and it is not in the current document', () => {
+            multipleDocuments = true
+            multipleDocumentsTotalPages = 30
+            multipleDocumentsCurrentFirstPage = 10
+            wrapper = shallowMount(AzPdfDocumentViewer, {
+                localVue,
+                propsData: {
+                    src,
+                    httpHeader,
+                    multipleDocuments,
+                    multipleDocumentsTotalPages,
+                    multipleDocumentsCurrentFirstPage,
+                },
+                stubs: {
+                    Toolbar: { template: '<button @click=\'$emit("previousPage")\' ></button>' },
+                },
+                directives,
+            })
+            wrapper.setData({
+                pageOffset: multipleDocumentsCurrentFirstPage - 1,
+                pagination: {
+                    current: 1,
+                    total: 10,
+                },
+                currentPage: 10,
+            })
+            wrapper.find('button').trigger('click')
+
+            expect(wrapper.emitted('change-document')).toBeTruthy()
+            expect(wrapper.emitted('change-document')[0][0]['page']).toBe(9)
         })
     })
 })

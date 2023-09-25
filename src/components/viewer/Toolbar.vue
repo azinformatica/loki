@@ -16,17 +16,17 @@
                 data-test="previousPage"
                 tooltip="Ir para a página anterior"
                 icon="mdi-chevron-left"
-                :disabled="disableButtons || !hasPreviousPage"
+                :disabled="disableButtons || (!hasPreviousPage && !hasPreviousDocument)"
                 @click="$emit('previousPage')"
             />
             <v-text-field outline type="number" v-model="page" @change="$emit('changePage', formatPage($event))" />
-            de {{ pagination.total || '1' }}
+            de {{ totalPages || '1' }}
             <toolbar-button
                 class="az-pdf-toolbar__content"
                 data-test="nextPage"
                 tooltip="Ir para a próxima página"
                 icon="mdi-chevron-right"
-                :disabled="disableButtons || !hasNextPage"
+                :disabled="disableButtons || (!hasNextPage && !hasNextDocument)"
                 @click="$emit('nextPage')"
             />
         </div>
@@ -121,9 +121,9 @@ export default {
             type: Boolean,
             default: false,
         },
-        pagination: {
-            type: Object,
-            default: () => ({ current: 1, total: 1 }),
+        currentPage: {
+            type: Number,
+            default: 1,
         },
         printButton: {
             type: Boolean,
@@ -153,6 +153,18 @@ export default {
             type: String,
             default: 'Ir para o próximo documento',
         },
+        totalPages: {
+            type: Number,
+            default: 1,
+        },
+        hasNextDocument: {
+            type: Boolean,
+            default: false,
+        },
+        hasPreviousDocument: {
+            type: Boolean,
+            default: false,
+        },
     },
     data: () => ({
         showActions: false,
@@ -177,7 +189,10 @@ export default {
             return parseInt(page || '1')
         },
         clampPage(page) {
-            return _.clamp(page, 1, this.pagination.total)
+            return _.clamp(page, 1, this.totalPages)
+        },
+        updatePage() {
+            this.page = this.formatPage(this.currentPage)
         },
     },
     computed: {
@@ -194,16 +209,19 @@ export default {
             return this.isScaleTypePageFit ? 'mdi-fullscreen' : 'mdi-fullscreen-exit'
         },
         hasNextPage() {
-            return this.pagination.current < this.pagination.total
+            return this.page < this.totalPages
         },
         hasPreviousPage() {
-            return this.pagination.current > 1
+            return this.currentPage > 1
         },
     },
     watch: {
-        'pagination.current'(page) {
-            this.page = this.formatPage(page)
+        currentPage() {
+            this.updatePage()
         },
+    },
+    mounted() {
+        this.updatePage()
     },
 }
 </script>
