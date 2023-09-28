@@ -547,7 +547,9 @@ export default class AzBpmProcess {
     _getButtonCompleteLabel() {
         const currentTask = this.getCurrentTask()
 
-        return this._hasNextTasks(currentTask) ? 'Encaminhar' : 'Finalizar'
+        return this._hasSingleNextTask(currentTask) && this._nextTasksContainsEndEvent(currentTask)
+            ? 'Finalizar'
+            : 'Encaminhar'
     }
 
     _getButtonCompleteAction() {
@@ -809,6 +811,18 @@ export default class AzBpmProcess {
         const nextTasks = this._getNextTasks(task)
 
         return nextTasks.length > 0
+    }
+
+    _nextTasksContainsEndEvent(task) {
+        const nextTasks = this._getNextTasks(task)
+
+        return nextTasks.some((nextTask) => nextTask.type === 'endEvent')
+    }
+
+    _hasSingleNextTask(task) {
+        const nextTasks = this._getNextTasks(task)
+
+        return nextTasks.length === 1
     }
 
     _hasHumanDecisionInAllNextTasks(task) {
