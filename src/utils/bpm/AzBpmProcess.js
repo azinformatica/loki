@@ -829,7 +829,7 @@ export default class AzBpmProcess {
         const nextTasks = this._getNextTasks(task)
         const hasNextTasks = nextTasks.length > 0
 
-        return hasNextTasks && nextTasks.every((task) => this._isHumanDecisionTask(task))
+        return hasNextTasks && nextTasks.every((nextTask) => this._isHumanDecisionTask(nextTask))
     }
 
     _isHumanDecisionTask(task) {
