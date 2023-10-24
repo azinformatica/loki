@@ -62,6 +62,7 @@ export default {
         SET_CURRENT_TASK_FOR_ID_IN_INSTANCE: 'SET_CURRENT_TASK_FOR_ID_IN_INSTANCE',
     },
     UO: {
-        SET: 'setUOs',
+        SET_UPPER_HIERARCHY_CODE: 'setUpperHierarchyCodeUOs',
+        SET_ACRONYM_TYPE_ADINISTRATION_COMPLETED: 'setAcronymTypeAdministrationCompletedUOs',
     },
 }

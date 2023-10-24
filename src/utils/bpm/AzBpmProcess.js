@@ -17,8 +17,11 @@ export default class AzBpmProcess {
         this._resetDebounce()
 
         return this._getProcessInstancePromise(invalidateCache)
-            .then((processInstance) => this._resetCurrentTask(processInstance))
-            .finally(() => this._finishLoadingProcess())
+            .then((processInstance) =>  this._resetCurrentTask(processInstance))
+            .finally(() => {
+                this._finishLoadingProcess()
+                this._loadUOsOnce()
+            })
     }
 
     initialize() {
@@ -184,7 +187,21 @@ export default class AzBpmProcess {
     }
 
     _loadUOs() {
-        return this.store.dispatch(actionTypes.UO.FIND_ALL_ACTIVE)
+        this._loadAcronymTypeAdministrationCompletedUOs()
+        this._loadUpperHierarchyCodeUOs()
+
+    }
+
+    _loadAcronymTypeAdministrationCompletedUOs() {
+        const filters = new URLSearchParams({somenteAtivos:true, sort:'sigla', siglatipoAdministracaoPreenchido:true})
+        return this.store.dispatch(actionTypes.UO.FIND_ALL_ACTIVE,filters)
+    }
+
+    _loadUpperHierarchyCodeUOs() {
+        const upperHierarchyCode = this.getCurrentTask().originUo ? this.getCurrentTask().originUo.codigoHierarquia  :  "-1"
+        const filters = new URLSearchParams({somenteAtivos:true,sort:'sigla',codigoHierarquiaSuperior:upperHierarchyCode})
+
+        return this.store.dispatch(actionTypes.UO.FIND_ALL_ACTIVE,filters)
     }
 
     _initializeProcessInstance() {
@@ -899,8 +916,8 @@ export default class AzBpmProcess {
         return uos.length > 0
     }
 
-    _getUOs() {
-        return this.store.state.loki.uos || []
+    _getUOs(type) {
+        return this.store.state.loki.uos[type] || []
     }
 
     _getCurrentTasks() {

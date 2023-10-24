@@ -99,5 +99,8 @@ export default {
         accessToken: null,
     },
 
-    uos: [],
+    uos: {
+        upperHierarchyCode:[],
+        acronymTypeAdministrationCompleted:[]
+    },
 }

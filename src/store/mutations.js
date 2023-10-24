@@ -243,7 +243,10 @@ export default {
         state.bpm.api = url
     },
 
-    [mutationTypes.UO.SET](state, uos) {
-        state.uos = uos
+    [mutationTypes.UO.SET_ACRONYM_TYPE_ADINISTRATION_COMPLETED](state, uos) {
+        state.uos.acronymTypeAdministrationCompleted = uos
+    },
+    [mutationTypes.UO.SET_UPPER_HIERARCHY_CODE](state, uos) {
+        state.uos.upperHierarchyCode = uos
     },
 }

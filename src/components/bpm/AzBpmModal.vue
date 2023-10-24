@@ -23,7 +23,7 @@
                     <v-col class="az-bpm-modal__item" cols="12" v-if="isButtonTypeComplete && selectHumanDecisionShow">
                         <div class="az-text">
                             <label for="human-decision-select" class="grey--text text--darken-3">
-                                <b> Encaminhar para <span class="red--text">*</span> </b>
+                                <b>Encaminhar para <span class="red--text">*</span> </b>
                             </label>
                         </div>
                         <v-select
@@ -41,7 +41,7 @@
                     <v-col class="az-bpm-modal__item" cols="12" v-if="isButtonTypeRoute && selectRouteShow">
                         <div class="az-text">
                             <label for="route-select" class="grey--text text--darken-3">
-                                <b> Encaminhar para <span class="red--text">*</span> </b>
+                                <b>Encaminhar para <span class="red--text">*</span> </b>
                             </label>
                         </div>
                         <v-select
@@ -57,7 +57,24 @@
                         >
                         </v-select>
                     </v-col>
-                    <v-col class="az-bpm-modal__item" cols="12" v-if="selectUOShow && selectedNextTaskRequiresUO">
+                    <v-col class="az-bpm-modal__item" cols="12" v-if="showOrganizationalStructure">
+                        <div class="az-text">
+                            <label for="route-select" class="grey--text text--darken-3">
+                                <b> Estrutura Organizacional <span class="red--text">*</span> </b>
+                            </label>
+                        </div>
+                        <v-select
+                            id="flow-type-select"
+                            class="pt-0"
+                            placeholder="Selecione uma opção"
+                            dense
+                            v-model="organizationalStructureSelected"
+                            :items="organizationalStructure"
+                            return-object
+                            hide-details
+                        ></v-select>
+                    </v-col>
+                    <v-col class="az-bpm-modal__item" cols="12" v-if="showSelectUOsFiltredItems">
                         <div class="az-text">
                             <label for="uo" class="grey--text text--darken-3">
                                 <b> Unidade Organizacional <span class="red--text">*</span> </b>
@@ -69,8 +86,7 @@
                             dense
                             placeholder="Selecione uma opção"
                             v-model="selectedUO"
-                            :items="selectUOItems"
-                            :disabled="selectUODisabled"
+                            :items="selectUOsFiltredItems"
                             hide-details
                             :menu-props="{ maxWidth: '468px' }"
                         />
@@ -91,7 +107,7 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                    :disabled="selectedButton.disabled"
+                    :disabled="selectedNextTaskRequiresUO && !selectedUO"
                     width="100px"
                     class="text-capitalize"
                     color="primary"
@@ -107,6 +123,7 @@
 
 <script>
 import _ from 'lodash'
+import { mapState } from 'vuex'
 
 export default {
     name: 'AzBpmModal',
@@ -133,6 +150,18 @@ export default {
             selectedUO: '',
             selectedHumanDecision: null,
             selectedRoute: null,
+            organizationalStructureSelected: null,
+            selectUOsFiltred:[],
+            organizationalStructure:[
+                {
+                    value:'acronymTypeAdministrationCompleted',
+                    text:'Órgão'
+                },
+                {
+                    value:'upperHierarchyCode',
+                    text:'Unidade Organizacional'
+                }
+            ]
         }
     },
     methods: {
@@ -166,10 +195,14 @@ export default {
         resetRouteSelect() {
             this.selectedRoute = null
         },
+        resetOrganizationalStructureSelected(){
+            this.organizationalStructureSelected = null
+        },
         resetAll() {
             this.resetUOSelect()
             this.resetHumanDecisionSelect()
             this.resetRouteSelect()
+            this.resetOrganizationalStructureSelected()
         },
         initializeAll() {
             this.initializeUOSelect()
@@ -227,8 +260,33 @@ export default {
             this.resetUOSelect()
             this.initializeUOSelect()
         },
+        selectedRoute(){
+            this.resetOrganizationalStructureSelected()
+            this.resetUOSelect()
+        },
+        selectedHumanDecision(){
+            this.resetOrganizationalStructureSelected()
+            this.resetUOSelect()
+        },
+        organizationalStructureSelected(newValue){
+            if(newValue){
+                this.selectUOsFiltred = this.uos[newValue.value].map((uos) => ({
+                    text: `${uos.codigoHierarquiaFormatado} - ${uos.sigla} - ${uos.nome}`,
+                    value: uos.id,
+                }))
+
+                this.selectedUO = null
+
+                if (this.uos[newValue.value].find(obj => obj.id === this.currentTask.currentUo.id)) {
+                    this.selectedUO = this.currentTask.currentUo.id
+                }
+            }
+        }
     },
     computed: {
+        uos() {
+            return this.$store.state.loki.uos
+        },
         nextTasks() {
             return this.currentTask.nextTasks || []
         },
@@ -289,11 +347,11 @@ export default {
         selectUOShow() {
             return this.selectUO.show || false
         },
-        selectUODisabled() {
-            return this.selectUO.disabled || false
-        },
         selectUOItems() {
             return this.selectUO.items
+        },
+        selectUOsFiltredItems(){
+            return this.selectUOsFiltred
         },
         originUO() {
             return this.currentTask ? this.currentTask.currentUo : null
@@ -324,6 +382,12 @@ export default {
                 uoDestinationId: this.selectedUO,
             }
         },
+        showOrganizationalStructure(){
+            return (this.selectedHumanDecision && this.selectedHumanDecision.requiresUO) || (this.selectedRoute && this.selectedRoute.requiresUO)
+        },
+        showSelectUOsFiltredItems(){
+            return this.organizationalStructureSelected
+        }
     },
     created() {
         this.resetAll()

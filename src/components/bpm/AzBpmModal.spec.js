@@ -9,6 +9,37 @@ const localVue = createLocalVue()
 localVue.use(Vuex)
 Vue.use(Vuetify)
 
+const createStoreState = () => {
+    return ({
+        loki: {
+            uos: {
+                acronymTypeAdministrationCompleted: [
+                    {
+                        id: 8774,
+                        nome: 'Primeira Subdefensoria Pública-Geral',
+                        sigla: '1SUBDEF',
+                        codigoHierarquia: '0002.0001.0001.0001'
+                    }
+                ],
+                upperHierarchyCode: [
+                    {
+                        id: 8774,
+                        nome: 'Primeira Subdefensoria Pública-Geral',
+                        sigla: '1SUBDEF',
+                        codigoHierarquia: '0002.0001.0001.0001'
+                    }
+                ]
+            }
+        }
+    })
+}
+
+const createStore = (state) => {
+    const store = {}
+    store.state = state
+
+    return store
+}
 const createDefaultProps = () => {
     return {
         components: {
@@ -94,11 +125,13 @@ const createWrapper = ({ propsData = {}, shallow = true }) => {
 }
 
 describe('AzBpmModal.spec.js', () => {
-    let propsData, wrapper
+    let propsData, wrapper, state, store
 
     beforeEach(() => {
         propsData = createDefaultProps()
         wrapper = createWrapper({ propsData })
+        store = createStore(state)
+        state = createStoreState()
     })
 
     describe('Props', () => {
@@ -242,19 +275,7 @@ describe('AzBpmModal.spec.js', () => {
                 expect(getSelect().exists()).toBe(false)
             })
 
-            it('Should disable uo select if disabled', () => {
-                propsData.components.select.uo.disabled = true
-                wrapper = createWrapper({ propsData })
 
-                expect(getSelect().vm.disabled).toBe(true)
-            })
-
-            it('Should change selectedUO when component emits change event', () => {
-                const selectedOption = propsData.components.select.uo.items[1].value
-                getSelect().vm.$emit('input', selectedOption)
-
-                expect(wrapper.vm.selectedUO).toBe(selectedOption)
-            })
         })
     })
 
