@@ -74,7 +74,7 @@
                             hide-details
                         ></v-select>
                     </v-col>
-                    <v-col class="az-bpm-modal__item" cols="12" v-if="showSelectUOsFiltredItems">
+                    <v-col class="az-bpm-modal__item" cols="12" v-if="showselectUOsFilteredItems">
                         <div class="az-text">
                             <label for="uo" class="grey--text text--darken-3">
                                 <b> Unidade Organizacional <span class="red--text">*</span> </b>
@@ -86,7 +86,7 @@
                             dense
                             placeholder="Selecione uma opção"
                             v-model="selectedUO"
-                            :items="selectUOsFiltredItems"
+                            :items="selectUOsFilteredItems"
                             hide-details
                             :menu-props="{ maxWidth: '468px' }"
                         />
@@ -151,7 +151,7 @@ export default {
             selectedHumanDecision: null,
             selectedRoute: null,
             organizationalStructureSelected: null,
-            selectUOsFiltred:[],
+            selectUOsFiltered:[],
             organizationalStructure:[
                 {
                     value:'acronymTypeAdministrationCompleted',
@@ -234,6 +234,20 @@ export default {
                 _.merge(bpmParameters, this.routeParameters)
             }
         },
+        mountItemsForSelectUOs(uosList){
+
+           return uosList.map((uos) => ({
+                text: `${uos.codigoHierarquiaFormatado} - ${uos.sigla} - ${uos.nome}`,
+                value: uos.id,
+            }))
+        },
+        setSeletedUOWithCurrentUO(uosList){
+            this.selectedUO = null
+
+            if (uosList.some(obj => obj.id === this.currentTask.currentUo.id)) {
+                this.selectedUO = this.currentTask.currentUo.id
+            }
+        }
     },
     watch: {
         show() {
@@ -270,16 +284,9 @@ export default {
         },
         organizationalStructureSelected(newValue){
             if(newValue){
-                this.selectUOsFiltred = this.uos[newValue.value].map((uos) => ({
-                    text: `${uos.codigoHierarquiaFormatado} - ${uos.sigla} - ${uos.nome}`,
-                    value: uos.id,
-                }))
-
-                this.selectedUO = null
-
-                if (this.uos[newValue.value].find(obj => obj.id === this.currentTask.currentUo.id)) {
-                    this.selectedUO = this.currentTask.currentUo.id
-                }
+                const uosList = this.uos[newValue.value]
+                this.selectUOsFiltered = this.mountItemsForSelectUOs(uosList)
+                this.setSeletedUOWithCurrentUO(uosList)
             }
         }
     },
@@ -350,8 +357,8 @@ export default {
         selectUOItems() {
             return this.selectUO.items
         },
-        selectUOsFiltredItems(){
-            return this.selectUOsFiltred
+        selectUOsFilteredItems(){
+            return this.selectUOsFiltered
         },
         originUO() {
             return this.currentTask ? this.currentTask.currentUo : null
@@ -385,7 +392,7 @@ export default {
         showOrganizationalStructure(){
             return (this.selectedHumanDecision && this.selectedHumanDecision.requiresUO) || (this.selectedRoute && this.selectedRoute.requiresUO)
         },
-        showSelectUOsFiltredItems(){
+        showselectUOsFilteredItems(){
             return this.organizationalStructureSelected
         }
     },

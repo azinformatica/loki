@@ -189,19 +189,29 @@ export default class AzBpmProcess {
     _loadUOs() {
         this._loadAcronymTypeAdministrationCompletedUOs()
         this._loadUpperHierarchyCodeUOs()
+    }
 
+    _loadUosFiltered(filters){
+        return this.store.dispatch(actionTypes.UO.FIND_ALL_ACTIVE,filters)
     }
 
     _loadAcronymTypeAdministrationCompletedUOs() {
-        const filters = new URLSearchParams({somenteAtivos:true, sort:'sigla', siglatipoAdministracaoPreenchido:true})
-        return this.store.dispatch(actionTypes.UO.FIND_ALL_ACTIVE,filters)
+        const acronymTypeAdministrationCompletedUOsFilter = {siglatipoAdministracaoPreenchido:true}
+        const filters = this._createFiltersForUOs(acronymTypeAdministrationCompletedUOsFilter)
+        return this._loadUosFiltered(filters)
     }
 
     _loadUpperHierarchyCodeUOs() {
         const upperHierarchyCode = this.getCurrentTask().originUo ? this.getCurrentTask().originUo.codigoHierarquia  :  "-1"
-        const filters = new URLSearchParams({somenteAtivos:true,sort:'sigla',codigoHierarquiaSuperior:upperHierarchyCode})
+        const upperHierarchyCodeFilter = {codigoHierarquiaSuperior:upperHierarchyCode}
+        const filters = this._createFiltersForUOs(upperHierarchyCodeFilter)
 
-        return this.store.dispatch(actionTypes.UO.FIND_ALL_ACTIVE,filters)
+        return this._loadUosFiltered(filters)
+    }
+
+    _createFiltersForUOs(newFilters){
+        const defaultFilters = {somenteAtivos:true, sort:'sigla'}
+        return new URLSearchParams({...defaultFilters, ...newFilters})
     }
 
     _initializeProcessInstance() {
