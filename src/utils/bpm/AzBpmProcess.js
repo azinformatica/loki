@@ -37,10 +37,24 @@ export default class AzBpmProcess {
             this._isStatusInstanceActive() &&
             this._hasAssignee(currentTask) &&
             this._hasSomeValidAuthority(currentTask, authorities) &&
-            this._isUserCandidate(currentTask)
+            this._isUserCandidate(currentTask) &&
+            this.hasPermissionCurrentUo()
         )
     }
 
+    hasPermissionCurrentUo(){
+        return this._isUOEnabled() && this.getCurrentUoPermission() || !this._isUOEnabled()
+    }
+
+    getCurrentUoPermission(){
+        const currentUoPermission = this.getCurrentTask().currentUo ? this.getCurrentTask().currentUo.possuiPermissao : false
+        return currentUoPermission
+    }
+
+    getOriginUoPermission(){
+        const originUoPermission = this.getCurrentTask().originUo ? this.getCurrentTask().originUo.possuiPermissao : true
+        return originUoPermission
+    }
     getProcess() {
         return this._getBpmAtBusinessKey()
     }
@@ -481,7 +495,7 @@ export default class AzBpmProcess {
     }
 
     _getSelectUODisabled() {
-        return Boolean(this._isDispatchingAction() || !this._isUOEnabled())
+        return Boolean(this._isDispatchingAction() || !this._isUOEnabled() )
     }
 
     _getSelectUOItems() {
@@ -502,7 +516,7 @@ export default class AzBpmProcess {
     _getButtonClaimDisabled() {
         const currentTask = this.getCurrentTask()
 
-        return Boolean(this.isLoadingProcess() || this._isDispatchingAction() || !this._isUserCandidate(currentTask))
+        return Boolean(this.isLoadingProcess() || this._isDispatchingAction() || !this._isUserCandidate(currentTask) || !this.hasPermissionCurrentUo())
     }
 
     _getButtonClaimLabel() {
@@ -536,7 +550,7 @@ export default class AzBpmProcess {
     _getButtonUnclaimDisabled() {
         const currentTask = this.getCurrentTask()
 
-        return Boolean(this.isLoadingProcess() || this._isDispatchingAction() || !this._isUserCandidate(currentTask))
+        return Boolean(this.isLoadingProcess() || this._isDispatchingAction() || !this._isUserCandidate(currentTask) || !this.hasPermissionCurrentUo())
     }
 
     _getButtonUnclaimLabel() {
@@ -568,7 +582,7 @@ export default class AzBpmProcess {
     _getButtonCompleteDisabled() {
         const currentTask = this.getCurrentTask()
 
-        return Boolean(this.isLoadingProcess() || this._isDispatchingAction() || !this._isUserCandidate(currentTask))
+        return Boolean(this.isLoadingProcess() || this._isDispatchingAction() || !this._isUserCandidate(currentTask) || !this.hasPermissionCurrentUo())
     }
 
     _getButtonCompleteLabel() {
