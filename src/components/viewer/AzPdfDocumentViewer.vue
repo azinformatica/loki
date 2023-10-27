@@ -350,15 +350,22 @@ export default {
         },
         changePage(newPage) {
             const page = this.clampPage(newPage)
+            this.currentPage = page
 
             if (this.isPageOnCurrentDocument(page)) {
-                this.pdf.viewer.currentPageNumber = page - this.pageOffset
+                if (this.isPageInsideDocumentBounds(page)) {
+                    this.pdf.viewer.currentPageNumber = page - this.pageOffset
+                }
             } else if (this.multipleDocuments) {
                 this.changeDocument(page)
             }
         },
         isPageOnCurrentDocument(page) {
             return page >= this.documentStartPage && page <= this.documentEndPage
+        },
+        isPageInsideDocumentBounds(page) {
+            const pageOnDocument = page - this.pageOffset
+            return pageOnDocument >= 1 && pageOnDocument <= this.pagination.total
         },
         clampPage(page) {
             return _.clamp(page, 1, this.totalPages)
