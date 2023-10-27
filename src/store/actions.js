@@ -164,7 +164,7 @@ export default {
     async [actionTypes.UO.FIND_ALL_ACTIVE]({ commit },queryParams) {
         const {data} = await axios.get(`/hal/unidadeOrganizacional/buscarComFiltros?${queryParams}`)
 
-        if(queryParams.has('siglatipoAdministracaoPreenchido')){
+        if(queryParams.has('tipoAdministracaoPreenchido')){
             commit(mutationTypes.UO.SET_ACRONYM_TYPE_ADINISTRATION_COMPLETED, data)
         }
         if(queryParams.has('codigoHierarquiaSuperior')){

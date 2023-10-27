@@ -47,13 +47,11 @@ export default class AzBpmProcess {
     }
 
     getCurrentUoPermission(){
-        const currentUoPermission = this.getCurrentTask().currentUo ? this.getCurrentTask().currentUo.possuiPermissao : false
-        return currentUoPermission
+        return this.getCurrentTask().currentUo ? this.getCurrentTask().currentUo.possuiPermissao : true
     }
 
     getOriginUoPermission(){
-        const originUoPermission = this.getCurrentTask().originUo ? this.getCurrentTask().originUo.possuiPermissao : true
-        return originUoPermission
+        return this.getCurrentTask().originUo ? this.getCurrentTask().originUo.possuiPermissao : true
     }
     getProcess() {
         return this._getBpmAtBusinessKey()
@@ -210,7 +208,7 @@ export default class AzBpmProcess {
     }
 
     _loadAcronymTypeAdministrationCompletedUOs() {
-        const acronymTypeAdministrationCompletedUOsFilter = {siglatipoAdministracaoPreenchido:true}
+        const acronymTypeAdministrationCompletedUOsFilter = {tipoAdministracaoPreenchido:true}
         const filters = this._createFiltersForUOs(acronymTypeAdministrationCompletedUOsFilter)
         return this._loadUosFiltered(filters)
     }
