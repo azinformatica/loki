@@ -107,12 +107,24 @@ export default {
         },
     },
     mounted() {
+        this.expandActiveMenu()
         const currentActiveMenu = this.getCurrentActiveMenu()
         if (this.hasChildren(currentActiveMenu)) {
             this.expand(currentActiveMenu)
         }
     },
+    watch: {
+        '$route.path'() {
+            this.expandActiveMenu()
+        },
+    },
     methods: {
+        expandActiveMenu() {
+            const currentActiveMenu = this.getCurrentActiveMenu()
+            if (this.hasChildren(currentActiveMenu)) {
+                this.expand(currentActiveMenu)
+            }
+        },
         open() {
             this.$store.commit(mutationTypes.SET_ASIDE, false)
         },

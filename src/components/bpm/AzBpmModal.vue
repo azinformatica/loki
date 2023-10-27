@@ -77,7 +77,7 @@
                     <v-col class="az-bpm-modal__item" cols="12" v-if="showselectUOsFilteredItems">
                         <div class="az-text">
                             <label for="uo" class="grey--text text--darken-3">
-                                <b> Unidade Organizacional <span class="red--text">*</span> </b>
+                                <b> {{organizationalStructureSelected.text}} <span class="red--text">*</span> </b>
                             </label>
                         </div>
                         <v-autocomplete
@@ -244,7 +244,8 @@ export default {
         setSeletedUOWithCurrentUO(uosList){
             this.selectedUO = null
 
-            if (uosList.some(obj => obj.id === this.currentTask.currentUo.id)) {
+            const currentUO = this.currentTask.currentUo ? this.currentTask.currentUo.id : null
+            if (uosList.some(obj => obj.id === currentUO)) {
                 this.selectedUO = this.currentTask.currentUo.id
             }
         }
@@ -286,7 +287,10 @@ export default {
             if(newValue){
                 const uosList = this.uos[newValue.value]
                 this.selectUOsFiltered = this.mountItemsForSelectUOs(uosList)
-                this.setSeletedUOWithCurrentUO(uosList)
+                if(uosList){
+                  this.setSeletedUOWithCurrentUO(uosList)
+                }
+
             }
         }
     },
