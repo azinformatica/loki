@@ -1508,5 +1508,20 @@ describe('AzBpmProcess', () => {
             expect(azBpmProcess).toHaveProperty('isLoadingProcess')
             expect(typeof azBpmProcess.isLoadingProcess).toBe('function')
         })
+
+        it('Should have private loadUpperHierarchyCodeUOs method', () => {
+            expect(azBpmProcess).toHaveProperty('_loadUpperHierarchyCodeUOs')
+            expect(typeof azBpmProcess._loadUpperHierarchyCodeUOs).toBe('function')
+        })
+
+        it('Should have private _loadAcronymTypeAdministrationCompletedUOs method', () => {
+            expect(azBpmProcess).toHaveProperty('_loadAcronymTypeAdministrationCompletedUOs')
+            expect(typeof azBpmProcess._loadAcronymTypeAdministrationCompletedUOs).toBe('function')
+        })
+
+        it('Should have private _loadUosFiltered method', () => {
+            expect(azBpmProcess).toHaveProperty('_loadUosFiltered')
+            expect(typeof azBpmProcess._loadUosFiltered).toBe('function')
+        })
     })
 })

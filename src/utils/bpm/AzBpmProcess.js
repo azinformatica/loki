@@ -205,12 +205,10 @@ export default class AzBpmProcess {
     }
 
     _loadAcronymTypeAdministrationCompletedUOs() {
-
         if (
             !this._isLoadUoAcronymTypeAdministrationCompleted() &&
             !this._hasUOs('acronymTypeAdministrationCompleted')
         ) {
-
             const acronymTypeAdministrationCompletedUOsFilter = { tipoAdministracaoPreenchido: true }
             const filters = this._createFiltersForUOs(acronymTypeAdministrationCompletedUOsFilter)
             this._startLoadUoAcronymTypeAdministrationCompleted()

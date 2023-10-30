@@ -57,18 +57,18 @@
                         >
                         </v-select>
                     </v-col>
-                    <v-col class="az-bpm-modal__item" cols="12" v-if="showOrganizationalStructure">
+                    <v-col class="az-bpm-modal__item" cols="12" v-if="organizationalStructureShow">
                         <div class="az-text">
                             <label for="route-select" class="grey--text text--darken-3">
                                 <b> Estrutura Organizacional <span class="red--text">*</span> </b>
                             </label>
                         </div>
                         <v-select
-                            id="flow-type-select"
+                            id="organizational-structure-select"
                             class="pt-0"
                             placeholder="Selecione uma opção"
                             dense
-                            v-model="organizationalStructureSelected"
+                            v-model="selectedOrganizationalStructure"
                             :items="organizationalStructure"
                             return-object
                             hide-details
@@ -77,7 +77,7 @@
                     <v-col class="az-bpm-modal__item" cols="12" v-if="showselectUOsFilteredItems">
                         <div class="az-text">
                             <label for="uo" class="grey--text text--darken-3">
-                                <b> {{organizationalStructureSelected.text}} <span class="red--text">*</span> </b>
+                                <b> {{selectedOrganizationalStructure.text}} <span class="red--text">*</span> </b>
                             </label>
                         </div>
                         <v-autocomplete
@@ -150,7 +150,7 @@ export default {
             selectedUO: '',
             selectedHumanDecision: null,
             selectedRoute: null,
-            organizationalStructureSelected: null,
+            selectedOrganizationalStructure: null,
             selectUOsFiltered:[],
             organizationalStructure:[
                 {
@@ -195,14 +195,14 @@ export default {
         resetRouteSelect() {
             this.selectedRoute = null
         },
-        resetOrganizationalStructureSelected(){
-            this.organizationalStructureSelected = null
+        resetselectedOrganizationalStructure(){
+            this.selectedOrganizationalStructure = null
         },
         resetAll() {
             this.resetUOSelect()
             this.resetHumanDecisionSelect()
             this.resetRouteSelect()
-            this.resetOrganizationalStructureSelected()
+            this.resetselectedOrganizationalStructure()
         },
         initializeAll() {
             this.initializeUOSelect()
@@ -276,14 +276,14 @@ export default {
             this.initializeUOSelect()
         },
         selectedRoute(){
-            this.resetOrganizationalStructureSelected()
+            this.resetselectedOrganizationalStructure()
             this.resetUOSelect()
         },
         selectedHumanDecision(){
-            this.resetOrganizationalStructureSelected()
+            this.resetselectedOrganizationalStructure()
             this.resetUOSelect()
         },
-        organizationalStructureSelected(newValue){
+        selectedOrganizationalStructure(newValue){
             if(newValue){
                 const uosList = this.uos[newValue.value]
                 this.selectUOsFiltered = this.mountItemsForSelectUOs(uosList)
@@ -393,11 +393,11 @@ export default {
                 uoDestinationId: this.selectedUO,
             }
         },
-        showOrganizationalStructure(){
+        organizationalStructureShow(){
             return (this.selectedHumanDecision && this.selectedHumanDecision.requiresUO) || (this.selectedRoute && this.selectedRoute.requiresUO)
         },
         showselectUOsFilteredItems(){
-            return this.organizationalStructureSelected
+            return this.selectedOrganizationalStructure
         }
     },
     created() {

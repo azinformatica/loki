@@ -300,6 +300,7 @@ describe('AzBpmModal.spec.js', () => {
             expect(wrapper.vm.selectedUO).toBe('')
             expect(wrapper.vm.selectedRoute).toBe(null)
             expect(wrapper.vm.selectedHumanDecision).toBe(null)
+            expect(wrapper.vm.selectedOrganizationalStructure).toBe(null)
         })
     })
 })
