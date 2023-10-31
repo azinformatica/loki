@@ -125,13 +125,12 @@ const createWrapper = ({ propsData = {}, shallow = true }) => {
 }
 
 describe('AzBpmModal.spec.js', () => {
-    let propsData, wrapper, state, store
+    let propsData, wrapper
 
     beforeEach(() => {
         propsData = createDefaultProps()
         wrapper = createWrapper({ propsData })
-        store = createStore(state)
-        state = createStoreState()
+
     })
 
     describe('Props', () => {

@@ -45,7 +45,7 @@ export default class AzBpmProcess {
     }
 
     hasPermissionCurrentUo() {
-        return (this._isUOEnabled() && this.getCurrentUoPermission()) || !this._isUOEnabled()
+        return (this.isUOEnabled() && this.getCurrentUoPermission()) || !this.isUOEnabled()
     }
 
     getCurrentUoPermission() {
@@ -220,7 +220,7 @@ export default class AzBpmProcess {
 
     _loadUpperHierarchyCodeUOs() {
         if (!this._isLoadUoUpperHierarchyCode() && !this._hasUOs('upperHierarchyCode')) {
-            if (this._isUOEnabled()) {
+            if (this.isUOEnabled()) {
                 const upperHierarchyCode = this.getCurrentTask().originUo
                     ? this.getCurrentTask().originUo.codigoHierarquia
                     : '-1'
@@ -527,11 +527,11 @@ export default class AzBpmProcess {
     _getSelectUOShow() {
         const currentTask = this.getCurrentTask()
 
-        return Boolean(this._isUOEnabled() && !this._isParallel(currentTask))
+        return Boolean(this.isUOEnabled() && !this._isParallel(currentTask))
     }
 
     _getSelectUODisabled() {
-        return Boolean(this._isDispatchingAction() || !this._isUOEnabled())
+        return Boolean(this._isDispatchingAction() || !this.isUOEnabled())
     }
 
     _getSelectUOItems() {
@@ -960,7 +960,7 @@ export default class AzBpmProcess {
         return task.isParallel || false
     }
 
-    _isUOEnabled() {
+    isUOEnabled() {
         const processDefinitionInfo = this.getProcessDefinitionInfo()
 
         return processDefinitionInfo.bpmUoEnabled

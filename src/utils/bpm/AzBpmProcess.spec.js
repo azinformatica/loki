@@ -1509,19 +1509,27 @@ describe('AzBpmProcess', () => {
             expect(typeof azBpmProcess.isLoadingProcess).toBe('function')
         })
 
-        it('Should have private loadUpperHierarchyCodeUOs method', () => {
-            expect(azBpmProcess).toHaveProperty('_loadUpperHierarchyCodeUOs')
-            expect(typeof azBpmProcess._loadUpperHierarchyCodeUOs).toBe('function')
+        it('Should have public isUOEnabled method', () => {
+            expect(azBpmProcess).toHaveProperty('isUOEnabled')
+            expect(typeof azBpmProcess.isUOEnabled).toBe('function')
         })
 
-        it('Should have private _loadAcronymTypeAdministrationCompletedUOs method', () => {
-            expect(azBpmProcess).toHaveProperty('_loadAcronymTypeAdministrationCompletedUOs')
-            expect(typeof azBpmProcess._loadAcronymTypeAdministrationCompletedUOs).toBe('function')
+        it('Should have public hasPermissionCurrentUo method and return true', () => {
+            expect(azBpmProcess).toHaveProperty('hasPermissionCurrentUo')
+            expect(typeof azBpmProcess.hasPermissionCurrentUo).toBe('function')
+            expect(azBpmProcess.hasPermissionCurrentUo).toBeTruthy()
         })
 
-        it('Should have private _loadUosFiltered method', () => {
-            expect(azBpmProcess).toHaveProperty('_loadUosFiltered')
-            expect(typeof azBpmProcess._loadUosFiltered).toBe('function')
+        it('Should have public getCurrentUoPermission method and return true', () => {
+            expect(azBpmProcess).toHaveProperty('getCurrentUoPermission')
+            expect(typeof azBpmProcess.getCurrentUoPermission).toBe('function')
+            expect(azBpmProcess.getCurrentUoPermission).toBeTruthy()
+        })
+
+        it('Should have public getOriginUoPermission method and return true', () => {
+            expect(azBpmProcess).toHaveProperty('getOriginUoPermission')
+            expect(typeof azBpmProcess.getOriginUoPermission).toBe('function')
+            expect(azBpmProcess.getOriginUoPermission).toBeTruthy()
         })
     })
 })
