@@ -2,7 +2,7 @@
     <v-app class="az-template-default" v-cloak>
         <az-loading></az-loading>
 
-        <az-aside>
+        <az-aside v-if="!disableAside">
             <div class="az-aside">
                 <div class="logo">
                     <az-logo />
@@ -20,7 +20,7 @@
         </az-aside>
 
         <v-toolbar app height="60" class="toolbar">
-            <v-icon class="mobile_menu" @click="showAside()">mdi-menu</v-icon>
+            <v-icon v-if="!disableAside" class="mobile_menu" @click="showAside()">mdi-menu</v-icon>
             <az-title />
             <v-spacer></v-spacer>
             <div v-if="showMainHeader" class="action">
@@ -71,6 +71,10 @@ export default {
             default: false,
         },
         showNotification: {
+            type: Boolean,
+            default: false,
+        },
+        disableAside: {
             type: Boolean,
             default: false,
         },
