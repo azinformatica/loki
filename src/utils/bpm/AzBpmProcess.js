@@ -33,7 +33,6 @@ export default class AzBpmProcess {
 
     hasAuthority(authorities = []) {
         const currentTask = this.getCurrentTask()
-
         return (
             !this.isLoadingProcess() &&
             this._isStatusInstanceActive() &&
@@ -46,6 +45,51 @@ export default class AzBpmProcess {
 
     hasPermissionCurrentUo() {
         return (this.isUOEnabled() && this.getCurrentUoPermission()) || !this.isUOEnabled()
+    }
+
+    hasPermissionsExentensions(permission, item, action) {
+        permission = permission.toLowerCase()
+        item = item ? item.toLowerCase() : ''
+        action = action ? action.toLowerCase() : ''
+
+        let hasPermission = false
+        const currentTaskExentensions = this.getCurrentTaskExentensions()
+
+        if (!this.permissionExtensionsExists(permission, currentTaskExentensions)) {
+            return hasPermission
+        }
+
+        if (this.itemExtensionsExists(permission, item, currentTaskExentensions)) {
+            hasPermission = true
+            return hasPermission
+        }
+
+        if (!this.itemExtensionsExistsWithoutAction(permission, item, currentTaskExentensions)) {
+            return hasPermission
+        }
+
+        if (!action) {
+            return hasPermission
+        }
+
+        const actions = action.split('')
+        const permissions = currentTaskExentensions[permission]
+
+        return permissions.some(
+            (obj) => obj.chave === item && actions.every((letter) => obj.autorizacao.includes(letter))
+        )
+    }
+    permissionExtensionsExists(permission, currentTaskExentensions) {
+        return currentTaskExentensions.hasOwnProperty(permission)
+    }
+
+    itemExtensionsExists(permission, item, currentTaskExentensions) {
+        return !currentTaskExentensions[permission].some((obj) => obj.chave === item)
+    }
+
+    itemExtensionsExistsWithoutAction(permission, item, currentTaskExentensions) {
+        const actionExists = currentTaskExentensions[permission].find((obj) => obj.chave === item)
+        return Boolean(actionExists.autorizacao)
     }
 
     getCurrentUoPermission() {
@@ -71,6 +115,28 @@ export default class AzBpmProcess {
         return (processInstance && processInstance.currentTask) || {}
     }
 
+    getCurrentTaskExentensions() {
+        return this.getCurrentTask().extensions ? this.convertAllObjToLowCase(this.getCurrentTask().extensions) : {}
+    }
+
+    convertAllObjToLowCase(data) {
+        let keys = Object.keys(data)
+
+        keys.forEach((key) => {
+            let newKey = key.toLowerCase()
+            let newValue = data[key].map((obj) => {
+                let newObj = {}
+                Object.keys(obj).forEach((item) => {
+                    newObj[item.toLowerCase()] = obj[item].toLowerCase()
+                })
+                return newObj
+            })
+            delete data[key]
+            data[newKey] = newValue
+        })
+
+        return data
+    }
     getProcessDefinitionInfo() {
         const processInstance = this.getProcessInstance()
 

@@ -22,6 +22,28 @@ const createCurrentTaskMock = () => ({
         assignee: 'user-name-example-01',
         candidateGroups: ['user-role-example-01'],
     },
+    extensions: {
+        permissaoCampos: [
+            {
+                chave: 'campo 1',
+                autorizacao: 'r',
+            },
+            {
+                chave: 'campo 2',
+                autorizacao: 'u',
+            },
+        ],
+        permissaoDocumentos: [
+            {
+                chave: 'documento x',
+                autorizacao: 'rcu',
+            },
+            {
+                chave: 'nacionalidade',
+                autorizacao: '',
+            },
+        ],
+    },
 })
 
 const createProcessInstanceMock = () => ({
@@ -165,6 +187,8 @@ describe('AzBpmProcess', () => {
         process = getProcess(state, processKey, businessKey)
         store = createStore(state)
         azBpmProcess = new AzBpmProcess(store, processKey, businessKey)
+
+
     })
 
     describe('hasAuthority', () => {
@@ -1530,6 +1554,135 @@ describe('AzBpmProcess', () => {
             expect(azBpmProcess).toHaveProperty('getOriginUoPermission')
             expect(typeof azBpmProcess.getOriginUoPermission).toBe('function')
             expect(azBpmProcess.getOriginUoPermission).toBeTruthy()
+        })
+
+        describe('convertAllObjToLowCase', () => {
+            it('Should convert all keys to lowercase', () => {
+                const data = {
+                    KeyOne: [
+                        { SubKeyOne: 'value1', SubKeyTwo: 'value2' },
+                        { SubKeyThree: 'value3', SubKeyFour: 'value4' },
+                    ],
+                    KeyTwo: [
+                        { SubKeyFive: 'value5', SubKeySix: 'value6' },
+                        { SubKeySeven: 'value7', SubKeyEight: 'value8' },
+                    ],
+                }
+
+                const expected = {
+                    keyone: [
+                        { subkeyone: 'value1', subkeytwo: 'value2' },
+                        { subkeythree: 'value3', subkeyfour: 'value4' },
+                    ],
+                    keytwo: [
+                        { subkeyfive: 'value5', subkeysix: 'value6' },
+                        { subkeyseven: 'value7', subkeyeight: 'value8' },
+                    ],
+                }
+
+                const result = azBpmProcess.convertAllObjToLowCase(data)
+
+                expect(result).toEqual(expected)
+            })
+
+            it('Should handle empty objects', () => {
+                const data = {}
+
+                const expected = {}
+
+                const result = azBpmProcess.convertAllObjToLowCase(data)
+
+                expect(result).toEqual(expected)
+            })
+        })
+
+        describe('hasPermissionsExentensions', () => {
+            it('Should return false if permission not exist', () => {
+                let permission = 'permissaoDocumentosQueNaoExiste'
+                let item = 'documento x'
+                let action = 'r'
+
+                const result = azBpmProcess.hasPermissionsExentensions(permission, item, action)
+
+                expect(result).toBe(false)
+            })
+
+            it('Should return true if item(CHAVE) not exist', () => {
+                let permission = 'permissaoDocumentos'
+
+                const result = azBpmProcess.hasPermissionsExentensions(permission)
+
+                expect(result).toBe(true)
+            })
+
+            it('itemExtensionsExists - Should return true if item(CHAVE) not exist in list of rules', () => {
+                let permission = 'permissaoDocumentos'
+                let item = 'documento xyz'
+                let action = 'r'
+
+                const result = azBpmProcess.hasPermissionsExentensions(permission, item, action)
+
+                expect(result).toBe(true)
+            })
+
+            it('Should return false if the action does not exist in the permission', () => {
+                let permission = 'permissaoDocumentos'
+                let item = 'documento x'
+                let action = 'rw'
+
+                const result = azBpmProcess.hasPermissionsExentensions(permission, item, action)
+
+                expect(result).toBe(false)
+            })
+
+            it('Should return false if action is not reported', () => {
+                let permission = 'permissaoDocumentos'
+                let item = 'documento x'
+
+                const result = azBpmProcess.hasPermissionsExentensions(permission, item)
+
+                expect(result).toBe(false)
+            })
+
+            it('Should return true if there is at least 1 action', () => {
+                let permission = 'permissaoDocumentos'
+                let item = 'documento x'
+                let action = 'r'
+
+                const result = azBpmProcess.hasPermissionsExentensions(permission, item, action)
+
+                expect(result).toBe(true)
+            })
+
+            it('Should return false if all actions exist, but there are some more', () => {
+                let permission = 'permissaoDocumentos'
+                let item = 'documento x'
+                let action = 'rcuxyz'
+
+                const result = azBpmProcess.hasPermissionsExentensions(permission, item, action)
+
+                expect(result).toBe(false)
+            })
+
+            it('Should return true if all actions exist', () => {
+                let permission = 'permissaoDocumentos'
+                let item = 'documento x'
+                let action = 'rcu'
+
+                const result = azBpmProcess.hasPermissionsExentensions(permission, item, action)
+
+                expect(result).toBe(true)
+            })
+
+            it('Should return false if permission does not exist', () => {
+                const permission = 'PermissaoQueNaoExiste'
+                const item = 'documento x'
+                const action = 'rc'
+
+                const result = azBpmProcess.hasPermissionsExentensions(permission, item, action)
+
+                expect(result).toBe(false)
+            })
         })
     })
 })
