@@ -187,8 +187,6 @@ describe('AzBpmProcess', () => {
         process = getProcess(state, processKey, businessKey)
         store = createStore(state)
         azBpmProcess = new AzBpmProcess(store, processKey, businessKey)
-
-
     })
 
     describe('hasAuthority', () => {
@@ -1556,53 +1554,13 @@ describe('AzBpmProcess', () => {
             expect(azBpmProcess.getOriginUoPermission).toBeTruthy()
         })
 
-        describe('convertAllObjToLowCase', () => {
-            it('Should convert all keys to lowercase', () => {
-                const data = {
-                    KeyOne: [
-                        { SubKeyOne: 'value1', SubKeyTwo: 'value2' },
-                        { SubKeyThree: 'value3', SubKeyFour: 'value4' },
-                    ],
-                    KeyTwo: [
-                        { SubKeyFive: 'value5', SubKeySix: 'value6' },
-                        { SubKeySeven: 'value7', SubKeyEight: 'value8' },
-                    ],
-                }
-
-                const expected = {
-                    keyone: [
-                        { subkeyone: 'value1', subkeytwo: 'value2' },
-                        { subkeythree: 'value3', subkeyfour: 'value4' },
-                    ],
-                    keytwo: [
-                        { subkeyfive: 'value5', subkeysix: 'value6' },
-                        { subkeyseven: 'value7', subkeyeight: 'value8' },
-                    ],
-                }
-
-                const result = azBpmProcess.convertAllObjToLowCase(data)
-
-                expect(result).toEqual(expected)
-            })
-
-            it('Should handle empty objects', () => {
-                const data = {}
-
-                const expected = {}
-
-                const result = azBpmProcess.convertAllObjToLowCase(data)
-
-                expect(result).toEqual(expected)
-            })
-        })
-
-        describe('hasPermissionsExentensions', () => {
+        describe('hasPermissionsExtensions', () => {
             it('Should return false if permission not exist', () => {
                 let permission = 'permissaoDocumentosQueNaoExiste'
                 let item = 'documento x'
                 let action = 'r'
 
-                const result = azBpmProcess.hasPermissionsExentensions(permission, item, action)
+                const result = azBpmProcess.hasPermissionsExtensions(permission, item, action)
 
                 expect(result).toBe(false)
             })
@@ -1610,7 +1568,7 @@ describe('AzBpmProcess', () => {
             it('Should return true if item(CHAVE) not exist', () => {
                 let permission = 'permissaoDocumentos'
 
-                const result = azBpmProcess.hasPermissionsExentensions(permission)
+                const result = azBpmProcess.hasPermissionsExtensions(permission)
 
                 expect(result).toBe(true)
             })
@@ -1620,7 +1578,7 @@ describe('AzBpmProcess', () => {
                 let item = 'documento xyz'
                 let action = 'r'
 
-                const result = azBpmProcess.hasPermissionsExentensions(permission, item, action)
+                const result = azBpmProcess.hasPermissionsExtensions(permission, item, action)
 
                 expect(result).toBe(true)
             })
@@ -1630,7 +1588,7 @@ describe('AzBpmProcess', () => {
                 let item = 'documento x'
                 let action = 'rw'
 
-                const result = azBpmProcess.hasPermissionsExentensions(permission, item, action)
+                const result = azBpmProcess.hasPermissionsExtensions(permission, item, action)
 
                 expect(result).toBe(false)
             })
@@ -1639,7 +1597,7 @@ describe('AzBpmProcess', () => {
                 let permission = 'permissaoDocumentos'
                 let item = 'documento x'
 
-                const result = azBpmProcess.hasPermissionsExentensions(permission, item)
+                const result = azBpmProcess.hasPermissionsExtensions(permission, item)
 
                 expect(result).toBe(false)
             })
@@ -1649,7 +1607,7 @@ describe('AzBpmProcess', () => {
                 let item = 'documento x'
                 let action = 'r'
 
-                const result = azBpmProcess.hasPermissionsExentensions(permission, item, action)
+                const result = azBpmProcess.hasPermissionsExtensions(permission, item, action)
 
                 expect(result).toBe(true)
             })
@@ -1659,7 +1617,7 @@ describe('AzBpmProcess', () => {
                 let item = 'documento x'
                 let action = 'rcuxyz'
 
-                const result = azBpmProcess.hasPermissionsExentensions(permission, item, action)
+                const result = azBpmProcess.hasPermissionsExtensions(permission, item, action)
 
                 expect(result).toBe(false)
             })
@@ -1669,7 +1627,7 @@ describe('AzBpmProcess', () => {
                 let item = 'documento x'
                 let action = 'rcu'
 
-                const result = azBpmProcess.hasPermissionsExentensions(permission, item, action)
+                const result = azBpmProcess.hasPermissionsExtensions(permission, item, action)
 
                 expect(result).toBe(true)
             })
@@ -1679,7 +1637,7 @@ describe('AzBpmProcess', () => {
                 const item = 'documento x'
                 const action = 'rc'
 
-                const result = azBpmProcess.hasPermissionsExentensions(permission, item, action)
+                const result = azBpmProcess.hasPermissionsExtensions(permission, item, action)
 
                 expect(result).toBe(false)
             })

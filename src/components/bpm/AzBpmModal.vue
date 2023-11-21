@@ -77,7 +77,7 @@
                     <v-col class="az-bpm-modal__item" cols="12" v-if="showselectUOsFilteredItems">
                         <div class="az-text">
                             <label for="uo" class="grey--text text--darken-3">
-                                <b> {{selectedOrganizationalStructure.text}} <span class="red--text">*</span> </b>
+                                <b> {{ selectedOrganizationalStructure.text }} <span class="red--text">*</span> </b>
                             </label>
                         </div>
                         <v-autocomplete
@@ -123,7 +123,6 @@
 
 <script>
 import _ from 'lodash'
-import { mapState } from 'vuex'
 
 export default {
     name: 'AzBpmModal',
@@ -151,17 +150,17 @@ export default {
             selectedHumanDecision: null,
             selectedRoute: null,
             selectedOrganizationalStructure: null,
-            selectUOsFiltered:[],
-            organizationalStructure:[
+            selectUOsFiltered: [],
+            organizationalStructure: [
                 {
-                    value:'acronymTypeAdministrationCompleted',
-                    text:'Órgão'
+                    value: 'acronymTypeAdministrationCompleted',
+                    text: 'Órgão',
                 },
                 {
-                    value:'upperHierarchyCode',
-                    text:'Unidade Organizacional'
-                }
-            ]
+                    value: 'upperHierarchyCode',
+                    text: 'Unidade Organizacional',
+                },
+            ],
         }
     },
     methods: {
@@ -195,14 +194,14 @@ export default {
         resetRouteSelect() {
             this.selectedRoute = null
         },
-        resetselectedOrganizationalStructure(){
+        resetSelectedOrganizationalStructure() {
             this.selectedOrganizationalStructure = null
         },
         resetAll() {
             this.resetUOSelect()
             this.resetHumanDecisionSelect()
             this.resetRouteSelect()
-            this.resetselectedOrganizationalStructure()
+            this.resetSelectedOrganizationalStructure()
         },
         initializeAll() {
             this.initializeUOSelect()
@@ -234,21 +233,20 @@ export default {
                 _.merge(bpmParameters, this.routeParameters)
             }
         },
-        mountItemsForSelectUOs(uosList){
-
-           return uosList.map((uos) => ({
+        mountItemsForSelectUOs(uosList) {
+            return uosList.map((uos) => ({
                 text: `${uos.codigoHierarquiaFormatado} - ${uos.sigla} - ${uos.nome}`,
                 value: uos.id,
             }))
         },
-        setSeletedUOWithCurrentUO(uosList){
+        setSeletedUOWithCurrentUO(uosList) {
             this.selectedUO = null
 
             const currentUO = this.currentTask.currentUo ? this.currentTask.currentUo.id : null
-            if (uosList.some(obj => obj.id === currentUO)) {
+            if (uosList.some((obj) => obj.id === currentUO)) {
                 this.selectedUO = this.currentTask.currentUo.id
             }
-        }
+        },
     },
     watch: {
         show() {
@@ -275,24 +273,23 @@ export default {
             this.resetUOSelect()
             this.initializeUOSelect()
         },
-        selectedRoute(){
-            this.resetselectedOrganizationalStructure()
+        selectedRoute() {
+            this.resetSelectedOrganizationalStructure()
             this.resetUOSelect()
         },
-        selectedHumanDecision(){
-            this.resetselectedOrganizationalStructure()
+        selectedHumanDecision() {
+            this.resetSelectedOrganizationalStructure()
             this.resetUOSelect()
         },
-        selectedOrganizationalStructure(newValue){
-            if(newValue){
+        selectedOrganizationalStructure(newValue) {
+            if (newValue) {
                 const uosList = this.uos[newValue.value]
                 this.selectUOsFiltered = this.mountItemsForSelectUOs(uosList)
-                if(uosList){
-                  this.setSeletedUOWithCurrentUO(uosList)
+                if (uosList) {
+                    this.setSeletedUOWithCurrentUO(uosList)
                 }
-
             }
-        }
+        },
     },
     computed: {
         uos() {
@@ -361,7 +358,7 @@ export default {
         selectUOItems() {
             return this.selectUO.items
         },
-        selectUOsFilteredItems(){
+        selectUOsFilteredItems() {
             return this.selectUOsFiltered
         },
         originUO() {
@@ -393,12 +390,15 @@ export default {
                 uoDestinationId: this.selectedUO,
             }
         },
-        organizationalStructureShow(){
-            return (this.selectedHumanDecision && this.selectedHumanDecision.requiresUO) || (this.selectedRoute && this.selectedRoute.requiresUO)
+        organizationalStructureShow() {
+            return (
+                (this.selectedHumanDecision && this.selectedHumanDecision.requiresUO) ||
+                (this.selectedRoute && this.selectedRoute.requiresUO)
+            )
         },
-        showselectUOsFilteredItems(){
+        showselectUOsFilteredItems() {
             return this.selectedOrganizationalStructure
-        }
+        },
     },
     created() {
         this.resetAll()

@@ -1,5 +1,6 @@
 import { actionTypes, mutationTypes } from '../../store'
 import Vue from 'vue'
+import _ from 'lodash'
 
 export default class AzBpmProcess {
     static _shared = {}
@@ -47,24 +48,24 @@ export default class AzBpmProcess {
         return (this.isUOEnabled() && this.getCurrentUoPermission()) || !this.isUOEnabled()
     }
 
-    hasPermissionsExentensions(permission, item, action) {
+    hasPermissionsExtensions(permission, item, action) {
         permission = permission.toLowerCase()
         item = item ? item.toLowerCase() : ''
         action = action ? action.toLowerCase() : ''
 
         let hasPermission = false
-        const currentTaskExentensions = this.getCurrentTaskExentensions()
+        const currentTaskExtensions = this.getCurrentTaskExtensions()
 
-        if (!this.permissionExtensionsExists(permission, currentTaskExentensions)) {
+        if (!this.permissionExtensionsExists(permission, currentTaskExtensions)) {
             return hasPermission
         }
 
-        if (this.itemExtensionsExists(permission, item, currentTaskExentensions)) {
+        if (this.itemExtensionsExists(permission, item, currentTaskExtensions)) {
             hasPermission = true
             return hasPermission
         }
 
-        if (!this.itemExtensionsExistsWithoutAction(permission, item, currentTaskExentensions)) {
+        if (!this.itemExtensionsExistsWithoutAction(permission, item, currentTaskExtensions)) {
             return hasPermission
         }
 
@@ -73,22 +74,29 @@ export default class AzBpmProcess {
         }
 
         const actions = action.split('')
-        const permissions = currentTaskExentensions[permission]
+        const permissions = currentTaskExtensions[permission]
 
+        if (this.actionExistsInItem(permissions, actions, item)) {
+            hasPermission = true
+            return hasPermission
+        }
+        return hasPermission
+    }
+    actionExistsInItem(permissions, actions, item) {
         return permissions.some(
             (obj) => obj.chave === item && actions.every((letter) => obj.autorizacao.includes(letter))
         )
     }
-    permissionExtensionsExists(permission, currentTaskExentensions) {
-        return currentTaskExentensions.hasOwnProperty(permission)
+    permissionExtensionsExists(permission, currentTaskExtensions) {
+        return currentTaskExtensions.hasOwnProperty(permission)
     }
 
-    itemExtensionsExists(permission, item, currentTaskExentensions) {
-        return !currentTaskExentensions[permission].some((obj) => obj.chave === item)
+    itemExtensionsExists(permission, item, currentTaskExtensions) {
+        return !currentTaskExtensions[permission].some((obj) => obj.chave === item)
     }
 
-    itemExtensionsExistsWithoutAction(permission, item, currentTaskExentensions) {
-        const actionExists = currentTaskExentensions[permission].find((obj) => obj.chave === item)
+    itemExtensionsExistsWithoutAction(permission, item, currentTaskExtensions) {
+        const actionExists = currentTaskExtensions[permission].find((obj) => obj.chave === item)
         return Boolean(actionExists.autorizacao)
     }
 
@@ -115,27 +123,19 @@ export default class AzBpmProcess {
         return (processInstance && processInstance.currentTask) || {}
     }
 
-    getCurrentTaskExentensions() {
-        return this.getCurrentTask().extensions ? this.convertAllObjToLowCase(this.getCurrentTask().extensions) : {}
+    getCurrentTaskExtensions() {
+        return this.getCurrentTask().extensions ? this._convertAllObjToLowCase(this.getCurrentTask().extensions) : {}
     }
-
-    convertAllObjToLowCase(data) {
-        let keys = Object.keys(data)
-
-        keys.forEach((key) => {
-            let newKey = key.toLowerCase()
-            let newValue = data[key].map((obj) => {
-                let newObj = {}
-                Object.keys(obj).forEach((item) => {
-                    newObj[item.toLowerCase()] = obj[item].toLowerCase()
-                })
-                return newObj
-            })
-            delete data[key]
-            data[newKey] = newValue
+    _convertAllObjToLowCase(data) {
+        let newData = _.mapKeys(data, (value, key) => {
+            return _.toLower(key)
         })
 
-        return data
+        return _.mapValues(newData, (value) => {
+            return _.map(value, (obj) => {
+                return _.mapKeys(obj, (v, k) => k.toLowerCase())
+            })
+        })
     }
     getProcessDefinitionInfo() {
         const processInstance = this.getProcessInstance()
