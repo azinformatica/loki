@@ -1555,14 +1555,14 @@ describe('AzBpmProcess', () => {
         })
 
         describe('hasPermissionsExtensions', () => {
-            it('Should return false if permission not exist', () => {
+            it('Should return true if permission not exist', () => {
                 let permission = 'permissaoDocumentosQueNaoExiste'
                 let item = 'documento x'
                 let action = 'r'
 
                 const result = azBpmProcess.hasPermissionsExtensions(permission, item, action)
 
-                expect(result).toBe(false)
+                expect(result).toBe(true)
             })
 
             it('Should return true if item(CHAVE) not exist', () => {
@@ -1632,15 +1632,7 @@ describe('AzBpmProcess', () => {
                 expect(result).toBe(true)
             })
 
-            it('Should return false if permission does not exist', () => {
-                const permission = 'PermissaoQueNaoExiste'
-                const item = 'documento x'
-                const action = 'rc'
 
-                const result = azBpmProcess.hasPermissionsExtensions(permission, item, action)
-
-                expect(result).toBe(false)
-            })
         })
     })
 })

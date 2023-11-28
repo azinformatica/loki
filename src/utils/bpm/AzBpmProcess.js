@@ -49,14 +49,11 @@ export default class AzBpmProcess {
     }
 
     hasPermissionsExtensions(permission, item, action) {
-        permission = permission.toLowerCase()
-        item = item ? item.toLowerCase() : ''
-        action = action ? action.toLowerCase() : ''
-
         let hasPermission = false
         const currentTaskExtensions = this.getCurrentTaskExtensions()
 
         if (!this.permissionExtensionsExists(permission, currentTaskExtensions)) {
+            hasPermission = true
             return hasPermission
         }
 
@@ -124,19 +121,9 @@ export default class AzBpmProcess {
     }
 
     getCurrentTaskExtensions() {
-        return this.getCurrentTask().extensions ? this._convertAllObjToLowCase(this.getCurrentTask().extensions) : {}
+        return this.getCurrentTask().extensions ? this.getCurrentTask().extensions : {}
     }
-    _convertAllObjToLowCase(data) {
-        let newData = _.mapKeys(data, (value, key) => {
-            return _.toLower(key)
-        })
 
-        return _.mapValues(newData, (value) => {
-            return _.map(value, (obj) => {
-                return _.mapKeys(obj, (v, k) => k.toLowerCase())
-            })
-        })
-    }
     getProcessDefinitionInfo() {
         const processInstance = this.getProcessInstance()
 
