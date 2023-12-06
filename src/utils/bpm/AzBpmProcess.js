@@ -48,6 +48,19 @@ export default class AzBpmProcess {
         return (this.isUOEnabled() && this.getCurrentUoPermission()) || !this.isUOEnabled()
     }
 
+    hasVisibleItemInExtension(permission, item) {
+        const currentTaskExtensions = this.getCurrentTaskExtensions()
+        const isItemVisible = !this.findItemHiddenInExtension(permission, item, currentTaskExtensions)
+        return isItemVisible
+    }
+
+    findItemHiddenInExtension(permission, item, currentTaskExtensions) {
+        if (currentTaskExtensions.hasOwnProperty(permission)) {
+            return currentTaskExtensions[permission].some((obj) => obj.chave === item && obj.esconder === true)
+        }
+        return false
+    }
+
     hasPermissionsExtensions(permission, item, action) {
         let hasPermission = false
         const currentTaskExtensions = this.getCurrentTaskExtensions()

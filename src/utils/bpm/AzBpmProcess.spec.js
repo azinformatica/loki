@@ -25,12 +25,23 @@ const createCurrentTaskMock = () => ({
     extensions: {
         permissaoCampos: [
             {
-                chave: 'campo 1',
+                chave: 'CAMPO_01',
                 autorizacao: 'r',
             },
             {
-                chave: 'campo 2',
+                chave: 'CAMPO_02',
+                esconder: false,
                 autorizacao: 'u',
+            },
+            {
+                chave: 'CAMPO_03',
+                esconder: true,
+                autorizacao: 'u',
+            },
+            {
+                chave: 'CAMPO_03',
+                esconder: true,
+                autorizacao: '',
             },
         ],
         permissaoDocumentos: [
@@ -1631,8 +1642,47 @@ describe('AzBpmProcess', () => {
 
                 expect(result).toBe(true)
             })
+        })
 
+        describe('hasVisibleItemInExtension', () => {
+            it('Should return true if the hide item of the permission does not have the hide attribute', () => {
+                let permission = 'permissaoCampos'
+                let item = 'CAMPO_01'
+                const isItemVisible = azBpmProcess.hasVisibleItemInExtension(permission, item)
+                expect(isItemVisible).toBe(true)
+            })
 
+            it('Should return true if the permission hide item is false', () => {
+                let permission = 'permissaoCampos'
+                let item = 'CAMPO_02'
+
+                const isItemVisible = azBpmProcess.hasVisibleItemInExtension(permission, item)
+                expect(isItemVisible).toBe(true)
+            })
+
+            it('Should return false if the permission hide item is true', () => {
+                let permission = 'permissaoCampos'
+                let item = 'CAMPO_03'
+
+                const isItemVisible = azBpmProcess.hasVisibleItemInExtension(permission, item)
+                expect(isItemVisible).toBe(false)
+            })
+
+            it('Should return true if the field does not exist in the permission', () => {
+                let permission = 'permissaoCampos'
+                let item = 'CAMPO_QUE_NAO_EXISTE'
+
+                const isItemVisible = azBpmProcess.hasVisibleItemInExtension(permission, item)
+                expect(isItemVisible).toBe(true)
+            })
+
+            it('should return true if the permission does not exist', () => {
+                let permission = 'permissaoCampos2'
+                let item = 'CAMPO_03'
+
+                const isItemVisible = azBpmProcess.hasVisibleItemInExtension(permission, item)
+                expect(isItemVisible).toBe(true)
+            })
         })
     })
 })
