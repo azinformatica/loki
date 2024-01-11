@@ -1,6 +1,5 @@
-import { actionTypes, mutationTypes } from '../../store'
+import {actionTypes, mutationTypes} from '../../store'
 import Vue from 'vue'
-import _ from 'lodash'
 
 export default class AzBpmProcess {
     static _shared = {}
@@ -50,8 +49,7 @@ export default class AzBpmProcess {
 
     hasVisibleItemInExtension(permission, item) {
         const currentTaskExtensions = this.getCurrentTaskExtensions()
-        const isItemVisible = !this.findItemHiddenInExtension(permission, item, currentTaskExtensions)
-        return isItemVisible
+        return !this.findItemHiddenInExtension(permission, item, currentTaskExtensions)
     }
 
     findItemHiddenInExtension(permission, item, currentTaskExtensions) {
