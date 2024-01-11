@@ -9,37 +9,6 @@ const localVue = createLocalVue()
 localVue.use(Vuex)
 Vue.use(Vuetify)
 
-const createStoreState = () => {
-    return ({
-        loki: {
-            uos: {
-                acronymTypeAdministrationCompleted: [
-                    {
-                        id: 8774,
-                        nome: 'Primeira Subdefensoria Pública-Geral',
-                        sigla: '1SUBDEF',
-                        codigoHierarquia: '0002.0001.0001.0001'
-                    }
-                ],
-                upperHierarchyCode: [
-                    {
-                        id: 8774,
-                        nome: 'Primeira Subdefensoria Pública-Geral',
-                        sigla: '1SUBDEF',
-                        codigoHierarquia: '0002.0001.0001.0001'
-                    }
-                ]
-            }
-        }
-    })
-}
-
-const createStore = (state) => {
-    const store = {}
-    store.state = state
-
-    return store
-}
 const createDefaultProps = () => {
     return {
         components: {
