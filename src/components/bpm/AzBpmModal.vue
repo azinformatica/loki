@@ -74,7 +74,7 @@
                             hide-details
                         ></v-select>
                     </v-col>
-                    <v-col class="az-bpm-modal__item" cols="12" v-if="showselectUOsFilteredItems">
+                    <v-col class="az-bpm-modal__item" cols="12" v-if="selectUOShow">
                         <div class="az-text">
                             <label for="uo" class="grey--text text--darken-3">
                                 <b> {{ selectedOrganizationalStructure.text }} <span class="red--text">*</span> </b>
@@ -86,7 +86,7 @@
                             dense
                             placeholder="Selecione uma opção"
                             v-model="selectedUO"
-                            :items="selectUOsFilteredItems"
+                            :items="selectUOItems"
                             hide-details
                             :menu-props="{ maxWidth: '468px' }"
                         />
@@ -150,7 +150,6 @@ export default {
             selectedHumanDecision: null,
             selectedRoute: null,
             selectedOrganizationalStructure: null,
-            selectUOsFiltered: [],
             organizationalStructure: [
                 {
                     value: 'acronymTypeAdministrationCompleted',
@@ -171,28 +170,48 @@ export default {
             })
         },
         initializeUOSelect() {
-            if (this.selectUOShow) {
+            if (this.selectUOShow && !this.selectedUO) {
                 this.selectedUO = this.originUOId || this.getFirstItemValue(this.selectUOItems)
+            }
+        },
+        resetUOSelectIfInvalidValue() {
+            if (this.selectedUO && !this.selectHasGivenValue(this.selectUOItems, this.selectedUO)) {
+                this.resetUOSelect()
             }
         },
         resetUOSelect() {
             this.selectedUO = ''
         },
         initializeHumanDecisionSelect() {
-            if (this.isButtonTypeComplete) {
+            if (this.isButtonTypeComplete && !this.selectHumanDecision) {
                 this.selectedHumanDecision = this.getFirstItem(this.selectHumanDecisionItems)
+            }
+        },
+        resetHumanDecisionSelectIfInvalidValue() {
+            if (this.selectedHumanDecision && !this.selectHasGivenValue(this.selectHumanDecisionItems, this.selectedHumanDecision.value)) {
+                this.resetHumanDecisionSelect()
             }
         },
         resetHumanDecisionSelect() {
             this.selectedHumanDecision = null
         },
         initializeRouteSelect() {
-            if (this.isButtonTypeRoute) {
+            if (this.isButtonTypeRoute && !this.selectedRoute) {
                 this.selectedRoute = this.getFirstItem(this.selectRouteItems)
+            }
+        },
+        resetRouteSelectIfInvalidValue() {
+            if (this.selectedRoute && !this.selectHasGivenValue(this.selectRouteItems, this.selectedRoute.value)) {
+                this.resetRouteSelect()
             }
         },
         resetRouteSelect() {
             this.selectedRoute = null
+        },
+        resetSelectedOrganizationalStructureIfInvalidValue() {
+            if (this.selectedOrganizationalStructure && !this.selectHasGivenValue(this.organizationalStructure, this.selectedOrganizationalStructure.value)) {
+                this.resetSelectedOrganizationalStructure()
+            }
         },
         resetSelectedOrganizationalStructure() {
             this.selectedOrganizationalStructure = null
@@ -218,6 +237,13 @@ export default {
 
             return firstItem || null
         },
+        selectHasGivenValue(items, value) {
+            if (items.length) {
+                return items.some((item) => item.value === value)
+            }
+
+            return false
+        },
         addUoDestinationParametersIfNeeded(bpmParameters) {
             if (this.selectUOShow && this.selectedNextTaskRequiresUO && this.selectedUO) {
                 _.merge(bpmParameters, this.uoDestinationParameters)
@@ -232,21 +258,7 @@ export default {
             if (this.isButtonTypeRoute && this.selectedRoute) {
                 _.merge(bpmParameters, this.routeParameters)
             }
-        },
-        mountItemsForSelectUOs(uosList) {
-            return uosList.map((uos) => ({
-                text: `${uos.codigoHierarquiaFormatado} - ${uos.sigla} - ${uos.nome}`,
-                value: uos.id,
-            }))
-        },
-        setSeletedUOWithCurrentUO(uosList) {
-            this.selectedUO = null
-
-            const currentUO = this.currentTask.currentUo ? this.currentTask.currentUo.id : null
-            if (uosList.some((obj) => obj.id === currentUO)) {
-                this.selectedUO = this.currentTask.currentUo.id
-            }
-        },
+        }
     },
     watch: {
         show() {
@@ -254,42 +266,33 @@ export default {
             this.initializeAll()
         },
         selectHumanDecisionItems() {
-            this.resetHumanDecisionSelect()
+            this.resetHumanDecisionSelectIfInvalidValue()
             this.initializeHumanDecisionSelect()
         },
         selectRouteItems() {
-            this.resetUOSelect()
+            this.resetRouteSelectIfInvalidValue()
             this.initializeRouteSelect()
         },
         selectUOItems() {
-            this.resetUOSelect()
+            this.resetUOSelectIfInvalidValue()
             this.initializeUOSelect()
         },
         originUO() {
-            this.resetUOSelect()
+            this.resetUOSelectIfInvalidValue()
             this.initializeUOSelect()
         },
         selectedNextTaskRequiresUO() {
-            this.resetUOSelect()
+            this.resetUOSelectIfInvalidValue()
             this.initializeUOSelect()
         },
         selectedRoute() {
-            this.resetSelectedOrganizationalStructure()
-            this.resetUOSelect()
+            this.resetSelectedOrganizationalStructureIfInvalidValue()
+            this.resetUOSelectIfInvalidValue()
         },
         selectedHumanDecision() {
-            this.resetSelectedOrganizationalStructure()
-            this.resetUOSelect()
-        },
-        selectedOrganizationalStructure(newValue) {
-            if (newValue) {
-                const uosList = this.uos[newValue.value]
-                this.selectUOsFiltered = this.mountItemsForSelectUOs(uosList)
-                if (uosList) {
-                    this.setSeletedUOWithCurrentUO(uosList)
-                }
-            }
-        },
+            this.resetSelectedOrganizationalStructureIfInvalidValue()
+            this.resetUOSelectIfInvalidValue()
+        }
     },
     computed: {
         uos() {
@@ -349,17 +352,20 @@ export default {
         selectRouteItems() {
             return this.selectRoute.items || []
         },
-        selectUO() {
-            return this.select.uo || {}
-        },
         selectUOShow() {
-            return this.selectUO.show || false
+            return this.selectedOrganizationalStructure || false
         },
         selectUOItems() {
-            return this.selectUO.items
-        },
-        selectUOsFilteredItems() {
-            return this.selectUOsFiltered
+            if (!this.selectedOrganizationalStructure) {
+                return []
+            }
+
+            const uos = this.uos[this.selectedOrganizationalStructure.value] || []
+
+            return uos.map((uo) => ({
+                text: `${uo.codigoHierarquiaFormatado} - ${uo.sigla} - ${uo.nome}`,
+                value: uo.id,
+            }))
         },
         originUO() {
             return this.currentTask ? this.currentTask.currentUo : null
@@ -395,10 +401,7 @@ export default {
                 (this.selectedHumanDecision && this.selectedHumanDecision.requiresUO) ||
                 (this.selectedRoute && this.selectedRoute.requiresUO)
             )
-        },
-        showselectUOsFilteredItems() {
-            return this.selectedOrganizationalStructure
-        },
+        }
     },
     created() {
         this.resetAll()
