@@ -1,4 +1,4 @@
-import { actionTypes, mutationTypes } from '../../store'
+import {actionTypes, mutationTypes} from '../../store'
 import Vue from 'vue'
 
 export default class AzBpmProcess {
@@ -18,7 +18,12 @@ export default class AzBpmProcess {
 
         return this._getProcessInstancePromise(invalidateCache)
             .then((processInstance) => this._resetCurrentTask(processInstance))
-            .finally(() => this._finishLoadingProcess())
+            .finally(() => {
+                this._finishLoadingProcess()
+
+                this._loadUpperHierarchyCodeUOs()
+                this._loadAcronymTypeAdministrationCompletedUOs()
+            })
     }
 
     initialize() {
@@ -28,16 +33,88 @@ export default class AzBpmProcess {
 
     hasAuthority(authorities = []) {
         const currentTask = this.getCurrentTask()
-
         return (
             !this.isLoadingProcess() &&
             this._isStatusInstanceActive() &&
             this._hasAssignee(currentTask) &&
             this._hasSomeValidAuthority(currentTask, authorities) &&
-            this._isUserCandidate(currentTask)
+            this._isUserCandidate(currentTask) &&
+            this.hasPermissionCurrentUo()
         )
     }
 
+    hasPermissionCurrentUo() {
+        return (this.isUOEnabled() && this.getCurrentUoPermission()) || !this.isUOEnabled()
+    }
+
+    hasVisibleItemInExtension(permission, item) {
+        const currentTaskExtensions = this.getCurrentTaskExtensions()
+        return !this.findItemHiddenInExtension(permission, item, currentTaskExtensions)
+    }
+
+    findItemHiddenInExtension(permission, item, currentTaskExtensions) {
+        if (currentTaskExtensions.hasOwnProperty(permission)) {
+            return currentTaskExtensions[permission].some((obj) => obj.chave === item && obj.esconder === true)
+        }
+        return false
+    }
+
+    hasPermissionsExtensions(permission, item, action) {
+        let hasPermission = false
+        const currentTaskExtensions = this.getCurrentTaskExtensions()
+
+        if (!this.permissionExtensionsExists(permission, currentTaskExtensions)) {
+            hasPermission = true
+            return hasPermission
+        }
+
+        if (this.itemExtensionsExists(permission, item, currentTaskExtensions)) {
+            hasPermission = true
+            return hasPermission
+        }
+
+        if (!this.itemExtensionsExistsWithoutAction(permission, item, currentTaskExtensions)) {
+            return hasPermission
+        }
+
+        if (!action) {
+            return hasPermission
+        }
+
+        const actions = action.split('')
+        const permissions = currentTaskExtensions[permission]
+
+        if (this.actionExistsInItem(permissions, actions, item)) {
+            hasPermission = true
+            return hasPermission
+        }
+        return hasPermission
+    }
+    actionExistsInItem(permissions, actions, item) {
+        return permissions.some(
+            (obj) => obj.chave === item && actions.every((letter) => obj.autorizacao.includes(letter))
+        )
+    }
+    permissionExtensionsExists(permission, currentTaskExtensions) {
+        return currentTaskExtensions.hasOwnProperty(permission)
+    }
+
+    itemExtensionsExists(permission, item, currentTaskExtensions) {
+        return !currentTaskExtensions[permission].some((obj) => obj.chave === item)
+    }
+
+    itemExtensionsExistsWithoutAction(permission, item, currentTaskExtensions) {
+        const actionExists = currentTaskExtensions[permission].find((obj) => obj.chave === item)
+        return Boolean(actionExists.autorizacao)
+    }
+
+    getCurrentUoPermission() {
+        return this.getCurrentTask().currentUo ? this.getCurrentTask().currentUo.possuiPermissao : true
+    }
+
+    getOriginUoPermission() {
+        return this.getCurrentTask().originUo ? this.getCurrentTask().originUo.possuiPermissao : true
+    }
     getProcess() {
         return this._getBpmAtBusinessKey()
     }
@@ -52,6 +129,10 @@ export default class AzBpmProcess {
         const processInstance = this.getProcessInstance()
 
         return (processInstance && processInstance.currentTask) || {}
+    }
+
+    getCurrentTaskExtensions() {
+        return this.getCurrentTask().extensions ? this.getCurrentTask().extensions : {}
     }
 
     getProcessDefinitionInfo() {
@@ -183,8 +264,43 @@ export default class AzBpmProcess {
         return this.store.dispatch(actionTypes.BPM.GET_USER_TASKS, this._getProcessParams())
     }
 
-    _loadUOs() {
-        return this.store.dispatch(actionTypes.UO.FIND_ALL_ACTIVE)
+    _loadUosFiltered(filters) {
+        return this.store.dispatch(actionTypes.UO.FIND_ALL_ACTIVE, filters)
+    }
+
+    _loadAcronymTypeAdministrationCompletedUOs() {
+        if (
+            !this._isLoadUoAcronymTypeAdministrationCompleted() &&
+            !this._hasUOs('acronymTypeAdministrationCompleted')
+        ) {
+            const acronymTypeAdministrationCompletedUOsFilter = { tipoAdministracaoPreenchido: true }
+            const filters = this._createFiltersForUOs(acronymTypeAdministrationCompletedUOsFilter)
+            this._startLoadUoAcronymTypeAdministrationCompleted()
+            return this._loadUosFiltered(filters).finally(() => {
+                this._finishLoadUoAcronymTypeAdministrationCompleted()
+            })
+        }
+    }
+
+    _loadUpperHierarchyCodeUOs() {
+        if (!this._isLoadUoUpperHierarchyCode() && !this._hasUOs('upperHierarchyCode')) {
+            if (this.isUOEnabled()) {
+                const upperHierarchyCode = this.getCurrentTask().originUo
+                    ? this.getCurrentTask().originUo.codigoHierarquia
+                    : '-1'
+                const upperHierarchyCodeFilter = { codigoHierarquiaSuperior: upperHierarchyCode }
+                const filters = this._createFiltersForUOs(upperHierarchyCodeFilter)
+                this._startLoadUoUpperHierarchyCode()
+                return this._loadUosFiltered(filters).finally(() => {
+                    this._finishLoadUoUpperHierarchyCode()
+                })
+            }
+        }
+    }
+
+    _createFiltersForUOs(newFilters) {
+        const defaultFilters = { somenteAtivos: true, sort: 'sigla' }
+        return new URLSearchParams({ ...defaultFilters, ...newFilters })
     }
 
     _initializeProcessInstance() {
@@ -204,6 +320,8 @@ export default class AzBpmProcess {
                 _cache: null,
                 _isDispatchingAction: false,
                 _isLoadingProcess: false,
+                _isLoadUoAcronymTypeAdministrationCompleted: false,
+                _isLoadUoUpperHierarchyCode: false,
             })
         }
     }
@@ -219,11 +337,32 @@ export default class AzBpmProcess {
 
         shared._isDispatchingAction = true
     }
+    _startLoadUoAcronymTypeAdministrationCompleted() {
+        const shared = this._getProcessSharedVariables()
+
+        shared._isLoadUoAcronymTypeAdministrationCompleted = true
+    }
+
+    _startLoadUoUpperHierarchyCode() {
+        const shared = this._getProcessSharedVariables()
+
+        shared._isLoadUoUpperHierarchyCode = true
+    }
 
     _finishDispatchingAction() {
         const shared = this._getProcessSharedVariables()
 
         shared._isDispatchingAction = false
+    }
+    _finishLoadUoAcronymTypeAdministrationCompleted() {
+        const shared = this._getProcessSharedVariables()
+
+        shared._isLoadUoAcronymTypeAdministrationCompleted = false
+    }
+    _finishLoadUoUpperHierarchyCode() {
+        const shared = this._getProcessSharedVariables()
+
+        shared._isLoadUoUpperHierarchyCode = false
     }
 
     _isDispatchingAction() {
@@ -232,6 +371,15 @@ export default class AzBpmProcess {
         return shared._isDispatchingAction
     }
 
+    _isLoadUoAcronymTypeAdministrationCompleted() {
+        const shared = this._getProcessSharedVariables()
+        return shared._isLoadUoAcronymTypeAdministrationCompleted
+    }
+
+    _isLoadUoUpperHierarchyCode() {
+        const shared = this._getProcessSharedVariables()
+        return shared._isLoadUoUpperHierarchyCode
+    }
     _startLoadingProcess() {
         const shared = this._getProcessSharedVariables()
 
@@ -300,19 +448,12 @@ export default class AzBpmProcess {
     _createProcessInstancePromise() {
         return this._loadProcessInstance().finally(() => {
             this._loadUserTasksOnce()
-            this._loadUOsOnce()
         })
     }
 
     _loadUserTasksOnce() {
         if (!this._hasUserTasks()) {
             return this._loadUserTasks()
-        }
-    }
-
-    _loadUOsOnce() {
-        if (!this._hasUOs()) {
-            return this._loadUOs()
         }
     }
 
@@ -450,16 +591,15 @@ export default class AzBpmProcess {
     _getSelectUOShow() {
         const currentTask = this.getCurrentTask()
 
-        return Boolean(this._isUOEnabled() && !this._isParallel(currentTask))
+        return Boolean(this.isUOEnabled() && !this._isParallel(currentTask))
     }
 
     _getSelectUODisabled() {
-        return Boolean(this._isDispatchingAction() || !this._isUOEnabled())
+        return Boolean(this._isDispatchingAction() || !this.isUOEnabled())
     }
 
     _getSelectUOItems() {
-        const uos = this._getUOs()
-
+        const uos = this._getUOs('acronymTypeAdministrationCompleted')
         return uos.map((uo) => ({
             text: this._formatUOText(uo),
             value: this._formatUOValue(uo),
@@ -475,7 +615,12 @@ export default class AzBpmProcess {
     _getButtonClaimDisabled() {
         const currentTask = this.getCurrentTask()
 
-        return Boolean(this.isLoadingProcess() || this._isDispatchingAction() || !this._isUserCandidate(currentTask))
+        return Boolean(
+            this.isLoadingProcess() ||
+                this._isDispatchingAction() ||
+                !this._isUserCandidate(currentTask) ||
+                !this.hasPermissionCurrentUo()
+        )
     }
 
     _getButtonClaimLabel() {
@@ -509,7 +654,12 @@ export default class AzBpmProcess {
     _getButtonUnclaimDisabled() {
         const currentTask = this.getCurrentTask()
 
-        return Boolean(this.isLoadingProcess() || this._isDispatchingAction() || !this._isUserCandidate(currentTask))
+        return Boolean(
+            this.isLoadingProcess() ||
+                this._isDispatchingAction() ||
+                !this._isUserCandidate(currentTask) ||
+                !this.hasPermissionCurrentUo()
+        )
     }
 
     _getButtonUnclaimLabel() {
@@ -541,7 +691,12 @@ export default class AzBpmProcess {
     _getButtonCompleteDisabled() {
         const currentTask = this.getCurrentTask()
 
-        return Boolean(this.isLoadingProcess() || this._isDispatchingAction() || !this._isUserCandidate(currentTask))
+        return Boolean(
+            this.isLoadingProcess() ||
+                this._isDispatchingAction() ||
+                !this._isUserCandidate(currentTask) ||
+                !this.hasPermissionCurrentUo()
+        )
     }
 
     _getButtonCompleteLabel() {
@@ -869,7 +1024,7 @@ export default class AzBpmProcess {
         return task.isParallel || false
     }
 
-    _isUOEnabled() {
+    isUOEnabled() {
         const processDefinitionInfo = this.getProcessDefinitionInfo()
 
         return processDefinitionInfo.bpmUoEnabled
@@ -893,14 +1048,14 @@ export default class AzBpmProcess {
         return bpmAtProcessKey.userTasks || []
     }
 
-    _hasUOs() {
-        const uos = this._getUOs()
+    _getUOs(type) {
+        const uosList = this.store.state.loki.uos[type]
+        return uosList || []
+    }
+    _hasUOs(type) {
+        let uos = this._getUOs(type)
 
         return uos.length > 0
-    }
-
-    _getUOs() {
-        return this.store.state.loki.uos || []
     }
 
     _getCurrentTasks() {

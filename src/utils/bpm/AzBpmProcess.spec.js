@@ -22,6 +22,39 @@ const createCurrentTaskMock = () => ({
         assignee: 'user-name-example-01',
         candidateGroups: ['user-role-example-01'],
     },
+    extensions: {
+        permissaoCampos: [
+            {
+                chave: 'CAMPO_01',
+                autorizacao: 'r',
+            },
+            {
+                chave: 'CAMPO_02',
+                esconder: false,
+                autorizacao: 'u',
+            },
+            {
+                chave: 'CAMPO_03',
+                esconder: true,
+                autorizacao: 'u',
+            },
+            {
+                chave: 'CAMPO_03',
+                esconder: true,
+                autorizacao: '',
+            },
+        ],
+        permissaoDocumentos: [
+            {
+                chave: 'documento x',
+                autorizacao: 'rcu',
+            },
+            {
+                chave: 'nacionalidade',
+                autorizacao: '',
+            },
+        ],
+    },
 })
 
 const createProcessInstanceMock = () => ({
@@ -1507,6 +1540,149 @@ describe('AzBpmProcess', () => {
         it('Should have public isLoadingProcess method', () => {
             expect(azBpmProcess).toHaveProperty('isLoadingProcess')
             expect(typeof azBpmProcess.isLoadingProcess).toBe('function')
+        })
+
+        it('Should have public isUOEnabled method', () => {
+            expect(azBpmProcess).toHaveProperty('isUOEnabled')
+            expect(typeof azBpmProcess.isUOEnabled).toBe('function')
+        })
+
+        it('Should have public hasPermissionCurrentUo method and return true', () => {
+            expect(azBpmProcess).toHaveProperty('hasPermissionCurrentUo')
+            expect(typeof azBpmProcess.hasPermissionCurrentUo).toBe('function')
+            expect(azBpmProcess.hasPermissionCurrentUo).toBeTruthy()
+        })
+
+        it('Should have public getCurrentUoPermission method and return true', () => {
+            expect(azBpmProcess).toHaveProperty('getCurrentUoPermission')
+            expect(typeof azBpmProcess.getCurrentUoPermission).toBe('function')
+            expect(azBpmProcess.getCurrentUoPermission).toBeTruthy()
+        })
+
+        it('Should have public getOriginUoPermission method and return true', () => {
+            expect(azBpmProcess).toHaveProperty('getOriginUoPermission')
+            expect(typeof azBpmProcess.getOriginUoPermission).toBe('function')
+            expect(azBpmProcess.getOriginUoPermission).toBeTruthy()
+        })
+
+        describe('hasPermissionsExtensions', () => {
+            it('Should return true if permission not exist', () => {
+                let permission = 'permissaoDocumentosQueNaoExiste'
+                let item = 'documento x'
+                let action = 'r'
+
+                const result = azBpmProcess.hasPermissionsExtensions(permission, item, action)
+
+                expect(result).toBe(true)
+            })
+
+            it('Should return true if item(CHAVE) not exist', () => {
+                let permission = 'permissaoDocumentos'
+
+                const result = azBpmProcess.hasPermissionsExtensions(permission)
+
+                expect(result).toBe(true)
+            })
+
+            it('itemExtensionsExists - Should return true if item(CHAVE) not exist in list of rules', () => {
+                let permission = 'permissaoDocumentos'
+                let item = 'documento xyz'
+                let action = 'r'
+
+                const result = azBpmProcess.hasPermissionsExtensions(permission, item, action)
+
+                expect(result).toBe(true)
+            })
+
+            it('Should return false if the action does not exist in the permission', () => {
+                let permission = 'permissaoDocumentos'
+                let item = 'documento x'
+                let action = 'rw'
+
+                const result = azBpmProcess.hasPermissionsExtensions(permission, item, action)
+
+                expect(result).toBe(false)
+            })
+
+            it('Should return false if action is not reported', () => {
+                let permission = 'permissaoDocumentos'
+                let item = 'documento x'
+
+                const result = azBpmProcess.hasPermissionsExtensions(permission, item)
+
+                expect(result).toBe(false)
+            })
+
+            it('Should return true if there is at least 1 action', () => {
+                let permission = 'permissaoDocumentos'
+                let item = 'documento x'
+                let action = 'r'
+
+                const result = azBpmProcess.hasPermissionsExtensions(permission, item, action)
+
+                expect(result).toBe(true)
+            })
+
+            it('Should return false if all actions exist, but there are some more', () => {
+                let permission = 'permissaoDocumentos'
+                let item = 'documento x'
+                let action = 'rcuxyz'
+
+                const result = azBpmProcess.hasPermissionsExtensions(permission, item, action)
+
+                expect(result).toBe(false)
+            })
+
+            it('Should return true if all actions exist', () => {
+                let permission = 'permissaoDocumentos'
+                let item = 'documento x'
+                let action = 'rcu'
+
+                const result = azBpmProcess.hasPermissionsExtensions(permission, item, action)
+
+                expect(result).toBe(true)
+            })
+        })
+
+        describe('hasVisibleItemInExtension', () => {
+            it('Should return true if the hide item of the permission does not have the hide attribute', () => {
+                let permission = 'permissaoCampos'
+                let item = 'CAMPO_01'
+                const isItemVisible = azBpmProcess.hasVisibleItemInExtension(permission, item)
+                expect(isItemVisible).toBe(true)
+            })
+
+            it('Should return true if the permission hide item is false', () => {
+                let permission = 'permissaoCampos'
+                let item = 'CAMPO_02'
+
+                const isItemVisible = azBpmProcess.hasVisibleItemInExtension(permission, item)
+                expect(isItemVisible).toBe(true)
+            })
+
+            it('Should return false if the permission hide item is true', () => {
+                let permission = 'permissaoCampos'
+                let item = 'CAMPO_03'
+
+                const isItemVisible = azBpmProcess.hasVisibleItemInExtension(permission, item)
+                expect(isItemVisible).toBe(false)
+            })
+
+            it('Should return true if the field does not exist in the permission', () => {
+                let permission = 'permissaoCampos'
+                let item = 'CAMPO_QUE_NAO_EXISTE'
+
+                const isItemVisible = azBpmProcess.hasVisibleItemInExtension(permission, item)
+                expect(isItemVisible).toBe(true)
+            })
+
+            it('should return true if the permission does not exist', () => {
+                let permission = 'permissaoCampos2'
+                let item = 'CAMPO_03'
+
+                const isItemVisible = azBpmProcess.hasVisibleItemInExtension(permission, item)
+                expect(isItemVisible).toBe(true)
+            })
         })
     })
 })

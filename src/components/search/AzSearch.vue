@@ -104,7 +104,10 @@ export default {
         },
     },
     mounted() {
-        const advancedSearchItems = this.$children[1].$children.filter((child) => {
+        const children = this.$children[1] || {}
+        const grandchildren = children.$children || []
+
+        const advancedSearchItems = grandchildren.filter((child) => {
             return child.$options._componentTag === 'az-search-item'
         })
         this.hasAdvancedSearchItems = advancedSearchItems.length > 0

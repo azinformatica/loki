@@ -23,7 +23,7 @@
                     <v-col class="az-bpm-modal__item" cols="12" v-if="isButtonTypeComplete && selectHumanDecisionShow">
                         <div class="az-text">
                             <label for="human-decision-select" class="grey--text text--darken-3">
-                                <b> Encaminhar para <span class="red--text">*</span> </b>
+                                <b>Encaminhar para <span class="red--text">*</span> </b>
                             </label>
                         </div>
                         <v-select
@@ -41,7 +41,7 @@
                     <v-col class="az-bpm-modal__item" cols="12" v-if="isButtonTypeRoute && selectRouteShow">
                         <div class="az-text">
                             <label for="route-select" class="grey--text text--darken-3">
-                                <b> Encaminhar para <span class="red--text">*</span> </b>
+                                <b>Encaminhar para <span class="red--text">*</span> </b>
                             </label>
                         </div>
                         <v-select
@@ -57,10 +57,27 @@
                         >
                         </v-select>
                     </v-col>
-                    <v-col class="az-bpm-modal__item" cols="12" v-if="selectUOShow && selectedNextTaskRequiresUO">
+                    <v-col class="az-bpm-modal__item" cols="12" v-if="organizationalStructureShow">
+                        <div class="az-text">
+                            <label for="route-select" class="grey--text text--darken-3">
+                                <b> Estrutura Organizacional <span class="red--text">*</span> </b>
+                            </label>
+                        </div>
+                        <v-select
+                            id="organizational-structure-select"
+                            class="pt-0"
+                            placeholder="Selecione uma opção"
+                            dense
+                            v-model="selectedOrganizationalStructure"
+                            :items="organizationalStructure"
+                            return-object
+                            hide-details
+                        ></v-select>
+                    </v-col>
+                    <v-col class="az-bpm-modal__item" cols="12" v-if="selectUOShow">
                         <div class="az-text">
                             <label for="uo" class="grey--text text--darken-3">
-                                <b> Unidade Organizacional <span class="red--text">*</span> </b>
+                                <b> {{ selectedOrganizationalStructure.text }} <span class="red--text">*</span> </b>
                             </label>
                         </div>
                         <v-autocomplete
@@ -70,7 +87,6 @@
                             placeholder="Selecione uma opção"
                             v-model="selectedUO"
                             :items="selectUOItems"
-                            :disabled="selectUODisabled"
                             hide-details
                             :menu-props="{ maxWidth: '468px' }"
                         />
@@ -91,7 +107,7 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                    :disabled="selectedButton.disabled"
+                    :disabled="selectedNextTaskRequiresUO && !selectedUO"
                     width="100px"
                     class="text-capitalize"
                     color="primary"
@@ -133,6 +149,17 @@ export default {
             selectedUO: '',
             selectedHumanDecision: null,
             selectedRoute: null,
+            selectedOrganizationalStructure: null,
+            organizationalStructure: [
+                {
+                    value: 'acronymTypeAdministrationCompleted',
+                    text: 'Órgão',
+                },
+                {
+                    value: 'upperHierarchyCode',
+                    text: 'Unidade Organizacional',
+                },
+            ],
         }
     },
     methods: {
@@ -143,33 +170,57 @@ export default {
             })
         },
         initializeUOSelect() {
-            if (this.selectUOShow) {
+            if (this.selectUOShow && !this.selectedUO) {
                 this.selectedUO = this.originUOId || this.getFirstItemValue(this.selectUOItems)
+            }
+        },
+        resetUOSelectIfInvalidValue() {
+            if (this.selectedUO && !this.selectHasGivenValue(this.selectUOItems, this.selectedUO)) {
+                this.resetUOSelect()
             }
         },
         resetUOSelect() {
             this.selectedUO = ''
         },
         initializeHumanDecisionSelect() {
-            if (this.isButtonTypeComplete) {
+            if (this.isButtonTypeComplete && !this.selectHumanDecision) {
                 this.selectedHumanDecision = this.getFirstItem(this.selectHumanDecisionItems)
+            }
+        },
+        resetHumanDecisionSelectIfInvalidValue() {
+            if (this.selectedHumanDecision && !this.selectHasGivenValue(this.selectHumanDecisionItems, this.selectedHumanDecision.value)) {
+                this.resetHumanDecisionSelect()
             }
         },
         resetHumanDecisionSelect() {
             this.selectedHumanDecision = null
         },
         initializeRouteSelect() {
-            if (this.isButtonTypeRoute) {
+            if (this.isButtonTypeRoute && !this.selectedRoute) {
                 this.selectedRoute = this.getFirstItem(this.selectRouteItems)
+            }
+        },
+        resetRouteSelectIfInvalidValue() {
+            if (this.selectedRoute && !this.selectHasGivenValue(this.selectRouteItems, this.selectedRoute.value)) {
+                this.resetRouteSelect()
             }
         },
         resetRouteSelect() {
             this.selectedRoute = null
         },
+        resetSelectedOrganizationalStructureIfInvalidValue() {
+            if (this.selectedOrganizationalStructure && !this.selectHasGivenValue(this.organizationalStructure, this.selectedOrganizationalStructure.value)) {
+                this.resetSelectedOrganizationalStructure()
+            }
+        },
+        resetSelectedOrganizationalStructure() {
+            this.selectedOrganizationalStructure = null
+        },
         resetAll() {
             this.resetUOSelect()
             this.resetHumanDecisionSelect()
             this.resetRouteSelect()
+            this.resetSelectedOrganizationalStructure()
         },
         initializeAll() {
             this.initializeUOSelect()
@@ -186,6 +237,13 @@ export default {
 
             return firstItem || null
         },
+        selectHasGivenValue(items, value) {
+            if (items.length) {
+                return items.some((item) => item.value === value)
+            }
+
+            return false
+        },
         addUoDestinationParametersIfNeeded(bpmParameters) {
             if (this.selectUOShow && this.selectedNextTaskRequiresUO && this.selectedUO) {
                 _.merge(bpmParameters, this.uoDestinationParameters)
@@ -200,7 +258,7 @@ export default {
             if (this.isButtonTypeRoute && this.selectedRoute) {
                 _.merge(bpmParameters, this.routeParameters)
             }
-        },
+        }
     },
     watch: {
         show() {
@@ -208,27 +266,38 @@ export default {
             this.initializeAll()
         },
         selectHumanDecisionItems() {
-            this.resetHumanDecisionSelect()
+            this.resetHumanDecisionSelectIfInvalidValue()
             this.initializeHumanDecisionSelect()
         },
         selectRouteItems() {
-            this.resetUOSelect()
+            this.resetRouteSelectIfInvalidValue()
             this.initializeRouteSelect()
         },
         selectUOItems() {
-            this.resetUOSelect()
+            this.resetUOSelectIfInvalidValue()
             this.initializeUOSelect()
         },
         originUO() {
-            this.resetUOSelect()
+            this.resetUOSelectIfInvalidValue()
             this.initializeUOSelect()
         },
         selectedNextTaskRequiresUO() {
-            this.resetUOSelect()
+            this.resetUOSelectIfInvalidValue()
             this.initializeUOSelect()
         },
+        selectedRoute() {
+            this.resetSelectedOrganizationalStructureIfInvalidValue()
+            this.resetUOSelectIfInvalidValue()
+        },
+        selectedHumanDecision() {
+            this.resetSelectedOrganizationalStructureIfInvalidValue()
+            this.resetUOSelectIfInvalidValue()
+        }
     },
     computed: {
+        uos() {
+            return this.$store.state.loki.uos
+        },
         nextTasks() {
             return this.currentTask.nextTasks || []
         },
@@ -283,17 +352,20 @@ export default {
         selectRouteItems() {
             return this.selectRoute.items || []
         },
-        selectUO() {
-            return this.select.uo || {}
-        },
         selectUOShow() {
-            return this.selectUO.show || false
-        },
-        selectUODisabled() {
-            return this.selectUO.disabled || false
+            return this.selectedOrganizationalStructure || false
         },
         selectUOItems() {
-            return this.selectUO.items
+            if (!this.selectedOrganizationalStructure) {
+                return []
+            }
+
+            const uos = this.uos[this.selectedOrganizationalStructure.value] || []
+
+            return uos.map((uo) => ({
+                text: `${uo.codigoHierarquiaFormatado} - ${uo.sigla} - ${uo.nome}`,
+                value: uo.id,
+            }))
         },
         originUO() {
             return this.currentTask ? this.currentTask.currentUo : null
@@ -324,6 +396,12 @@ export default {
                 uoDestinationId: this.selectedUO,
             }
         },
+        organizationalStructureShow() {
+            return (
+                (this.selectedHumanDecision && this.selectedHumanDecision.requiresUO) ||
+                (this.selectedRoute && this.selectedRoute.requiresUO)
+            )
+        }
     },
     created() {
         this.resetAll()

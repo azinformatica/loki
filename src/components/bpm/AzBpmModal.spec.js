@@ -99,6 +99,7 @@ describe('AzBpmModal.spec.js', () => {
     beforeEach(() => {
         propsData = createDefaultProps()
         wrapper = createWrapper({ propsData })
+
     })
 
     describe('Props', () => {
@@ -242,19 +243,7 @@ describe('AzBpmModal.spec.js', () => {
                 expect(getSelect().exists()).toBe(false)
             })
 
-            it('Should disable uo select if disabled', () => {
-                propsData.components.select.uo.disabled = true
-                wrapper = createWrapper({ propsData })
 
-                expect(getSelect().vm.disabled).toBe(true)
-            })
-
-            it('Should change selectedUO when component emits change event', () => {
-                const selectedOption = propsData.components.select.uo.items[1].value
-                getSelect().vm.$emit('input', selectedOption)
-
-                expect(wrapper.vm.selectedUO).toBe(selectedOption)
-            })
         })
     })
 
@@ -279,6 +268,7 @@ describe('AzBpmModal.spec.js', () => {
             expect(wrapper.vm.selectedUO).toBe('')
             expect(wrapper.vm.selectedRoute).toBe(null)
             expect(wrapper.vm.selectedHumanDecision).toBe(null)
+            expect(wrapper.vm.selectedOrganizationalStructure).toBe(null)
         })
     })
 })

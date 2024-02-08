@@ -161,11 +161,17 @@ export default {
         return axios.get(`${state.bpm.api}/uncomplete/${processKey}/${taskId}`)
     },
 
-    async [actionTypes.UO.FIND_ALL_ACTIVE]({ commit }) {
-        const response = await axios.get('/hal/unidadeOrganizacional/buscarComFiltros?somenteAtivos=true&sort=sigla')
-        commit(mutationTypes.UO.SET, response.data)
+    async [actionTypes.UO.FIND_ALL_ACTIVE]({ commit },queryParams) {
+        const {data} = await axios.get(`/hal/unidadeOrganizacional/buscarComFiltros?${queryParams}`)
 
-        return response.data
+        if(queryParams.has('tipoAdministracaoPreenchido')){
+            commit(mutationTypes.UO.SET_ACRONYM_TYPE_ADINISTRATION_COMPLETED, data)
+        }
+        if(queryParams.has('codigoHierarquiaSuperior')){
+            commit(mutationTypes.UO.SET_UPPER_HIERARCHY_CODE, data)
+        }
+
+        return data
     },
 }
 
@@ -181,3 +187,4 @@ function getFlowbeeAccessParams(accessToken) {
         }
     }
 }
+
