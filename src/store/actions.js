@@ -49,7 +49,16 @@ export default {
 
     async [actionTypes.SIGNATURE.DIGITAL.FINISH](
         context,
-        { documentId, signHash, temporarySubscription, rubricBase64, participation, visualPositionings, extraDatas }
+        {
+            documentId,
+            signHash,
+            temporarySubscription,
+            rubricBase64,
+            participation,
+            visualPositionings,
+            extraDatas,
+            invitationId,
+        }
     ) {
         const flowbeeAccessParams = getFlowbeeAccessParams(context.state.flowbee.accessToken)
         const url = `${flowbeeAccessParams.url}/${documentId}/assinaturas/digitais/finalizar`
@@ -78,7 +87,8 @@ export default {
                     pagina: visualPositioning.pageNumber,
                     tipo: visualPositioning.type,
                 }))
-            )
+            ),
+            conviteSignatarioId: invitationId,
         }
 
         const { data } = await axios.post(url, requestData, { headers })

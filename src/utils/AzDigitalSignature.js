@@ -66,10 +66,18 @@ export default class AzDigitalSignature {
      * @param {String} participation (optional)
      * @param {Array} visualPositionings (optional)
      * @param {Array} extraDatas (optional)
+     * @param {String} invitationId (optional)
      * @return {void}
      */
-    async sign(certificateThumbPrint, documentId, rubricBase64 = null, participation = null,
-               visualPositionings = null, extraDatas = null) {
+    async sign(
+        certificateThumbPrint,
+        documentId,
+        rubricBase64 = null,
+        participation = null,
+        visualPositionings = null,
+        extraDatas = null,
+        invitationId = null
+    ) {
         const certificateContent = await this._readCertificate(certificateThumbPrint)
 
         const paramsToSign = await this._preprareDocumentToSign(certificateContent, documentId)
@@ -87,7 +95,8 @@ export default class AzDigitalSignature {
             rubricBase64,
             participation,
             visualPositionings,
-            extraDatas
+            extraDatas,
+            invitationId
         )
     }
 
@@ -99,7 +108,16 @@ export default class AzDigitalSignature {
         this.pki.redirectToInstallPage()
     }
 
-    async _finishSign(documentId, signHash, paramsToSign, rubricBase64, participation, visualPositionings, extraDatas) {
+    async _finishSign(
+        documentId,
+        signHash,
+        paramsToSign,
+        rubricBase64,
+        participation,
+        visualPositionings,
+        extraDatas,
+        invitationId
+    ) {
         return await this.store.dispatch(actionTypes.SIGNATURE.DIGITAL.FINISH, {
             documentId,
             signHash,
@@ -108,6 +126,7 @@ export default class AzDigitalSignature {
             participation,
             visualPositionings,
             extraDatas,
+            invitationId,
         })
     }
 
