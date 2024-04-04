@@ -183,7 +183,7 @@ export default {
             this.selectedUO = ''
         },
         initializeHumanDecisionSelect() {
-            if (this.isButtonTypeComplete && !this.selectHumanDecision) {
+            if (this.isButtonTypeComplete && !this.selectedHumanDecision) {
                 this.selectedHumanDecision = this.getFirstItem(this.selectHumanDecisionItems)
             }
         },
