@@ -2,21 +2,24 @@ import axios from 'axios'
 import mutationTypes from './mutation-types'
 import actionTypes from './action-types'
 import state from './state'
+import mutations from './mutations'
 
-axios.interceptors.request.use((config) => {
+const axiosInstance = axios.create()
+
+axiosInstance.interceptors.request.use((config) => {
     config.headers.common['Authorization'] = state.keycloak.accessToken
-    state.isLoading = true
+    mutations[mutationTypes.SET_GLOBAL_LOADING](state, true)
     return config
 })
 
-axios.interceptors.response.use((config) => {
-    state.isLoading = false
+axiosInstance.interceptors.response.use((config) => {
+    mutations[mutationTypes.SET_GLOBAL_LOADING](state, false)
     return config
 })
 
 export default {
     async getProduct({ commit, state }) {
-        const response = await axios.get('public/produtos', { params: { productName: state.productName } })
+        const response = await axiosInstance.get('public/produtos', { params: { productName: state.productName } })
         commit(mutationTypes.SET_PRODUCT_EXTENDED_ATTRS, response.data.atributosExtendidos)
     },
 
@@ -36,7 +39,7 @@ export default {
         }
 
         try {
-            const { data } = await axios.post(state.file.api, formData, options)
+            const { data } = await axiosInstance.post(state.file.api, formData, options)
             data.name = filename
             commit(mutationTypes.REMOVE_UPLOAD_FILE_PROGRESS, hashName)
             commit(mutationTypes.ADD_UPLOADED_FILE, Object.assign({}, data, { status: 'success' }))
@@ -54,7 +57,7 @@ export default {
             ...flowbeeAccessParams.headers,
         }
 
-        const { data } = await axios.post(url, certificateContent, { headers })
+        const { data } = await axiosInstance.post(url, certificateContent, { headers })
 
         return data
     },
@@ -93,13 +96,13 @@ export default {
                 })),
         }
 
-        const { data } = await axios.post(url, requestData, { headers })
+        const { data } = await axiosInstance.post(url, requestData, { headers })
 
         return data
     },
 
     async [actionTypes.BPM.GET_PROCESS_LOGS]({ commit, state }, { processKey, businessKey }) {
-        const response = await axios.get(`${state.bpm.api}/getLog/${processKey}/${businessKey}`)
+        const response = await axiosInstance.get(`${state.bpm.api}/getLog/${processKey}/${businessKey}`)
         return response.data
     },
 
@@ -118,7 +121,7 @@ export default {
         try {
             setLoading(true)
 
-            const response = await axios.get(`${state.bpm.api}/getInstance/${processKey}/${businessKey}`)
+            const response = await axiosInstance.get(`${state.bpm.api}/getInstance/${processKey}/${businessKey}`)
             const processInstance = response.data
             const process = state.bpm.process[processKey][businessKey]
             processInstance.currentTask = process.currentTask
@@ -135,34 +138,34 @@ export default {
         const processPath = `/process/${processKey}`
         const routePath = `/route/from/${taskId}/destination/${bpmParameters.activityIdDestination}`
 
-        return axios.put(`${state.bpm.api}${processPath}${routePath}`, bpmParameters)
+        return axiosInstance.put(`${state.bpm.api}${processPath}${routePath}`, bpmParameters)
     },
 
     async [actionTypes.BPM.GET_USER_TASKS]({ commit, state }, { processKey }) {
-        const response = await axios.get(`${state.bpm.api}/getActivity/${processKey}`)
+        const response = await axiosInstance.get(`${state.bpm.api}/getActivity/${processKey}`)
         commit(mutationTypes.BPM.SET_USER_TASKS, { processKey, userTasks: response.data })
 
         return response.data
     },
 
     [actionTypes.BPM.CLAIM]({ state }, { taskId }) {
-        return axios.get(`${state.bpm.api}/claim/${taskId}`)
+        return axiosInstance.get(`${state.bpm.api}/claim/${taskId}`)
     },
 
     [actionTypes.BPM.UNCLAIM]({ state }, { taskId }) {
-        return axios.get(`${state.bpm.api}/unclaim/${taskId}`)
+        return axiosInstance.get(`${state.bpm.api}/unclaim/${taskId}`)
     },
 
     [actionTypes.BPM.COMPLETE]({ state }, { taskId, processKey, bpmParameters }) {
-        return axios.put(`${state.bpm.api}/complete/${processKey}/${taskId}`, bpmParameters)
+        return axiosInstance.put(`${state.bpm.api}/complete/${processKey}/${taskId}`, bpmParameters)
     },
 
     [actionTypes.BPM.UNCOMPLETE]({ state }, { taskId, processKey }) {
-        return axios.get(`${state.bpm.api}/uncomplete/${processKey}/${taskId}`)
+        return axiosInstance.get(`${state.bpm.api}/uncomplete/${processKey}/${taskId}`)
     },
 
     async [actionTypes.UO.FIND_ALL_ACTIVE]({ commit },queryParams) {
-        const {data} = await axios.get(`/hal/unidadeOrganizacional/buscarComFiltros?${queryParams}`)
+        const {data} = await axiosInstance.get(`/hal/unidadeOrganizacional/buscarComFiltros?${queryParams}`)
 
         if(queryParams.has('tipoAdministracaoPreenchido')){
             commit(mutationTypes.UO.SET_ACRONYM_TYPE_ADINISTRATION_COMPLETED, data)
