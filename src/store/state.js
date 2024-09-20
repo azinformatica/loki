@@ -55,4 +55,8 @@ export default {
         accessToken: null,
         license: null,
     },
+
+    keycloak: {
+        accessToken: null,
+    },
 }
