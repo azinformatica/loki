@@ -1,10 +1,18 @@
 import axios from 'axios'
+import state from './state'
 import mutationTypes from './mutation-types'
 import actionTypes from './action-types'
 
+const axiosInstance = axios.create()
+
+axiosInstance.interceptors.request.use((config) => {
+    config.headers.common['Authorization'] = state.keycloak.accessToken
+    return config
+})
+
 export default {
     async getProduct({ commit, state }) {
-        const response = await axios.get('public/produtos', { params: { productName: state.productName } })
+        const response = await axiosInstance.get('public/produtos', { params: { productName: state.productName } })
         commit(mutationTypes.SET_PRODUCT_EXTENDED_ATTRS, response.data.atributosExtendidos)
     },
 
@@ -24,7 +32,7 @@ export default {
         }
 
         try {
-            const { data } = await axios.post(state.file.api, formData, options)
+            const { data } = await axiosInstance.post(state.file.api, formData, options)
             data.name = filename
             commit(mutationTypes.REMOVE_UPLOAD_FILE_PROGRESS, hashName)
             commit(mutationTypes.ADD_UPLOADED_FILE, Object.assign({}, data, { status: 'success' }))
@@ -42,7 +50,7 @@ export default {
             ...flowbeeAccessParams.headers,
         }
 
-        const { data } = await axios.post(url, certificateContent, { headers })
+        const { data } = await axiosInstance.post(url, certificateContent, { headers })
 
         return data
     },
@@ -91,7 +99,7 @@ export default {
             conviteSignatarioId: invitationId,
         }
 
-        const { data } = await axios.post(url, requestData, { headers })
+        const { data } = await axiosInstance.post(url, requestData, { headers })
 
         return data
     },
