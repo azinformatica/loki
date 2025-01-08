@@ -64,6 +64,19 @@
                 :disabled="disableButtons"
                 @click="$emit('zoomIn')"
             />
+             <v-tooltip bottom open-delay="800" v-if="!disableButtons">
+                <span>Zoom (Clique para resetar)</span>
+                <template v-slot:activator="{ on }">
+                    <span
+                        class="az-pdf-toolbar__content"
+                        data-test="resetScale"
+                        @click="$emit('resetScale')"
+                        v-on="on"
+                    >
+                        {{ formattedScalePercent }}
+                    </span>
+                </template>
+            </v-tooltip>
         </div>
         <v-spacer />
         <div id="az-pdf-toolbar-actions" class="az-pdf-toolbar__actions" :class="{ show: showActions }">
@@ -165,6 +178,10 @@ export default {
             type: Boolean,
             default: false,
         },
+        scale: {
+            type: Number,
+            default: 1
+        }
     },
     data: () => ({
         showActions: false,
@@ -214,6 +231,9 @@ export default {
         hasPreviousPage() {
             return this.currentPage > 1
         },
+        formattedScalePercent() {
+            return `${Math.round(this.scale * 100)}%`
+        }
     },
     watch: {
         currentPage() {
