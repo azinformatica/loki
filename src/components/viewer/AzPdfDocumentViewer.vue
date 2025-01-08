@@ -13,6 +13,8 @@
             :nextDocumentButtonTooltip="nextDocumentButtonTooltip"
             :current-page="currentPage"
             :total-pages="totalPages"
+            :scale="scale.current"
+            @resetScale="resetScalePercent"
             @changeScaleType="changeScaleType"
             @zoomIn="zoomIn"
             @zoomOut="zoomOut"
@@ -188,9 +190,17 @@ export default {
             } else {
                 this.pdf.viewer.currentScaleValue = 'page-fit'
             }
+
+            this.scale.current = this.clampZoom(this.pdf.viewer.currentScale)
+            this.pdf.viewer.currentScale = this.scale.current
+        },
+        resetScalePercent() {
+            this.scale.current = 1
+            this.pdf.viewer.currentScale = this.scale.current
         },
         setInitialScale(scale) {
             this.scale.default = scale.currentScale
+            this.scale.current = scale.currentScale
             this.scale.type = scale.currentScaleValue
         },
         isSmallScreen() {
@@ -213,12 +223,18 @@ export default {
             }
         },
         zoomIn() {
-            this.pdf.viewer.currentScale = this.pdf.viewer.currentScale * 1.1
+            this.zoom(1 + this.scale.growth)
         },
         zoomOut() {
-            if (this.pdf.viewer.currentScale > 0.2) {
-                this.pdf.viewer.currentScale = this.pdf.viewer.currentScale / 1.1
-            }
+            this.zoom(1 - this.scale.growth)
+        },
+        zoom(percent) {
+            this.scale.current = this.clampZoom(this.scale.current * percent)
+
+            this.pdf.viewer.currentScale = this.scale.current
+        },
+        clampZoom(value) {
+            return _.clamp(value, this.scale.min, this.scale.max)
         },
         handleKeydownEvent(event) {
             if (event.ctrlKey && event.keyCode === 187) {
@@ -515,6 +531,10 @@ export default {
         },
         printProgress: 0,
         scale: {
+            max: 4,
+            min: 0.25,
+            growth: 0.05,
+            current: 1,
             default: null,
             type: '',
         },
