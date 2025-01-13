@@ -218,7 +218,7 @@ describe('Toolbar.spec.js', () => {
 
         it('Should have a changeScaleType button', () => {
             let changeScaleType = wrapper.find('[data-test="changeScaleType"]')
-            expect(changeScaleType.html()).toContain('mdi-fullscreen')
+            expect(changeScaleType.html()).toContain('mdi-arrow-expand-horizontal')
 
             wrapper = shallowMount(Toolbar, {
                 localVue,
@@ -227,7 +227,7 @@ describe('Toolbar.spec.js', () => {
                 },
             })
             changeScaleType = wrapper.find('[data-test="changeScaleType"]')
-            expect(changeScaleType.html()).toContain('mdi-fullscreen-exit')
+            expect(changeScaleType.html()).toContain('mdi-arrow-expand-vertical')
         })
 
         it('Should disable the buttons', () => {
