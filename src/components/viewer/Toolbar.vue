@@ -1,16 +1,18 @@
 <template>
     <v-toolbar class="az-pdf-toolbar" flat>
         <v-spacer />
-        <toolbar-button
-            v-if="previousDocumentButton"
-            class="az-pdf-toolbar__content"
-            data-test="previousDocument"
-            :tooltip="previousDocumentButtonTooltip"
-            icon="mdi-page-first"
-            :disabled="disableButtons"
-            @click="$emit('previousDocument')"
-        />
-        <div class="az-pdf-toolbar__pagination" data-test="pagination">
+        <div class="az-pdf-toolbar__display">
+            <toolbar-button
+                v-if="previousDocumentButton"
+                class="az-pdf-toolbar__content"
+                data-test="previousDocument"
+                :tooltip="previousDocumentButtonTooltip"
+                icon="mdi-page-first"
+                :disabled="disableButtons"
+                @click="$emit('previousDocument')"
+            />
+        </div>
+        <div class="az-pdf-toolbar__display az-pdf-toolbar__pagination" data-test="pagination">
             <toolbar-button
                 class="az-pdf-toolbar__content"
                 data-test="previousPage"
@@ -30,15 +32,20 @@
                 @click="$emit('nextPage')"
             />
         </div>
-        <toolbar-button
-            v-if="nextDocumentButton"
-            class="az-pdf-toolbar__content"
-            data-test="nextDocument"
-            :tooltip="nextDocumentButtonTooltip"
-            icon="mdi-page-last"
-            :disabled="disableButtons"
-            @click="$emit('nextDocument')"
-        />
+        <div class="az-pdf-toolbar__display">
+            <toolbar-button
+                v-if="nextDocumentButton"
+                class="az-pdf-toolbar__content"
+                data-test="nextDocument"
+                :tooltip="nextDocumentButtonTooltip"
+                icon="mdi-page-last"
+                :disabled="disableButtons"
+                @click="$emit('nextDocument')"
+            />
+        </div>
+        <div class="az-pdf-toolbar__divider">
+            <v-divider vertical></v-divider>
+        </div>
         <div class="az-pdf-toolbar__display">
             <toolbar-button
                 class="az-pdf-toolbar__content"
@@ -48,23 +55,7 @@
                 :disabled="disableButtons"
                 @click="$emit('zoomOut')"
             />
-            <toolbar-button
-                class="az-pdf-toolbar__content"
-                data-test="changeScaleType"
-                :tooltip="scaleTypeTooltip"
-                :icon="scaleTypeIcon"
-                :disabled="disableButtons"
-                @click="$emit('changeScaleType')"
-            />
-            <toolbar-button
-                class="az-pdf-toolbar__content"
-                data-test="zoomIn"
-                tooltip="Zoom +"
-                icon="mdi-magnify-plus-outline"
-                :disabled="disableButtons"
-                @click="$emit('zoomIn')"
-            />
-             <v-tooltip bottom open-delay="800" v-if="!disableButtons">
+            <v-tooltip bottom open-delay="800" v-if="!disableButtons">
                 <span>Zoom (Clique para resetar)</span>
                 <template v-slot:activator="{ on }">
                     <span
@@ -77,6 +68,27 @@
                     </span>
                 </template>
             </v-tooltip>
+            <toolbar-button
+                class="az-pdf-toolbar__content"
+                data-test="zoomIn"
+                tooltip="Zoom +"
+                icon="mdi-magnify-plus-outline"
+                :disabled="disableButtons"
+                @click="$emit('zoomIn')"
+            />
+        </div>
+        <div class="az-pdf-toolbar__divider">
+            <v-divider vertical></v-divider>
+        </div>
+        <div class="az-pdf-toolbar__display">
+            <toolbar-button
+                class="az-pdf-toolbar__content"
+                data-test="changeScaleType"
+                :tooltip="scaleTypeTooltip"
+                :icon="scaleTypeIcon"
+                :disabled="disableButtons"
+                @click="$emit('changeScaleType')"
+            />
         </div>
         <v-spacer />
         <div id="az-pdf-toolbar-actions" class="az-pdf-toolbar__actions" :class="{ show: showActions }">
@@ -223,7 +235,7 @@ export default {
             return this.isScaleTypePageFit ? 'Ajustar à largura' : 'Ajustar à altura'
         },
         scaleTypeIcon() {
-            return this.isScaleTypePageFit ? 'mdi-fullscreen' : 'mdi-fullscreen-exit'
+            return this.isScaleTypePageFit ? 'mdi-arrow-expand-horizontal' : 'mdi-arrow-expand-vertical'
         },
         hasNextPage() {
             return this.page < this.totalPages
@@ -252,6 +264,9 @@ export default {
     margin-bottom 2px !important
     height 60px !important
 
+    &__divider
+        height: 36px
+
     &__content, &__pagination
         color #777 !important
 
@@ -260,7 +275,6 @@ export default {
         flex-wrap nowrap
         align-items center
         justify-content center
-        height 32px
 
         .v-input
             margin-right 8px
