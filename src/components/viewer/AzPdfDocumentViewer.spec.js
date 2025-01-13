@@ -274,7 +274,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
 
             expect(wrapper.vm.pagination).toEqual({ current: 1, total: 10 })
             expect(wrapper.vm.pdf.viewer.currentScaleValue).toEqual('page-width')
-            expect(wrapper.vm.scale).toEqual({ default: 1 })
+            expect(wrapper.vm.scale.default).toEqual(1)
         })
 
         it('Should execute pagesInitEventHandler to "non small screen"', () => {
@@ -291,7 +291,7 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             expect(wrapper.vm.pageOffset).toBe(0)
             expect(wrapper.vm.currentPage).toBe(1)
             expect(wrapper.vm.pdf.viewer.currentScaleValue).toEqual('page-fit')
-            expect(wrapper.vm.scale).toEqual({ default: 1 })
+            expect(wrapper.vm.scale.default).toEqual(1)
         })
 
         it('Should execute pageChangeEventHandler', () => {
@@ -326,6 +326,9 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 directives,
             })
             wrapper.setData({
+                scale: {
+                    current: 1,
+                },
                 pdf: {
                     viewer: {
                         currentScale: 1,
@@ -334,7 +337,8 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             })
             wrapper.find('button').trigger('click')
 
-            expect(wrapper.vm.pdf.viewer.currentScale).toEqual(1.1)
+            expect(wrapper.vm.scale.current).toEqual(1 * 1.05)
+            expect(wrapper.vm.pdf.viewer.currentScale).toEqual(1 * 1.05)
         })
 
         it('Should execute the zoomOut method', () => {
@@ -347,6 +351,9 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 directives,
             })
             wrapper.setData({
+                scale: {
+                    current: 1,
+                },
                 pdf: {
                     viewer: {
                         currentScale: 1,
@@ -355,7 +362,8 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             })
             wrapper.find('button').trigger('click')
 
-            expect(wrapper.vm.pdf.viewer.currentScale).toEqual(1 / 1.1)
+            expect(wrapper.vm.scale.current).toEqual(1 * 0.95)
+            expect(wrapper.vm.pdf.viewer.currentScale).toEqual(1 * 0.95)
         })
 
         it('Should block zoomOut when scale is too small', () => {
@@ -368,6 +376,9 @@ describe('AzPdfDocumentViewer.spec.js', () => {
                 directives,
             })
             wrapper.setData({
+                scale: {
+                    current: 0.2
+                },
                 pdf: {
                     viewer: {
                         currentScale: 0.2,
@@ -376,7 +387,33 @@ describe('AzPdfDocumentViewer.spec.js', () => {
             })
             wrapper.find('button').trigger('click')
 
-            expect(wrapper.vm.pdf.viewer.currentScale).toEqual(0.2)
+            expect(wrapper.vm.scale.current).toEqual(0.25)
+            expect(wrapper.vm.pdf.viewer.currentScale).toEqual(0.25)
+        })
+
+        it('Should execute the resetScale method', () => {
+            wrapper = shallowMount(AzPdfDocumentViewer, {
+                localVue,
+                propsData: { src, httpHeader, downloadButton },
+                stubs: {
+                    Toolbar: { template: '<button @click=\'$emit("resetScale")\' ></button>' },
+                },
+                directives,
+            })
+            wrapper.setData({
+                scale: {
+                    current: 2,
+                },
+                pdf: {
+                    viewer: {
+                        currentScale: 2,
+                    },
+                },
+            })
+            wrapper.find('button').trigger('click')
+
+            expect(wrapper.vm.scale.current).toEqual(1)
+            expect(wrapper.vm.pdf.viewer.currentScale).toEqual(1)
         })
 
         it('Should execute changeScaleType method when has a default value', () => {

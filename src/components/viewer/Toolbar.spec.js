@@ -19,6 +19,8 @@ describe('Toolbar.spec.js', () => {
         totalPages,
         hasNextDocument,
         hasPreviousDocument,
+        scale,
+        propsData,
         wrapper
 
     beforeEach(() => {
@@ -34,22 +36,27 @@ describe('Toolbar.spec.js', () => {
         totalPages = 20
         hasNextDocument = true
         hasPreviousDocument = true
+        scale = 1.25
+
+        propsData = {
+            disableButtons,
+            downloadButton,
+            currentPage,
+            rotateButton,
+            scaleType,
+            previousDocumentButton,
+            previousDocumentButtonTooltip,
+            nextDocumentButton,
+            nextDocumentButtonTooltip,
+            totalPages,
+            hasNextDocument,
+            hasPreviousDocument,
+            scale
+        }
+
         wrapper = shallowMount(Toolbar, {
             localVue,
-            propsData: {
-                disableButtons,
-                downloadButton,
-                currentPage,
-                rotateButton,
-                scaleType,
-                previousDocumentButton,
-                previousDocumentButtonTooltip,
-                nextDocumentButton,
-                nextDocumentButtonTooltip,
-                totalPages,
-                hasNextDocument,
-                hasPreviousDocument,
-            },
+            propsData
         })
     })
 
@@ -152,6 +159,15 @@ describe('Toolbar.spec.js', () => {
             wrapper = shallowMount(Toolbar, { localVue, propsData: { scaleType } })
             expect(wrapper.props().hasPreviousDocument).toBe(false)
         })
+
+        it('Should receive a scale', () => {
+            expect(wrapper.props().scale).toEqual(scale)
+        })
+
+        it('Should have a default value to scale', () => {
+            wrapper = shallowMount(Toolbar, { localVue, propsData: { scaleType } })
+            expect(wrapper.props().scale).toBe(1)
+        })
     })
 
     describe('Template', () => {
@@ -202,7 +218,7 @@ describe('Toolbar.spec.js', () => {
 
         it('Should have a changeScaleType button', () => {
             let changeScaleType = wrapper.find('[data-test="changeScaleType"]')
-            expect(changeScaleType.html()).toContain('mdi-fullscreen')
+            expect(changeScaleType.html()).toContain('mdi-arrow-expand-horizontal')
 
             wrapper = shallowMount(Toolbar, {
                 localVue,
@@ -211,7 +227,7 @@ describe('Toolbar.spec.js', () => {
                 },
             })
             changeScaleType = wrapper.find('[data-test="changeScaleType"]')
-            expect(changeScaleType.html()).toContain('mdi-fullscreen-exit')
+            expect(changeScaleType.html()).toContain('mdi-arrow-expand-vertical')
         })
 
         it('Should disable the buttons', () => {
@@ -268,6 +284,28 @@ describe('Toolbar.spec.js', () => {
             let changeScaleTypeBtn = wrapper.find('[data-test="changeScaleType"]')
             changeScaleTypeBtn.vm.$emit('click')
             expect(wrapper.emitted().changeScaleType).toBeTruthy()
+        })
+
+        it('Should emit an event on click at resetScale tooltip', () => {
+            propsData.disableButtons = false
+            wrapper = shallowMount(Toolbar, {
+                localVue,
+                propsData,
+                stubs: {
+                    'v-tooltip': {
+                        template: `
+                            <div>
+                                <slot name="activator" :on="{ click: () => {} }"></slot>
+                                <slot name="default"></slot>
+                            </div>
+                        `
+                    }
+                }
+            })
+
+            let resetScaleTooltip = wrapper.find('[data-test="resetScale"]')
+            resetScaleTooltip.trigger('click')
+            expect(wrapper.emitted().resetScale).toBeTruthy()
         })
 
         it('Should emit an event on click at download button', () => {
