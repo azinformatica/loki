@@ -35,13 +35,16 @@
             <az-notification
                 v-if="showNotification"
                 class=""
+                :enableFiltering="showNotificationFiltering"
+                :enableMarkAllRead="showNotificationMarkAllRead"
                 @open="$emit('openNotifications')"
                 @close="$emit('closeNotifications')"
-                @paginate="$emit('paginateNotifications')"
-                @refresh="$emit('refreshNotifications')"
+                @paginate="paginateNotifications"
+                @refresh="refreshNotifications"
                 @read="$emit('readNotifications')"
                 @visit="visitNotification"
                 @remove="removeNotification"
+                @markAllRead="$emit('markAllRead')"
             />
 
             <az-avatar />
@@ -86,6 +89,14 @@ export default {
             type: Boolean,
             default: false,
         },
+        showNotificationFiltering: {
+            type: Boolean,
+            default: false
+        },
+        showNotificationMarkAllRead: {
+            type: Boolean,
+            default: false
+        }
     },
     methods: {
         showAside() {
@@ -94,9 +105,15 @@ export default {
         removeNotification(message) {
             this.$emit('removeNotification', message)
         },
+        refreshNotifications(message) {
+            this.$emit('refreshNotifications', message)
+        },
         visitNotification(message) {
             this.$emit('visitNotification', message)
         },
+        paginateNotifications(message) {
+            this.$emit('paginateNotifications', message)
+        }
     },
 }
 </script>

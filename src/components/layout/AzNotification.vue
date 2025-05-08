@@ -19,17 +19,27 @@
                 </v-badge>
             </v-btn>
         </template>
-        <v-list>
-            <div v-if="title" class="notification__top">
-                <b>{{ title }}</b>
-                <div v-if="enableFiltering">
-                    <a
-                        v-for="filter in filters"
-                        :key="filter"
-                        :class="getActiveFilterClass(filter)"
-                        @click="filterBy(filter)"
+        <v-list class="notification__list">
+            <div class="notification__top">
+                <b v-if="title">{{ title }}</b>
+
+                <div class="notification__top__filters">
+                    <div v-if="enableFiltering">
+                        <a
+                            v-for="filter in filters"
+                            :key="filter"
+                            :class="getActiveFilterClass(filter)"
+                            @click="filterBy(filter)"
+                        >
+                            {{ filter }}
+                        </a>
+                    </div>
+                    <a v-if="enableMarkAllRead"
+                        class="notification__top__filters__mark-all-read"
+                        :class="disabledMarkAllRead ? 'notification__top__filters__mark-all-read__disabled' : ''"
+                        @click="markAllRead()"
                     >
-                        {{ filter }}
+                        Marcar todas como lidas
                     </a>
                 </div>
             </div>
@@ -64,7 +74,7 @@
                     }}</span>
                 </div>
             </div>
-            <div v-else class="notification notification__top">{{ noNotificationText }}</div>
+            <div v-else class="notification notification__top__no-notification">{{ noNotificationText }}</div>
         </v-list>
     </v-menu>
 </template>
@@ -77,6 +87,10 @@ export default {
     name: 'AzNotification',
     props: {
         enableFiltering: {
+            type: Boolean,
+            default: false,
+        },
+        enableMarkAllRead: {
             type: Boolean,
             default: false,
         },
@@ -98,6 +112,9 @@ export default {
         ...mapState(['loki']),
         activeFilter() {
             return this.loki.notificationConfig.activeFilter
+        },
+        disabledMarkAllRead() {
+            return this.activeFilter === 'Lidas' || !this.hasMessages
         },
         filters() {
             return this.loki.notificationConfig.filters
@@ -151,12 +168,10 @@ export default {
     methods: {
         ...mapMutations([mutationTypes.SET_NOTIFICATION_ACTIVE_FILTER]),
         askForPagination() {
-            this.$emit('paginate')
+            this.$emit('paginate', this.activeFilter)
         },
         askForRefresh() {
-            if (!this.isOpen) {
-                this.$emit('refresh', this.activeFilter)
-            }
+            this.$emit('refresh', this.activeFilter)
         },
         cancelAutoUpdate() {
             if (this.processUpdate) {
@@ -188,19 +203,26 @@ export default {
                 this.$emit('open')
             } else {
                 this.$emit('close')
+                this.setNotificationActiveFilter('Todas')
             }
         },
         pagination() {
             if (this.allowLoadingViewMore) {
                 this.isViewMoreLoading = true
             }
-            this.$emit('paginate')
+            this.$emit('paginate', this.activeFilter)
         },
         visit(message) {
             if (this.closeMenuOnVisit) {
                 this.menu = false
             }
             this.$emit('visit', message)
+        },
+        markAllRead() {
+            if (this.disabledMarkAllRead) return
+
+            this.$emit('markAllRead')
+            this.setNotificationActiveFilter('Todas')
         },
     },
 }
@@ -222,6 +244,9 @@ export default {
     color gray
     font-size 14px
 .notification
+    &__list
+        min-width 400px
+
     &__body
         cursor pointer
         max-height 250px
@@ -245,6 +270,7 @@ export default {
                 margin-top 5px
                 font-size 11px
                 color #777
+
     &__top
         padding 10px 20px
         justify-content space-between
@@ -252,11 +278,40 @@ export default {
         display flex
         font-size 13px
         color #777
-        a
+        
+        &__no-notification
+            display flex
+            justify-content center
+            padding 10px 20px
+            font-size 13px
             color #777
-            margin-left 15px
+
+        &__filters
+            display flex
+            flex-direction column
+            font-size 13px
+            gap 5px
+            color #777
+
+            a
+                color #777
+                margin-left 15px
+
+            &__mark-all-read
+                font-weight bold
+                width fit-content
+
+                &__disabled
+                    pointer-events none
+                    color #777 !important
+
     &__unread
         background-color #edf2fa
+
+@media (max-width 500px)
+    .notification
+        &__list
+            min-width auto
 
 @media (max-width 720px)
     .notification
