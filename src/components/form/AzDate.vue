@@ -20,6 +20,7 @@
                     @input="updateModelDate($event), pickDateEvent()"
                     :min="minDate"
                     :max="maxDate"
+                    :persistentPlaceholder="persistentPlaceholder"
                     class="az-date"
                 />
             </v-dialog>
@@ -36,6 +37,7 @@
                 :disabled="isDisabled"
                 :min-date="minDate"
                 :max-date="maxDate"
+                :persistentPlaceholder="persistentPlaceholder"
                 append-icon="mdi-calendar"
                 class="az-date-date-input"
                 @click:append="openMenuDate"
@@ -151,6 +153,10 @@ export default {
         },
         maxDate: {
             type: String,
+        },
+        persistentPlaceholder: {
+            type: Boolean,
+            default: true,
         },
     },
     inject: ['$validator'],

@@ -11,6 +11,7 @@
         :name="name"
         :error-messages="errors.collect(`${name}`)"
         :disabled="disabled"
+        :persistentPlaceholder="persistentPlaceholder"
     >
         <template v-slot:label if="this.$slots['label']">
             <slot name="label" />
@@ -78,6 +79,10 @@ export default {
             default: false,
         },
         insertNullItem: {
+            type: Boolean,
+            default: true,
+        },
+        persistentPlaceholder: {
             type: Boolean,
             default: true,
         },

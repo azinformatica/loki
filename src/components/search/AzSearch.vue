@@ -186,16 +186,16 @@ export default {
 
     .icon-search
         border-radius 0 20px 20px 0
-        width 33px
-        height 32px
+        width 33px !important
+        height 32px !important
         margin 0 10px 0 0
         padding 0
         font-weight normal
 
     .btn-advanced-search
         border-radius 20px 0 0 20px
-        width 70px
-        height 32px
+        width 70px !important
+        height 32px !important
         margin 0
         padding 0
         text-transform unset
