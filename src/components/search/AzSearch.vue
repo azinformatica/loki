@@ -104,12 +104,15 @@ export default {
         },
     },
     mounted() {
-        const children = this.$children[1] || {}
-        const grandchildren = children.$children || []
-
-        const advancedSearchItems = grandchildren.filter((child) => {
-            return child.$options._componentTag === 'az-search-item'
+        let advancedSearchItems = []
+        this.$children.map((children) => {
+            children.$children.filter((child) => {
+                if (child.$options._componentTag === 'az-search-item') {
+                    advancedSearchItems.push(child.$options._componentTag === 'az-search-item')
+                }
+            })
         })
+
         this.hasAdvancedSearchItems = advancedSearchItems.length > 0
     },
     methods: {
