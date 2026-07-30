@@ -12,6 +12,7 @@
         :error-messages="errors.collect(`${name}`)"
         :disabled="disabled"
         :persistentPlaceholder="persistentPlaceholder"
+        :dense="dense"
     >
         <template v-slot:label if="this.$slots['label']">
             <slot name="label" />
@@ -85,6 +86,10 @@ export default {
         persistentPlaceholder: {
             type: Boolean,
             default: true,
+        },
+        dense: {
+            type: Boolean,
+            default: false,
         },
     },
     inject: ['$validator'],

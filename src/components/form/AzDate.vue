@@ -38,6 +38,7 @@
                 :min-date="minDate"
                 :max-date="maxDate"
                 :persistentPlaceholder="persistentPlaceholder"
+                :dense="dense"
                 append-icon="mdi-calendar"
                 class="az-date-date-input"
                 @click:append="openMenuDate"
@@ -50,7 +51,13 @@
                     <slot name="append-outer" />
                 </template>
                 <template v-slot:append v-if="this.$slots['append']">
-                    <v-btn icon @click="openMenuDate">
+                    <v-btn
+                        icon
+                        small
+                        @click="openMenuDate"
+                        @keydown.enter.prevent.stop="openMenuDate"
+                        @keyup.enter.prevent.stop
+                    >
                         <v-icon small>mdi-calendar</v-icon>
                     </v-btn>
                     <slot name="append" />
@@ -88,6 +95,7 @@
                 v-model="timeFormatted"
                 v-mask="'##:##'"
                 :placeholder="placeholderHour"
+                :dense="dense"
                 append-icon="mdi-clock-outline"
                 class="az-date-time-input"
                 @click:append="openMenuTime"
@@ -157,6 +165,10 @@ export default {
         persistentPlaceholder: {
             type: Boolean,
             default: true,
+        },
+        dense: {
+            type: Boolean,
+            default: false,
         },
     },
     inject: ['$validator'],
@@ -251,6 +263,7 @@ export default {
         },
         pickDateEvent() {
             this.dialogDate = false
+            this.focarInput()
         },
         validateAndParseDate(date) {
             if (!date || !this.dateStringIsValid(date) || this.dateMaxIsAllowed(date) || this.dateMinIsAllowed(date)) {
@@ -345,6 +358,25 @@ export default {
         },
         openMenuDate() {
             this.dialogDate = true
+            this.focarCalendario()
+        },
+        focarCalendario() {
+            this.$nextTick(() => {
+                setTimeout(() => {
+                    const classDialogDatePicker = '.v-dialog--active .v-date-picker-table button'
+
+                    const activeBtn =
+                        document.querySelector(classDialogDatePicker + '.v-btn--active') ||
+                        document.querySelector(classDialogDatePicker)
+                    if (activeBtn) activeBtn.focus()
+                }, 300)
+            })
+        },
+        focarInput() {
+            this.$nextTick(() => {
+                const input = this.$el.querySelector('.az-date-date-input input')
+                if (input) input.focus()
+            })
         },
         openMenuTime() {
             this.dialogTime = true
