@@ -2,6 +2,7 @@
     <div style="display: flex">
         <div v-bind:style="dateTime ? 'width: 60%' : 'width: 100%'">
             <v-dialog
+                :aria-required="isRequired ? 'true' : 'false'"
                 ref="menu"
                 :close-on-content-click="false"
                 v-model="dialogDate"
@@ -14,6 +15,7 @@
                 v-if="!isDisabled"
             >
                 <v-date-picker
+                    :aria-required="isRequired ? 'true' : 'false'"
                     v-model="date"
                     :value="value"
                     :locale="currentLanguage"
@@ -25,6 +27,8 @@
                 />
             </v-dialog>
             <v-text-field
+                :aria-label="ariaLabel"
+                :aria-required="isRequired ? 'true' : 'false'"
                 v-validate="checkDate"
                 @focus="changeFocus"
                 @blur="changeFocus"
@@ -109,6 +113,11 @@
 <script>
 export default {
     props: {
+        ariaLabel: {
+            type: String,
+            required: false,
+            default: null
+        },
         dateFormat: {
             type: String,
             default: 'DD/MM/YYYY',
@@ -569,3 +578,4 @@ export default {
         -ms-flex-pack center
         justify-content center
 </style>
+
