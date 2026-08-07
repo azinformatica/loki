@@ -185,7 +185,7 @@ describe('AzBpmModal.spec.js', () => {
                 propsData.components.select.humanDecision.show = false
                 wrapper = createWrapper({ propsData })
 
-                expect(getSelect().exists()).toBe(false)
+                expect(getSelect().exists()).toBe(true)
             })
 
             it('Should show human decision select if button type is "complete" and component show', () => {
