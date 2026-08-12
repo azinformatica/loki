@@ -20,7 +20,7 @@
                             </span>
                         </div>
                     </v-col>
-                    <v-col class="az-bpm-modal__item" cols="12" v-if="isButtonTypeComplete && selectHumanDecisionShow">
+                    <v-col class="az-bpm-modal__item" cols="12" v-if="isButtonTypeComplete">
                         <div class="az-text">
                             <label for="human-decision-select" class="grey--text text--darken-3">
                                 <b>Encaminhar para <span class="red--text">*</span> </b>
@@ -33,7 +33,7 @@
                             dense
                             v-model="selectedHumanDecision"
                             :items="selectHumanDecisionItems"
-                            :disabled="selectHumanDecisionDisabled"
+                            :disabled="selectHumanDecisionDisabled || !selectHumanDecisionItems.length"
                             return-object
                             hide-details
                         ></v-select>
@@ -129,7 +129,10 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                    :disabled="selectedNextTaskRequiresUO && !selectedUO"
+                    :disabled="
+                        (isButtonTypeComplete && !selectedHumanDecision) ||
+                        (selectedNextTaskRequiresUO && !selectedUO)
+                    "
                     width="100px"
                     class="text-capitalize"
                     color="primary"

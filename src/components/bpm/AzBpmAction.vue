@@ -140,9 +140,13 @@ export default {
         hasHumanDecision() {
             return this.select.humanDecision.show && !this.select.humanDecision.disabled
         },
+        hasNoNextTasks() {
+            return !this.currentTask.nextTasks || this.currentTask.nextTasks.length === 0
+        },
         shouldOpenModal(buttonType) {
             return (
-                (this.isButtonTypeComplete(buttonType) && this.hasHumanDecision()) || this.isButtonTypeRoute(buttonType)
+                (this.isButtonTypeComplete(buttonType) && (this.hasHumanDecision() || this.hasNoNextTasks())) ||
+                this.isButtonTypeRoute(buttonType)
             )
         },
         setSelectedButtonType(buttonType) {
@@ -161,8 +165,8 @@ export default {
             this.closeModal()
         },
         async openModal() {
-            await this.process.loadNextTasks()
             this.showModal = true
+            await this.process.loadNextTasks()
         },
         closeModal() {
             this.showModal = false
