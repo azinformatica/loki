@@ -74,12 +74,12 @@ export default {
 .call-to-action
     font-size 14px
     margin 0
-    text-transform none
+    text-transform none !important
     position relative
     height unset
     padding 5px 15px
     box-shadow none
-    font-weight bold
+    font-weight bold !important
 
     i
         margin-right 5px
